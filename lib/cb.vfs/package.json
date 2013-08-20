@@ -1,0 +1,16 @@
+{
+    "name": "cb.vfs",
+    "version": "0.0.1",
+
+    "main": "./main.js",
+    "private": true,
+
+    "plugin": {
+        "provides": [
+            "vfs"
+        ],
+        "consumes": [
+            "workspace"
+        ]
+    }
+}

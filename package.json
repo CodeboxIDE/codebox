@@ -1,0 +1,24 @@
+{
+    "name": "codebox",
+    "description": "Workspace server used at FriendCode",
+    "version": "0.0.1",
+    "author": "aaron.omullan@friendco.de",
+    "dependencies": {
+        "q": "0.9.6",
+        "underscore": "1.4.4",
+        "event-stream": "3.0.11",
+        "readable-stream": "1.0.2",
+
+        "architect": "0.1.10",
+
+        "express": "3.3.5",
+        "shoe": "0.0.13",
+        "socket.io": "0.9.16",
+
+        "codefire": "git+ssh://git@github.com:FriendCode/codefire.git#1.0.1",
+
+        "shux": "0.1.4",
+        "vfs-http-adapter": "0.2.3",
+        "vfs-local": "0.3.12"
+    }
+}

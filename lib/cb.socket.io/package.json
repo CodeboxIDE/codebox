@@ -1,0 +1,16 @@
+{
+    "name": "cb.socket.io",
+    "version": "0.0.1",
+
+    "main": "./main.js",
+    "private": true,
+
+    "plugin": {
+        "provides": [
+            "socket_io"
+        ],
+        "consumes": [
+            "server"
+        ]
+    }
+}
