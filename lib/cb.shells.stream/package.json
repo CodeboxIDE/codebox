@@ -7,7 +7,7 @@
 
     "plugin": {
         "consumes": [
-            "server",
+            "socket_io",
             "shells"
         ]
     }
