@@ -13,7 +13,7 @@
 
         "express": "3.3.5",
         "socket.io": "0.9.16",
-        "socket.io-stream": "0.3.1",
+        "socket.io-stream": "0.4.0",
 
         "codefire": "git+ssh://git@github.com:FriendCode/codefire.git#1.0.1",
 
@@ -25,3 +25,4 @@
         "socket.io-client": "0.9.16"
     }
 }
+
