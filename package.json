@@ -17,7 +17,7 @@
 
         "codefire": "git+ssh://git@github.com:FriendCode/codefire.git#1.0.1",
 
-        "shux": "0.1.4",
+        "shux": "git+https://github.com/AaronO/shux.git#d0297a2e1a4eb27db980f9e4dc89bfd47b91f518",
         "vfs-http-adapter": "0.2.3",
         "vfs-local": "0.3.12"
     },

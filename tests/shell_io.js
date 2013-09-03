@@ -14,6 +14,18 @@ var args = {
     opts: {
         rows: process.stdout.rows,
         columns: process.stdout.columns
+        /* 
+         * Other options
+        uid: 501,
+        gid: 20,
+        id: "something",  // same as shellId
+        cwd: "/app/"  // Folder to open shell in
+        // ENV variables
+        env: {
+            HOME: "/home/something",
+            DEV: "true"
+        }
+        */
     }
 };
 
@@ -22,7 +34,7 @@ ss(socket).emit('shell.open', stream, args);
 
 var state = { meta: false };
 var keyboard = es.through(function (buf) {
-    if (buf.length === 1 && buf[0] === 1) return state.meta = true;
+    if (buf.length === 1 && buf[0] === 1) {return state.meta = true};
 
     if (state.meta && buf[0] === 'd'.charCodeAt(0)) {
         process.exit();
