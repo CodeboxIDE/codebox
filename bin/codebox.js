@@ -53,6 +53,10 @@ var plugins = [
     "./cb.git",
     "./cb.git.rpc",
 
+    // Search
+    "./cb.search",
+    "./cb.search.rpc",
+
     // Watch (file modifications)
     "./cb.watch",
 
