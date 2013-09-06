@@ -9,6 +9,8 @@
         "event-stream": "3.0.11",
         "readable-stream": "1.0.2",
 
+        "eventemitter2": "0.4.13",
+
         "architect": "0.1.10",
 
         "express": "3.3.5",
@@ -18,11 +20,13 @@
         "codefire": "git+ssh://git@github.com:FriendCode/codefire.git#1.0.1",
 
         "shux": "git+https://github.com/AaronO/shux.git#d0297a2e1a4eb27db980f9e4dc89bfd47b91f518",
-        "vfs-http-adapter": "0.2.3",
-        "vfs-local": "0.3.12"
+        "vfs-http-adapter": "git+https://github.com/AaronO/vfs-http-adapter.git#0a85d328edc31f3413eb1782f3fd8624d3641a87",
+        "vfs-local": "0.3.12",
+
+        "watchr": "2.4.3",
+        "gift": "0.0.6",
     },
     "devDependencies": {
         "socket.io-client": "0.9.16"
     }
 }
-

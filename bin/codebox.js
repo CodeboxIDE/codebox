@@ -13,11 +13,19 @@ var plugins = [
     // Core
     "./cb.core",
 
+    // Event bus
+    "./cb.events",
+    "./cb.events.log",
+    "./cb.events.socketio",
+
     // Express server
     "./cb.server",
 
     // Status endpoint (root)
     "./cb.status",
+
+    // RPC
+    "./cb.httpRPC",
 
     // VFS
     "./cb.vfs",
@@ -25,6 +33,7 @@ var plugins = [
 
     // Shells
     "./cb.shells",
+    "./cb.shells.rpc",
     "./cb.shells.stream",
 
     // Detect project types
@@ -39,6 +48,13 @@ var plugins = [
     // Files
     "./cb.files.service",
     "./cb.files.sync",
+
+    // Git
+    "./cb.git",
+    "./cb.git.rpc",
+
+    // Watch (file modifications)
+    "./cb.watch",
 
     // Now start the damn server
     "./cb.main",

@@ -1,15 +1,15 @@
 {
-    "name": "cb.skeleton",
+    "name": "cb.events.socketio",
     "version": "0.0.1",
 
     "main": "./main.js",
     "private": true,
 
     "plugin": {
+        "provides": [],
         "consumes": [
-            "socket_io",
-            "shells",
-            "events"
+            "events",
+            "socket_io"
         ]
     }
 }

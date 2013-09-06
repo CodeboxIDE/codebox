@@ -1,14 +1,15 @@
 {
-    "name": "cb.skeleton",
+    "name": "cb.watch",
     "version": "0.0.1",
 
     "main": "./main.js",
     "private": true,
 
     "plugin": {
+        "provides": [
+            "watch"
+        ],
         "consumes": [
-            "socket_io",
-            "shells",
             "events"
         ]
     }

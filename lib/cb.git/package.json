@@ -1,15 +1,16 @@
 {
-    "name": "cb.skeleton",
+    "name": "cb.git",
     "version": "0.0.1",
 
     "main": "./main.js",
     "private": true,
 
     "plugin": {
+        "provides": [
+            "git"
+        ],
         "consumes": [
-            "socket_io",
-            "shells",
-            "events"
+            "workspace"
         ]
     }
 }

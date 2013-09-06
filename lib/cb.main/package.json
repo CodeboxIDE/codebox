@@ -7,7 +7,9 @@
 
     "plugin": {
         "consumes": [
-            "server"
+            "server",
+            "workspace",
+            "watch"
         ]
     }
 }
