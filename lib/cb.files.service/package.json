@@ -10,7 +10,8 @@
             "files_service"
         ],
         "consumes": [
-            "vfs"
+            "vfs",
+            "events"
         ]
     }
 }
