@@ -26,6 +26,9 @@
         "watchr": "2.4.3",
         "gift": "0.0.6"
     },
+    "bin": {
+        "codebox": "./bin/codebox.js"
+    },
     "devDependencies": {
         "socket.io-client": "0.9.16"
     }

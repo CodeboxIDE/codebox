@@ -1,3 +1,6 @@
+#!/usr/bin/env node
+
+
 // Requires
 var Q = require('q');
 var path = require('path');
