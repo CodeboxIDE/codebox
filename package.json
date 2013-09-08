@@ -24,7 +24,9 @@
         "vfs-local": "0.3.12",
 
         "watchr": "2.4.3",
-        "gift": "0.0.6"
+        "gift": "0.0.6",
+
+        "uuid": "1.4.1"
     },
     "bin": {
         "codebox": "./bin/codebox.js"

@@ -1,14 +1,12 @@
 {
-    "name": "cb.httpRPC",
+    "name": "cb.skeleton",
     "version": "0.0.1",
 
     "main": "./main.js",
     "private": true,
 
     "plugin": {
-        "provides": [
-            "httpRPC"
-        ],
+        "provides": [],
         "consumes": [
             "server",
             "workspace"

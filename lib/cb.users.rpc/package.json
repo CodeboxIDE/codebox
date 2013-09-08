@@ -1,16 +1,14 @@
 {
-    "name": "cb.httpRPC",
+    "name": "cb.users.rpc",
     "version": "0.0.1",
 
     "main": "./main.js",
     "private": true,
 
     "plugin": {
-        "provides": [
-            "httpRPC"
-        ],
+        "provides": [],
         "consumes": [
-            "server",
+            "httpRPC",
             "workspace"
         ]
     }

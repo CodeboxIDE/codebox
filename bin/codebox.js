@@ -24,6 +24,9 @@ var plugins = [
     // Express server
     "./cb.server",
 
+    // Middleware (session, auth, ...)
+    "./cb.middleware",
+
     // Status endpoint (root)
     "./cb.status",
 
@@ -59,6 +62,12 @@ var plugins = [
     // Search
     "./cb.search",
     "./cb.search.rpc",
+
+    // Auth
+    "./cb.auth.rpc",
+
+    // Users
+    "./cb.users.rpc",
 
     // Watch (file modifications)
     "./cb.watch",
