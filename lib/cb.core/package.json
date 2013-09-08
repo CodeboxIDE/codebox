@@ -8,6 +8,9 @@
     "plugin": {
         "provides": [
             "workspace"
+        ],
+        "consumes": [
+            "events"
         ]
     }
 }
