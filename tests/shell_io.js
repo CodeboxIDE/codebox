@@ -1,12 +1,13 @@
 var es = require('event-stream');
 var io = require('socket.io-client');
 var ss = require('socket.io-stream');
-
+var fs = require('fs');
 
 // Setup
-var socket = io.connect('http://localhost:8000/stream/shells');
+var socket = io.connect('http://localhost:8082/stream/shells');
 var stream = ss.createStream();
 
+var log = fs.createWriteStream('output.txt');
 
 // Shell args
 var args = {
@@ -45,6 +46,7 @@ var keyboard = es.through(function (buf) {
 
 // Piping
 keyboard.pipe(stream).pipe(process.stdout);
+stream.pipe(log);
 
 process.stdin.setRawMode(true);
 process.stdin.pipe(keyboard);
@@ -53,7 +55,6 @@ process.on('exit', function () {
     process.stdin.setRawMode(false);
     console.log('\n[shux exited]');
 });
-
 stream.on('end', function() {
     process.exit();
 });
