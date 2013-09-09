@@ -24,7 +24,7 @@
         "vfs-local": "0.3.12",
 
         "watchr": "2.4.3",
-        "gift": "0.0.6",
+        "gittle": "git+ssh://git@github.com:FriendCode/gittle.js.git#0.0.2",
 
         "uuid": "1.4.1"
     },
