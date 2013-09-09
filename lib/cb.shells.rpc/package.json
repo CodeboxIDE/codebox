@@ -6,7 +6,9 @@
     "private": true,
 
     "plugin": {
-        "provides": [],
+        "provides": [
+            "shells_rpc"
+        ],
         "consumes": [
             "shells",
             "httpRPC"

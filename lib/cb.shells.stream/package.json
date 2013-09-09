@@ -9,7 +9,8 @@
         "consumes": [
             "socket_io",
             "shells",
-            "events"
+            "events",
+            "shells_rpc"
         ]
     }
 }
