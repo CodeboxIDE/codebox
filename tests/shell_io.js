@@ -8,7 +8,7 @@ var socket = io.connect('http://localhost:8000/stream/shells');
 var stream = ss.createStream();
 
 
-// Shell args (test 2)
+// Shell args
 var args = {
     shellId: process.argv[2],
     opts: {
