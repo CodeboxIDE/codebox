@@ -20,6 +20,14 @@ var plugins = [
     "./cb.events",
     "./cb.events.log",
     "./cb.events.socketio",
+    {
+        // Path to plugin
+        packagePath: "./cb.events.webhook",
+
+        // Options
+        url: process.env.WEBHOOK_URL,
+        timeout: process.env.WEBHOOK_TIMEOUT,
+    },
 
     // Express server
     "./cb.server",
