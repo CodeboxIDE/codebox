@@ -1,6 +1,7 @@
 FROM ubuntu:12.10
 
 # Install utilities
+run apt-get -y update
 run apt-get -y install git
 run apt-get -y install curl wget
 run apt-get -y install build-essential

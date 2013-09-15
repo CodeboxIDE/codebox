@@ -14,7 +14,13 @@ var pluginPath = path.resolve(
 // Plugins to load
 var plugins = [
     // Core
-    "./cb.core",
+    {
+        // Path to plugin
+        packagePath: "./cb.core",
+        
+        // Options
+        root: process.env.WORKSPACE_DIR
+    },
 
     // Event bus
     "./cb.events",
