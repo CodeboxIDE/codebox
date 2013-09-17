@@ -11,6 +11,7 @@ SERVER_SCRIPT="/opt/codebox/bin/codebox.js"
 # RSA_PRIVATE, RSA_PUBLIC
 # EMAIL, NAME, USERNAME
 # GIT_URL, GIT_BRANCH, GIT_USER, GIT_PASSWD (some private token)
+# GIT_HOST, WEBHOOK_URL
 
 
 function setup_user () {
@@ -44,12 +45,12 @@ function setup_netrc () {
     local filename="${HOME}.netrc"
 
     # Exit if already there
-    if grep -i "machine friendco.de" $filename; then
+    if grep -i "machine ${GIT_HOST}" $filename; then
         return
     fi
 
     # Git auth over http/https with token
-    echo "machine friendco.de
+    echo "machine ${GIT_HOST}
         login ${GIT_USER}
         password ${GIT_PASSWD}
     " >> $filename
