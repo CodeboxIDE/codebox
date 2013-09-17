@@ -61,7 +61,7 @@ function setup_git () {
 
 
 function setup_perm () {
-    chown ${USER}:${USER} -r ${HOME}
+    chown ${USER} -R ${HOME}
 }
 
 
