@@ -50,7 +50,7 @@ function setup_netrc () {
 
     # Git auth over http/https with token
     echo "machine friendco.de
-        login ${USERNAME}
+        login ${GIT_USER}
         password ${GIT_PASSWD}
     " >> $filename
 }
