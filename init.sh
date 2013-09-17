@@ -14,31 +14,61 @@ SSH_DIR="${HOME}.ssh/"
 
 function setup_user () {
     # Add user
-    adduser ${USER}
+    if ! grep -i ${USER} /etc/passwd then
+        adduser ${USER}
+    fi;
 
     # Create workspace dir
     mkdir -p ${WORKSPACE}
 }
 
+
 function setup_ssh () {
     # Ensure directory
     mkdir -p ${SSH_DIR}
 
-    # Store keys
+    # Store/Update keys
     echo "${RSA_PUBLIC}" | tee "S{SSH_DIR}id_rsa.pub"
     echo "${RSA_PRIVATE}" | tee "S{SSH_DIR}id_rsa"
 }
 
+
 function setup_netrc () {
+    local filename="${HOME}.netrc"
+
+    # Exit if already there
+    if grep -i "machine friendco.de" $filename then
+        return
+    fi
+
     # Git auth over http/https with token
     echo "machine friendco.de
         login ${USERNAME}
         password ${GIT_PASSWD}
-    " >> "${HOME}.netrc"
+    " >> $filename
 }
 
+
 function setup_git () {
+    # Skip if git directory exists
+    if [ -d "${WORKSPACE}.git" ] then
+        return
+    fi
+
+    # Do cloning
     git clone ${GIT_URL} ${WORKSPACE}
+}
+
+
+function setup_perm () {
+    chown ${USER}:${USER} -r ${HOME}
+}
+
+
+function setup_env () {
+    # Set home
+    export HOME=${HOME}
+    export CODEBOX_USER=${USER}
 }
 
 # Do all setups
@@ -46,3 +76,5 @@ setup_user
 setup_ssh
 setup_netrc
 setup_git
+setup_perm
+setup_env
