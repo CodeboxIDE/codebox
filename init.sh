@@ -71,6 +71,10 @@ function setup_env () {
     export CODEBOX_USER=${USER}
 }
 
+function start_server () {
+    exec node /opt/codebox/bin/codebox.js
+}
+
 # Do all setups
 setup_user
 setup_ssh
@@ -78,3 +82,4 @@ setup_netrc
 setup_git
 setup_perm
 setup_env
+start_server
