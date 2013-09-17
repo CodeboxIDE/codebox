@@ -10,7 +10,7 @@ SERVER_SCRIPT="/opt/codebox/bin/codebox.js"
 ## Variables provided by environment
 # RSA_PRIVATE, RSA_PUBLIC
 # EMAIL, NAME, USERNAME
-# GIT_URL, GIT_PASSWD (some private token)
+# GIT_URL, GIT_BRANCH, GIT_USER, GIT_PASSWD (some private token)
 
 
 function setup_user () {
@@ -65,7 +65,7 @@ function setup_git () {
     fi
 
     # Do cloning
-    git clone ${GIT_URL} ${WORKSPACE}
+    git clone -b GIT_BRANCH ${GIT_URL} ${WORKSPACE}
 }
 
 
