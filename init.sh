@@ -3,8 +3,9 @@
 # Constants
 USER="friendcode"
 HOME="/home/${USER}/"
-WORKSPACE="${HOME}/workspace/"
+WORKSPACE="${HOME}workspace/"
 SSH_DIR="${HOME}.ssh/"
+SERVER_SCRIPT="/opt/codebox/bin/codebox.js"
 
 ## Variables provided by environment
 # RSA_PRIVATE, RSA_PUBLIC
@@ -13,6 +14,8 @@ SSH_DIR="${HOME}.ssh/"
 
 
 function setup_user () {
+    echo "Calling setup_user ..."
+
     # Add user
     if ! grep -i ${USER} /etc/passwd; then
         adduser ${USER}
@@ -24,6 +27,8 @@ function setup_user () {
 
 
 function setup_ssh () {
+    echo "Calling setup_ssh ..."
+
     # Ensure directory
     mkdir -p ${SSH_DIR}
 
@@ -34,6 +39,8 @@ function setup_ssh () {
 
 
 function setup_netrc () {
+    echo "Calling setup_netrc ..."
+
     local filename="${HOME}.netrc"
 
     # Exit if already there
@@ -50,8 +57,10 @@ function setup_netrc () {
 
 
 function setup_git () {
+    echo "Calling setup_git ..."
+
     # Skip if git directory exists
-    if [ -d "${WORKSPACE}.git" ]; then
+    if [ -d "$WORKSPACE.git" ]; then
         return
     fi
 
@@ -61,18 +70,25 @@ function setup_git () {
 
 
 function setup_perm () {
+    echo "Calling setup_perm ..."
+
     chown ${USER} -R ${HOME}
 }
 
 
 function setup_env () {
+    echo "Calling setup_env ..."
+
     # Set home
-    export HOME=${HOME}
+    export HOME=${WORKSPACE}
     export CODEBOX_USER=${USER}
+    export CMD=${WORKSPACE}
 }
 
 function start_server () {
-    exec node /opt/codebox/bin/codebox.js
+    echo "Calling start_server ..."
+
+    exec node ${SERVER_SCRIPT}
 }
 
 # Do all setups
