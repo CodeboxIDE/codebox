@@ -33,8 +33,8 @@ function setup_ssh () {
     mkdir -p ${SSH_DIR}
 
     # Store/Update keys
-    echo "${RSA_PUBLIC}" | tee "S{SSH_DIR}id_rsa.pub"
-    echo "${RSA_PRIVATE}" | tee "S{SSH_DIR}id_rsa"
+    echo "${RSA_PUBLIC}" | tee "${SSH_DIR}id_rsa.pub"
+    echo "${RSA_PRIVATE}" | tee "${SSH_DIR}id_rsa"
 }
 
 
