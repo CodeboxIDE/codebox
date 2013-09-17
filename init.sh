@@ -82,7 +82,7 @@ function setup_env () {
     # Set home
     export HOME=${WORKSPACE}
     export CODEBOX_USER=${USER}
-    export CMD=${WORKSPACE}
+    export WORKSPACE_DIR=${WORKSPACE}
 }
 
 function start_server () {
