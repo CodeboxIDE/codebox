@@ -14,7 +14,7 @@ SSH_DIR="${HOME}.ssh/"
 
 function setup_user () {
     # Add user
-    if ! grep -i ${USER} /etc/passwd then
+    if ! grep -i ${USER} /etc/passwd; then
         adduser ${USER}
     fi;
 
@@ -37,7 +37,7 @@ function setup_netrc () {
     local filename="${HOME}.netrc"
 
     # Exit if already there
-    if grep -i "machine friendco.de" $filename then
+    if grep -i "machine friendco.de" $filename; then
         return
     fi
 
@@ -51,7 +51,7 @@ function setup_netrc () {
 
 function setup_git () {
     # Skip if git directory exists
-    if [ -d "${WORKSPACE}.git" ] then
+    if [ -d "${WORKSPACE}.git" ]; then
         return
     fi
 
