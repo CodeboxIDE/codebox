@@ -84,6 +84,7 @@ function setup_env () {
 function start_server () {
     echo "Calling start_server ..."
 
+    cd ${WORKSPACE}
     exec node ${SERVER_SCRIPT}
 }
 
