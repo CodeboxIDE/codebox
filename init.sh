@@ -1,8 +1,6 @@
 #!/bin/bash
 
 # Constants
-USER="friendcode"
-HOME="/home/${USER}/"
 WORKSPACE="${HOME}workspace/"
 SSH_DIR="${HOME}.ssh/"
 SERVER_SCRIPT="/opt/codebox/bin/codebox.js"
@@ -14,13 +12,8 @@ SERVER_SCRIPT="/opt/codebox/bin/codebox.js"
 # GIT_HOST, WEBHOOK_URL
 
 
-function setup_user () {
-    echo "Calling setup_user ..."
-
-    # Add user
-    if ! grep -i ${USER} /etc/passwd; then
-        adduser ${USER}
-    fi;
+function setup_workspace () {
+    echo "Calling setup_workspace ..."
 
     # Create workspace dir
     mkdir -p ${WORKSPACE}
@@ -93,7 +86,7 @@ function start_server () {
 }
 
 # Do all setups
-setup_user
+setup_workspace
 setup_ssh
 setup_netrc
 setup_git
