@@ -66,7 +66,7 @@ function setup_git () {
     fi
 
     # Do cloning
-    git clone -b GIT_BRANCH ${GIT_URL} ${WORKSPACE}
+    git clone -b ${GIT_BRANCH} ${GIT_URL} ${WORKSPACE}
 }
 
 
