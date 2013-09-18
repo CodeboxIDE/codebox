@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Constants
-WORKSPACE="${HOME}workspace/"
-SSH_DIR="${HOME}.ssh/"
+WORKSPACE="${HOME}/workspace/"
+SSH_DIR="${HOME}/.ssh/"
 SERVER_SCRIPT="/opt/codebox/bin/codebox.js"
 
 ## Variables provided by environment
@@ -35,7 +35,7 @@ function setup_ssh () {
 function setup_netrc () {
     echo "Calling setup_netrc ..."
 
-    local filename="${HOME}.netrc"
+    local filename="${HOME}/.netrc"
 
     # Exit if already there
     if grep -i "machine ${GIT_HOST}" $filename; then
