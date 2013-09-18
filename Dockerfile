@@ -18,6 +18,4 @@ run apt-get -y install vim
 
 # Configure a local user
 # Prepare user and directories
-RUN addgroup friendcode
-RUN adduser --shell /bin/bash --gecos 'friendcode workspace user' --uid 5000 --disabled-password --home /home/friendcode friendcode
-RUN adduser friendcode friendcode
+RUN adduser --shell /bin/bash --gecos 'friendcode workspace user' --disabled-password --home /home/friendcode friendcode
