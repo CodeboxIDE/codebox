@@ -19,3 +19,6 @@ run apt-get -y install vim
 # Configure a local user
 # Prepare user and directories
 RUN adduser --shell /bin/bash --gecos 'friendcode workspace user' --disabled-password --home /home/friendcode friendcode
+
+# Default init command
+CMD su friendcode /opt/codebox/init.sh
