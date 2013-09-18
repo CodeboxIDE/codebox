@@ -47,6 +47,8 @@ function setup_netrc () {
         login ${GIT_USER}
         password ${GIT_PASSWD}
     " >> $filename
+
+    chmod 600 $filename
 }
 
 
