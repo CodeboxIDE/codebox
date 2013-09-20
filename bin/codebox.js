@@ -17,7 +17,7 @@ var plugins = [
     {
         // Path to plugin
         packagePath: "./cb.core",
-        
+
         // Options
         root: process.env.WORKSPACE_DIR
     },
@@ -39,7 +39,11 @@ var plugins = [
     "./cb.server",
 
     // Middleware (session, auth, ...)
-    "./cb.middleware",
+    {
+        packagePath: "./cb.middleware",
+
+        disableAuth: process.env.DISABLE_AUTH == "true",
+    },
 
     // Status endpoint (root)
     "./cb.status",
