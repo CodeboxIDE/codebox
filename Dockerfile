@@ -16,6 +16,9 @@ run wget -O - http://nodejs.org/dist/v0.8.23/node-v0.8.23-linux-x64.tar.gz | tar
 # Command line extras
 run apt-get -y install vim
 
+# Install pip/virtualenv
+run apt-get -y python-virtualenv python-pip
+
 # Configure a local user
 # Prepare user and directories
 RUN adduser --shell /bin/bash --gecos 'friendcode workspace user' --disabled-password --home /home/friendcode friendcode
