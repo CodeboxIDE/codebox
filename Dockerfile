@@ -19,6 +19,9 @@ run apt-get -y install vim
 # Install pip/virtualenv
 run apt-get -y python-virtualenv python-pip
 
+# Install ruby (1.8)
+run apt-get -y install ruby1.8
+
 # Configure a local user
 # Prepare user and directories
 RUN adduser --shell /bin/bash --gecos 'friendcode workspace user' --disabled-password --home /home/friendcode friendcode
