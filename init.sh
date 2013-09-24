@@ -76,7 +76,6 @@ function setup_env () {
     echo "Calling setup_env ..."
 
     # Set home
-    export HOME=${WORKSPACE}
     export CODEBOX_USER=${USER}
     export WORKSPACE_DIR=${WORKSPACE}
 }
