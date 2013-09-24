@@ -17,7 +17,7 @@ run wget -O - http://nodejs.org/dist/v0.8.23/node-v0.8.23-linux-x64.tar.gz | tar
 run apt-get -y install vim
 
 # Install pip/virtualenv
-run apt-get -y python-virtualenv python-pip
+run apt-get -y install python-virtualenv python-pip
 
 # Install ruby (1.8)
 run apt-get -y install ruby1.8
