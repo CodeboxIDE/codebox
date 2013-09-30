@@ -1,7 +1,7 @@
 {
     "name": "codebox",
     "description": "Workspace server used at FriendCode",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "author": "aaron.omullan@friendco.de",
     "dependencies": {
         "q": "0.9.6",
