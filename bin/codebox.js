@@ -85,7 +85,7 @@ var plugins = [
     "./cb.auth.rpc",
 
     // Proxy
-    "./cb.proxy.rpc",
+    "./cb.proxy.http",
 
     // Users
     "./cb.users.rpc",

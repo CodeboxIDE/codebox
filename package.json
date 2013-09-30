@@ -19,6 +19,7 @@
         "socket.io-stream": "git+https://github.com/nkzawa/socket.io-stream.git#46cb726ebd81a96990bcc363aa2b0a89f80c7c4f",
 
         "codefire": "git+ssh://git@github.com:FriendCode/codefire.git#1.1.0",
+        "loadfire": "1.3.4",
 
         "shux": "0.2.0",
         "vfs-http-adapter": "git+https://github.com/AaronO/vfs-http-adapter.git#6125c5bae68a51d905dd30ad94371085e34d4438",
