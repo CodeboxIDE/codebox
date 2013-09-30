@@ -23,7 +23,7 @@
 
         "shux": "0.2.0",
         "vfs-http-adapter": "git+https://github.com/AaronO/vfs-http-adapter.git#6125c5bae68a51d905dd30ad94371085e34d4438",
-        "vfs-local": "0.3.13",
+        "vfs-local": "0.3.12",
 
         "watchr": "2.4.3",
         "gittle": "git+ssh://git@github.com:FriendCode/gittle.js.git#0.0.6",
