@@ -78,6 +78,11 @@ function setup_env () {
     # Set home
     export CODEBOX_USER=${USER}
     export WORKSPACE_DIR=${WORKSPACE}
+
+    # Unset sensitive stuff
+    unset RSA_PRIVATE
+    unset RSA_PUBLIC
+    unset GIT_PASSWD
 }
 
 function start_server () {
