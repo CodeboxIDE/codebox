@@ -16,7 +16,7 @@
 
         "express": "3.3.5",
         "socket.io": "0.9.16",
-        "socket.io-stream": "git+https://github.com/nkzawa/socket.io-stream.git#46cb726ebd81a96990bcc363aa2b0a89f80c7c4f",
+        "socket.io-stream": "git+https://github.com/nkzawa/socket.io-stream.git#aab13aabe9474a45f7af478eedf41318f53271de",
 
         "codefire": "git+ssh://git@github.com:FriendCode/codefire.git#1.1.0",
         "loadfire": "1.3.4",
