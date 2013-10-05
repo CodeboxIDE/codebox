@@ -4,7 +4,7 @@ var ss = require('socket.io-stream');
 var fs = require('fs');
 
 // Setup
-var socket = io.connect('http://localhost:8082/stream/shells');
+var socket = io.connect('http://localhost:8000/stream/shells');
 var stream = ss.createStream();
 
 var log = fs.createWriteStream('output.txt');
@@ -15,7 +15,7 @@ var args = {
     opts: {
         rows: process.stdout.rows,
         columns: process.stdout.columns
-        /* 
+        /*
          * Other options
         uid: 501,
         gid: 20,
