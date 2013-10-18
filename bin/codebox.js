@@ -83,9 +83,6 @@ var plugins = [
     "./cb.rpc.auth",
     "./cb.rpc.search",
 
-    // Client-side
-    "./cb.client",
-
     // Now start the damn server
     "./cb.main",
 ];

@@ -1,7 +1,7 @@
 {
     "name": "codebox",
-    "description": "Workspace server used at FriendCode",
-    "version": "0.1.5",
+    "description": "Code editor workspace",
+    "version": "0.2.0",
     "author": "contact@friendco.de",
     "dependencies": {
         "q": "0.9.6",

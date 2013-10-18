@@ -21,19 +21,15 @@ define([
             this.vBaseUrl = this.options.vBaseUrl;
             this.state = false;
 
-            // Accept workspace option
-            if (this.options.workspace != null) {
-                this.workspace = this.options.workspace;
-
-                this.workspace.on("set", _.partial(this.useWorkspace, this.workspace), this);
-                this.useWorkspace();
-            }
-
             // Root file
             this.root = new File({
                 codebox: this
             });
             this.root.getByPath("/");
+
+            // Connect to events
+            this.listenEvents();
+
             return this;
         },
 
@@ -70,20 +66,6 @@ define([
         },
 
         /*
-         *  Use workspace to configure this codebox
-         */
-        useWorkspace: function(workspace) {
-            this.workspace = workspace || this.workspace;
-            this.baseUrl = this.workspace.get("codebox.url");
-            this.vBaseUrl = this.workspace.path().slice(1);
-
-            if (this.options.listenEvents) {
-                this.listenEvents();
-            }
-            return this;
-        },
-
-        /*
          *  Set codebox status (working or not)
          *  
          *  @status : boolean for the status
@@ -113,27 +95,12 @@ define([
          */
         rpc: function(method, args, options) {
             var d = new hr.Deferred();
-            this.request("getJSON", method, args, options).done(function(data) {
+            this.request("getJSON", "rpc"+method, args, options).done(function(data) {
                 if (!data.ok) { d.reject(data.error); }
                 else { d.resolve(data.data); }
             }, function() { d.reject(); });
 
             return d;
-        },
-
-        /*
-         *  Return url for socket.io connexions
-         */
-        socketUrl: function() {
-            if (this.baseUrl == null) return null;
-            return this.baseUrl.slice(1)+"/socket.io";
-        },
-
-        /*
-         *  Return full-namespace for a codebox namespace
-         */
-        socketNamespace: function(namespace) {
-            return namespace;
         },
 
         /*
@@ -144,11 +111,10 @@ define([
          */
         socket: function(namespace, forceCreate) {
             var d = new hr.Deferred();
-            if (this.socketUrl() == null) {
+            if (this.baseUrl == null) {
                 d.reject();
             } else {
-                var socket = io.connect([window.location.protocol, '//', window.location.host].join('')+"/"+this.socketNamespace(namespace), {
-                    'resource': this.socketUrl(),
+                var socket = io.connect([window.location.protocol, '//', window.location.host].join('')+"/"+namespace, {
                     'force new connection': forceCreate
                 });
 
@@ -171,14 +137,7 @@ define([
          *  Get box status
          */
         status: function() {
-            return this.request("getJSON", "/");
-        },
-
-        /*
-         *  Ping the codebox, the user is still here
-         */
-        ping: function() {
-            return this.rpc("/auth/ping");
+            return this.rpc("/box/status");
         },
 
         /*
