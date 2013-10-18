@@ -1,13 +1,14 @@
 {
-    "name": "cb.status",
+    "name": "cb.rpc.auth",
     "version": "0.0.1",
 
     "main": "./main.js",
     "private": true,
 
     "plugin": {
+        "provides": [],
         "consumes": [
-            "server",
+            "httpRPC",
             "workspace"
         ]
     }

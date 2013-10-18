@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-
 // Requires
 var Q = require('q');
 var path = require('path');
@@ -39,20 +38,11 @@ var plugins = [
     },
 
     // Express server
-    "./cb.server",
-
-    // Middleware (session, auth, ...)
     {
-        packagePath: "./cb.middleware",
+        packagePath: "./cb.server",
 
         disableAuth: process.env.DISABLE_AUTH == "true",
     },
-
-    // Status endpoint (root)
-    "./cb.status",
-
-    // RPC
-    "./cb.httpRPC",
 
     // VFS
     "./cb.vfs",
@@ -60,14 +50,10 @@ var plugins = [
 
     // Shells
     "./cb.shells",
-    "./cb.shells.rpc",
     "./cb.shells.stream",
 
     // Detect project types
     "./cb.projectType",
-
-    // Autorun
-    // "./cb.autorun"
 
     // Socket.io
     "./cb.socket.io",
@@ -78,23 +64,24 @@ var plugins = [
 
     // Git
     "./cb.git",
-    "./cb.git.rpc",
 
     // Search
     "./cb.search",
-    "./cb.search.rpc",
-
-    // Auth
-    "./cb.auth.rpc",
 
     // Proxy
     "./cb.proxy.http",
 
-    // Users
-    "./cb.users.rpc",
-
     // Watch (file modifications)
     "./cb.watch",
+
+    // APIs
+    "./cb.rpc",
+    "./cb.rpc.users",
+    "./cb.rpc.box",
+    "./cb.rpc.shells",
+    "./cb.rpc.git",
+    "./cb.rpc.auth",
+    "./cb.rpc.search",
 
     // Client-side
     "./cb.client",

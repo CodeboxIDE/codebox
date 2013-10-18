@@ -5,7 +5,7 @@ exports.config = {
     "base": __dirname,
 
     // Application name
-    "name": "Hello",
+    "name": "Codebox",
 
     // Mode debug
     "debug": true,
@@ -24,4 +24,27 @@ exports.config = {
 
     // Stylesheet entry point
     "style": path.resolve(__dirname, "stylesheets/main.less"),
+
+    // Modules paths
+    'paths': {},
+    "shim": {
+        'vendors/socket.io': {
+            exports: 'io'
+        },
+        'vendors/socket.io-stream': {
+            exports: 'ss'
+        },
+        'vendors/crypto': {
+            exports: 'CryptoJS'
+        },
+        'vendors/diff_match_patch': {
+            exports: 'diff_match_patch'
+        },
+        'vendors/mousetrap': {
+            exports: 'Mousetrap'
+        },
+        'vendors/term': {
+            exports: 'Terminal'
+        }
+    }
 };

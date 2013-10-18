@@ -1,5 +1,5 @@
 {
-    "name": "cb.auth.rpc",
+    "name": "cb.rpc.users",
     "version": "0.0.1",
 
     "main": "./main.js",

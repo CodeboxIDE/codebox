@@ -1,16 +1,14 @@
 {
-    "name": "cb.git.rpc",
+    "name": "cb.rpc.status",
     "version": "0.0.1",
 
     "main": "./main.js",
     "private": true,
 
     "plugin": {
-        "provides": [],
         "consumes": [
-            "git",
             "httpRPC",
-            "events"
+            "workspace"
         ]
     }
 }
