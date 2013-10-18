@@ -22,6 +22,9 @@ var plugins = [
         root: process.env.WORKSPACE_DIR
     },
 
+    // Utils
+    "./cb.logger",
+
     // Event bus
     "./cb.events",
     "./cb.events.log",
@@ -93,15 +96,15 @@ var plugins = [
     // Watch (file modifications)
     "./cb.watch",
 
+    // Client-side
+    "./cb.client",
+
     // Now start the damn server
     "./cb.main",
 ];
 
 // Create app
 Q.nfcall(architect.createApp, architect.resolveConfig(plugins, pluginPath))
-.then(function(app) {
-    console.info('Started CodeBox');
-})
 .fail(function(err) {
 
     console.error('Error initializing CodeBox');
