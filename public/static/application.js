@@ -25527,7 +25527,7 @@ Logger, Requests, Urls, Storage, Cache, Template, Resources, Deferred, Queue, I1
         }
     }
 });
-define('hr/args',[],function() { return {"revision":1382135929335,"baseUrl":"/"}; });
+define('hr/args',[],function() { return {"revision":1382136898923,"baseUrl":"/"}; });
 /*! Socket.IO.js build:0.9.2, development. Copyright(c) 2011 LearnBoost <dev@learnboost.com> MIT Licensed */
 
 /**
@@ -30321,8 +30321,1972 @@ define('codebox/user',[
 
     return User;
 });
+/* ========================================================================
+ * Bootstrap: dropdown.js v3.0.0
+ * http://twbs.github.com/bootstrap/javascript.html#dropdowns
+ * ========================================================================
+ * Copyright 2012 Twitter, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ======================================================================== */
+
+
++function ($) { 
+
+  // DROPDOWN CLASS DEFINITION
+  // =========================
+
+  var backdrop = '.dropdown-backdrop'
+  var toggle   = '[data-toggle=dropdown]'
+  var Dropdown = function (element) {
+    var $el = $(element).on('click.bs.dropdown', this.toggle)
+  }
+
+  Dropdown.prototype.toggle = function (e) {
+    var $this = $(this)
+
+    if ($this.is('.disabled, :disabled')) return
+
+    var $parent  = getParent($this)
+    var isActive = $parent.hasClass('open')
+
+    clearMenus()
+
+    if (!isActive) {
+      if ('ontouchstart' in document.documentElement && !$parent.closest('.navbar-nav').length) {
+        // if mobile we we use a backdrop because click events don't delegate
+        $('<div class="dropdown-backdrop"/>').insertAfter($(this)).on('click', clearMenus)
+      }
+
+      $parent.trigger(e = $.Event('show.bs.dropdown'))
+
+      if (e.isDefaultPrevented()) return
+
+      $parent
+        .toggleClass('open')
+        .trigger('shown.bs.dropdown')
+
+      $this.focus()
+    }
+
+    return false
+  }
+
+  Dropdown.prototype.keydown = function (e) {
+    if (!/(38|40|27)/.test(e.keyCode)) return
+
+    var $this = $(this)
+
+    e.preventDefault()
+    e.stopPropagation()
+
+    if ($this.is('.disabled, :disabled')) return
+
+    var $parent  = getParent($this)
+    var isActive = $parent.hasClass('open')
+
+    if (!isActive || (isActive && e.keyCode == 27)) {
+      if (e.which == 27) $parent.find(toggle).focus()
+      return $this.click()
+    }
+
+    var $items = $('[role=menu] li:not(.divider):visible a', $parent)
+
+    if (!$items.length) return
+
+    var index = $items.index($items.filter(':focus'))
+
+    if (e.keyCode == 38 && index > 0)                 index--                        // up
+    if (e.keyCode == 40 && index < $items.length - 1) index++                        // down
+    if (!~index)                                      index=0
+
+    $items.eq(index).focus()
+  }
+
+  function clearMenus() {
+    $(backdrop).remove()
+    $(toggle).each(function (e) {
+      var $parent = getParent($(this))
+      if (!$parent.hasClass('open')) return
+      $parent.trigger(e = $.Event('hide.bs.dropdown'))
+      if (e.isDefaultPrevented()) return
+      $parent.removeClass('open').trigger('hidden.bs.dropdown')
+    })
+  }
+
+  function getParent($this) {
+    var selector = $this.attr('data-target')
+
+    if (!selector) {
+      selector = $this.attr('href')
+      selector = selector && /#/.test(selector) && selector.replace(/.*(?=#[^\s]*$)/, '') //strip for ie7
+    }
+
+    var $parent = selector && $(selector)
+
+    return $parent && $parent.length ? $parent : $this.parent()
+  }
+
+
+  // DROPDOWN PLUGIN DEFINITION
+  // ==========================
+
+  var old = $.fn.dropdown
+
+  $.fn.dropdown = function (option) {
+    return this.each(function () {
+      var $this = $(this)
+      var data  = $this.data('dropdown')
+
+      if (!data) $this.data('dropdown', (data = new Dropdown(this)))
+      if (typeof option == 'string') data[option].call($this)
+    })
+  }
+
+  $.fn.dropdown.Constructor = Dropdown
+
+
+  // DROPDOWN NO CONFLICT
+  // ====================
+
+  $.fn.dropdown.noConflict = function () {
+    $.fn.dropdown = old
+    return this
+  }
+
+
+  // APPLY TO STANDARD DROPDOWN ELEMENTS
+  // ===================================
+
+  $(document)
+    .on('click.bs.dropdown.data-api', clearMenus)
+    .on('click.bs.dropdown.data-api', '.dropdown form', function (e) { e.stopPropagation() })
+    .on('click.bs.dropdown.data-api'  , toggle, Dropdown.prototype.toggle)
+    .on('keydown.bs.dropdown.data-api', toggle + ', [role=menu]' , Dropdown.prototype.keydown)
+
+}(window.jQuery);
+
+define("vendors/bootstrap/dropdown", function(){});
+
+/* ========================================================================
+ * Bootstrap: modal.js v3.0.0
+ * http://twbs.github.com/bootstrap/javascript.html#modals
+ * ========================================================================
+ * Copyright 2012 Twitter, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ======================================================================== */
+
+
++function ($) { 
+
+  // MODAL CLASS DEFINITION
+  // ======================
+
+  var Modal = function (element, options) {
+    this.options   = options
+    this.$element  = $(element)
+    this.$backdrop =
+    this.isShown   = null
+
+    if (this.options.remote) this.$element.load(this.options.remote)
+  }
+
+  Modal.DEFAULTS = {
+      backdrop: true
+    , keyboard: true
+    , show: true
+  }
+
+  Modal.prototype.toggle = function (_relatedTarget) {
+    return this[!this.isShown ? 'show' : 'hide'](_relatedTarget)
+  }
+
+  Modal.prototype.show = function (_relatedTarget) {
+    var that = this
+    var e    = $.Event('show.bs.modal', { relatedTarget: _relatedTarget })
+
+    this.$element.trigger(e)
+
+    if (this.isShown || e.isDefaultPrevented()) return
+
+    this.isShown = true
+
+    this.escape()
+
+    this.$element.on('click.dismiss.modal', '[data-dismiss="modal"]', $.proxy(this.hide, this))
+
+    this.backdrop(function () {
+      var transition = $.support.transition && that.$element.hasClass('fade')
+
+      if (!that.$element.parent().length) {
+        that.$element.appendTo(document.body) // don't move modals dom position
+      }
+
+      that.$element.show()
+
+      if (transition) {
+        that.$element[0].offsetWidth // force reflow
+      }
+
+      that.$element
+        .addClass('in')
+        .attr('aria-hidden', false)
+
+      that.enforceFocus()
+
+      var e = $.Event('shown.bs.modal', { relatedTarget: _relatedTarget })
+
+      transition ?
+        that.$element.find('.modal-dialog') // wait for modal to slide in
+          .one($.support.transition.end, function () {
+            that.$element.focus().trigger(e)
+          })
+          .emulateTransitionEnd(300) :
+        that.$element.focus().trigger(e)
+    })
+  }
+
+  Modal.prototype.hide = function (e) {
+    if (e) e.preventDefault()
+
+    e = $.Event('hide.bs.modal')
+
+    this.$element.trigger(e)
+
+    if (!this.isShown || e.isDefaultPrevented()) return
+
+    this.isShown = false
+
+    this.escape()
+
+    $(document).off('focusin.bs.modal')
+
+    this.$element
+      .removeClass('in')
+      .attr('aria-hidden', true)
+      .off('click.dismiss.modal')
+
+    $.support.transition && this.$element.hasClass('fade') ?
+      this.$element
+        .one($.support.transition.end, $.proxy(this.hideModal, this))
+        .emulateTransitionEnd(300) :
+      this.hideModal()
+  }
+
+  Modal.prototype.enforceFocus = function () {
+    $(document)
+      .off('focusin.bs.modal') // guard against infinite focus loop
+      .on('focusin.bs.modal', $.proxy(function (e) {
+        if (this.$element[0] !== e.target && !this.$element.has(e.target).length) {
+          this.$element.focus()
+        }
+      }, this))
+  }
+
+  Modal.prototype.escape = function () {
+    if (this.isShown && this.options.keyboard) {
+      this.$element.on('keyup.dismiss.bs.modal', $.proxy(function (e) {
+        e.which == 27 && this.hide()
+      }, this))
+    } else if (!this.isShown) {
+      this.$element.off('keyup.dismiss.bs.modal')
+    }
+  }
+
+  Modal.prototype.hideModal = function () {
+    var that = this
+    this.$element.hide()
+    this.backdrop(function () {
+      that.removeBackdrop()
+      that.$element.trigger('hidden.bs.modal')
+    })
+  }
+
+  Modal.prototype.removeBackdrop = function () {
+    this.$backdrop && this.$backdrop.remove()
+    this.$backdrop = null
+  }
+
+  Modal.prototype.backdrop = function (callback) {
+    var that    = this
+    var animate = this.$element.hasClass('fade') ? 'fade' : ''
+
+    if (this.isShown && this.options.backdrop) {
+      var doAnimate = $.support.transition && animate
+
+      this.$backdrop = $('<div class="modal-backdrop ' + animate + '" />')
+        .appendTo(document.body)
+
+      this.$element.on('click.dismiss.modal', $.proxy(function (e) {
+        if (e.target !== e.currentTarget) return
+        this.options.backdrop == 'static'
+          ? this.$element[0].focus.call(this.$element[0])
+          : this.hide.call(this)
+      }, this))
+
+      if (doAnimate) this.$backdrop[0].offsetWidth // force reflow
+
+      this.$backdrop.addClass('in')
+
+      if (!callback) return
+
+      doAnimate ?
+        this.$backdrop
+          .one($.support.transition.end, callback)
+          .emulateTransitionEnd(150) :
+        callback()
+
+    } else if (!this.isShown && this.$backdrop) {
+      this.$backdrop.removeClass('in')
+
+      $.support.transition && this.$element.hasClass('fade')?
+        this.$backdrop
+          .one($.support.transition.end, callback)
+          .emulateTransitionEnd(150) :
+        callback()
+
+    } else if (callback) {
+      callback()
+    }
+  }
+
+
+  // MODAL PLUGIN DEFINITION
+  // =======================
+
+  var old = $.fn.modal
+
+  $.fn.modal = function (option, _relatedTarget) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.modal')
+      var options = $.extend({}, Modal.DEFAULTS, $this.data(), typeof option == 'object' && option)
+
+      if (!data) $this.data('bs.modal', (data = new Modal(this, options)))
+      if (typeof option == 'string') data[option](_relatedTarget)
+      else if (options.show) data.show(_relatedTarget)
+    })
+  }
+
+  $.fn.modal.Constructor = Modal
+
+
+  // MODAL NO CONFLICT
+  // =================
+
+  $.fn.modal.noConflict = function () {
+    $.fn.modal = old
+    return this
+  }
+
+
+  // MODAL DATA-API
+  // ==============
+
+  $(document).on('click.bs.modal.data-api', '[data-toggle="modal"]', function (e) {
+    var $this   = $(this)
+    var href    = $this.attr('href')
+    var $target = $($this.attr('data-target') || (href && href.replace(/.*(?=#[^\s]+$)/, ''))) //strip for ie7
+    var option  = $target.data('modal') ? 'toggle' : $.extend({ remote: !/#/.test(href) && href }, $target.data(), $this.data())
+
+    e.preventDefault()
+
+    $target
+      .modal(option, this)
+      .one('hide', function () {
+        $this.is(':visible') && $this.focus()
+      })
+  })
+
+  $(document)
+    .on('show.bs.modal',  '.modal', function () { $(document.body).addClass('modal-open') })
+    .on('hidden.bs.modal', '.modal', function () { $(document.body).removeClass('modal-open') })
+
+}(window.jQuery);
+
+define("vendors/bootstrap/modal", function(){});
+
+define('utils/languages',[
+    'Underscore'
+], function (_) {
+    var Languages = {
+        /* Initialize */
+        init: function() {
+            _.each(Languages.LIST, function(infos, lang) {
+                Languages.LIST[lang].lang = lang;
+            })
+        },
+
+
+        /*
+         *  Return informations about a language
+         *  @lang : name of the language
+         */
+        get_infos: function(lang) {
+            return Languages.LIST[lang];
+        },
+
+        /*
+         *  Return color for the language
+         *  @infos : language infos
+         */
+        get_color_byinfos: function(infos, def) {
+            var color = def;
+            if (infos == null) {
+                return def;
+            }
+            if (infos.color != null) {
+                return infos.color;
+            }
+            if (infos.group != null && infos.group != infos.lang) {
+                return Languages.get_color(infos.group, def);
+            }
+            return def;
+        },
+
+        /*
+         *  Return color for the language
+         *  @lang : name of the language
+         */
+        get_color: function(lang, def) {
+            var infos = Languages.get_infos(lang);
+            return Languages.get_color_byinfos(infos, def)
+        },
+
+        /*
+         *  Return color for the language
+         *  @ext : file extension
+         */
+        get_color_byext: function(ext, def) {
+            var infos = Languages.get_byextension(ext);
+            return Languages.get_color_byinfos(infos, def)
+        },
+
+        /*
+         *  Return language infos by extension
+         *  @extension : extension of the file
+         */
+        get_byextension: function(extension) {
+            extension = extension.toLowerCase();
+            return _.find(_.values(Languages.LIST), function(lang) {
+                if (lang.primary_extension.toLowerCase() == extension) {
+                    return true;
+                }
+                var extensions = _.map(lang.extensions || [], function(ext) { return ext.toLowerCase(); });
+                return _.contains(extensions, extension);
+            });
+        },
+
+        /*
+         *  Return mode of edition by extension
+         *  @extension : extension of the file
+         */
+        get_mode_byextension: function(extension) {
+            var lang = Languages.get_byextension(extension);
+            if (lang != null && lang.ace_mode != null) {
+                return lang.ace_mode;
+            } else {
+                return "text";
+            }
+        },
+
+        /*
+         *  Return suggestion
+         */
+        get_autosuggestions: function(query) {
+            query = query.toLowerCase();
+            return _.reduce(Languages.LIST, function(list, infos, language) {
+                if (language.toLowerCase().search(query) >= 0) {
+                    list.push({
+                        name: language,
+                        value: language
+                    })
+                }
+                return list;
+            }, []);
+        },
+
+        LIST: {
+            'ASP': {'aliases': ['aspx', 'aspx-vb'],
+                     'color': '#6a40fd',
+                     'extensions': ['.asax', '.ascx', '.ashx', '.asmx', '.aspx', '.axd'],
+                     'lexer': 'aspx-vb',
+                     'primary_extension': '.asp',
+                     'search_term': 'aspx-vb',
+                     'type': 'programming'},
+             'ActionScript': {'aliases': ['as3'],
+                              'color': '#e3491a',
+                              'lexer': 'ActionScript 3',
+                              'primary_extension': '.as',
+                              'search_term': 'as3',
+                              'type': 'programming'},
+             'Ada': {'color': '#02f88c',
+                     'extensions': ['.ads'],
+                     'primary_extension': '.adb',
+                     'type': 'programming'},
+             'ApacheConf': {'aliases': ['apache'],
+                            'primary_extension': '.apacheconf',
+                            'type': 'markup'},
+             'Apex': {'lexer': 'Text only',
+                      'primary_extension': '.cls',
+                      'type': 'programming'},
+             'AppleScript': {'aliases': ['osascript'],
+                             'primary_extension': '.applescript',
+                             'type': 'programming'},
+             'Arc': {'color': '#ca2afe',
+                     'lexer': 'Text only',
+                     'primary_extension': '.arc',
+                     'type': 'programming'},
+             'Arduino': {'color': '#bd79d1',
+                         'lexer': 'C++',
+                         'primary_extension': '.ino',
+                         'type': 'programming'},
+             'Assembly': {'aliases': ['nasm'],
+                          'color': '#a67219',
+                          'lexer': 'NASM',
+                          'primary_extension': '.asm',
+                          'search_term': 'nasm',
+                          'type': 'programming'},
+             'Augeas': {'primary_extension': '.aug', 'type': 'programming'},
+             'AutoHotkey': {'aliases': ['ahk'],
+                            'color': '#6594b9',
+                            'lexer': 'autohotkey',
+                            'primary_extension': '.ahk',
+                            'type': 'programming'},
+             'Batchfile': {'aliases': ['bat'],
+                           'extensions': ['.cmd'],
+                           'group': 'Shell',
+                           'primary_extension': '.bat',
+                           'search_term': 'bat',
+                           'type': 'programming'},
+             'Befunge': {'primary_extension': '.befunge'},
+             'BlitzMax': {'primary_extension': '.bmx'},
+             'Boo': {'color': '#d4bec1',
+                     'primary_extension': '.boo',
+                     'type': 'programming'},
+             'Brainfuck': {'extensions': ['.bf'], 'primary_extension': '.b'},
+             'Bro': {'primary_extension': '.bro', 'type': 'programming'},
+             'C': {'ace_mode': 'c_cpp',
+                   'color': '#555',
+                   'extensions': ['.w', '.h'],
+                   'primary_extension': '.c',
+                   'type': 'programming'},
+             'C#': {'ace_mode': 'csharp',
+                    'aliases': ['csharp'],
+                    'color': '#5a25a2',
+                    'primary_extension': '.cs',
+                    'search_term': 'csharp',
+                    'type': 'programming'},
+             'C++': {'ace_mode': 'c_cpp',
+                     'aliases': ['cpp'],
+                     'color': '#f34b7d',
+                     'extensions': ['.c',
+                                    '.c++',
+                                    '.cxx',
+                                    '.h',
+                                    '.h++',
+                                    '.hh',
+                                    '.hxx',
+                                    '.tcc'],
+                     'primary_extension': '.cpp',
+                     'search_term': 'cpp',
+                     'type': 'programming'},
+             'C-ObjDump': {'lexer': 'c-objdump',
+                           'primary_extension': '.c-objdump',
+                           'type': 'data'},
+             'C2hs Haskell': {'aliases': ['c2hs'],
+                              'group': 'Haskell',
+                              'lexer': 'Haskell',
+                              'primary_extension': '.chs',
+                              'type': 'programming'},
+             'CMake': {'extensions': ['.cmake.in'],
+                       'filenames': ['CMakeLists.txt'],
+                       'primary_extension': '.cmake'},
+             'CSS': {'ace_mode': 'css', 'primary_extension': '.css'},
+             'Ceylon': {'lexer': 'Text only',
+                        'primary_extension': '.ceylon',
+                        'type': 'programming'},
+             'ChucK': {'lexer': 'Java', 'primary_extension': '.ck'},
+             'Clojure': {'ace_mode': 'clojure',
+                         'color': '#db5855',
+                         'extensions': ['.cljs'],
+                         'primary_extension': '.clj',
+                         'type': 'programming'},
+             'CoffeeScript': {'ace_mode': 'coffee',
+                              'aliases': ['coffee', 'coffee-script'],
+                              'color': '#244776',
+                              'extensions': ['._coffee'],
+                              'filenames': ['Cakefile'],
+                              'primary_extension': '.coffee',
+                              'type': 'programming'},
+             'ColdFusion': {'ace_mode': 'coldfusion',
+                            'aliases': ['cfm'],
+                            'color': '#ed2cd6',
+                            'extensions': ['.cfc'],
+                            'lexer': 'Coldfusion HTML',
+                            'primary_extension': '.cfm',
+                            'search_term': 'cfm',
+                            'type': 'programming'},
+             'Common Lisp': {'aliases': ['lisp'],
+                             'color': '#3fb68b',
+                             'extensions': ['.lsp', '.ny'],
+                             'primary_extension': '.lisp',
+                             'type': 'programming'},
+             'Coq': {'primary_extension': '.coq', 'type': 'programming'},
+             'Cpp-ObjDump': {'extensions': ['.c++objdump', '.cxx-objdump'],
+                             'lexer': 'cpp-objdump',
+                             'primary_extension': '.cppobjdump',
+                             'type': 'data'},
+             'Cucumber': {'lexer': 'Gherkin', 'primary_extension': '.feature'},
+             'Cython': {'extensions': ['.pxd', '.pxi'],
+                        'group': 'Python',
+                        'primary_extension': '.pyx',
+                        'type': 'programming'},
+             'D': {'color': '#fcd46d',
+                   'extensions': ['.di'],
+                   'primary_extension': '.d',
+                   'type': 'programming'},
+             'D-ObjDump': {'lexer': 'd-objdump',
+                           'primary_extension': '.d-objdump',
+                           'type': 'data'},
+             'DCPU-16 ASM': {'aliases': ['dasm16'],
+                             'extensions': ['.dasm'],
+                             'lexer': 'dasm16',
+                             'primary_extension': '.dasm16',
+                             'type': 'programming'},
+             'Darcs Patch': {'aliases': ['dpatch'],
+                             'extensions': ['.dpatch'],
+                             'primary_extension': '.darcspatch',
+                             'search_term': 'dpatch'},
+             'Dart': {'primary_extension': '.dart', 'type': 'programming'},
+             'Delphi': {'color': '#b0ce4e',
+                        'extensions': ['.lpr'],
+                        'primary_extension': '.pas',
+                        'type': 'programming'},
+             'Diff': {'primary_extension': '.diff'},
+             'Dylan': {'color': '#3ebc27',
+                       'primary_extension': '.dylan',
+                       'type': 'programming'},
+             'Ecere Projects': {'group': 'JavaScript',
+                                'lexer': 'JSON',
+                                'primary_extension': '.epj',
+                                'type': 'data'},
+             'Ecl': {'color': '#8a1267',
+                     'extensions': ['.eclxml'],
+                     'lexer': 'ECL',
+                     'primary_extension': '.ecl',
+                     'type': 'programming'},
+             'Eiffel': {'color': '#946d57',
+                        'lexer': 'Text only',
+                        'primary_extension': '.e',
+                        'type': 'programming'},
+             'Elixir': {'color': '#6e4a7e',
+                        'extensions': ['.exs'],
+                        'primary_extension': '.ex',
+                        'type': 'programming'},
+             'Elm': {'group': 'Haskell',
+                     'lexer': 'Haskell',
+                     'primary_extension': '.elm',
+                     'type': 'programming'},
+             'Emacs Lisp': {'aliases': ['elisp', 'emacs'],
+                            'color': '#c065db',
+                            'extensions': ['.emacs'],
+                            'lexer': 'Scheme',
+                            'primary_extension': '.el',
+                            'type': 'programming'},
+             'Erlang': {'color': '#949e0e',
+                        'extensions': ['.hrl'],
+                        'primary_extension': '.erl',
+                        'type': 'programming'},
+             'F#': {'color': '#b845fc',
+                    'extensions': ['.fsi', '.fsx'],
+                    'lexer': 'FSharp',
+                    'primary_extension': '.fs',
+                    'search_term': 'ocaml',
+                    'type': 'programming'},
+             'FORTRAN': {'color': '#4d41b1',
+                         'extensions': ['.F',
+                                        '.F03',
+                                        '.F08',
+                                        '.F77',
+                                        '.F90',
+                                        '.F95',
+                                        '.FOR',
+                                        '.FPP',
+                                        '.f',
+                                        '.f03',
+                                        '.f08',
+                                        '.f77',
+                                        '.f95',
+                                        '.for',
+                                        '.fpp'],
+                         'lexer': 'Fortran',
+                         'primary_extension': '.f90',
+                         'type': 'programming'},
+             'Factor': {'color': '#636746',
+                        'primary_extension': '.factor',
+                        'type': 'programming'},
+             'Fancy': {'color': '#7b9db4',
+                       'extensions': ['.fancypack'],
+                       'filenames': ['Fakefile'],
+                       'primary_extension': '.fy',
+                       'type': 'programming'},
+             'Fantom': {'color': '#dbded5',
+                        'primary_extension': '.fan',
+                        'type': 'programming'},
+             'Forth': {'color': '#341708',
+                       'extensions': ['.forth', '.fth'],
+                       'lexer': 'Text only',
+                       'primary_extension': '.fth',
+                       'type': 'programming'},
+             'GAS': {'extensions': ['.S'],
+                     'group': 'Assembly',
+                     'primary_extension': '.s',
+                     'type': 'programming'},
+             'Genshi': {'primary_extension': '.kid'},
+             'Gentoo Ebuild': {'group': 'Shell',
+                               'lexer': 'Bash',
+                               'primary_extension': '.ebuild'},
+             'Gentoo Eclass': {'group': 'Shell',
+                               'lexer': 'Bash',
+                               'primary_extension': '.eclass'},
+             'Gettext Catalog': {'aliases': ['pot'],
+                                 'extensions': ['.pot'],
+                                 'primary_extension': '.po',
+                                 'search_term': 'pot',
+                                 'searchable': false},
+             'Go': {'color': '#8d04eb', 'primary_extension': '.go', 'type': 'programming', 'ace_mode': 'golang'},
+             'Gosu': {'color': '#82937f',
+                      'primary_extension': '.gs',
+                      'type': 'programming'},
+             'Groff': {'extensions': ['.1', '.2', '.3', '.4', '.5', '.6', '.7'],
+                       'primary_extension': '.man'},
+             'Groovy': {'ace_mode': 'groovy',
+                        'color': '#e69f56',
+                        'primary_extension': '.groovy',
+                        'type': 'programming'},
+             'Groovy Server Pages': {'aliases': ['gsp'],
+                                     'group': 'Groovy',
+                                     'lexer': 'Java Server Page',
+                                     'primary_extension': '.gsp'},
+             'HTML': {'ace_mode': 'html',
+                      'aliases': ['xhtml'],
+                      'extensions': ['.htm', '.xhtml'],
+                      'primary_extension': '.html',
+                      'type': 'markup'},
+             'HTML+Django': {'extensions': ['.mustache'],
+                             'group': 'HTML',
+                             'lexer': 'HTML+Django/Jinja',
+                             'primary_extension': '.mustache',
+                             'type': 'markup'},
+             'HTML+ERB': {'aliases': ['erb'],
+                          'extensions': ['.html.erb'],
+                          'group': 'HTML',
+                          'lexer': 'RHTML',
+                          'primary_extension': '.erb',
+                          'type': 'markup'},
+             'HTML+PHP': {'group': 'HTML',
+                          'primary_extension': '.phtml',
+                          'type': 'markup'},
+             'HTTP': {'primary_extension': '.http', 'type': 'data'},
+             'Haml': {'group': 'HTML', 'primary_extension': '.haml', 'type': 'markup'},
+             'Handlebars': {'lexer': 'Text only',
+                            'primary_extension': '.handlebars',
+                            'type': 'markup'},
+             'Haskell': {'color': '#29b544',
+                         'extensions': ['.hsc'],
+                         'primary_extension': '.hs',
+                         'type': 'programming'},
+             'Haxe': {'ace_mode': 'haxe',
+                      'color': '#346d51',
+                      'extensions': ['.hxsl'],
+                      'lexer': 'haXe',
+                      'primary_extension': '.hx',
+                      'type': 'programming'},
+             'INI': {'extensions': ['.cfg', '.ini', '.prefs', '.properties'],
+                     'primary_extension': '.ini',
+                     'type': 'data'},
+             'IRC log': {'aliases': ['irc'],
+                         'extensions': ['.weechatlog'],
+                         'lexer': 'IRC logs',
+                         'primary_extension': '.irclog',
+                         'search_term': 'irc'},
+             'Io': {'color': '#a9188d', 'primary_extension': '.io', 'type': 'programming'},
+             'Ioke': {'color': '#078193',
+                      'primary_extension': '.ik',
+                      'type': 'programming'},
+             'JSON': {'ace_mode': 'json',
+                      'group': 'JavaScript',
+                      'primary_extension': '.json',
+                      'searchable': false,
+                      'type': 'data'},
+             'Java': {'ace_mode': 'java',
+                      'color': '#b07219',
+                      'extensions': ['.pde'],
+                      'primary_extension': '.java',
+                      'type': 'programming'},
+             'Java Server Pages': {'aliases': ['jsp'],
+                                   'group': 'Java',
+                                   'lexer': 'Java Server Page',
+                                   'primary_extension': '.jsp',
+                                   'search_term': 'jsp'},
+             'JavaScript': {'ace_mode': 'javascript',
+                            'aliases': ['js', 'node'],
+                            'color': '#f15501',
+                            'extensions': ['._js',
+                                           '.bones',
+                                           '.jake',
+                                           '.jsfl',
+                                           '.jsm',
+                                           '.jss',
+                                           '.jsx',
+                                           '.pac',
+                                           '.sjs',
+                                           '.ssjs'],
+                            'filenames': ['Jakefile'],
+                            'primary_extension': '.js',
+                            'type': 'programming'},
+             'Julia': {'primary_extension': '.jl', 'type': 'programming'},
+             'Kotlin': {'extensions': ['.ktm', '.kts'],
+                        'primary_extension': '.kt',
+                        'type': 'programming'},
+             'LLVM': {'primary_extension': '.ll'},
+             'Lasso': {'ace_mode': 'lasso',
+                       'color': '#2584c3',
+                       'extensions': ['.inc', '.las', '.lasso9', '.ldml'],
+                       'lexer': 'Lasso',
+                       'primary_extension': '.lasso',
+                       'type': 'programming'},
+             'Less': {'ace_mode': 'less',
+                      'group': 'CSS',
+                      'lexer': 'CSS',
+                      'primary_extension': '.less',
+                      'type': 'markup'},
+             'LilyPond': {'extensions': ['.ily'],
+                          'lexer': 'Text only',
+                          'primary_extension': '.ly'},
+             'Literate Haskell': {'aliases': ['lhs'],
+                                  'group': 'Haskell',
+                                  'primary_extension': '.lhs',
+                                  'search_term': 'lhs',
+                                  'type': 'programming'},
+             'LiveScript': {'ace_mode': 'ls',
+                            'aliases': ['ls'],
+                            'color': '#499886',
+                            'extensions': ['._ls'],
+                            'filenames': ['Slakefile'],
+                            'primary_extension': '.ls',
+                            'type': 'programming'},
+             'Logtalk': {'primary_extension': '.lgt', 'type': 'programming'},
+             'Lua': {'ace_mode': 'lua',
+                     'color': '#fa1fa1',
+                     'extensions': ['.nse', '.pd_lua'],
+                     'primary_extension': '.lua',
+                     'type': 'programming'},
+             'Makefile': {'aliases': ['make'],
+                          'extensions': ['.mak', '.mk'],
+                          'filenames': ['makefile', 'Makefile', 'GNUmakefile'],
+                          'primary_extension': '.mak'},
+             'Mako': {'extensions': ['.mao'], 'primary_extension': '.mako'},
+             'Markdown': {'ace_mode': 'markdown',
+                          'extensions': ['.markdown', '.mkd', '.mkdown', '.ron'],
+                          'lexer': 'Text only',
+                          'primary_extension': '.md',
+                          'type': 'markup',
+                          'wrap': true},
+             'Matlab': {'color': '#bb92ac',
+                        'primary_extension': '.matlab',
+                        'type': 'programming'},
+             'Max': {'aliases': ['max/msp', 'maxmsp'],
+                     'color': '#ce279c',
+                     'lexer': 'Text only',
+                     'primary_extension': '.mxt',
+                     'search_term': 'max/msp',
+                     'type': 'programming'},
+             'MiniD': {'primary_extension': '.minid', 'searchable': false},
+             'Mirah': {'color': '#c7a938',
+                       'extensions': ['.duby', '.mir', '.mirah'],
+                       'lexer': 'Ruby',
+                       'primary_extension': '.druby',
+                       'search_term': 'ruby',
+                       'type': 'programming'},
+             'Moocode': {'lexer': 'MOOCode', 'primary_extension': '.moo'},
+             'MoonScript': {'primary_extension': '.moon', 'type': 'programming'},
+             'Myghty': {'primary_extension': '.myt'},
+             'Nemerle': {'color': '#0d3c6e',
+                         'primary_extension': '.n',
+                         'type': 'programming'},
+             'Nginx': {'lexer': 'Nginx configuration file',
+                       'primary_extension': '.nginxconf',
+                       'type': 'markup'},
+             'Nimrod': {'color': '#37775b',
+                        'extensions': ['.nimrod'],
+                        'primary_extension': '.nim',
+                        'type': 'programming'},
+             'Nu': {'aliases': ['nush'],
+                    'color': '#c9df40',
+                    'filenames': ['Nukefile'],
+                    'lexer': 'Scheme',
+                    'primary_extension': '.nu',
+                    'type': 'programming'},
+             'NumPy': {'extensions': ['.numpyw', '.numsc'],
+                       'group': 'Python',
+                       'primary_extension': '.numpy'},
+             'OCaml': {'ace_mode': 'ocaml',
+                       'color': '#3be133',
+                       'extensions': ['.mli', '.mll', '.mly'],
+                       'primary_extension': '.ml',
+                       'type': 'programming'},
+             'ObjDump': {'lexer': 'objdump',
+                         'primary_extension': '.objdump',
+                         'type': 'data'},
+             'Objective-C': {'aliases': ['obj-c', 'objc'],
+                             'color': '#438eff',
+                             'extensions': ['.mm'],
+                             'primary_extension': '.m',
+                             'type': 'programming'},
+             'Objective-J': {'aliases': ['obj-j'],
+                             'color': '#ff0c5a',
+                             'extensions': ['.sj'],
+                             'primary_extension': '.j',
+                             'type': 'programming'},
+             'Omgrofl': {'color': '#cabbff',
+                         'extensions': ['.omgrofl'],
+                         'lexer': 'Text only',
+                         'primary_extension': '.omgrofl',
+                         'type': 'programming'},
+             'Opa': {'primary_extension': '.opa', 'type': 'programming'},
+             'OpenCL': {'group': 'C',
+                        'lexer': 'C',
+                        'primary_extension': '.cl',
+                        'type': 'programming'},
+             'OpenEdge ABL': {'aliases': ['progress', 'openedge', 'abl'],
+                              'primary_extension': '.p',
+                              'type': 'programming'},
+             'PHP': {'ace_mode': 'php',
+                     'color': '#6e03c1',
+                     'extensions': ['.aw', '.ctp', '.php3', '.php4', '.php5', '.phpt'],
+                     'filenames': ['Phakefile'],
+                     'primary_extension': '.php',
+                     'type': 'programming'},
+             'Parrot': {'color': '#f3ca0a',
+                        'lexer': 'Text only',
+                        'primary_extension': '.parrot',
+                        'type': 'programming'},
+             'Parrot Assembly': {'aliases': ['pasm'],
+                                 'group': 'Parrot',
+                                 'lexer': 'Text only',
+                                 'primary_extension': '.pasm',
+                                 'type': 'programming'},
+             'Parrot Internal Representation': {'aliases': ['pir'],
+                                                'group': 'Parrot',
+                                                'lexer': 'Text only',
+                                                'primary_extension': '.pir',
+                                                'type': 'programming'},
+             'Perl': {'ace_mode': 'perl',
+                      'color': '#0298c3',
+                      'extensions': ['.PL',
+                                     '.perl',
+                                     '.ph',
+                                     '.plx',
+                                     '.pm6',
+                                     '.pod',
+                                     '.psgi'],
+                      'primary_extension': '.pl',
+                      'type': 'programming'},
+             'PowerShell': {'ace_mode': 'powershell',
+                            'aliases': ['posh'],
+                            'primary_extension': '.ps1',
+                            'type': 'programming'},
+             'Prolog': {'color': '#74283c',
+                        'extensions': ['.pro'],
+                        'primary_extension': '.prolog',
+                        'type': 'programming'},
+             'Puppet': {'color': '#cc5555',
+                        'extensions': ['.pp'],
+                        'filenames': ['Modulefile'],
+                        'primary_extension': '.pp',
+                        'type': 'programming'},
+             'Pure Data': {'color': '#91de79',
+                           'lexer': 'Text only',
+                           'primary_extension': '.pd',
+                           'type': 'programming'},
+             'Python': {'ace_mode': 'python',
+                        'color': '#3581ba',
+                        'extensions': ['.pyw', '.wsgi', '.xpy'],
+                        'filenames': ['wscript'],
+                        'primary_extension': '.py',
+                        'type': 'programming'},
+             'Python traceback': {'group': 'Python',
+                                  'lexer': 'Python Traceback',
+                                  'primary_extension': '.pytb',
+                                  'searchable': false,
+                                  'type': 'data'},
+             'R': {'color': '#198ce7',
+                   'lexer': 'S',
+                   'primary_extension': '.r',
+                   'type': 'programming'},
+             'RHTML': {'group': 'HTML', 'primary_extension': '.rhtml', 'type': 'markup'},
+             'Racket': {'color': '#ae17ff',
+                        'extensions': ['.rktd', '.rktl'],
+                        'lexer': 'Racket',
+                        'primary_extension': '.rkt',
+                        'type': 'programming'},
+             'Raw token data': {'aliases': ['raw'],
+                                'primary_extension': '.raw',
+                                'search_term': 'raw'},
+             'Rebol': {'color': '#358a5b',
+                       'extensions': ['.r2', '.r3'],
+                       'lexer': 'REBOL',
+                       'primary_extension': '.rebol',
+                       'type': 'programming'},
+             'Redcode': {'primary_extension': '.cw'},
+             'Ruby': {'ace_mode': 'ruby',
+                      'aliases': ['jruby', 'macruby', 'rake', 'rb', 'rbx'],
+                      'color': '#701516',
+                      'extensions': ['.builder',
+                                     '.gemspec',
+                                     '.god',
+                                     '.irbrc',
+                                     '.podspec',
+                                     '.rbuild',
+                                     '.rbw',
+                                     '.rbx',
+                                     '.ru',
+                                     '.thor',
+                                     '.watchr'],
+                      'filenames': ['Gemfile',
+                                    'Guardfile',
+                                    'Podfile',
+                                    'Thorfile',
+                                    'Vagrantfile'],
+                      'primary_extension': '.rb',
+                      'type': 'programming'},
+             'Rust': {'color': '#dea584',
+                      'lexer': 'Text only',
+                      'primary_extension': '.rs',
+                      'type': 'programming'},
+             'SCSS': {'ace_mode': 'scss',
+                      'group': 'CSS',
+                      'primary_extension': '.scss',
+                      'type': 'markup'},
+             'SQL': {'ace_mode': 'sql',
+                     'primary_extension': '.sql',
+                     'searchable': false,
+                     'type': 'data'},
+             'Sage': {'group': 'Python',
+                      'lexer': 'Python',
+                      'primary_extension': '.sage',
+                      'type': 'programming'},
+             'Sass': {'group': 'CSS', 'primary_extension': '.sass', 'type': 'markup'},
+             'Scala': {'ace_mode': 'scala',
+                       'color': '#7dd3b0',
+                       'primary_extension': '.scala',
+                       'type': 'programming'},
+             'Scheme': {'color': '#1e4aec',
+                        'extensions': ['.sls', '.ss'],
+                        'primary_extension': '.scm',
+                        'type': 'programming'},
+             'Scilab': {'primary_extension': '.sci', 'type': 'programming'},
+             'Self': {'color': '#0579aa',
+                      'lexer': 'Text only',
+                      'primary_extension': '.self',
+                      'type': 'programming'},
+             'Shell': {'aliases': ['sh', 'bash', 'zsh'],
+                       'color': '#5861ce',
+                       'lexer': 'Bash',
+                       'primary_extension': '.sh',
+                       'search_term': 'bash',
+                       'type': 'programming'},
+             'Smalltalk': {'color': '#596706',
+                           'primary_extension': '.st',
+                           'type': 'programming'},
+             'Smarty': {'primary_extension': '.tpl'},
+             'Standard ML': {'aliases': ['sml'],
+                             'color': '#dc566d',
+                             'primary_extension': '.sml',
+                             'type': 'programming'},
+             'SuperCollider': {'color': '#46390b',
+                               'lexer': 'Text only',
+                               'primary_extension': '.sc',
+                               'type': 'programming'},
+             'Tcl': {'color': '#e4cc98',
+                     'primary_extension': '.tcl',
+                     'type': 'programming'},
+             'Tcsh': {'extensions': ['.csh'],
+                      'group': 'Shell',
+                      'primary_extension': '.tcsh',
+                      'type': 'programming'},
+             'TeX': {'ace_mode': 'latex',
+                     'aliases': ['latex'],
+                     'extensions': ['.aux', '.dtx', '.ins', '.ltx', '.sty', '.toc'],
+                     'primary_extension': '.tex',
+                     'type': 'markup'},
+             'Tea': {'primary_extension': '.tea', 'type': 'markup'},
+             'Textile': {'ace_mode': 'textile',
+                         'lexer': 'Text only',
+                         'primary_extension': '.textile',
+                         'type': 'markup',
+                         'wrap': true},
+             'Turing': {'color': '#45f715',
+                        'extensions': ['.tu'],
+                        'lexer': 'Text only',
+                        'primary_extension': '.t',
+                        'type': 'programming'},
+             'Twig': {'group': 'PHP',
+                      'lexer': 'HTML+Django/Jinja',
+                      'primary_extension': '.twig',
+                      'type': 'markup'},
+             'VHDL': {'color': '#543978',
+                      'lexer': 'vhdl',
+                      'primary_extension': '.vhdl',
+                      'type': 'programming'},
+             'Vala': {'color': '#ee7d06',
+                      'extensions': ['.vapi'],
+                      'primary_extension': '.vala',
+                      'type': 'programming'},
+             'Verilog': {'color': '#848bf3',
+                         'lexer': 'verilog',
+                         'primary_extension': '.v',
+                         'type': 'programming'},
+             'VimL': {'aliases': ['vim'],
+                      'color': '#199c4b',
+                      'filenames': ['vimrc', 'gvimrc'],
+                      'primary_extension': '.vim',
+                      'search_term': 'vim',
+                      'type': 'programming'},
+             'Visual Basic': {'color': '#945db7',
+                              'extensions': ['.bas', '.frx', '.vba', '.vbs'],
+                              'lexer': 'VB.net',
+                              'primary_extension': '.vb',
+                              'type': 'programming'},
+             'XML': {'ace_mode': 'xml',
+                     'aliases': ['rss', 'xsd', 'xsl', 'wsdl'],
+                     'extensions': ['.ccxml',
+                                    '.glade',
+                                    '.grxml',
+                                    '.kml',
+                                    '.mxml',
+                                    '.plist',
+                                    '.rdf',
+                                    '.rss',
+                                    '.scxml',
+                                    '.svg',
+                                    '.vxml',
+                                    '.wsdl',
+                                    '.wxi',
+                                    '.wxl',
+                                    '.wxs',
+                                    '.xaml',
+                                    '.xlf',
+                                    '.xliff',
+                                    '.xsd',
+                                    '.xsl',
+                                    '.xul'],
+                     'filenames': ['.classpath', '.project'],
+                     'primary_extension': '.xml',
+                     'type': 'markup'},
+             'XQuery': {'color': '#2700e2',
+                        'extensions': ['.xq', '.xqy'],
+                        'primary_extension': '.xquery',
+                        'type': 'programming'},
+             'XS': {'lexer': 'C', 'primary_extension': '.xs'},
+             'XSLT': {'group': 'XML', 'primary_extension': '.xslt', 'type': 'markup'},
+             'YAML': {'aliases': ['yml'],
+                      'extensions': ['.yaml'],
+                      'primary_extension': '.yml',
+                      'type': 'markup',
+                      'ace_mode': 'yaml'},
+             'eC': {'extensions': ['.eh'],
+                    'primary_extension': '.ec',
+                    'search_term': 'ec',
+                    'type': 'programming'},
+             'mupad': {'lexer': 'MuPAD', 'primary_extension': '.mu'},
+             'ooc': {'color': '#b0b77e',
+                     'lexer': 'Ooc',
+                     'primary_extension': '.ooc',
+                     'type': 'programming'},
+             'reStructuredText': {'aliases': ['rst'],
+                                  'extensions': ['.rest'],
+                                  'primary_extension': '.rst',
+                                  'search_term': 'rst',
+                                  'type': 'markup',
+                                  'wrap': true}
+            } 
+
+    };
+
+    return Languages;
+});
+define('utils/file',[
+    'Underscore',
+    'jQuery',
+    'hr/hr',
+    'utils/languages'
+], function (_, $, hr, Languages) {
+    return {
+    	/*
+         *  Return file mode (for ace editor)
+         */
+        mode: function(file) {
+            return Languages.get_mode_byextension(file.extension());
+        },
+
+        /*
+         *  Return color to represent the file
+         */
+        color: function(file, def) {
+            if (file.isDirectory()) {
+                return def;
+            }
+            return Languages.get_color_byext(file.extension(), def);
+        },
+    };
+});
+define('views/components/files/base',[
+    "Underscore",
+    "jQuery",
+    "hr/hr",
+    "codebox/file"
+], function(_, $, hr, File) {
+
+    var FilesBaseView = hr.View.extend({
+        defaults: {
+            codebox: null,
+            path: null,
+            base: "/",
+            edition: true,
+            notifications: true
+        },
+        events: {
+            
+        },
+
+        initialize: function(options) {
+            FilesBaseView.__super__.initialize.apply(this, arguments);
+            this.path = null;
+            this.codebox = this.options.codebox;
+            if (this.codebox == null) {
+                throw "Error : creating fileview without codebox context";
+            }
+            if (this.model == null) this.model = new File({
+                "codebox": this.codebox
+            });
+            this.model.on("set", this.render, this);
+            if (this.options.path != null) this.load(this.options.path);
+            return this;
+        },
+
+        templateContext: function() {
+            return {
+                options: this.options,
+                file: this.model,
+                view: this
+            };
+        },
+
+        render: function() {
+            if (this.model.path() == null) {
+                return this;
+            }
+            return FilesBaseView.__super__.render.apply(this, arguments);
+        },
+
+        finish: function() {
+            return FilesBaseView.__super__.finish.apply(this, arguments);
+        },
+
+        /* Change the file by loading an other file */
+        load: function(path) {
+            var that = this;
+            this.model.getByPath(path).then(function() {
+                that.trigger("file:load");
+            }, function() {
+                console.log("error loading file");
+                that.trigger("file:error");
+            })
+        },
+    });
+
+    return FilesBaseView;
+});
+define('views/dialogs/base',[
+    "Underscore",
+    "jQuery",
+    "hr/hr"
+], function(_, $, hr) {
+    var DialogView = hr.View.extend({
+        className: "component-dialog modal fade hide",
+        defaults: {
+            args: {},
+            template: null,
+            dialog: null,
+            open: true,
+            big: false,
+            className: ""
+        },
+        events: {
+            "hidden": "hidden",
+            "click .action-close": "close",
+            "click .action-confirm": "actionConfirm",
+            "click .action-prompt": "actionPrompt"
+        },
+        template: function() {
+            if (this.options.template != null) return this.options.template;
+            return "components/dialogs/"+this.options.dialog+".html";
+        },
+        templateContext: function() {
+            return {
+                options: this.options
+            };
+        },
+
+        initialize: function(options) {
+            DialogView.__super__.initialize.apply(this, arguments);
+            if (this.options.big) this.$el.addClass("modal-big");
+            this.$el.addClass(this.options.className);
+            this.value = null;
+            return this;
+        },
+
+        finish: function() {
+            this.open();
+            return DialogView.__super__.finish.apply(this, arguments);
+        },
+
+        /*
+         *  Add to window and open
+         */
+        open: function() {
+            if (DialogView.current != null) DialogView.current.close();
+
+            this.$el.appendTo($("body"));
+            this.$el.modal('show');
+            DialogView.current = this;
+            return this;
+        },
+
+        /*
+         *  (event) Close the dialog
+         */
+        close: function(e) {
+            if (e != null) {
+                e.preventDefault();
+            }
+            this.$el.modal('hide');
+            DialogView.current = null;
+        },
+
+        /*
+         *  (event) Modal is hidden
+         */
+        hidden: function() {
+            this.trigger("close", this.value);
+            this.$el.remove();
+        },
+
+        /*
+         *  (event) action: confirm
+         */
+        actionConfirm: function(e) {
+            if (e != null) {
+                e.preventDefault();
+            }
+            this.value = true;
+            this.close();
+        },
+
+        /*
+         *  (event) action: prompt
+         */
+        actionPrompt: function(e) {
+            if (e != null) {
+                e.preventDefault();
+            }
+            this.value = this.$(".input").val();
+            this.close();
+        }
+    }, {
+        current: null,
+    });
+
+    return DialogView;
+});
+define('views/dialogs/utils',[
+    "jQuery",
+    "hr/hr",
+    "views/dialogs/base"
+], function ($, hr, DialogView) {
+    var Dialogs = {
+        /*
+         *  Open a dialog with some configs
+         *  @options : option for the dialog
+         */
+        open: function(options, cls) {
+            var d = new hr.Deferred();
+
+            cls = cls || DialogView;
+            var diag = new cls(options);
+
+            diag.on("close", function(result) {
+                if (result != null) {
+                    d.resolve(result);
+                } else {
+                    d.reject(result);
+                }
+            });
+            diag.render();
+
+            return d;
+        },
+
+        /*
+         *  Open a promt dialog window
+         *  @message : message to print
+         *  @defaultmsg : default value
+         */
+        prompt: function(message, defaultmsg) {
+            return Dialogs.open({
+                "message": message,
+                "dialog": "prompt",
+                "default": defaultmsg
+            });
+        },
+
+        /*
+         *  Open a confirmation dialog windows
+         *  @message : message to print
+         */
+        confirm: function(message) {
+            return Dialogs.open({
+                "message": message,
+                "dialog": "confirm"
+            });
+        },
+
+        /*
+         *  Open an alert dialog windows
+         *  @message : message to print
+         */
+        alert: function(title, message) {
+            return Dialogs.open({
+                "title": title,
+                "message": message,
+                "dialog": "alert"
+            });
+        }
+    };
+
+    return Dialogs;
+});
+define('views/components/files/directory',[
+    "Underscore",
+    "jQuery",
+    "hr/hr",
+    "utils/file",
+    "codebox/uploader",
+    "views/components/files/base",
+    "views/dialogs/utils"
+], function(_, $, hr, FileUtils, Uploader, FilesBaseView, Dialogs) {
+
+    var FilesDirectoryView = FilesBaseView.extend({
+        className: "component-files-directory",
+        template: "components/files/directory.html",
+        defaults: _.extend({}, FilesBaseView.prototype.defaults, {
+            navigate: true,
+            hiddenFiles: true
+        }),
+        events: {
+            "click .file": "selectOnlyFile",
+            "click .file .select input": "selectFile",
+            "change .uploader": "uploadStart",
+            "change .uploader-directory": "uploadStart",
+            "click .action-file-togglehidden": "toggleHiddenFiles",
+            "click .action-file-refresh": "actionRefresh",
+            "click .action-file-create": "actionCreate",
+            "click .action-file-upload": "actionUpload",
+            "click .action-file-upload-directory": "actionUploadDirectory",
+            "click .action-file-mkdir": "actionMkdir",
+            "click .action-file-rename": "actionRename",
+            "click .action-file-delete": "actionDelete",
+            "click .action-file-download": "actionDownload",
+        },
+
+        initialize: function(options) {
+            FilesDirectoryView.__super__.initialize.apply(this, arguments);
+            this.files = null;
+
+            // Refresh list
+            this.model.on("set", this.refresh, this);
+
+            // Selection
+            this.selectedFiles = [];
+            this.on("selection:change", function(t) {
+                this.$("*[data-filesselection]").toggleClass("disabled", _.size(this.selectedFiles) == 0); 
+            }, this);
+
+            // Uploader
+            this.uploader = new Uploader({
+                "directory": this.model
+            });
+            this.uploader.on("state", function(percent) {
+                self.$(".action-file-upload-select").removeClass("btn-danger");
+                self.$(".action-file-upload-select .percent").text(percent+"%");
+            });
+            this.uploader.on("error", function() {
+                self.$(".action-file-upload-select").addClass("btn-danger");
+                self.$(".action-file-upload-select .percent").text("Error!");
+            });
+            this.uploader.on("end", function() {
+                self.$(".action-file-upload-select").removeClass("btn-danger");
+                self.$(".action-file-uploadd-select .percent").text("");
+            });
+
+            this.refresh();
+
+            return this;
+        },
+
+        templateContext: function() {
+            return {
+                options: this.options,
+                file: this.model,
+                files: this.files || [],
+                view: this,
+                FileUtils: FileUtils
+            };
+        },
+
+        render: function() {
+            if (this.files == null) {
+                return this;
+            }
+            return FilesDirectoryView.__super__.render.apply(this, arguments);
+        },
+
+        finish: function() {
+            this.unselectFiles();
+            this.$(".file-hidden").toggle(!this.options.hiddenFiles);
+            this.$(".collaborators a").tooltip({
+                placement: "bottom"
+            });
+            return FilesDirectoryView.__super__.finish.apply(this, arguments);
+        },
+
+        /* Return array of files selected */
+        getFilesSelection: function() {
+            return _.filter(this.files, function(file) {
+                return _.contains(this.selectedFiles, file.path());
+            }, this);
+        },
+
+        /* (action) toggle hidden files */
+        toggleHiddenFiles: function(e) {
+            if (e != null) e.preventDefault();
+            this.options.hiddenFiles = !this.options.hiddenFiles;
+            return this.render();
+        },
+
+        /* Refresh list */
+        refresh: function() {
+            var that = this;
+            if (this.model.path() == null || !this.model.isDirectory()) { return; }
+            this.model.listdir().then(function(files) {
+                that.files = files;
+                that.render();
+            }, function() {
+                throw "error when getting sub file";
+            });
+        },
+
+        /* (action) Refresh files list */
+        actionRefresh: function(e) {
+            e.preventDefault();
+            this.load(this.model.path());  
+        },
+
+        /* (action) Create a new file */
+        actionCreate: function(e) {
+            var self = this;
+            e.preventDefault();
+            Dialogs.prompt(hr.I18n.t("components.files.directory.dialogs.create"), "newfile.txt").done(function(name) {
+                if (name.length > 0) self.model.createFile(name);
+            });
+        },
+
+        /* (action) Create a new directory */
+        actionMkdir: function(e) {
+            var self = this;
+            e.preventDefault();
+            Dialogs.prompt(hr.I18n.t("components.files.directory.dialogs.mkdir"), "newdirectory").done(function(name) {
+                if (name.length > 0) self.model.mkdir(name);
+            });
+        },
+
+        /* (action) Rename a file */
+        actionRename: function(e) {
+            var selection;
+            var self = this;
+            e.preventDefault();
+
+            selection = this.getFilesSelection();
+            if (_.size(selection) == 0) return;
+
+            Dialogs.prompt(hr.I18n.t("components.files.directory.dialogs.rename", {
+                "name": selection[0].get("name")
+            }), selection[0].get("name")).done(function(name) {
+                if (name.length > 0) selection[0].rename(name);
+            });
+        },
+
+        /* (action) Delete files */
+        actionDelete: function(e) {
+            var selection;
+            var self = this;
+            e.preventDefault();
+
+            selection = this.getFilesSelection();
+            if (_.size(selection) == 0) return;
+
+            Dialogs.confirm(hr.I18n.t("components.files.directory.dialogs.delete", {
+                "n": _.size(selection)
+            })).done(function(st) {
+                if (st != true) return;
+                _.each(selection, function(file) {
+                    file.remove();
+                });
+            });
+        },
+
+        /* (action) Download a file */
+        actionDownload: function(e) {
+            var selection;
+            var self = this;
+            e.preventDefault();
+
+            selection = this.getFilesSelection();
+            if (_.size(selection) == 0) return;
+
+            selection[0].download({
+                redirect: true
+            });
+        },
+
+        /* (action) Upload a file */
+        actionUpload: function(e) {
+            var self = this;
+            e.preventDefault();
+            this.$(".uploader").trigger('click');
+        },
+
+        /* (action) Upload a directory */
+        actionUploadDirectory: function(e) {
+            var self = this;
+            e.preventDefault();
+            this.$(".uploader-directory").trigger('click');
+        },
+
+        /*
+         *  (event) Start files upload
+         */
+        uploadStart: function(e) {
+            e.preventDefault();
+            this.uploader.upload(e.currentTarget.files);
+        },
+
+        /* (event) Select the files */
+        selectFile: function(e) {
+            e.stopPropagation();
+            var file = $(e.currentTarget).parents(".file");
+            this.toggleFileSelection(file, $(e.currentTarget).is(":checked"));
+        },
+
+        /* (event) Select only one file */
+        selectOnlyFile: function(e) {
+            this.unselectFiles();
+            var file = $(e.currentTarget);
+            this.toggleFileSelection(file, true);
+        },
+
+        /* (event) Unselect files */
+        unselectFiles: function() {
+            this.selectedFiles = [];
+            this.$(".file").removeClass("selected");
+            this.$(".file .select input").prop("checked", false);
+            this.trigger("selection:change", this.selectedFiles);
+        },
+
+        /* (event) Toggle the selection of a file */
+        toggleFileSelection: function(file, st) {
+            var path;
+            file = $(file);
+            path = file.data("filepath");
+            if (path == null || path.length == 0) { return; }
+
+            // Change display state
+            file.toggleClass("selected", st);
+            file.find(".select input").prop("checked", st);
+
+            // Chaneg list
+            if (_.contains(this.selectedFiles, path) && st == false) {
+                this.selectedFiles.splice(this.selectedFiles.indexOf(path), 1);
+            } else if (st == true) {
+                this.selectedFiles.push(path);
+            }
+            this.selectedFiles = _.uniq(this.selectedFiles);
+            this.trigger("selection:change", this.selectedFiles);
+        },
+    });
+    hr.View.Template.registerComponent("component.files.directory", FilesDirectoryView);
+
+    return FilesDirectoryView;
+});
+define('views/components/files/file',[
+    "Underscore",
+    "jQuery",
+    "hr/hr",
+    "views/components/files/base",
+    "views/dialogs/utils"
+], function(_, $, hr, FilesBaseView, Dialogs) {
+
+    var FileEditorView = FilesBaseView.extend({
+        className: "component-files-editor",
+        template: "components/files/file.html",
+        defaults: _.extend({}, FilesBaseView.prototype.defaults, {
+            
+        }),
+        events: {
+            "click .action-file-delete": "deleteFile",
+            "click .action-editor-state": "pingSync",
+            "click .action-file-fullscreen": "toggleFullscreen",
+            "click a[data-editormode]": "changeEditorMode"
+        },
+
+        initialize: function(options) {
+            FileEditorView.__super__.initialize.apply(this, arguments);
+            return this;
+        },
+
+        finish: function() {
+            this.components.editor.on("change:mode", function() {
+                this.$(".action-file-mode").text(this.components.editor.getMode());
+            }, this);
+            this.components.editor.setFile(this.model, {
+                sync: this.options.edition
+            });
+            this.components.editor.on("sync:state", function(state) {
+                this.$(".action-editor-state").toggleClass("btn-danger", !state);
+                this.$(".action-editor-state").toggleClass("btn-success", state);
+            }, this);
+            this.components.editor.on("participants:change", this.updateParticipants, this);
+
+            
+            if (this.components.plugins != null) {
+                this.components.plugins.on("open", function(plugin) {
+                    this.trigger("plugin:open", plugin);
+                }, this);
+            }
+
+            return FileEditorView.__super__.finish.apply(this, arguments);
+        },
+
+        /* (action) Toggle fullscreen */
+        toggleFullscreen: function(e) {
+            e.preventDefault();
+            this.$el.toggleClass("mode-fullscreen");
+        },
+
+        /* (action) change editor mode */
+        changeEditorMode: function(e) {
+            e.preventDefault();
+            var mode = $(e.currentTarget).data("editormode");
+            this.components.editor.setMode(mode);
+        },
+
+        /* (action) ping state */
+        pingState: function(e) {
+            e.preventDefault();
+        },
+
+        /* (action) delete the file */
+        deleteFile: function(e) {
+            e.preventDefault();
+            Dialogs.confirm(hr.I18n.t("components.files.file.dialogs.delete")).done(_.bind(function(state) {
+                if (state == true) this.model.remove();
+            }, this));
+        },
+
+        /* Update participants list */
+        updateParticipants: function() {
+            this.$(".file-participants").empty();
+            _.each(this.components.editor.participants, function(participant) {
+                
+            }, this);
+        }
+    });
+    hr.View.Template.registerComponent("component.files.file", FileEditorView);
+
+    return FileEditorView;
+});
+define('views/components/files/normal',[
+    "Underscore",
+    "jQuery",
+    "hr/hr",
+    "views/components/files/base",
+    "views/components/files/directory",
+    "views/components/files/file"
+], function(_, $, hr, FilesBaseView, FilesDirectoryView, FileEditorView) {
+
+    var FileView = FilesBaseView.extend({
+        className: "component-file",
+        template: "components/files/normal.html",
+        defaults: _.extend({}, FilesBaseView.prototype.defaults, {
+            
+        }),
+        events: {
+            
+        },
+
+        initialize: function(options) {
+            FileView.__super__.initialize.apply(this, arguments);
+            return this;
+        },
+        render: function() {
+            if (this.model.path() == null) return this;
+            return FileView.__super__.render.apply(this, arguments);
+        },
+        finish: function() {
+            this.$('.files-toolbar .btn').tooltip({
+                placement: "bottom"
+            });
+            var file = this.components.editor != null ? this.components.editor : this.components.directory;
+            file.on("all", function() {
+                this.trigger.apply(this, arguments);
+            }, this);
+            return FileView.__super__.finish.apply(this, arguments);
+        },
+    });
+    hr.View.Template.registerComponent("component.file", FileView);
+
+    return FileView;
+});
+define('views/components/files/tree',[
+    "Underscore",
+    "jQuery",
+    "hr/hr",
+    "views/components/files/base"
+], function(_, $, hr, FilesBaseView) {
+    var FilesTreeViewItem = FilesBaseView.extend({
+        tagName: "li",
+        className: "component-files-tree-item",
+        template: "components/files/tree.html",
+        defaults: _.extend({}, FilesBaseView.prototype.defaults, {
+            
+        }),
+        events: {
+            "click .name": "select",
+            "dblclick .name": "open"
+        },
+
+        initialize: function(options) {
+            FilesTreeViewItem.__super__.initialize.apply(this, arguments);
+            this.subfiles = null;
+            return this;
+        },
+
+        /* (event) select the file : extend tree */
+        select: function(e) {
+            if (e != null) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            if (this.model.isDirectory()) {
+                if (this.subfiles == null) {
+                    this.subfiles = new FilesTreeView({
+                        "codebox": this.codebox,
+                        "model": this.model
+                    });
+                    this.subfiles.$el.appendTo(this.$(".files"));
+                    this.subfiles.render();
+                }
+                this.$el.toggleClass("open");
+            } else {
+                this.open();
+            }
+        },
+
+        /* (event) open the file or directory  */
+        open: function(e) {
+            if (e != null) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            hr.History.navigate(this.model.url());
+        }
+    });
+
+    var FilesTreeView = FilesBaseView.extend({
+        tagName: "ul",
+        className: "component-files-tree",
+        defaults: _.extend({}, FilesBaseView.prototype.defaults, {
+            
+        }),
+        events: {
+            
+        },
+
+        render: function() {
+            var that = this;
+            this.$el.empty();
+
+            this.model.listdir().done(function(files) {
+                that.empty();
+                _.each(files, function(file) {
+                    if (file.isHidden()) { return; }
+                    var v = new FilesTreeViewItem({
+                        "codebox": that.codebox,
+                        "model": file
+                    });
+                    v.render();
+                    v.$el.appendTo(that.$el);
+                });
+            });
+            
+            return this.ready();
+        },
+    });
+    hr.View.Template.registerComponent("component.files.tree", FilesTreeView);
+
+    return FilesTreeView;
+});
 define('views/views',[
-    
+    "views/components/files/directory",
+    "views/components/files/normal",
+    "views/components/files/file",
+    "views/components/files/tree"
 ], function() {
 	return arguments;
 });

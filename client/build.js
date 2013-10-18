@@ -46,6 +46,12 @@ exports.config = {
         },
         'vendors/term': {
             exports: 'Terminal'
+        },
+        'views/views': {
+            deps: [
+                'vendors/bootstrap/dropdown',
+                'vendors/bootstrap/modal'
+            ]
         }
     }
 };
