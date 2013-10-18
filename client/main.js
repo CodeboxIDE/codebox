@@ -24,7 +24,7 @@ require([
 
     // Define base application
     var Application = hr.Application.extend({
-        name: "Hello",
+        name: "Codebox",
         template: "main.html",
         metas: {
             "description": "Base application using HappyRhino."

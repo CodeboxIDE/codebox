@@ -19,7 +19,8 @@ exports.config = {
     // Static files mappage
     "static": {
         "templates": path.resolve(__dirname, "resources", "templates"),
-        "images": path.resolve(__dirname, "resources", "images")
+        "images": path.resolve(__dirname, "resources", "images"),
+        "fonts": path.resolve(__dirname, "resources", "fonts")
     },
 
     // Stylesheet entry point

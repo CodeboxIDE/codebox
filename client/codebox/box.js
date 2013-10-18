@@ -9,7 +9,6 @@ define([
     var Codebox = hr.Class.extend({
         defaults: {
             baseUrl: "",
-            vBaseUrl: "",
             listenEvents: true
         },
 
@@ -18,7 +17,6 @@ define([
          */
         initialize: function() {
             this.baseUrl = this.options.baseUrl;
-            this.vBaseUrl = this.options.vBaseUrl;
             this.state = false;
 
             // Root file

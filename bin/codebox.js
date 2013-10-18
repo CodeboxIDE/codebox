@@ -18,6 +18,7 @@ var plugins = [
         packagePath: "./cb.core",
 
         // Options
+        name: process.env.WORKSPACE_NAME,
         root: process.env.WORKSPACE_DIR
     },
 
@@ -82,6 +83,7 @@ var plugins = [
     "./cb.rpc.git",
     "./cb.rpc.auth",
     "./cb.rpc.search",
+    "./cb.rpc.addons",
 
     // Now start the damn server
     "./cb.main",

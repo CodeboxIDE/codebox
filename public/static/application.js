@@ -25527,7 +25527,7 @@ Logger, Requests, Urls, Storage, Cache, Template, Resources, Deferred, Queue, I1
         }
     }
 });
-define('hr/args',[],function() { return {"revision":1382113055458,"baseUrl":"/"}; });
+define('hr/args',[],function() { return {"revision":1382135929335,"baseUrl":"/"}; });
 /*! Socket.IO.js build:0.9.2, development. Copyright(c) 2011 LearnBoost <dev@learnboost.com> MIT Licensed */
 
 /**
@@ -30102,7 +30102,6 @@ define('codebox/box',[
     var Codebox = hr.Class.extend({
         defaults: {
             baseUrl: "",
-            vBaseUrl: "",
             listenEvents: true
         },
 
@@ -30111,7 +30110,6 @@ define('codebox/box',[
          */
         initialize: function() {
             this.baseUrl = this.options.baseUrl;
-            this.vBaseUrl = this.options.vBaseUrl;
             this.state = false;
 
             // Root file
@@ -30208,7 +30206,6 @@ define('codebox/box',[
                 d.reject();
             } else {
                 var socket = io.connect([window.location.protocol, '//', window.location.host].join('')+"/"+namespace, {
-                    //'resource': this.socketUrl(),
                     'force new connection': forceCreate
                 });
 
@@ -30366,7 +30363,7 @@ require([
 
     // Define base application
     var Application = hr.Application.extend({
-        name: "Hello",
+        name: "Codebox",
         template: "main.html",
         metas: {
             "description": "Base application using HappyRhino."
