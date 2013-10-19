@@ -1,9 +1,8 @@
 define([
     "Underscore",
     "jQuery",
-    "hr/hr",
-    "codebox/box"
-], function(_, $, hr, Codebox) {
+    "hr/hr"
+], function(_, $, hr) {
 
     var MenuBarView = hr.View.extend({
         className: "layout-menubar",

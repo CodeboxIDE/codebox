@@ -5,9 +5,9 @@ define([
 ], function(_, hr, ss) {
     var logging = hr.Logger.addNamespace("terminal");
 
-    var Shell = hr.Class.extend({
+    var Shell = hr.Model.extend({
         defaults: {
-            shellId: null
+            
         },
 
         /*
@@ -15,9 +15,11 @@ define([
          */
         initialize: function() {
             Shell.__super__.initialize.apply(this, arguments);
+
             this.codebox = this.options.codebox;
             this.stream = ss.createStream();
             this.shellId = this.options.shellId || _.uniqueId("terminal");
+            
             return this;
         },
 

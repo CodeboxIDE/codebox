@@ -3,7 +3,7 @@ define([
     'jQuery',
     'Underscore'
 ],function(hr, $, _) {
-    var logging = hr.Logger.addNamespace("codebox-uploader");
+    var logging = hr.Logger.addNamespace("uploader");
 
     try {
         if (XMLHttpRequest.prototype.sendAsBinary){} else {

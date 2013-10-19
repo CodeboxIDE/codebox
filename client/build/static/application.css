@@ -1259,7 +1259,7 @@ a .icon-rotate-90:before,a .icon-rotate-180:before,a .icon-rotate-270:before,a .
 .component-tabs{position:absolute;width:100%;height:100%;}.component-tabs .section{position:absolute;top:0px;bottom:0px;left:0px;}.component-tabs .section.dragover{opacity:60;filter:alpha(opacity=6000);}
 .component-tabs .section .tabs-header{position:absolute;top:0px;height:36px;right:0px;left:0px;background:#f7f5fa;}
 .component-tabs .section .tabs-content{position:absolute;top:36px;bottom:0px;right:0px;left:0px;background:#e1e1e1;}
-#codebox .layout-lateralbar{position:absolute;top:0px;left:42px;bottom:0px;width:232px;background:#f7f5fa;overflow-y:auto;overflow-x:hidden;}
+#codebox .layout-lateralbar{position:absolute;top:0px;left:42px;bottom:0px;width:232px;background:#f7f5fa;overflow-y:auto;overflow-x:hidden;}#codebox .layout-lateralbar .files{margin:4px;}
 #codebox .layout-menubar{position:absolute;left:0px;width:42px;top:0px;bottom:0px;background:#333333;}#codebox .layout-menubar .menu-section{margin-bottom:10px;}#codebox .layout-menubar .menu-section.menu-bottom{position:absolute;bottom:0px;margin:0px;}
 #codebox .layout-menubar .menu-section .menu-item{margin:4px;font-size:18px;line-height:34px;width:34px;height:34px;display:inline-block;text-align:center;color:#aaa;border-radius:3px;cursor:default;}#codebox .layout-menubar .menu-section .menu-item:hover{background:#282828;text-decoration:none;}
 #codebox .layout-body{position:absolute;top:0px;left:274px;right:0px;bottom:0px;}

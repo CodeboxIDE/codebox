@@ -19,6 +19,7 @@ ifeq ($(NPM),)
 else
 	$(NPM) install .
 endif
+
 run:
 	@echo ==== Run codebox ====
 	$(NODE) bin/codebox.js run

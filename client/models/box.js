@@ -1,21 +1,21 @@
 define([
     'hr/hr',
     'vendors/socket.io',
-    'codebox/file',
-    'codebox/shell'
+    'models/file',
+    'models/shell'
 ], function (hr, io, File, Shell) {
     var logging = hr.Logger.addNamespace("codebox");
 
-    var Codebox = hr.Class.extend({
+    var Codebox = hr.Model.extend({
         defaults: {
-            'baseUrl': ""
+
         },
 
         /*
          *  Client interface to a codebox
          */
         initialize: function() {
-            this.baseUrl = this.options.baseUrl;
+            this.baseUrl = this.options.baseUrl || "";
             this.state = false;
 
             // Root file
@@ -137,7 +137,10 @@ define([
          *  Get box status
          */
         status: function() {
-            return this.rpc("/box/status");
+            var that = this;
+            return this.rpc("/box/status").done(function(data) {
+                that.set(data);
+            });
         },
 
         /*
@@ -181,7 +184,6 @@ define([
          *  Commit to the git workspace
          */
         commit: function(args) {
-            var that = this;
             args = _.extend(args || {});
             return this.rpc("/git/commit", args);
         },
@@ -190,7 +192,6 @@ define([
          *  Sync (pull & push) the git workspace
          */
         sync: function(args) {
-            var that = this;
             args = _.extend(args || {}, {});
             return this.rpc("/git/sync", args);
         },

@@ -2,34 +2,12 @@ require([
     "Underscore",
     "hr/hr",
     "hr/args",
-
-    "codebox/box",
-    "codebox/user",
-
-    "views/views",
-    "resources/resources"
-], function(_, hr, args, Codebox, User) {
+    "session",
+    'views/views',
+    'resources/resources',
+], function(_, hr, args, session) {
     // Configure hr
     hr.configure(args);
-
-    // Codebox
-    Codebox.current = new Codebox();
-    User.current = new User();
-
-    // Extend template context
-    hr.Template.extendContext({
-        'box': Codebox.current,
-        'user': User.current
-    });
-
-    User.current.set({
-        'name': "Samy",
-        'email': "samypesse@gmail.com",
-        'userId': "Samy",
-        'token': "lol"
-    });
-
-    Codebox.current.join(User.current)
 
     // Define base application
     var Application = hr.Application.extend({
@@ -43,6 +21,12 @@ require([
         }
     });
 
-    var app = new Application();
-    app.run();
+    // Start session
+    session.start().then(function() {
+        // Start application
+        var app = new Application();
+        app.run();
+    }, function() {
+        alert("Error starting session");
+    });
 });

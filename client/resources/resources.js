@@ -3,7 +3,7 @@ define([
 
     "text!resources/i18n/en.json"
 ], function(hr) {
-
+    console.log("resources!");
 	// Load templates using HTTP
     hr.Resources.addNamespace("templates", {
         loader: "http",

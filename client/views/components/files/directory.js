@@ -2,11 +2,10 @@ define([
     "Underscore",
     "jQuery",
     "hr/hr",
-    "utils/file",
-    "codebox/uploader",
+    "utils/uploader",
     "views/components/files/base",
     "views/dialogs/utils"
-], function(_, $, hr, FileUtils, Uploader, FilesBaseView, Dialogs) {
+], function(_, $, hr, Uploader, FilesBaseView, Dialogs) {
 
     var FilesDirectoryView = FilesBaseView.extend({
         className: "component-files-directory",
@@ -73,8 +72,7 @@ define([
                 options: this.options,
                 file: this.model,
                 files: this.files || [],
-                view: this,
-                FileUtils: FileUtils
+                view: this
             };
         },
 

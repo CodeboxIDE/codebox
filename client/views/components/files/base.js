@@ -2,9 +2,10 @@ define([
     "Underscore",
     "jQuery",
     "hr/hr",
-    "codebox/box",
-    "codebox/file"
-], function(_, $, hr, Codebox, File) {
+    "models/box",
+    "models/file",
+    "session"
+], function(_, $, hr, Codebox, File, session) {
 
     var FilesBaseView = hr.View.extend({
         defaults: {
@@ -19,7 +20,7 @@ define([
         initialize: function(options) {
             FilesBaseView.__super__.initialize.apply(this, arguments);
             this.path = null;
-            this.codebox = Codebox.current;
+            this.codebox = session.codebox;
             if (this.codebox == null) {
                 throw "Error : creating fileview without codebox context";
             }

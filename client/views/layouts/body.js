@@ -2,9 +2,8 @@ define([
     "Underscore",
     "jQuery",
     "hr/hr",
-    "codebox/box",
     "views/tabs/file"
-], function(_, $, hr, Codebox, FileTab) {
+], function(_, $, hr, FileTab) {
 
     var BodyView = hr.View.extend({
         className: "layout-body",

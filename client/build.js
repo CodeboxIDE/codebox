@@ -24,11 +24,18 @@ exports.config = {
     },
 
     // Stylesheet entry point
-    "style": path.resolve(__dirname, "stylesheets/main.less"),
+    "style": path.resolve(__dirname, "resources/stylesheets/main.less"),
 
     // Modules paths
     'paths': {},
     "shim": {
+        'views/views': {
+            deps: [
+                'vendors/bootstrap/dropdown',
+                'vendors/bootstrap/modal',
+                'vendors/bootstrap/tooltip'
+            ]
+        },
         'vendors/socket.io': {
             exports: 'io'
         },
@@ -46,13 +53,6 @@ exports.config = {
         },
         'vendors/term': {
             exports: 'Terminal'
-        },
-        'views/views': {
-            deps: [
-                'vendors/bootstrap/dropdown',
-                'vendors/bootstrap/modal',
-                'vendors/bootstrap/tooltip'
-            ]
         }
     }
 };

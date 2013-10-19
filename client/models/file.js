@@ -2,8 +2,8 @@ define([
     "Underscore",
     "hr/hr",
     "utils/url",
-    "codebox/uploader"
-], function(_, hr, Url, Uploader) {
+    'utils/languages'
+], function(_, hr, Url, Languages) {
     var logging = hr.Logger.addNamespace("files");
 
     if (typeof String.prototype.endsWith !== 'function') {
@@ -117,10 +117,20 @@ define([
         },
 
         /*
-         *  Return url for the codefire
+         *  Return file mode (for ace editor)
          */
-        socketUrl: function() {
-            return this.codebox.socketUrl();
+        mode: function(file) {
+            return Languages.get_mode_byextension(this.extension());
+        },
+
+        /*
+         *  Return color to represent the file
+         */
+        color: function(file, def) {
+            if (this.isDirectory()) {
+                return def;
+            }
+            return Languages.get_color_byext(this.extension(), def);
         },
 
         /*
