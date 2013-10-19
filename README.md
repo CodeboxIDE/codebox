@@ -6,22 +6,19 @@
 $ npm install -g git+ssh://git@github.com:FriendCode/codebox.git
 ```
 
-## Run it for a project
+## Command line
+
+Create a new codebox for a project by cloning a git directory
 
 ```
-$ codebox create --git=...
+$ codebox create [git url]
 ```
 
-## Environment variables
+Start a codebox in a directory:
 
 ```
-WORKSPACE_NAME=name of the workspace
-WORKSPACE_DIR=root dir of the workspace
+$ codebox run -d ./project
 ```
-
-## Add-ons
-
-Add-ons are stored as directory in /addons.
 
 ## APIs
 

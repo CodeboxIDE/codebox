@@ -3,11 +3,10 @@ var cli = require('commander');
 var pkg = require('../package.json');
 var codebox = require("../index.js");
 
-cli
-.command('run')
+// Command 'run'
+cli.command('run')
 .description('Run a Codebox into a folder.')
 .action(function() {
-    var that = this;
     var path = this.directory || "./";
 
     codebox.start({
@@ -24,10 +23,18 @@ cli
     });
 });
 
+// Command 'create'
+cli.command('create [git]')
+.description('Create a new codebox from a git repository.')
+.action(function(gitUrl) {
+    
+});
+
 cli.on('--help', function(){
     console.log('  Examples:');
     console.log('');
     console.log('    $ codebox run -d ./myProject');
+    console.log('    $ codebox create https://github.com/FriendCode/codebox.git');
     console.log('');
 });
 
