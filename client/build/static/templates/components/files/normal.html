@@ -1,0 +1,11 @@
+<% if (file.isDirectory()) { %>
+<%= view.component("component.files.directory", _.extend({}, options, {
+    model: file,
+    path: null
+}), "directory") %>
+<% } else { %>
+<%= view.component("component.files.file", _.extend({}, options, {
+    model: file,
+    path: null
+}), "editor") %>
+<% } %>

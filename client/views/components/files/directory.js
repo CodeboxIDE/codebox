@@ -12,8 +12,8 @@ define([
         className: "component-files-directory",
         template: "components/files/directory.html",
         defaults: _.extend({}, FilesBaseView.prototype.defaults, {
-            navigate: true,
-            hiddenFiles: true
+            'navigate': true,
+            'hiddenFiles': true
         }),
         events: {
             "click .file": "selectOnlyFile",
@@ -31,6 +31,7 @@ define([
             "click .action-file-download": "actionDownload",
         },
 
+        // Constructor
         initialize: function(options) {
             FilesDirectoryView.__super__.initialize.apply(this, arguments);
             this.files = null;
@@ -66,6 +67,7 @@ define([
             return this;
         },
 
+        // Template rendering context
         templateContext: function() {
             return {
                 options: this.options,
@@ -76,6 +78,7 @@ define([
             };
         },
 
+        // Render directory view
         render: function() {
             if (this.files == null) {
                 return this;
@@ -83,6 +86,7 @@ define([
             return FilesDirectoryView.__super__.render.apply(this, arguments);
         },
 
+        // Finish rendering
         finish: function() {
             this.unselectFiles();
             this.$(".file-hidden").toggle(!this.options.hiddenFiles);
@@ -92,21 +96,21 @@ define([
             return FilesDirectoryView.__super__.finish.apply(this, arguments);
         },
 
-        /* Return array of files selected */
+        // Return array of files selected
         getFilesSelection: function() {
             return _.filter(this.files, function(file) {
                 return _.contains(this.selectedFiles, file.path());
             }, this);
         },
 
-        /* (action) toggle hidden files */
+        // (action) toggle hidden files
         toggleHiddenFiles: function(e) {
             if (e != null) e.preventDefault();
             this.options.hiddenFiles = !this.options.hiddenFiles;
             return this.render();
         },
 
-        /* Refresh list */
+        // Refresh list
         refresh: function() {
             var that = this;
             if (this.model.path() == null || !this.model.isDirectory()) { return; }
@@ -118,13 +122,13 @@ define([
             });
         },
 
-        /* (action) Refresh files list */
+        // (action) Refresh files list
         actionRefresh: function(e) {
             e.preventDefault();
             this.load(this.model.path());  
         },
 
-        /* (action) Create a new file */
+        // (action) Create a new file
         actionCreate: function(e) {
             var self = this;
             e.preventDefault();
@@ -133,7 +137,7 @@ define([
             });
         },
 
-        /* (action) Create a new directory */
+        // (action) Create a new directory
         actionMkdir: function(e) {
             var self = this;
             e.preventDefault();
@@ -142,7 +146,7 @@ define([
             });
         },
 
-        /* (action) Rename a file */
+        // (action) Rename a file
         actionRename: function(e) {
             var selection;
             var self = this;
@@ -158,7 +162,7 @@ define([
             });
         },
 
-        /* (action) Delete files */
+        // (action) Delete files
         actionDelete: function(e) {
             var selection;
             var self = this;
@@ -177,7 +181,7 @@ define([
             });
         },
 
-        /* (action) Download a file */
+        // (action) Download a file
         actionDownload: function(e) {
             var selection;
             var self = this;
@@ -191,43 +195,41 @@ define([
             });
         },
 
-        /* (action) Upload a file */
+        // (action) Upload a file
         actionUpload: function(e) {
             var self = this;
             e.preventDefault();
             this.$(".uploader").trigger('click');
         },
 
-        /* (action) Upload a directory */
+        // (action) Upload a directory
         actionUploadDirectory: function(e) {
             var self = this;
             e.preventDefault();
             this.$(".uploader-directory").trigger('click');
         },
 
-        /*
-         *  (event) Start files upload
-         */
+        // (event) Start files upload
         uploadStart: function(e) {
             e.preventDefault();
             this.uploader.upload(e.currentTarget.files);
         },
 
-        /* (event) Select the files */
+        // (event) Select the files
         selectFile: function(e) {
             e.stopPropagation();
             var file = $(e.currentTarget).parents(".file");
             this.toggleFileSelection(file, $(e.currentTarget).is(":checked"));
         },
 
-        /* (event) Select only one file */
+        // (event) Select only one file
         selectOnlyFile: function(e) {
             this.unselectFiles();
             var file = $(e.currentTarget);
             this.toggleFileSelection(file, true);
         },
 
-        /* (event) Unselect files */
+        // Unselect files
         unselectFiles: function() {
             this.selectedFiles = [];
             this.$(".file").removeClass("selected");
@@ -235,7 +237,7 @@ define([
             this.trigger("selection:change", this.selectedFiles);
         },
 
-        /* (event) Toggle the selection of a file */
+        // (event) Toggle the selection of a file
         toggleFileSelection: function(file, st) {
             var path;
             file = $(file);
@@ -256,6 +258,8 @@ define([
             this.trigger("selection:change", this.selectedFiles);
         },
     });
+
+    // Register as template component
     hr.View.Template.registerComponent("component.files.directory", FilesDirectoryView);
 
     return FilesDirectoryView;

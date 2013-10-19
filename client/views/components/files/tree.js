@@ -4,25 +4,31 @@ define([
     "hr/hr",
     "views/components/files/base"
 ], function(_, $, hr, FilesBaseView) {
+    
+    // File item in the tree
     var FilesTreeViewItem = FilesBaseView.extend({
         tagName: "li",
         className: "component-files-tree-item",
-        template: "components/files/tree.html",
-        defaults: _.extend({}, FilesBaseView.prototype.defaults, {
-            
-        }),
+        template: "components/files/tree.element.html",
         events: {
             "click .name": "select",
             "dblclick .name": "open"
         },
 
+        // Constructor
         initialize: function(options) {
             FilesTreeViewItem.__super__.initialize.apply(this, arguments);
             this.subfiles = null;
             return this;
         },
 
-        /* (event) select the file : extend tree */
+        // Finish rendering
+        finish: function() {
+            this.$el.toggleClass("type-directory", this.model.isDirectory());
+            return FilesTreeViewItem.__super__.finish.apply(this, arguments);
+        },
+
+        // (event) select the file : extend tree
         select: function(e) {
             if (e != null) {
                 e.preventDefault();
@@ -44,7 +50,7 @@ define([
             }
         },
 
-        /* (event) open the file or directory  */
+        // (event) open the file or directory
         open: function(e) {
             if (e != null) {
                 e.preventDefault();
@@ -55,16 +61,12 @@ define([
         }
     });
 
+    // Complete files tree
     var FilesTreeView = FilesBaseView.extend({
         tagName: "ul",
         className: "component-files-tree",
-        defaults: _.extend({}, FilesBaseView.prototype.defaults, {
-            
-        }),
-        events: {
-            
-        },
 
+        // Render the files tree
         render: function() {
             var that = this;
             this.$el.empty();
@@ -72,7 +74,8 @@ define([
             this.model.listdir().done(function(files) {
                 that.empty();
                 _.each(files, function(file) {
-                    if (file.isHidden()) { return; }
+                    if (file.isHidden()) return;
+
                     var v = new FilesTreeViewItem({
                         "codebox": that.codebox,
                         "model": file
@@ -85,6 +88,8 @@ define([
             return this.ready();
         },
     });
+
+    // Register as template component
     hr.View.Template.registerComponent("component.files.tree", FilesTreeView);
 
     return FilesTreeView;

@@ -1,0 +1,66 @@
+<div class="files-toolbar btn-toolbar">
+    <%= template.import("components/files/paths.html", {
+        "file": file,
+        "base": options.base
+    }) %>
+
+    <div class="btn-group pull-right">
+        <a href="#" class="btn btn-link action-file-refresh" title="<%- hr.i18n.t("components.files.directory.actions.refresh") %>"><i class="icon-refresh"></i></a>
+        <a href="#" class="btn btn-link  action-file-togglehidden" title="<%- hr.i18n.t("components.files.directory.actions.hidden") %>"><i class="icon-eye-open"></i></a>
+    </div>
+    <% if (options.edition) { %>
+    <div class="btn-group pull-right">
+        <a href="#" class="btn btn-link action-file-create" title="<%- hr.i18n.t("components.files.directory.actions.create") %>"><i class="icon-file"></i></a>
+        <a href="#" class="btn btn-link action-file-mkdir" title="<%- hr.i18n.t("components.files.directory.actions.mkdir") %>"><i class="icon-folder-close"></i></a>
+        <a href="#" data-filesselection class="btn btn-link action-file-rename" title="<%- hr.i18n.t("components.files.directory.actions.rename") %>"><i class="icon-pencil"></i></a>
+        <a href="#" data-filesselection class="btn btn-link action-file-delete" title="<%- hr.i18n.t("components.files.directory.actions.delete") %>"><i class="icon-trash"></i></a>
+        <a href="#" data-filesselection class="btn btn-link action-file-download" title="<%- hr.i18n.t("components.files.directory.actions.download") %>"><i class="icon-download-alt"></i></a>
+        <div class="btn-group pull-right">
+            <a href="#" class="btn btn-link action-file-upload-select" data-toggle="dropdown" title="<%- hr.i18n.t("components.files.directory.actions.upload.select") %>"><i class="icon-upload-alt"></i> <span class="percent"></span></a>
+            <ul class="dropdown-menu">
+                <li><a href="#" class="action-file-upload"><%- hr.i18n.t("components.files.directory.actions.upload.files") %></a></li>
+                <li><a href="#" class="action-file-upload-directory"><%- hr.i18n.t("components.files.directory.actions.upload.directory") %></a></li>
+            </ul>
+            <input type="file" class="uploader hidden" multiple />
+            <input type="file" class="uploader-directory hidden" multiple webkitdirectory directory />
+        </div>
+    </div>
+    <% } %>
+</div>
+<div class="files-outer">
+    <ul class="files">
+        <% if (!file.isRoot()) { %>
+        <li class="file level-up">
+            <span class="name">
+                <a href="<%- hr.urls.route(file.url(file.parentPath())) %>">..</a>
+            </span>
+        </li>
+        <% } %>
+        <% _.each(files, function(cfile) { %>
+        <li class="file <% if (cfile.isHidden()) { %>file-hidden<% } %>" data-filepath="<%- cfile.path() %>">
+            <span class="select">
+                <input type="checkbox" />
+            </span>
+            <span class="icon">
+                <i class="<%- cfile.icon() %>" style="color:<%- FileUtils.color(cfile, "#666") %>"></i>
+            </span>
+            <span class="name">
+                <a href="<%- hr.urls.route(cfile.url()) %>"><%- cfile.get("name") %></a>
+            </span>
+            <% if (_.size(cfile.get("collaborators")) > 0) { %>
+            <div class="collaborators">
+                <% _.each(cfile.get("collaborators"), function(collaborator) { %>
+                <a href="<%- hr.urls.route(collaborator.url) %>" title="<%- collaborator.name %>"><img src="<%- collaborator.image %>" /></a>
+                <% }); %>
+            </div>
+            <% } %>
+            <span class="mtime"><%= view.component("hr.date.relative", {
+                time: cfile.get("mtime")/1000
+            }, "date") %></span>
+            <% if (cfile.isHidden()) { %>
+            <span class="label label-warning"><%- hr.i18n.t("components.files.directory.labels.hidden") %></span>
+            <% } %>
+        </li>
+        <% }); %>
+    </ul>
+</div>

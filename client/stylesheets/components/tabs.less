@@ -1,0 +1,172 @@
+@tabColor: #c5c5c5;
+@tabHoverColor: #c9c9c9;
+@tabActiveColor: #e1e1e1;
+
+.component-tab {
+    position: relative;
+    height:30px;
+    padding-left: 18px;
+    padding-right: 18px;
+    margin-top: 6px;
+    margin-right: -14px;
+    float: left;
+    z-index: 1;
+    cursor: default;
+
+    .inner {
+        .box-sizing(border-box);
+        height: 30px;
+        background: @tabColor;
+        padding: 5px 5px;
+        .user-select(none);
+
+        .close {
+            margin-left: 8px;
+            font-weight: 200;
+            cursor: default;
+
+            &:hover {
+                color: #e74c3c;
+            }
+        }
+    }
+
+    &:before{
+        width:0;
+        height:0;
+        content:"";
+        display:inline-block;
+        border-top:30px solid transparent;
+        border-right:18px solid @tabColor;
+        position:absolute;
+        left:0;
+        top:0;
+    }
+    &:after{
+        width:0;
+        height:0;
+        content:"";
+        display:inline-block;
+        border-top:30px solid transparent;
+        border-left:18px solid @tabColor;
+        position:absolute;
+        right:0;
+        top:0;
+    }
+    &:hover {
+        .inner {
+            background: @tabHoverColor;
+        }
+
+        &:before {
+            border-right-color: @tabHoverColor;
+        }
+        &:after {
+            border-left-color: @tabHoverColor;
+        }
+    }
+
+    &.active {
+        z-index: 10; 
+        .inner {
+            background: @tabActiveColor;
+        }
+
+        &:before {
+            border-right-color: @tabActiveColor;
+        }
+        &:after {
+            border-left-color: @tabActiveColor;
+        }
+    }
+}
+
+.component-tab-panel {
+    display: none;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    
+    .tab-panel-inner {
+        margin: 10px;
+        background: #fff;
+        .border-radius(3px);
+
+        &.full-tab {
+            position: absolute;
+            top: 0px;
+            bottom: 0px;
+            right: 0px;
+            left: 0px;
+            overflow: hidden;
+        }
+    }
+
+    .tabs-loading {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        bottom: 0px;
+        background: #f1f1f1;
+
+        .ide-ui-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin: 0px;
+            margin-top: -6px;
+            margin-left: -24px;
+            width: 48px;
+            height: 12px;
+
+            &.large {
+                width: 66px;
+                height: 18px;
+                margin-top: -9px;
+                margin-left: -33px;
+            }
+        }
+    }
+
+    &.active {
+        display: block;
+    }
+}
+
+.component-tabs {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+    .section {
+        position: absolute;
+        top: 0px;
+        bottom: 0px;
+        left: 0px;
+
+        &.dragover {
+            .opacity(60);
+        }
+
+        .tabs-header {
+            position: absolute;
+            top: 0px;
+            height: 36px;
+            right: 0px;
+            left: 0px;
+            background: @codeboxLateralbarBackground;
+        }
+
+        .tabs-content {
+            position: absolute;
+            top: 36px;
+            bottom: 0px;
+            right: 0px;
+            left: 0px;
+            background: #e1e1e1;
+        }
+    }
+}

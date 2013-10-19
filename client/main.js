@@ -22,34 +22,25 @@ require([
         'user': User.current
     });
 
+    User.current.set({
+        'name': "Samy",
+        'email': "samypesse@gmail.com",
+        'userId': "Samy",
+        'token': "lol"
+    });
+
+    Codebox.current.join(User.current)
+
     // Define base application
     var Application = hr.Application.extend({
         name: "Codebox",
         template: "main.html",
         metas: {
-            "description": "Base application using HappyRhino."
+            "description": "Cloud IDE on a box."
         },
         links: {
             "icon": hr.Urls.static("images/favicon.png")
-        },
-        events: {},
-
-        /*
-         *  Constructor
-         */
-        initialize: function() {
-            Application.__super__.initialize.apply(this, arguments);
-
-            return this;
-        },
-
-        /*
-         *  Finish rendering
-         */
-        finish: function() {
-            Application.__super__.finish.apply(this, arguments);
-            return this;
-        },
+        }
     });
 
     var app = new Application();

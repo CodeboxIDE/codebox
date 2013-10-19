@@ -1,0 +1,36 @@
+#codebox .layout-menubar {
+	position: absolute;
+	left: 0px;
+	width: @codeboxMenubarWidth;
+	top: 0px;
+	bottom: 0px;
+	background: @codeboxMenubarBackground;
+
+	.menu-section {
+		margin-bottom: 10px;
+
+		&.menu-bottom {
+			position: absolute;
+			bottom: 0px;
+			margin: 0px;
+		}
+
+		.menu-item {
+			margin: 4px;
+			font-size: 18px;
+			line-height: 34px;
+			width: 34px;
+			height: 34px;
+			display: inline-block;
+			text-align: center;
+			color: #aaa;
+			border-radius: 3px;
+			cursor: default;
+
+			&:hover {
+				background: #282828;
+				text-decoration: none;
+			}
+		}
+	}
+}

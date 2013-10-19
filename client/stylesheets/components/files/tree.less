@@ -1,0 +1,57 @@
+.component-files-tree {
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+    margin-left: 10px;
+    
+
+    .component-files-tree-item {
+        cursor: default;
+        line-height: 24px;
+
+        >.files {
+            display: none;
+            margin-left: 8px;
+        }
+
+        >.name {
+            color: #333;
+
+            >i {
+                width: 11px;
+                color: #555;
+                text-align: center;
+
+                &.icon-file {
+                    color: transparent;
+                }
+            }
+            >.icon-caret-right {
+                display: inline-block;
+            }
+            >.icon-caret-down {
+                display: none;
+            } 
+        }
+
+        &.type-directory {
+            >.name {
+                color: #111;
+            }
+        }
+
+        &.open {
+            >.files {
+                display: block;
+            }
+            >.name {
+                >.icon-caret-right {
+                    display: none;
+                }
+                >.icon-caret-down {
+                    display: inline-block;
+                } 
+            }
+        }
+    }
+}

@@ -14,7 +14,7 @@ exports.config = {
     "main": "main",
 
     // Build output directory
-    "build": path.resolve(__dirname, "..", "public"),
+    "build": path.resolve(__dirname, "build"),
 
     // Static files mappage
     "static": {
@@ -50,7 +50,8 @@ exports.config = {
         'views/views': {
             deps: [
                 'vendors/bootstrap/dropdown',
-                'vendors/bootstrap/modal'
+                'vendors/bootstrap/modal',
+                'vendors/bootstrap/tooltip'
             ]
         }
     }

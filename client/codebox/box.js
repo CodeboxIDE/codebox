@@ -8,8 +8,7 @@ define([
 
     var Codebox = hr.Class.extend({
         defaults: {
-            baseUrl: "",
-            listenEvents: true
+            'baseUrl': ""
         },
 
         /*
@@ -21,7 +20,7 @@ define([
 
             // Root file
             this.root = new File({
-                codebox: this
+                'codebox': this
             });
             this.root.getByPath("/");
 
@@ -128,7 +127,10 @@ define([
         join: function(args) {
             var that = this;
             args = args || {};
-            return this.request("post", "/auth/join", args);
+
+            if (args.toJSON != null) args = args.toJSON();
+
+            return this.rpc("/auth/join", args);
         },
 
         /*

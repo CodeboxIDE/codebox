@@ -1,0 +1,70 @@
+{
+    "layouts": {
+        "menubar": {
+            "menu": {
+                "search": "Search",
+                "root": "Files",
+                "terminal": "Terminal",
+                "settings": "Settings"
+            }
+        }
+    },
+	"components": {
+		"dialogs": {
+            "alert": {
+                "title": "Alert",
+                "cancel": "Close",
+            },
+            "confirm": {
+                "title": "Confirm",
+                "cancel": "Close",
+                "ok": "Ok"
+            },
+            "prompt": {
+                "title": "Input",
+                "cancel": "Cancel",
+                "ok": "OK"
+            }
+        },
+
+        "files": {
+            "directory": {
+                "actions": {
+                    "refresh": "Refresh",
+                    "hidden": "Toggle hidden files",
+                    "create": "Create a new file",
+                    "mkdir": "Create a new directory",
+                    "rename": "Rename file",
+                    "delete": "Delete files",
+                    "upload": {
+                        "select": "Upload a file or directory",
+                        "files": "Upload files",
+                        "directory": "Upload directory"
+                    },
+                    "download": "Download"
+                },
+                "labels": {
+                    "hidden": "hidden"
+                },
+                "dialogs": {
+                    "create": "Create a new file",
+                    "mkdir": "Create a new directory",
+                    "rename": "Rename <b><%- name %></b>",
+                    "delete": "Do you really want to remove <b><%- n %> file(s)</b> ?"
+                }
+            },
+            "file": {
+                "actions": {
+                    "settings": "Editor Settings",
+                    "mode": "Syntax",
+                    "fullscreen": "Toggle fullscreen",
+                    "state": "Synchronization",
+                    "delete": "Delete"
+                },
+                "dialogs": {
+                    "delete": "Delete this file"
+                }
+            }
+        }
+	}
+}

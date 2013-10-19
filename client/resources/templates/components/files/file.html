@@ -1,0 +1,41 @@
+<div class="files-toolbar btn-toolbar">
+    <%= template.import("components/files/paths.html", {
+        "file": file,
+        "base": options.base
+    }) %>
+
+    <div class="btn-group pull-right">
+        <a href="<%- hr.urls.route("settings/editor") %>" class="btn btn-link action-file-settings" title="<%- hr.i18n.t("components.files.file.actions.settings") %>"><i class="icon-cog"></i></a>
+        <a href="#" class="btn btn-link action-file-fullscreen" title="<%- hr.i18n.t("components.files.file.actions.fullscreen") %>"><i class="icon-resize-full"></i></a>
+    </div>
+    <% if (options.edition) { %>
+    <div class="btn-group pull-right">
+        <a href="#" class="btn btn-link action-file-delete" title="<%= hr.i18n.t("components.files.file.actions.delete") %>"><i class="icon-trash"></I></a>
+    </div>
+    <div class="pull-right">
+        <%= view.component("list.plugins.toolbar", {
+            pluginContext: {
+                file: file
+            }
+        }, "plugins") %>
+    </div>
+    <% } %>
+    <div class="btn-group pull-right">
+        <a href="#" class="btn btn-link action-file-mode" data-toggle="dropdown" title="<%= hr.i18n.t("components.files.file.actions.mode") %>">text</a>
+        <ul class="dropdown-menu">
+        <% _.each(app.configs.editor.modes, function(mode, modeid) { %>
+            <li><a href="#" data-editormode="<%- modeid %>"><%- mode %></a></li>
+        <% }); %>
+        </ul>
+    </div>
+
+    <% if (options.edition) { %>
+    <div class="btn-group pull-right">
+        <a href="#" class="btn btn-link btn-danger action-editor-state" title="<%= hr.i18n.t("components.files.file.actions.state") %>"><i class="icon-circle"></I></a>
+    </div>
+    <div class="file-participants"></div>
+    <% } %>
+</div>
+<div class="editor">
+    <%= view.component("component.editor", {}, "editor") %>
+</div>

@@ -23750,7 +23750,7 @@ define('hr/core/view',[
             if (_.size(this.components) == 0) { this.ready(); return this; }
 
             var addComponent = _.bind(function(component) {
-                this.$("component[data-component='"+component.cid+"']").empty().append(component.$el);
+                this.$("component[data-component='"+component.cid+"']").replaceWith(component.$el);
                 component.defer(_.once(componentRendered));
                 component.render();
             }, this);
@@ -25527,7 +25527,7 @@ Logger, Requests, Urls, Storage, Cache, Template, Resources, Deferred, Queue, I1
         }
     }
 });
-define('hr/args',[],function() { return {"revision":1382136898923,"baseUrl":"/"}; });
+define('hr/args',[],function() { return {"revision":1382210055939,"baseUrl":"/"}; });
 /*! Socket.IO.js build:0.9.2, development. Copyright(c) 2011 LearnBoost <dev@learnboost.com> MIT Licensed */
 
 /**
@@ -30101,8 +30101,7 @@ define('codebox/box',[
 
     var Codebox = hr.Class.extend({
         defaults: {
-            baseUrl: "",
-            listenEvents: true
+            'baseUrl': ""
         },
 
         /*
@@ -30114,7 +30113,7 @@ define('codebox/box',[
 
             // Root file
             this.root = new File({
-                codebox: this
+                'codebox': this
             });
             this.root.getByPath("/");
 
@@ -30221,7 +30220,10 @@ define('codebox/box',[
         join: function(args) {
             var that = this;
             args = args || {};
-            return this.request("post", "/auth/join", args);
+
+            if (args.toJSON != null) args = args.toJSON();
+
+            return this.rpc("/auth/join", args);
         },
 
         /*
@@ -30727,6 +30729,976 @@ define("vendors/bootstrap/dropdown", function(){});
 
 define("vendors/bootstrap/modal", function(){});
 
+/* ========================================================================
+ * Bootstrap: tooltip.js v3.0.0
+ * http://twbs.github.com/bootstrap/javascript.html#tooltip
+ * Inspired by the original jQuery.tipsy by Jason Frame
+ * ========================================================================
+ * Copyright 2012 Twitter, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ======================================================================== */
+
+
++function ($) { 
+
+  // TOOLTIP PUBLIC CLASS DEFINITION
+  // ===============================
+
+  var Tooltip = function (element, options) {
+    this.type       =
+    this.options    =
+    this.enabled    =
+    this.timeout    =
+    this.hoverState =
+    this.$element   = null
+
+    this.init('tooltip', element, options)
+  }
+
+  Tooltip.DEFAULTS = {
+    animation: true
+  , placement: 'top'
+  , selector: false
+  , template: '<div class="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
+  , trigger: 'hover focus'
+  , title: ''
+  , delay: 0
+  , html: false
+  , container: false
+  }
+
+  Tooltip.prototype.init = function (type, element, options) {
+    this.enabled  = true
+    this.type     = type
+    this.$element = $(element)
+    this.options  = this.getOptions(options)
+
+    var triggers = this.options.trigger.split(' ')
+
+    for (var i = triggers.length; i--;) {
+      var trigger = triggers[i]
+
+      if (trigger == 'click') {
+        this.$element.on('click.' + this.type, this.options.selector, $.proxy(this.toggle, this))
+      } else if (trigger != 'manual') {
+        var eventIn  = trigger == 'hover' ? 'mouseenter' : 'focus'
+        var eventOut = trigger == 'hover' ? 'mouseleave' : 'blur'
+
+        this.$element.on(eventIn  + '.' + this.type, this.options.selector, $.proxy(this.enter, this))
+        this.$element.on(eventOut + '.' + this.type, this.options.selector, $.proxy(this.leave, this))
+      }
+    }
+
+    this.options.selector ?
+      (this._options = $.extend({}, this.options, { trigger: 'manual', selector: '' })) :
+      this.fixTitle()
+  }
+
+  Tooltip.prototype.getDefaults = function () {
+    return Tooltip.DEFAULTS
+  }
+
+  Tooltip.prototype.getOptions = function (options) {
+    options = $.extend({}, this.getDefaults(), this.$element.data(), options)
+
+    if (options.delay && typeof options.delay == 'number') {
+      options.delay = {
+        show: options.delay
+      , hide: options.delay
+      }
+    }
+
+    return options
+  }
+
+  Tooltip.prototype.getDelegateOptions = function () {
+    var options  = {}
+    var defaults = this.getDefaults()
+
+    this._options && $.each(this._options, function (key, value) {
+      if (defaults[key] != value) options[key] = value
+    })
+
+    return options
+  }
+
+  Tooltip.prototype.enter = function (obj) {
+    var self = obj instanceof this.constructor ?
+      obj : $(obj.currentTarget)[this.type](this.getDelegateOptions()).data('bs.' + this.type)
+
+    clearTimeout(self.timeout)
+
+    self.hoverState = 'in'
+
+    if (!self.options.delay || !self.options.delay.show) return self.show()
+
+    self.timeout = setTimeout(function () {
+      if (self.hoverState == 'in') self.show()
+    }, self.options.delay.show)
+  }
+
+  Tooltip.prototype.leave = function (obj) {
+    var self = obj instanceof this.constructor ?
+      obj : $(obj.currentTarget)[this.type](this.getDelegateOptions()).data('bs.' + this.type)
+
+    clearTimeout(self.timeout)
+
+    self.hoverState = 'out'
+
+    if (!self.options.delay || !self.options.delay.hide) return self.hide()
+
+    self.timeout = setTimeout(function () {
+      if (self.hoverState == 'out') self.hide()
+    }, self.options.delay.hide)
+  }
+
+  Tooltip.prototype.show = function () {
+    var e = $.Event('show.bs.'+ this.type)
+
+    if (this.hasContent() && this.enabled) {
+      this.$element.trigger(e)
+
+      if (e.isDefaultPrevented()) return
+
+      var $tip = this.tip()
+
+      this.setContent()
+
+      if (this.options.animation) $tip.addClass('fade')
+
+      var placement = typeof this.options.placement == 'function' ?
+        this.options.placement.call(this, $tip[0], this.$element[0]) :
+        this.options.placement
+
+      var autoToken = /\s?auto?\s?/i
+      var autoPlace = autoToken.test(placement)
+      if (autoPlace) placement = placement.replace(autoToken, '') || 'top'
+
+      $tip
+        .detach()
+        .css({ top: 0, left: 0, display: 'block' })
+        .addClass(placement)
+
+      this.options.container ? $tip.appendTo(this.options.container) : $tip.insertAfter(this.$element)
+
+      var pos          = this.getPosition()
+      var actualWidth  = $tip[0].offsetWidth
+      var actualHeight = $tip[0].offsetHeight
+
+      if (autoPlace) {
+        var $parent = this.$element.parent()
+
+        var orgPlacement = placement
+        var docScroll    = document.documentElement.scrollTop || document.body.scrollTop
+        var parentWidth  = this.options.container == 'body' ? window.innerWidth  : $parent.outerWidth()
+        var parentHeight = this.options.container == 'body' ? window.innerHeight : $parent.outerHeight()
+        var parentLeft   = this.options.container == 'body' ? 0 : $parent.offset().left
+
+        placement = placement == 'bottom' && pos.top   + pos.height  + actualHeight - docScroll > parentHeight  ? 'top'    :
+                    placement == 'top'    && pos.top   - docScroll   - actualHeight < 0                         ? 'bottom' :
+                    placement == 'right'  && pos.right + actualWidth > parentWidth                              ? 'left'   :
+                    placement == 'left'   && pos.left  - actualWidth < parentLeft                               ? 'right'  :
+                    placement
+
+        $tip
+          .removeClass(orgPlacement)
+          .addClass(placement)
+      }
+
+      var calculatedOffset = this.getCalculatedOffset(placement, pos, actualWidth, actualHeight)
+
+      this.applyPlacement(calculatedOffset, placement)
+      this.$element.trigger('shown.bs.' + this.type)
+    }
+  }
+
+  Tooltip.prototype.applyPlacement = function(offset, placement) {
+    var replace
+    var $tip   = this.tip()
+    var width  = $tip[0].offsetWidth
+    var height = $tip[0].offsetHeight
+
+    // manually read margins because getBoundingClientRect includes difference
+    var marginTop = parseInt($tip.css('margin-top'), 10)
+    var marginLeft = parseInt($tip.css('margin-left'), 10)
+
+    // we must check for NaN for ie 8/9
+    if (isNaN(marginTop))  marginTop  = 0
+    if (isNaN(marginLeft)) marginLeft = 0
+
+    offset.top  = offset.top  + marginTop
+    offset.left = offset.left + marginLeft
+
+    $tip
+      .offset(offset)
+      .addClass('in')
+
+    // check to see if placing tip in new offset caused the tip to resize itself
+    var actualWidth  = $tip[0].offsetWidth
+    var actualHeight = $tip[0].offsetHeight
+
+    if (placement == 'top' && actualHeight != height) {
+      replace = true
+      offset.top = offset.top + height - actualHeight
+    }
+
+    if (/bottom|top/.test(placement)) {
+      var delta = 0
+
+      if (offset.left < 0) {
+        delta       = offset.left * -2
+        offset.left = 0
+
+        $tip.offset(offset)
+
+        actualWidth  = $tip[0].offsetWidth
+        actualHeight = $tip[0].offsetHeight
+      }
+
+      this.replaceArrow(delta - width + actualWidth, actualWidth, 'left')
+    } else {
+      this.replaceArrow(actualHeight - height, actualHeight, 'top')
+    }
+
+    if (replace) $tip.offset(offset)
+  }
+
+  Tooltip.prototype.replaceArrow = function(delta, dimension, position) {
+    this.arrow().css(position, delta ? (50 * (1 - delta / dimension) + "%") : '')
+  }
+
+  Tooltip.prototype.setContent = function () {
+    var $tip  = this.tip()
+    var title = this.getTitle()
+
+    $tip.find('.tooltip-inner')[this.options.html ? 'html' : 'text'](title)
+    $tip.removeClass('fade in top bottom left right')
+  }
+
+  Tooltip.prototype.hide = function () {
+    var that = this
+    var $tip = this.tip()
+    var e    = $.Event('hide.bs.' + this.type)
+
+    function complete() {
+      if (that.hoverState != 'in') $tip.detach()
+    }
+
+    this.$element.trigger(e)
+
+    if (e.isDefaultPrevented()) return
+
+    $tip.removeClass('in')
+
+    $.support.transition && this.$tip.hasClass('fade') ?
+      $tip
+        .one($.support.transition.end, complete)
+        .emulateTransitionEnd(150) :
+      complete()
+
+    this.$element.trigger('hidden.bs.' + this.type)
+
+    return this
+  }
+
+  Tooltip.prototype.fixTitle = function () {
+    var $e = this.$element
+    if ($e.attr('title') || typeof($e.attr('data-original-title')) != 'string') {
+      $e.attr('data-original-title', $e.attr('title') || '').attr('title', '')
+    }
+  }
+
+  Tooltip.prototype.hasContent = function () {
+    return this.getTitle()
+  }
+
+  Tooltip.prototype.getPosition = function () {
+    var el = this.$element[0]
+    return $.extend({}, (typeof el.getBoundingClientRect == 'function') ? el.getBoundingClientRect() : {
+      width: el.offsetWidth
+    , height: el.offsetHeight
+    }, this.$element.offset())
+  }
+
+  Tooltip.prototype.getCalculatedOffset = function (placement, pos, actualWidth, actualHeight) {
+    return placement == 'bottom' ? { top: pos.top + pos.height,   left: pos.left + pos.width / 2 - actualWidth / 2  } :
+           placement == 'top'    ? { top: pos.top - actualHeight, left: pos.left + pos.width / 2 - actualWidth / 2  } :
+           placement == 'left'   ? { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left - actualWidth } :
+        /* placement == 'right' */ { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left + pos.width   }
+  }
+
+  Tooltip.prototype.getTitle = function () {
+    var title
+    var $e = this.$element
+    var o  = this.options
+
+    title = $e.attr('data-original-title')
+      || (typeof o.title == 'function' ? o.title.call($e[0]) :  o.title)
+
+    return title
+  }
+
+  Tooltip.prototype.tip = function () {
+    return this.$tip = this.$tip || $(this.options.template)
+  }
+
+  Tooltip.prototype.arrow = function () {
+    return this.$arrow = this.$arrow || this.tip().find('.tooltip-arrow')
+  }
+
+  Tooltip.prototype.validate = function () {
+    if (!this.$element[0].parentNode) {
+      this.hide()
+      this.$element = null
+      this.options  = null
+    }
+  }
+
+  Tooltip.prototype.enable = function () {
+    this.enabled = true
+  }
+
+  Tooltip.prototype.disable = function () {
+    this.enabled = false
+  }
+
+  Tooltip.prototype.toggleEnabled = function () {
+    this.enabled = !this.enabled
+  }
+
+  Tooltip.prototype.toggle = function (e) {
+    var self = e ? $(e.currentTarget)[this.type](this.getDelegateOptions()).data('bs.' + this.type) : this
+    self.tip().hasClass('in') ? self.leave(self) : self.enter(self)
+  }
+
+  Tooltip.prototype.destroy = function () {
+    this.hide().$element.off('.' + this.type).removeData('bs.' + this.type)
+  }
+
+
+  // TOOLTIP PLUGIN DEFINITION
+  // =========================
+
+  var old = $.fn.tooltip
+
+  $.fn.tooltip = function (option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.tooltip')
+      var options = typeof option == 'object' && option
+
+      if (!data) $this.data('bs.tooltip', (data = new Tooltip(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  $.fn.tooltip.Constructor = Tooltip
+
+
+  // TOOLTIP NO CONFLICT
+  // ===================
+
+  $.fn.tooltip.noConflict = function () {
+    $.fn.tooltip = old
+    return this
+  }
+
+}(window.jQuery);
+
+define("vendors/bootstrap/tooltip", function(){});
+
+define('views/layouts/menubar',[
+    "Underscore",
+    "jQuery",
+    "hr/hr",
+    "codebox/box"
+], function(_, $, hr, Codebox) {
+
+    var MenuBarView = hr.View.extend({
+        className: "layout-menubar",
+        template: "layouts/menubar.html",
+        defaults: {},
+        events: {},
+
+        // Finish rendering
+        finish: function() {
+            this.$(".menu-item").tooltip({
+                'placement': 'right',
+                'delay': {
+                    'show': 600,
+                    'hide': 0
+                }
+            });
+
+            return MenuBarView.__super__.finish.apply(this, arguments);
+        }
+    });
+
+    // Register as template component
+    hr.View.Template.registerComponent("layout.menubar", MenuBarView);
+
+    return MenuBarView;
+});
+define('views/layouts/lateralbar',[
+    "Underscore",
+    "jQuery",
+    "hr/hr",
+    "codebox/box"
+], function(_, $, hr, Codebox) {
+
+    var LateralBarView = hr.View.extend({
+        className: "layout-lateralbar",
+        template: "layouts/lateralbar.html",
+        defaults: {},
+        events: {}
+    });
+
+    // Register as template component
+    hr.View.Template.registerComponent("layout.lateralbar", LateralBarView);
+
+    return LateralBarView;
+});
+define('utils/dragdrop',[
+    'jQuery'
+], function ($) {
+    var DragDrop = {
+        /*
+         *  Init drag on a event
+         *  @e : dom event
+         *  @effect : effect allowed : copy, ...
+         */
+        drag: function(e, effect) {
+            if (e != null) {
+                var ev = e.originalEvent;
+                ev.dataTransfer.effectAllowed = effect;
+                return true;
+            } else {
+                return false;
+            }
+        },
+
+        /*
+         *  Check drag is gogod for droping
+         *  @e : dom event
+         *  @attr : data require
+         */
+        checkDrop: function(e, attr) {
+            return _.contains(e.originalEvent.dataTransfer.types, attr);
+        },
+
+        /*
+         *  Init dragover on a event
+         *  @e : dom event
+         *  @effect : effect allowed : copy, ...
+         */
+        dragover: function(e, effect) {
+            if (e != null) {
+                var ev = e.originalEvent;
+                if (ev.preventDefault) ev.preventDefault();
+                ev.dataTransfer.dropEffect = effect;
+                return true;
+            } else {
+                return false;
+            }
+        },
+
+        /*
+         *  Init drop event
+         *  @e : dom event
+         */
+        drop: function(e, effect) {
+            if (e != null) {
+                var ev = e.originalEvent;
+                if (ev.stopPropagation) ev.stopPropagation();
+                return true;
+            } else {
+                return false;
+            }
+        },
+
+        /*
+         *  Define drag data
+         *  @e : dom event
+         *  @attr : name of the data
+         *  @data : data
+         */
+        setData: function(e, attr, data) {
+            if (e != null) {
+                var ev = e.originalEvent;
+                ev.dataTransfer.setData(attr, JSON.stringify(data));
+                return true;
+            } else {
+                return false;
+            }
+        },
+
+        /*
+         *  Get drag data
+         *  @e : dom event
+         *  @attr : name of the data
+         */
+        getData: function(e, attr) {
+            if (e != null) {
+                var ev = e.originalEvent;
+                var o = ev.dataTransfer.getData(attr);
+                if (o == null) {
+                    return null;
+                }
+                try {
+                    var obj = JSON.parse(o);
+                    return obj;
+                } catch(err) {
+                    return null;
+                } 
+            } else {
+                return null;
+            }
+        },
+    };
+    return DragDrop;
+});
+define('views/components/tabs',[
+    "Underscore",
+    "jQuery",
+    "hr/hr",
+    "utils/dragdrop"
+], function(_, $, hr, DragDrop) {
+    // Tab header
+    var TabView = hr.View.extend({
+        className: "component-tab",
+        defaults: {
+            title: "",
+            tabid: "",
+            close: true
+        },
+        events: {
+            "click":        "open",
+            "click .close": "close",
+            "dblclick":     "createSection",
+            "dragstart":    "dragStart"
+        },
+
+        // Constructor
+        initialize: function() {
+            TabView.__super__.initialize.apply(this, arguments);
+
+            this.$el.attr("draggable", true);
+            this.tabid = this.options.tabid;
+            this.tabs = this.parent;
+            this.section = this.options.section || 0;
+
+            return this;
+        },
+
+        // Render the tab
+        render: function() {
+            this.$el.empty();
+
+            var inner = $("<div>", {
+                "class": "inner",
+                "html": this.tabs.tabs[this.tabid].title
+            }).appendTo(this.$el);
+
+            if (this.options.close) {
+                $("<a>", {
+                    "class": "close",
+                    "href": "#",
+                    "html": "&times;"
+                }).prependTo(inner);
+            }
+            return this.ready();
+        },
+
+        // Return true if is active
+        isActive: function() {
+            return this.$el.hasClass("active");
+        },
+
+        // Set section
+        setSection: function(section) {
+            this.section = section;
+            this.open();
+            this.tabs.render();
+        },
+
+        // Create section
+        createSection: function(section) {
+            this.setSection(_.uniqueId("section"));
+        },
+
+        // (event) open
+        open: function(e) {
+            if (e != null) e.preventDefault();
+            this.tabs.open(this.tabid);
+        },
+
+        // (event) Drag start
+        dragStart: function(e) {
+            DragDrop.drag(e, "move");
+            DragDrop.setData(e, "tab", this.tabid);
+        },
+
+        // (event) close
+        close: function(e, force) {
+            if (e != null) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            this.tabs.close(this.tabid, force);
+        }
+    });
+
+    // Tab body view
+    var TabPanelView = hr.View.extend({
+        className: "component-tab-panel",
+
+        // Constructor
+        initialize: function() {
+            TabPanelView.__super__.initialize.apply(this, arguments);
+            this.tabid = this.options.tabid;
+            this.tabs = this.parent;
+            //this.setKeyboardShortcuts(this.navigations);
+            return this;
+        },
+
+        // Close the tab
+        closeTab: function(e, force) {
+            if (e != null) e.preventDefault();
+            this.tabs.close(this.tabid, force);
+        },
+
+        // Set tab title
+        setTabTitle: function(t) {
+            this.tabs.tabs[this.tabid].title = t;
+            this.tabs.tabs[this.tabid].tab.render();
+            return this;
+        },
+
+        // Set tab title
+        setTabId: function(t) {
+            this.tabs.tabs[this.tabid].uniqueId = t;
+            return this;
+        },
+
+        // Set tab type
+        setTabType: function(t) {
+            this.tabs.tabs[this.tabid].type = t;
+            return this;
+        },
+
+        // Return if is active
+        isActiveTab: function() {
+            var active = this.tabs.getCurrentTab();
+            return !(active == null || active.tabid != this.tabid);
+        }
+    });
+
+    // Complete tabs system
+    var TabsView = hr.View.extend({
+        className: "component-tabs",
+
+        // Constructor
+        initialize: function(options) {
+            TabsView.__super__.initialize.apply(this, arguments);
+            this.tabs = {};
+            this.activeTab = null;
+            return this;
+        },
+
+        // Render all tabs
+        render: function() {
+            // Empty view
+            this.empty();
+
+            // Check tabs
+            this.checkTabs();
+
+            // Calcul number of sections
+            var sections = this.getSections();
+            var sections_n = _.max([1, _.size(sections)]);
+            var section_width = Math.floor(100/sections_n);
+
+
+            // Add different section
+            _.each(sections, function(section, sectionIndex) {
+                var section_el, section_tabs, section_tabs_content, css;
+                section_el = $("<div>", {
+                    "class": "section",
+                    "css": {
+                        "width": section_width+"%",
+                        "left": (sectionIndex*section_width)+"%"
+                    },
+                }).appendTo(this.$el);
+                section_el.on('dragleave', function(e) {
+                    if (DragDrop.checkDrop(e, "tab")) {
+                        section_el.removeClass("dragover");
+                    }
+                });
+                section_el.on('dragover', function(e) {
+                    if (DragDrop.checkDrop(e, "tab")) {
+                        DragDrop.dragover(e, 'move');
+                        section_el.addClass("dragover");
+                    }
+                });
+                section_el.on('drop', _.bind(function(e) {
+                    if (DragDrop.checkDrop(e, "tab")) {
+                        section_el.removeClass("dragover");
+                        DragDrop.drop(e);
+                        this.tabs[DragDrop.getData(e, "tab")].tab.setSection(section);
+                    }
+                }, this));
+
+                section_tabs = $("<div>", {
+                    "class": "tabs-header"
+                }).appendTo(section_el);
+
+                section_tabs_content = $("<div>", {
+                    "class": "tabs-content"
+                }).appendTo(section_el);
+
+                _.each(this.tabs, function(tab) {
+                    if (tab.tab.section != section) return;
+
+                    tab.tab.$el.appendTo(section_tabs);
+                    tab.view.$el.appendTo(section_tabs_content);
+                }, this);
+            }, this);
+            this.delegateEvents();
+
+            return this.ready();
+        },
+
+        /*
+         *  Add a tab
+         *  @V : view class
+         *  @constructor : contructor options
+         *  @options : options
+         */
+        add: function(V, construct, options) {
+            var tabid, tabinfos;
+            options= _.defaults(options || {}, {
+                silent: false,
+                render: true,
+
+                title: "untitled",      // Base title for the tab
+                type: "default",
+                uniqueId: null,         // Unique id for unicity of the tab
+                close: true,            // Enable/disable close button
+                open: true,             // Open after creation
+                section: 0,             // Section to open in
+                parentId: null          // Parent tabid
+            });
+
+            tabid = options.uniqueId != null ? this.checkTabExists(options.uniqueId) : null;
+            
+            if (tabid == null) {
+                tabid = _.uniqueId("tab");
+                tabinfos = {
+                    "tabid": tabid,
+                    "title": options.title,
+                    "uniqueId": options.uniqueId,
+                    "type": this.options.type,
+                    "view": null,
+                    "tab": null
+                };
+                this.tabs[tabid] = tabinfos;
+
+                this.tabs[tabid].tab = new TabView({
+                    "tabid": tabid,
+                    "close": options.close,
+                    "section": options.section
+                }, this);
+
+                this.tabs[tabid].view = new V(_.extend(construct || {}, {
+                    "tabid": tabid,
+                }), this);
+
+                if (options.parentId != null) {
+                    this.on("tab:"+options.parentId+":close", _.partial(this.tabs[tabid].tab.close, null, true), this.tabs[tabid].tab);
+                }
+
+                this.tabs[tabid].view.trigger("tab:ready");
+
+                this.tabs[tabid].tab.render();
+                this.tabs[tabid].view.render();
+
+                this.addComponent("tabs_tabs", this.tabs[tabid].tab);
+                this.addComponent("tabs_content", this.tabs[tabid].view);
+
+                if (options.render) this.render();
+            }
+            if (this.activeTab == null || options.open) this.open(tabid);
+            return this.tabs[tabid].view;
+        },
+
+        // Return list of differents sections names
+        getSections: function() {
+            return _.uniq(_.map(this.tabs, function(tab) {
+                return tab.tab.section;
+            }));
+        },
+
+        // Return list of tabs for a section
+        getSectionTabs: function(section) {
+            return _.filter(this.tabs, function(tab) {
+                return tab.tab.section == section;
+            });
+        },
+
+        // Return active tab for a section
+        getActiveTab: function(section) {
+            section = section || 0;
+            return _.reduce(this.tabs, function(state, tab) {
+                if (tab.tab.section != section) return state;
+                if (tab.tab.isActive()) return tab;
+                return state;
+            }, null);
+        },
+
+        // Return current (last) active tab
+        getCurrentTab: function() {
+            if (this.activeTab == null || this.tabs[this.activeTab] == null) return null;
+            return this.tabs[this.activeTab];
+        },
+
+        // Return active tab by type
+        getActiveTabByType: function(type) {
+            return _.reduce(this.tabs, function(state, tab) {
+                if (tab.type != type) return state;
+                if (tab.tab.isActive()) return tab;
+                return state;
+            }, null);
+        },
+
+        // Check if a tab with a uniqueid exists
+        checkTabExists: function(uniqueId) {
+            return _.reduce(this.tabs, function(state, tab) {
+                return state || (uniqueId == tab.uniqueId ? tab.tabid : null);
+            }, null)
+        },
+
+        // Check all tabs
+        checkTabs: function() {
+            var sections = this.getSections();
+            _.each(sections, function(section) {
+                var active = this.getActiveTab(section);
+                if (active != null) return;
+                this.getSectionTabs(section)[0].tab.open();
+            }, this);
+        },
+
+        // Open a tab by tabid
+        open: function(tabid) {
+            var active ,section;
+            this.activeTab = tabid;
+
+            section = _.reduce(this.tabs, function(s, tab) {
+                if (tab.tabid == tabid) {
+                    return tab.tab.section;
+                }
+                return s;
+            }, 0);
+
+            _.each(this.tabs, function(tab) {
+                if (tab.tab.section != section) return;
+                active = (tab.tabid == this.activeTab);
+                tab.tab.$el.toggleClass("active", active);
+                tab.view.$el.toggleClass("active", active);
+            }, this);
+
+            this.checkTabs();
+            return this;
+        },
+
+        // Close a tab by tabid
+        close: function(tabid, force) {
+            //if (_.size(this.tabs) <= 1) return this; 
+            if (this.tabs[tabid] == null) return this;
+
+            // Triger in tab
+            this.tabs[tabid].view.trigger("tab:close");
+
+            delete this.tabs[tabid].view;
+            delete this.tabs[tabid];
+
+            // Trigger global
+            this.trigger("tab:"+tabid+":close");
+            this.trigger("tabs:close", tabid);
+            if (_.size(this.tabs) == 0) this.trigger("tabs:default");
+            this.render();
+            return this;
+        },
+    }, {
+        Panel: TabPanelView
+    });
+
+    // Register as a template component
+    hr.View.Template.registerComponent("component.tabs", TabsView);
+
+    return TabsView;
+});
+define('views/tabs/base',[
+    "Underscore",
+    "jQuery",
+    "hr/hr",
+    "views/components/tabs"
+], function(_, $, hr, TabsView) {
+    var BaseTab = TabsView.Panel.extend({
+        
+    });
+
+    return BaseTab;
+});
+define('views/tabs/file',[
+    "Underscore",
+    "jQuery",
+    "hr/hr",
+    "views/tabs/base"
+], function(_, $, hr, BaseTab) {
+    var FileTab = BaseTab.extend({
+        
+    });
+
+    return FileTab;
+});
+define('views/layouts/body',[
+    "Underscore",
+    "jQuery",
+    "hr/hr",
+    "codebox/box",
+    "views/tabs/file"
+], function(_, $, hr, Codebox, FileTab) {
+
+    var BodyView = hr.View.extend({
+        className: "layout-body",
+        template: "layouts/body.html",
+        defaults: {},
+        events: {},
+
+        // Finish rendering
+        finish: function() {
+            this.components.tabs.add(FileTab);
+
+            return BodyView.__super__.finish.apply(this, arguments);
+        },
+    });
+
+    // Register as template component
+    hr.View.Template.registerComponent("layout.body", BodyView);
+
+    return BodyView;
+});
 define('utils/languages',[
     'Underscore'
 ], function (_) {
@@ -31568,25 +32540,24 @@ define('views/components/files/base',[
     "Underscore",
     "jQuery",
     "hr/hr",
+    "codebox/box",
     "codebox/file"
-], function(_, $, hr, File) {
+], function(_, $, hr, Codebox, File) {
 
     var FilesBaseView = hr.View.extend({
         defaults: {
-            codebox: null,
-            path: null,
-            base: "/",
-            edition: true,
-            notifications: true
+            'path': null,
+            'base': "/",
+            'edition': true,
+            'notifications': true
         },
-        events: {
-            
-        },
+        events: {},
 
+        // Constructor
         initialize: function(options) {
             FilesBaseView.__super__.initialize.apply(this, arguments);
             this.path = null;
-            this.codebox = this.options.codebox;
+            this.codebox = Codebox.current;
             if (this.codebox == null) {
                 throw "Error : creating fileview without codebox context";
             }
@@ -31598,14 +32569,16 @@ define('views/components/files/base',[
             return this;
         },
 
+        // Template rendering context
         templateContext: function() {
             return {
-                options: this.options,
-                file: this.model,
-                view: this
+                'options': this.options,
+                'file': this.model,
+                'view': this
             };
         },
 
+        // Render the file view
         render: function() {
             if (this.model.path() == null) {
                 return this;
@@ -31613,11 +32586,12 @@ define('views/components/files/base',[
             return FilesBaseView.__super__.render.apply(this, arguments);
         },
 
+        // Finish rendering
         finish: function() {
             return FilesBaseView.__super__.finish.apply(this, arguments);
         },
 
-        /* Change the file by loading an other file */
+        // Change the file by loading an other file
         load: function(path) {
             var that = this;
             this.model.getByPath(path).then(function() {
@@ -31814,8 +32788,8 @@ define('views/components/files/directory',[
         className: "component-files-directory",
         template: "components/files/directory.html",
         defaults: _.extend({}, FilesBaseView.prototype.defaults, {
-            navigate: true,
-            hiddenFiles: true
+            'navigate': true,
+            'hiddenFiles': true
         }),
         events: {
             "click .file": "selectOnlyFile",
@@ -31833,6 +32807,7 @@ define('views/components/files/directory',[
             "click .action-file-download": "actionDownload",
         },
 
+        // Constructor
         initialize: function(options) {
             FilesDirectoryView.__super__.initialize.apply(this, arguments);
             this.files = null;
@@ -31868,6 +32843,7 @@ define('views/components/files/directory',[
             return this;
         },
 
+        // Template rendering context
         templateContext: function() {
             return {
                 options: this.options,
@@ -31878,6 +32854,7 @@ define('views/components/files/directory',[
             };
         },
 
+        // Render directory view
         render: function() {
             if (this.files == null) {
                 return this;
@@ -31885,6 +32862,7 @@ define('views/components/files/directory',[
             return FilesDirectoryView.__super__.render.apply(this, arguments);
         },
 
+        // Finish rendering
         finish: function() {
             this.unselectFiles();
             this.$(".file-hidden").toggle(!this.options.hiddenFiles);
@@ -31894,21 +32872,21 @@ define('views/components/files/directory',[
             return FilesDirectoryView.__super__.finish.apply(this, arguments);
         },
 
-        /* Return array of files selected */
+        // Return array of files selected
         getFilesSelection: function() {
             return _.filter(this.files, function(file) {
                 return _.contains(this.selectedFiles, file.path());
             }, this);
         },
 
-        /* (action) toggle hidden files */
+        // (action) toggle hidden files
         toggleHiddenFiles: function(e) {
             if (e != null) e.preventDefault();
             this.options.hiddenFiles = !this.options.hiddenFiles;
             return this.render();
         },
 
-        /* Refresh list */
+        // Refresh list
         refresh: function() {
             var that = this;
             if (this.model.path() == null || !this.model.isDirectory()) { return; }
@@ -31920,13 +32898,13 @@ define('views/components/files/directory',[
             });
         },
 
-        /* (action) Refresh files list */
+        // (action) Refresh files list
         actionRefresh: function(e) {
             e.preventDefault();
             this.load(this.model.path());  
         },
 
-        /* (action) Create a new file */
+        // (action) Create a new file
         actionCreate: function(e) {
             var self = this;
             e.preventDefault();
@@ -31935,7 +32913,7 @@ define('views/components/files/directory',[
             });
         },
 
-        /* (action) Create a new directory */
+        // (action) Create a new directory
         actionMkdir: function(e) {
             var self = this;
             e.preventDefault();
@@ -31944,7 +32922,7 @@ define('views/components/files/directory',[
             });
         },
 
-        /* (action) Rename a file */
+        // (action) Rename a file
         actionRename: function(e) {
             var selection;
             var self = this;
@@ -31960,7 +32938,7 @@ define('views/components/files/directory',[
             });
         },
 
-        /* (action) Delete files */
+        // (action) Delete files
         actionDelete: function(e) {
             var selection;
             var self = this;
@@ -31979,7 +32957,7 @@ define('views/components/files/directory',[
             });
         },
 
-        /* (action) Download a file */
+        // (action) Download a file
         actionDownload: function(e) {
             var selection;
             var self = this;
@@ -31993,43 +32971,41 @@ define('views/components/files/directory',[
             });
         },
 
-        /* (action) Upload a file */
+        // (action) Upload a file
         actionUpload: function(e) {
             var self = this;
             e.preventDefault();
             this.$(".uploader").trigger('click');
         },
 
-        /* (action) Upload a directory */
+        // (action) Upload a directory
         actionUploadDirectory: function(e) {
             var self = this;
             e.preventDefault();
             this.$(".uploader-directory").trigger('click');
         },
 
-        /*
-         *  (event) Start files upload
-         */
+        // (event) Start files upload
         uploadStart: function(e) {
             e.preventDefault();
             this.uploader.upload(e.currentTarget.files);
         },
 
-        /* (event) Select the files */
+        // (event) Select the files
         selectFile: function(e) {
             e.stopPropagation();
             var file = $(e.currentTarget).parents(".file");
             this.toggleFileSelection(file, $(e.currentTarget).is(":checked"));
         },
 
-        /* (event) Select only one file */
+        // (event) Select only one file
         selectOnlyFile: function(e) {
             this.unselectFiles();
             var file = $(e.currentTarget);
             this.toggleFileSelection(file, true);
         },
 
-        /* (event) Unselect files */
+        // Unselect files
         unselectFiles: function() {
             this.selectedFiles = [];
             this.$(".file").removeClass("selected");
@@ -32037,7 +33013,7 @@ define('views/components/files/directory',[
             this.trigger("selection:change", this.selectedFiles);
         },
 
-        /* (event) Toggle the selection of a file */
+        // (event) Toggle the selection of a file
         toggleFileSelection: function(file, st) {
             var path;
             file = $(file);
@@ -32058,6 +33034,8 @@ define('views/components/files/directory',[
             this.trigger("selection:change", this.selectedFiles);
         },
     });
+
+    // Register as template component
     hr.View.Template.registerComponent("component.files.directory", FilesDirectoryView);
 
     return FilesDirectoryView;
@@ -32073,63 +33051,56 @@ define('views/components/files/file',[
     var FileEditorView = FilesBaseView.extend({
         className: "component-files-editor",
         template: "components/files/file.html",
-        defaults: _.extend({}, FilesBaseView.prototype.defaults, {
-            
-        }),
         events: {
-            "click .action-file-delete": "deleteFile",
-            "click .action-editor-state": "pingSync",
-            "click .action-file-fullscreen": "toggleFullscreen",
-            "click a[data-editormode]": "changeEditorMode"
+            "click .action-file-delete":        "deleteFile",
+            "click .action-editor-state":       "pingSync",
+            "click .action-file-fullscreen":    "toggleFullscreen",
+            "click a[data-editormode]":         "changeEditorMode"
         },
 
-        initialize: function(options) {
-            FileEditorView.__super__.initialize.apply(this, arguments);
-            return this;
-        },
-
+        // Finish rendering
         finish: function() {
+            // Bind editor mode changements
             this.components.editor.on("change:mode", function() {
                 this.$(".action-file-mode").text(this.components.editor.getMode());
             }, this);
-            this.components.editor.setFile(this.model, {
-                sync: this.options.edition
-            });
+
+            // Bind editor sync state changements
             this.components.editor.on("sync:state", function(state) {
                 this.$(".action-editor-state").toggleClass("btn-danger", !state);
                 this.$(".action-editor-state").toggleClass("btn-success", state);
             }, this);
+
+            // Bind collaborators changements
             this.components.editor.on("participants:change", this.updateParticipants, this);
 
-            
-            if (this.components.plugins != null) {
-                this.components.plugins.on("open", function(plugin) {
-                    this.trigger("plugin:open", plugin);
-                }, this);
-            }
+            // Define file for code editor
+            this.components.editor.setFile(this.model, {
+                'sync': this.options.edition
+            });
 
             return FileEditorView.__super__.finish.apply(this, arguments);
         },
 
-        /* (action) Toggle fullscreen */
+        // (action) Toggle fullscreen
         toggleFullscreen: function(e) {
             e.preventDefault();
             this.$el.toggleClass("mode-fullscreen");
         },
 
-        /* (action) change editor mode */
+        // (action) change editor mode
         changeEditorMode: function(e) {
             e.preventDefault();
             var mode = $(e.currentTarget).data("editormode");
             this.components.editor.setMode(mode);
         },
 
-        /* (action) ping state */
+        // (action) ping state
         pingState: function(e) {
             e.preventDefault();
         },
 
-        /* (action) delete the file */
+        // (action) delete the file
         deleteFile: function(e) {
             e.preventDefault();
             Dialogs.confirm(hr.I18n.t("components.files.file.dialogs.delete")).done(_.bind(function(state) {
@@ -32137,7 +33108,7 @@ define('views/components/files/file',[
             }, this));
         },
 
-        /* Update participants list */
+        // Update participants list
         updateParticipants: function() {
             this.$(".file-participants").empty();
             _.each(this.components.editor.participants, function(participant) {
@@ -32145,6 +33116,8 @@ define('views/components/files/file',[
             }, this);
         }
     });
+
+    // Register as template component
     hr.View.Template.registerComponent("component.files.file", FileEditorView);
 
     return FileEditorView;
@@ -32161,21 +33134,15 @@ define('views/components/files/normal',[
     var FileView = FilesBaseView.extend({
         className: "component-file",
         template: "components/files/normal.html",
-        defaults: _.extend({}, FilesBaseView.prototype.defaults, {
-            
-        }),
-        events: {
-            
-        },
+        events: {},
 
+        // Constructor
         initialize: function(options) {
             FileView.__super__.initialize.apply(this, arguments);
             return this;
         },
-        render: function() {
-            if (this.model.path() == null) return this;
-            return FileView.__super__.render.apply(this, arguments);
-        },
+
+        // Finish Rendering
         finish: function() {
             this.$('.files-toolbar .btn').tooltip({
                 placement: "bottom"
@@ -32187,6 +33154,8 @@ define('views/components/files/normal',[
             return FileView.__super__.finish.apply(this, arguments);
         },
     });
+
+    // Register as template component
     hr.View.Template.registerComponent("component.file", FileView);
 
     return FileView;
@@ -32197,25 +33166,31 @@ define('views/components/files/tree',[
     "hr/hr",
     "views/components/files/base"
 ], function(_, $, hr, FilesBaseView) {
+    
+    // File item in the tree
     var FilesTreeViewItem = FilesBaseView.extend({
         tagName: "li",
         className: "component-files-tree-item",
-        template: "components/files/tree.html",
-        defaults: _.extend({}, FilesBaseView.prototype.defaults, {
-            
-        }),
+        template: "components/files/tree.element.html",
         events: {
             "click .name": "select",
             "dblclick .name": "open"
         },
 
+        // Constructor
         initialize: function(options) {
             FilesTreeViewItem.__super__.initialize.apply(this, arguments);
             this.subfiles = null;
             return this;
         },
 
-        /* (event) select the file : extend tree */
+        // Finish rendering
+        finish: function() {
+            this.$el.toggleClass("type-directory", this.model.isDirectory());
+            return FilesTreeViewItem.__super__.finish.apply(this, arguments);
+        },
+
+        // (event) select the file : extend tree
         select: function(e) {
             if (e != null) {
                 e.preventDefault();
@@ -32237,7 +33212,7 @@ define('views/components/files/tree',[
             }
         },
 
-        /* (event) open the file or directory  */
+        // (event) open the file or directory
         open: function(e) {
             if (e != null) {
                 e.preventDefault();
@@ -32248,16 +33223,12 @@ define('views/components/files/tree',[
         }
     });
 
+    // Complete files tree
     var FilesTreeView = FilesBaseView.extend({
         tagName: "ul",
         className: "component-files-tree",
-        defaults: _.extend({}, FilesBaseView.prototype.defaults, {
-            
-        }),
-        events: {
-            
-        },
 
+        // Render the files tree
         render: function() {
             var that = this;
             this.$el.empty();
@@ -32265,7 +33236,8 @@ define('views/components/files/tree',[
             this.model.listdir().done(function(files) {
                 that.empty();
                 _.each(files, function(file) {
-                    if (file.isHidden()) { return; }
+                    if (file.isHidden()) return;
+
                     var v = new FilesTreeViewItem({
                         "codebox": that.codebox,
                         "model": file
@@ -32278,11 +33250,18 @@ define('views/components/files/tree',[
             return this.ready();
         },
     });
+
+    // Register as template component
     hr.View.Template.registerComponent("component.files.tree", FilesTreeView);
 
     return FilesTreeView;
 });
 define('views/views',[
+	"views/layouts/menubar",
+	"views/layouts/lateralbar",
+	"views/layouts/body",
+
+	"views/components/tabs",
     "views/components/files/directory",
     "views/components/files/normal",
     "views/components/files/file",
@@ -32290,14 +33269,305 @@ define('views/views',[
 ], function() {
 	return arguments;
 });
+/**
+ * @license RequireJS text 1.0.0 Copyright (c) 2010-2011, The Dojo Foundation All Rights Reserved.
+ * Available via the MIT or new BSD license.
+ * see: http://github.com/jrburke/requirejs for details
+ */
+/*jslint regexp: false, nomen: false, plusplus: false, strict: false */
+/*global require: false, XMLHttpRequest: false, ActiveXObject: false,
+  define: false, window: false, process: false, Packages: false,
+  java: false, location: false */
+
+(function () {
+    var progIds = ['Msxml2.XMLHTTP', 'Microsoft.XMLHTTP', 'Msxml2.XMLHTTP.4.0'],
+        xmlRegExp = /^\s*<\?xml(\s)+version=[\'\"](\d)*.(\d)*[\'\"](\s)*\?>/im,
+        bodyRegExp = /<body[^>]*>\s*([\s\S]+)\s*<\/body>/im,
+        hasLocation = typeof location !== 'undefined' && location.href,
+        defaultProtocol = hasLocation && location.protocol && location.protocol.replace(/\:/, ''),
+        defaultHostName = hasLocation && location.hostname,
+        defaultPort = hasLocation && (location.port || undefined),
+        buildMap = [];
+
+    define('text',[],function () {
+        var text, get, fs;
+
+        if (typeof window !== "undefined" && window.navigator && window.document) {
+            get = function (url, callback) {
+                var xhr = text.createXhr();
+                xhr.open('GET', url, true);
+                xhr.onreadystatechange = function (evt) {
+                    //Do not explicitly handle errors, those should be
+                    //visible via console output in the browser.
+                    if (xhr.readyState === 4) {
+                        callback(xhr.responseText);
+                    }
+                };
+                xhr.send(null);
+            };
+        } else if (typeof process !== "undefined" &&
+                 process.versions &&
+                 !!process.versions.node) {
+            //Using special require.nodeRequire, something added by r.js.
+            fs = require.nodeRequire('fs');
+
+            get = function (url, callback) {
+                callback(fs.readFileSync(url, 'utf8'));
+            };
+        } else if (typeof Packages !== 'undefined') {
+            //Why Java, why is this so awkward?
+            get = function (url, callback) {
+                var encoding = "utf-8",
+                    file = new java.io.File(url),
+                    lineSeparator = java.lang.System.getProperty("line.separator"),
+                    input = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(file), encoding)),
+                    stringBuffer, line,
+                    content = '';
+                try {
+                    stringBuffer = new java.lang.StringBuffer();
+                    line = input.readLine();
+
+                    // Byte Order Mark (BOM) - The Unicode Standard, version 3.0, page 324
+                    // http://www.unicode.org/faq/utf_bom.html
+
+                    // Note that when we use utf-8, the BOM should appear as "EF BB BF", but it doesn't due to this bug in the JDK:
+                    // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4508058
+                    if (line && line.length() && line.charAt(0) === 0xfeff) {
+                        // Eat the BOM, since we've already found the encoding on this file,
+                        // and we plan to concatenating this buffer with others; the BOM should
+                        // only appear at the top of a file.
+                        line = line.substring(1);
+                    }
+
+                    stringBuffer.append(line);
+
+                    while ((line = input.readLine()) !== null) {
+                        stringBuffer.append(lineSeparator);
+                        stringBuffer.append(line);
+                    }
+                    //Make sure we return a JavaScript string and not a Java string.
+                    content = String(stringBuffer.toString()); //String
+                } finally {
+                    input.close();
+                }
+                callback(content);
+            };
+        }
+
+        text = {
+            version: '1.0.0',
+
+            strip: function (content) {
+                //Strips <?xml ...?> declarations so that external SVG and XML
+                //documents can be added to a document without worry. Also, if the string
+                //is an HTML document, only the part inside the body tag is returned.
+                if (content) {
+                    content = content.replace(xmlRegExp, "");
+                    var matches = content.match(bodyRegExp);
+                    if (matches) {
+                        content = matches[1];
+                    }
+                } else {
+                    content = "";
+                }
+                return content;
+            },
+
+            jsEscape: function (content) {
+                return content.replace(/(['\\])/g, '\\$1')
+                    .replace(/[\f]/g, "\\f")
+                    .replace(/[\b]/g, "\\b")
+                    .replace(/[\n]/g, "\\n")
+                    .replace(/[\t]/g, "\\t")
+                    .replace(/[\r]/g, "\\r");
+            },
+
+            createXhr: function () {
+                //Would love to dump the ActiveX crap in here. Need IE 6 to die first.
+                var xhr, i, progId;
+                if (typeof XMLHttpRequest !== "undefined") {
+                    return new XMLHttpRequest();
+                } else {
+                    for (i = 0; i < 3; i++) {
+                        progId = progIds[i];
+                        try {
+                            xhr = new ActiveXObject(progId);
+                        } catch (e) {}
+
+                        if (xhr) {
+                            progIds = [progId];  // so faster next time
+                            break;
+                        }
+                    }
+                }
+
+                if (!xhr) {
+                    throw new Error("createXhr(): XMLHttpRequest not available");
+                }
+
+                return xhr;
+            },
+
+            get: get,
+
+            /**
+             * Parses a resource name into its component parts. Resource names
+             * look like: module/name.ext!strip, where the !strip part is
+             * optional.
+             * @param {String} name the resource name
+             * @returns {Object} with properties "moduleName", "ext" and "strip"
+             * where strip is a boolean.
+             */
+            parseName: function (name) {
+                var strip = false, index = name.indexOf("."),
+                    modName = name.substring(0, index),
+                    ext = name.substring(index + 1, name.length);
+
+                index = ext.indexOf("!");
+                if (index !== -1) {
+                    //Pull off the strip arg.
+                    strip = ext.substring(index + 1, ext.length);
+                    strip = strip === "strip";
+                    ext = ext.substring(0, index);
+                }
+
+                return {
+                    moduleName: modName,
+                    ext: ext,
+                    strip: strip
+                };
+            },
+
+            xdRegExp: /^((\w+)\:)?\/\/([^\/\\]+)/,
+
+            /**
+             * Is an URL on another domain. Only works for browser use, returns
+             * false in non-browser environments. Only used to know if an
+             * optimized .js version of a text resource should be loaded
+             * instead.
+             * @param {String} url
+             * @returns Boolean
+             */
+            useXhr: function (url, protocol, hostname, port) {
+                var match = text.xdRegExp.exec(url),
+                    uProtocol, uHostName, uPort;
+                if (!match) {
+                    return true;
+                }
+                uProtocol = match[2];
+                uHostName = match[3];
+
+                uHostName = uHostName.split(':');
+                uPort = uHostName[1];
+                uHostName = uHostName[0];
+
+                return (!uProtocol || uProtocol === protocol) &&
+                       (!uHostName || uHostName === hostname) &&
+                       ((!uPort && !uHostName) || uPort === port);
+            },
+
+            finishLoad: function (name, strip, content, onLoad, config) {
+                content = strip ? text.strip(content) : content;
+                if (config.isBuild && config.inlineText) {
+                    buildMap[name] = content;
+                }
+                onLoad(content);
+            },
+
+            load: function (name, req, onLoad, config) {
+                //Name has format: some.module.filext!strip
+                //The strip part is optional.
+                //if strip is present, then that means only get the string contents
+                //inside a body tag in an HTML string. For XML/SVG content it means
+                //removing the <?xml ...?> declarations so the content can be inserted
+                //into the current doc without problems.
+
+                var parsed = text.parseName(name),
+                    nonStripName = parsed.moduleName + '.' + parsed.ext,
+                    url = req.toUrl(nonStripName),
+                    useXhr = (config && config.text && config.text.useXhr) ||
+                             text.useXhr;
+
+                //Load the text. Use XHR if possible and in a browser.
+                if (!hasLocation || useXhr(url, defaultProtocol, defaultHostName, defaultPort)) {
+                    text.get(url, function (content) {
+                        text.finishLoad(name, parsed.strip, content, onLoad, config);
+                    });
+                } else {
+                    //Need to fetch the resource across domains. Assume
+                    //the resource has been optimized into a JS module. Fetch
+                    //by the module name + extension, but do not include the
+                    //!strip part to avoid file system issues.
+                    req([nonStripName], function (content) {
+                        text.finishLoad(parsed.moduleName + '.' + parsed.ext,
+                                        parsed.strip, content, onLoad, config);
+                    });
+                }
+            },
+
+            write: function (pluginName, moduleName, write, config) {
+                if (moduleName in buildMap) {
+                    var content = text.jsEscape(buildMap[moduleName]);
+                    write.asModule(pluginName + "!" + moduleName,
+                                   "define(function () { return '" +
+                                       content +
+                                   "';});\n");
+                }
+            },
+
+            writeFile: function (pluginName, moduleName, req, write, config) {
+                var parsed = text.parseName(moduleName),
+                    nonStripName = parsed.moduleName + '.' + parsed.ext,
+                    //Use a '.js' file name so that it indicates it is a
+                    //script that can be loaded across domains.
+                    fileName = req.toUrl(parsed.moduleName + '.' +
+                                         parsed.ext) + '.js';
+
+                //Leverage own load() method to load plugin value, but only
+                //write out values that do not have the strip argument,
+                //to avoid any potential issues with ! in file names.
+                text.load(nonStripName, req, function (value) {
+                    //Use own write() method to construct full module value.
+                    //But need to create shell that translates writeFile's
+                    //write() to the right interface.
+                    var textWrite = function (contents) {
+                        return write(fileName, contents);
+                    };
+                    textWrite.asModule = function (moduleName, contents) {
+                        return write.asModule(moduleName, fileName, contents);
+                    };
+
+                    text.write(pluginName, nonStripName, textWrite, config);
+                }, config);
+            }
+        };
+
+        return text;
+    });
+}());
+
+define('text!resources/i18n/en.json',[],function () { return '{\n    "layouts": {\n        "menubar": {\n            "menu": {\n                "search": "Search",\n                "root": "Files",\n                "terminal": "Terminal",\n                "settings": "Settings"\n            }\n        }\n    },\n\t"components": {\n\t\t"dialogs": {\n            "alert": {\n                "title": "Alert",\n                "cancel": "Close",\n            },\n            "confirm": {\n                "title": "Confirm",\n                "cancel": "Close",\n                "ok": "Ok"\n            },\n            "prompt": {\n                "title": "Input",\n                "cancel": "Cancel",\n                "ok": "OK"\n            }\n        },\n\n        "files": {\n            "directory": {\n                "actions": {\n                    "refresh": "Refresh",\n                    "hidden": "Toggle hidden files",\n                    "create": "Create a new file",\n                    "mkdir": "Create a new directory",\n                    "rename": "Rename file",\n                    "delete": "Delete files",\n                    "upload": {\n                        "select": "Upload a file or directory",\n                        "files": "Upload files",\n                        "directory": "Upload directory"\n                    },\n                    "download": "Download"\n                },\n                "labels": {\n                    "hidden": "hidden"\n                },\n                "dialogs": {\n                    "create": "Create a new file",\n                    "mkdir": "Create a new directory",\n                    "rename": "Rename <b><%- name %></b>",\n                    "delete": "Do you really want to remove <b><%- n %> file(s)</b> ?"\n                }\n            },\n            "file": {\n                "actions": {\n                    "settings": "Editor Settings",\n                    "mode": "Syntax",\n                    "fullscreen": "Toggle fullscreen",\n                    "state": "Synchronization",\n                    "delete": "Delete"\n                },\n                "dialogs": {\n                    "delete": "Delete this file"\n                }\n            }\n        }\n\t}\n}';});
+
 define('resources/resources',[
-    "hr/hr"
+    "hr/hr",
+
+    "text!resources/i18n/en.json"
 ], function(hr) {
 
+	// Load templates using HTTP
     hr.Resources.addNamespace("templates", {
         loader: "http",
         base: "templates"
     });
+
+    // Load lang using require
+    hr.Resources.addNamespace("i18n", {
+        loader: "require",
+        base: "resources/i18n",
+        mode: "text",
+        extension: ".json"
+    });
+    hr.I18n.loadLocale(["en"]);
     
     return {}
 });
@@ -32325,34 +33595,25 @@ require([
         'user': User.current
     });
 
+    User.current.set({
+        'name': "Samy",
+        'email': "samypesse@gmail.com",
+        'userId': "Samy",
+        'token': "lol"
+    });
+
+    Codebox.current.join(User.current)
+
     // Define base application
     var Application = hr.Application.extend({
         name: "Codebox",
         template: "main.html",
         metas: {
-            "description": "Base application using HappyRhino."
+            "description": "Cloud IDE on a box."
         },
         links: {
             "icon": hr.Urls.static("images/favicon.png")
-        },
-        events: {},
-
-        /*
-         *  Constructor
-         */
-        initialize: function() {
-            Application.__super__.initialize.apply(this, arguments);
-
-            return this;
-        },
-
-        /*
-         *  Finish rendering
-         */
-        finish: function() {
-            Application.__super__.finish.apply(this, arguments);
-            return this;
-        },
+        }
     });
 
     var app = new Application();
