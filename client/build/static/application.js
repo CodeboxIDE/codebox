@@ -25527,7 +25527,7 @@ Logger, Requests, Urls, Storage, Cache, Template, Resources, Deferred, Queue, I1
         }
     }
 });
-define('hr/args',[],function() { return {"revision":1382210055939,"baseUrl":"/"}; });
+define('hr/args',[],function() { return {"revision":1382222630953,"baseUrl":"/"}; });
 /*! Socket.IO.js build:0.9.2, development. Copyright(c) 2011 LearnBoost <dev@learnboost.com> MIT Licensed */
 
 /**

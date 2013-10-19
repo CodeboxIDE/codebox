@@ -1,102 +1,40 @@
 #!/usr/bin/env node
+var cli = require('commander');
+var pkg = require('../package.json');
+var codebox = require("../index.js");
 
-// Requires
-var Q = require('q');
-var path = require('path');
-var architect = require('architect');
+cli
+.command('run')
+.description('Run a Codebox into a folder.')
+.action(function() {
+    var that = this;
+    var path = this.directory || "./";
 
-// The root of our plugins
-var pluginPath = path.resolve(
-    __dirname, '..', 'lib'
-);
+    codebox.start({
+        'root': path,
+        'title': this.title
+    }).fail(function(err) {
 
-// Plugins to load
-var plugins = [
-    // Core
-    {
-        // Path to plugin
-        packagePath: "./cb.core",
+        console.error('Error initializing CodeBox');
+        console.error(err);
+        console.error(err.stack);
 
-        // Options
-        name: process.env.WORKSPACE_NAME,
-        root: process.env.WORKSPACE_DIR
-    },
-
-    // Utils
-    "./cb.logger",
-
-    // Event bus
-    "./cb.events",
-    "./cb.events.log",
-    "./cb.events.socketio",
-    {
-        // Path to plugin
-        packagePath: "./cb.events.webhook",
-
-        // Options
-        url: process.env.WEBHOOK_URL,
-        timeout: process.env.WEBHOOK_TIMEOUT,
-    },
-
-    // Express server
-    {
-        packagePath: "./cb.server",
-
-        disableAuth: process.env.DISABLE_AUTH == "true",
-    },
-
-    // VFS
-    "./cb.vfs",
-    "./cb.vfs_http",
-
-    // Shells
-    "./cb.shells",
-    "./cb.shells.stream",
-
-    // Detect project types
-    "./cb.projectType",
-
-    // Socket.io
-    "./cb.socket.io",
-
-    // Files
-    "./cb.files.service",
-    "./cb.files.sync",
-
-    // Git
-    "./cb.git",
-
-    // Search
-    "./cb.search",
-
-    // Proxy
-    "./cb.proxy.http",
-
-    // Watch (file modifications)
-    "./cb.watch",
-
-    // APIs
-    "./cb.rpc",
-    "./cb.rpc.users",
-    "./cb.rpc.box",
-    "./cb.rpc.shells",
-    "./cb.rpc.git",
-    "./cb.rpc.auth",
-    "./cb.rpc.search",
-    "./cb.rpc.addons",
-
-    // Now start the damn server
-    "./cb.main",
-];
-
-// Create app
-Q.nfcall(architect.createApp, architect.resolveConfig(plugins, pluginPath))
-.fail(function(err) {
-
-    console.error('Error initializing CodeBox');
-    console.error(err);
-    console.error(err.stack);
-
-    // Kill process
-    process.exit(1);
+        // Kill process
+        process.exit(1);
+    });
 });
+
+cli.on('--help', function(){
+    console.log('  Examples:');
+    console.log('');
+    console.log('    $ codebox run -d ./myProject');
+    console.log('');
+});
+
+
+cli.option('-d, --directory <path to project directory>', 'Define working directory for the project.');
+cli.option('-t, --title <title>', 'Title for the project.');
+
+cli.version(pkg.version).parse(process.argv);
+if (!cli.args.length) cli.help();
+

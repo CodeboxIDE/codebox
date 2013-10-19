@@ -21,4 +21,4 @@ else
 endif
 run:
 	@echo ==== Run codebox ====
-	$(NODE) bin/codebox.js
+	$(NODE) bin/codebox.js run
