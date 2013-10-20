@@ -25527,7 +25527,7 @@ Logger, Requests, Urls, Storage, Cache, Template, Resources, Deferred, Queue, I1
         }
     }
 });
-define('hr/args',[],function() { return {"revision":1382226073469,"baseUrl":"/"}; });
+define('hr/args',[],function() { return {"revision":1382302328094,"baseUrl":"/"}; });
 define('models/user',[
     "Underscore",
     "hr/hr"
@@ -30818,7 +30818,11 @@ define('models/box',[
 
     var Codebox = hr.Model.extend({
         defaults: {
-
+            'status': null,
+            'name': null,
+            'uptime': 0,
+            'mtime': 0,
+            'collaborators': 0,
         },
 
         /*
@@ -31025,39 +31029,43 @@ define('models/box',[
     return Codebox;
 });
 define('session',[
+    "Underscore",
     "hr/hr",
     "models/user",
     "models/box"
-], function(hr, User, Codebox) {
-    // Session user
-    var user = new User();
+], function(_, hr, User, Codebox) {
 
-    // Associated codebox
-    var codebox = new Codebox();
+    var Session = hr.Class.extend({
+        initialize: function() {
+            Session.__super__.initialize.apply(this, arguments);
 
-    // Start session
-    var start = function() {
-        var d = new hr.Deferred();
+            this.user = new User();
+            this.codebox = new Codebox();
 
-        user.set({
-            'name': "Samy",
-            'email': "samypesse@gmail.com",
-            'userId': "Samy",
-            'token': "lol"
-        });
+            return this;
+        },
 
-        return codebox.join(user).then(function() {
-            return codebox.status();
-        });
-    };
+        // Start session
+        start: function() {
+            var that = this;
+            var d = new hr.Deferred();
 
+            this.user.set({
+                'name': "Samy",
+                'email': "samypesse@gmail.com",
+                'userId': "Samy",
+                'token': "lol"
+            });
 
-    // Session representation
-    var session = {
-        'user': user,
-        'codebox': codebox,
-        'start': start
-    };
+            return this.codebox.join(this.user).then(function() {
+                return that.codebox.status();
+            });
+        }
+    });
+
+    // Create session
+    var session = new Session();
+
 
     // Extend template context
     hr.Template.extendContext({
@@ -31864,14 +31872,17 @@ define("vendors/bootstrap/tooltip", function(){});
 define('views/layouts/menubar',[
     "Underscore",
     "jQuery",
-    "hr/hr"
-], function(_, $, hr) {
+    "hr/hr",
+    "session"
+], function(_, $, hr, session) {
 
     var MenuBarView = hr.View.extend({
         className: "layout-menubar",
         template: "layouts/menubar.html",
         defaults: {},
-        events: {},
+        events: {
+            "click a[data-menuaction]": "menuAction"
+        },
 
         // Finish rendering
         finish: function() {
@@ -31884,6 +31895,16 @@ define('views/layouts/menubar',[
             });
 
             return MenuBarView.__super__.finish.apply(this, arguments);
+        },
+
+        // Menu action
+        menuAction: function(e) {
+            e.preventDefault();
+
+            var action = $(e.currentTarget).data("menuaction");
+            session.trigger("open", {
+                'type': action
+            });
         }
     });
 
@@ -32401,43 +32422,74 @@ define('views/tabs/base',[
 
     return BaseTab;
 });
-define('views/tabs/file',[
+define('views/components/files/base',[
     "Underscore",
     "jQuery",
     "hr/hr",
-    "views/tabs/base"
-], function(_, $, hr, BaseTab) {
-    var FileTab = BaseTab.extend({
-        
-    });
+    "models/box",
+    "models/file",
+    "session"
+], function(_, $, hr, Codebox, File, session) {
 
-    return FileTab;
-});
-define('views/layouts/body',[
-    "Underscore",
-    "jQuery",
-    "hr/hr",
-    "views/tabs/file"
-], function(_, $, hr, FileTab) {
-
-    var BodyView = hr.View.extend({
-        className: "layout-body",
-        template: "layouts/body.html",
-        defaults: {},
+    var FilesBaseView = hr.View.extend({
+        defaults: {
+            'path': null,
+            'base': "/",
+            'edition': true,
+            'notifications': true
+        },
         events: {},
+
+        // Constructor
+        initialize: function(options) {
+            FilesBaseView.__super__.initialize.apply(this, arguments);
+            this.codebox = session.codebox;
+            if (this.codebox == null) {
+                throw "Error : creating fileview without codebox context";
+            }
+            if (this.model == null) this.model = new File({
+                "codebox": this.codebox
+            });
+            this.model.on("set", this.render, this);
+            if (this.options.path != null) this.load(this.options.path);
+            return this;
+        },
+
+        // Template rendering context
+        templateContext: function() {
+            return {
+                'options': this.options,
+                'file': this.model,
+                'view': this
+            };
+        },
+
+        // Render the file view
+        render: function() {
+            if (this.model.path() == null) {
+                return this;
+            }
+            return FilesBaseView.__super__.render.apply(this, arguments);
+        },
 
         // Finish rendering
         finish: function() {
-            this.components.tabs.add(FileTab);
+            return FilesBaseView.__super__.finish.apply(this, arguments);
+        },
 
-            return BodyView.__super__.finish.apply(this, arguments);
+        // Change the file by loading an other file
+        load: function(path) {
+            var that = this;
+            this.model.getByPath(path).then(function() {
+                that.trigger("file:load");
+            }, function() {
+                console.log("error loading file");
+                that.trigger("file:error");
+            })
         },
     });
 
-    // Register as template component
-    hr.View.Template.registerComponent("layout.body", BodyView);
-
-    return BodyView;
+    return FilesBaseView;
 });
 define('utils/uploader',[
     'hr/hr',
@@ -32563,83 +32615,13 @@ define('utils/uploader',[
     
     return Uploader;
 });
-define('views/components/files/base',[
-    "Underscore",
-    "jQuery",
-    "hr/hr",
-    "models/box",
-    "models/file",
-    "session"
-], function(_, $, hr, Codebox, File, session) {
-
-    var FilesBaseView = hr.View.extend({
-        defaults: {
-            'path': null,
-            'base': "/",
-            'edition': true,
-            'notifications': true
-        },
-        events: {},
-
-        // Constructor
-        initialize: function(options) {
-            FilesBaseView.__super__.initialize.apply(this, arguments);
-            this.path = null;
-            this.codebox = session.codebox;
-            if (this.codebox == null) {
-                throw "Error : creating fileview without codebox context";
-            }
-            if (this.model == null) this.model = new File({
-                "codebox": this.codebox
-            });
-            this.model.on("set", this.render, this);
-            if (this.options.path != null) this.load(this.options.path);
-            return this;
-        },
-
-        // Template rendering context
-        templateContext: function() {
-            return {
-                'options': this.options,
-                'file': this.model,
-                'view': this
-            };
-        },
-
-        // Render the file view
-        render: function() {
-            if (this.model.path() == null) {
-                return this;
-            }
-            return FilesBaseView.__super__.render.apply(this, arguments);
-        },
-
-        // Finish rendering
-        finish: function() {
-            return FilesBaseView.__super__.finish.apply(this, arguments);
-        },
-
-        // Change the file by loading an other file
-        load: function(path) {
-            var that = this;
-            this.model.getByPath(path).then(function() {
-                that.trigger("file:load");
-            }, function() {
-                console.log("error loading file");
-                that.trigger("file:error");
-            })
-        },
-    });
-
-    return FilesBaseView;
-});
 define('views/dialogs/base',[
     "Underscore",
     "jQuery",
     "hr/hr"
 ], function(_, $, hr) {
     var DialogView = hr.View.extend({
-        className: "component-dialog modal fade hide",
+        className: "component-dialog modal fade",
         defaults: {
             args: {},
             template: null,
@@ -33186,6 +33168,132 @@ define('views/components/files/normal',[
 
     return FileView;
 });
+define('views/tabs/file',[
+    "Underscore",
+    "jQuery",
+    "hr/hr",
+    "views/tabs/base",
+    "views/components/files/normal"
+], function(_, $, hr, BaseTab, FileView) {
+    var FileTab = BaseTab.extend({
+        className: BaseTab.prototype.className+ " component-workspace-file",
+        defaults: {
+            path: "/",
+        },
+        events: {},
+        keyboardShortcuts: _.extend({
+            "mod+s": "saveFile"
+        }, BaseTab.prototype.keyboardShortcuts),
+
+        /* Constructor */
+        initialize: function(options) {
+            FileTab.__super__.initialize.apply(this, arguments);
+
+            // Create the file view
+            this.file = new FileView({
+                base: "/",
+                navigate: false
+            });
+
+            // Bind file loading event
+            this.file.model.on("set", this.adaptFile, this);
+
+            // Bind file error : file removed or invalid file
+            this.file.on("file:error", function() {
+                this.closeTab();
+            }, this);
+            this.file.model.on("destroy", function() {
+                this.closeTab();
+            }, this);
+
+            // When tab is ready : load file
+            this.on("tab:ready", function() {
+                this.adaptFile();
+                this.file.load(this.options.path);
+            }, this);
+
+            return this;
+        },
+
+        /* Render */
+        render: function() {
+            this.$el.empty();
+            this.file.render();
+            this.file.$el.appendTo(this.$el);
+            return this.ready();
+        },
+
+        /* Change the file */
+        load: function(path) {
+            this.file.load(path);
+            return this;
+        },
+
+        /* Adapt the tab to the file (title, ...) */
+        adaptFile: function() {
+            this.setTabTitle(this.file.model.get("name", "loading..."));
+            this.setTabType(this.file.model.isDirectory() ? "directory" : "file");
+            this.setTabId(this.file.model.path());
+        },
+
+        /* Command save file */
+        saveFile: function(e) {
+            e.preventDefault();
+            if (this.file.model.isDirectory()) return;
+            this.file.model.save();
+        }
+    });
+
+    return FileTab;
+});
+define('views/layouts/body',[
+    "Underscore",
+    "jQuery",
+    "hr/hr",
+    "views/tabs/file",
+    "session"
+], function(_, $, hr, FileTab, session) {
+
+    var BodyView = hr.View.extend({
+        className: "layout-body",
+        template: "layouts/body.html",
+        defaults: {},
+        events: {},
+
+        tabTypes: {
+            'explorer': FileTab
+        },
+
+        // Constructor
+        initialize: function() {
+            BodyView.__super__.initialize.apply(this, arguments);
+            
+            session.on("open", function(options) {
+                this.addTab(this.tabTypes[options.type]);
+            }, this);
+
+            return this;
+        },
+
+        // Finish rendering
+        finish: function() {
+            return BodyView.__super__.finish.apply(this, arguments);
+        },
+
+        // Open a new tab
+        addTab: function(Tab) {
+            if (this.components.tabs == null) return;
+
+            this.components.tabs.add(Tab);
+            return this;
+        }
+    });
+
+    // Register as template component
+    hr.View.Template.registerComponent("layout.body", BodyView);
+
+    return BodyView;
+});
 define('views/components/files/tree',[
     "Underscore",
     "jQuery",
@@ -33572,7 +33680,7 @@ define('views/views',[
     });
 }());
 
-define('text!resources/i18n/en.json',[],function () { return '{\n    "layouts": {\n        "menubar": {\n            "menu": {\n                "search": "Search",\n                "root": "Files",\n                "terminal": "Terminal",\n                "settings": "Settings"\n            }\n        }\n    },\n\t"components": {\n\t\t"dialogs": {\n            "alert": {\n                "title": "Alert",\n                "cancel": "Close",\n            },\n            "confirm": {\n                "title": "Confirm",\n                "cancel": "Close",\n                "ok": "Ok"\n            },\n            "prompt": {\n                "title": "Input",\n                "cancel": "Cancel",\n                "ok": "OK"\n            }\n        },\n\n        "files": {\n            "directory": {\n                "actions": {\n                    "refresh": "Refresh",\n                    "hidden": "Toggle hidden files",\n                    "create": "Create a new file",\n                    "mkdir": "Create a new directory",\n                    "rename": "Rename file",\n                    "delete": "Delete files",\n                    "upload": {\n                        "select": "Upload a file or directory",\n                        "files": "Upload files",\n                        "directory": "Upload directory"\n                    },\n                    "download": "Download"\n                },\n                "labels": {\n                    "hidden": "hidden"\n                },\n                "dialogs": {\n                    "create": "Create a new file",\n                    "mkdir": "Create a new directory",\n                    "rename": "Rename <b><%- name %></b>",\n                    "delete": "Do you really want to remove <b><%- n %> file(s)</b> ?"\n                }\n            },\n            "file": {\n                "actions": {\n                    "settings": "Editor Settings",\n                    "mode": "Syntax",\n                    "fullscreen": "Toggle fullscreen",\n                    "state": "Synchronization",\n                    "delete": "Delete"\n                },\n                "dialogs": {\n                    "delete": "Delete this file"\n                }\n            }\n        }\n\t}\n}';});
+define('text!resources/i18n/en.json',[],function () { return '{\n    "hr": {\n        "utils": {\n            "timeago": {\n                "error": "Error",\n                "yearago": "about 1 year ago",\n                "month": "about 1 month ago",\n                "months": "<%- months %> months ago",\n                "days": "<%- days %> days ago",\n                "day": "a day ago",\n                "hours": "about <%- hours %> hours ago",\n                "hour": "about 1 hour ago",\n                "minutes": "<%- minutes %> minutes ago",\n                "minute": "a minute ago",\n                "seconds": "less than a minute ago"\n            }\n        }\n    },\n    "layouts": {\n        "menubar": {\n            "menu": {\n                "search": "Search",\n                "root": "Files",\n                "terminal": "Terminal",\n                "settings": "Settings"\n            }\n        }\n    },\n\t"components": {\n\t\t"dialogs": {\n            "alert": {\n                "title": "Alert",\n                "cancel": "Close",\n            },\n            "confirm": {\n                "title": "Confirm",\n                "cancel": "Close",\n                "ok": "Ok"\n            },\n            "prompt": {\n                "title": "Input",\n                "cancel": "Cancel",\n                "ok": "OK"\n            }\n        },\n\n        "files": {\n            "directory": {\n                "actions": {\n                    "refresh": "Refresh",\n                    "hidden": "Toggle hidden files",\n                    "create": "Create a new file",\n                    "mkdir": "Create a new directory",\n                    "rename": "Rename file",\n                    "delete": "Delete files",\n                    "upload": {\n                        "select": "Upload a file or directory",\n                        "files": "Upload files",\n                        "directory": "Upload directory"\n                    },\n                    "download": "Download"\n                },\n                "labels": {\n                    "hidden": "hidden"\n                },\n                "dialogs": {\n                    "create": "Create a new file",\n                    "mkdir": "Create a new directory",\n                    "rename": "Rename <b><%- name %></b>",\n                    "delete": "Do you really want to remove <b><%- n %> file(s)</b> ?"\n                }\n            },\n            "file": {\n                "actions": {\n                    "settings": "Editor Settings",\n                    "mode": "Syntax",\n                    "fullscreen": "Toggle fullscreen",\n                    "state": "Synchronization",\n                    "delete": "Delete"\n                },\n                "dialogs": {\n                    "delete": "Delete this file"\n                }\n            }\n        }\n\t}\n}';});
 
 define('resources/resources',[
     "hr/hr",

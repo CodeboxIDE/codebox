@@ -19,7 +19,6 @@ define([
         // Constructor
         initialize: function(options) {
             FilesBaseView.__super__.initialize.apply(this, arguments);
-            this.path = null;
             this.codebox = session.codebox;
             if (this.codebox == null) {
                 throw "Error : creating fileview without codebox context";

@@ -4,7 +4,7 @@ define([
     "hr/hr"
 ], function(_, $, hr) {
     var DialogView = hr.View.extend({
-        className: "component-dialog modal fade hide",
+        className: "component-dialog modal fade",
         defaults: {
             args: {},
             template: null,

@@ -1,14 +1,17 @@
 define([
     "Underscore",
     "jQuery",
-    "hr/hr"
-], function(_, $, hr) {
+    "hr/hr",
+    "session"
+], function(_, $, hr, session) {
 
     var MenuBarView = hr.View.extend({
         className: "layout-menubar",
         template: "layouts/menubar.html",
         defaults: {},
-        events: {},
+        events: {
+            "click a[data-menuaction]": "menuAction"
+        },
 
         // Finish rendering
         finish: function() {
@@ -21,6 +24,16 @@ define([
             });
 
             return MenuBarView.__super__.finish.apply(this, arguments);
+        },
+
+        // Menu action
+        menuAction: function(e) {
+            e.preventDefault();
+
+            var action = $(e.currentTarget).data("menuaction");
+            session.trigger("open", {
+                'type': action
+            });
         }
     });
 

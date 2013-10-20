@@ -1,37 +1,41 @@
 define([
+    "Underscore",
     "hr/hr",
     "models/user",
     "models/box"
-], function(hr, User, Codebox) {
-    // Session user
-    var user = new User();
+], function(_, hr, User, Codebox) {
 
-    // Associated codebox
-    var codebox = new Codebox();
+    var Session = hr.Class.extend({
+        initialize: function() {
+            Session.__super__.initialize.apply(this, arguments);
 
-    // Start session
-    var start = function() {
-        var d = new hr.Deferred();
+            this.user = new User();
+            this.codebox = new Codebox();
 
-        user.set({
-            'name': "Samy",
-            'email': "samypesse@gmail.com",
-            'userId': "Samy",
-            'token': "lol"
-        });
+            return this;
+        },
 
-        return codebox.join(user).then(function() {
-            return codebox.status();
-        });
-    };
+        // Start session
+        start: function() {
+            var that = this;
+            var d = new hr.Deferred();
 
+            this.user.set({
+                'name': "Samy",
+                'email': "samypesse@gmail.com",
+                'userId': "Samy",
+                'token': "lol"
+            });
 
-    // Session representation
-    var session = {
-        'user': user,
-        'codebox': codebox,
-        'start': start
-    };
+            return this.codebox.join(this.user).then(function() {
+                return that.codebox.status();
+            });
+        }
+    });
+
+    // Create session
+    var session = new Session();
+
 
     // Extend template context
     hr.Template.extendContext({

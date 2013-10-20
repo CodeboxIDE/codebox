@@ -42,7 +42,7 @@
                 <input type="checkbox" />
             </span>
             <span class="icon">
-                <i class="<%- cfile.icon() %>" style="color:<%- FileUtils.color(cfile, "#666") %>"></i>
+                <i class="<%- cfile.icon() %>" style="color:<%- cfile.color("#666") %>"></i>
             </span>
             <span class="name">
                 <a href="<%- hr.urls.route(cfile.url()) %>"><%- cfile.get("name") %></a>

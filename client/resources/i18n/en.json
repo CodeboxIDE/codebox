@@ -1,4 +1,21 @@
 {
+    "hr": {
+        "utils": {
+            "timeago": {
+                "error": "Error",
+                "yearago": "about 1 year ago",
+                "month": "about 1 month ago",
+                "months": "<%- months %> months ago",
+                "days": "<%- days %> days ago",
+                "day": "a day ago",
+                "hours": "about <%- hours %> hours ago",
+                "hour": "about 1 hour ago",
+                "minutes": "<%- minutes %> minutes ago",
+                "minute": "a minute ago",
+                "seconds": "less than a minute ago"
+            }
+        }
+    },
     "layouts": {
         "menubar": {
             "menu": {

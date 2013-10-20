@@ -8,7 +8,11 @@ define([
 
     var Codebox = hr.Model.extend({
         defaults: {
-
+            'status': null,
+            'name': null,
+            'uptime': 0,
+            'mtime': 0,
+            'collaborators': 0,
         },
 
         /*
