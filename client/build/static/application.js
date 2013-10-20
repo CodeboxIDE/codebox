@@ -25527,7 +25527,7 @@ Logger, Requests, Urls, Storage, Cache, Template, Resources, Deferred, Queue, I1
         }
     }
 });
-define('hr/args',[],function() { return {"revision":1382302328094,"baseUrl":"/"}; });
+define('hr/args',[],function() { return {"revision":1382303007359,"baseUrl":"/"}; });
 define('models/user',[
     "Underscore",
     "hr/hr"
