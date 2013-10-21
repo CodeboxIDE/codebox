@@ -20,9 +20,23 @@
             margin-left: 8px;
             font-weight: 200;
             cursor: default;
+            padding: 0px;
+            line-height: 13px;
+            border-radius: 30px;
+            background: rgba(0,0,0,0.05);
+            opacity: 1;
+            font-size: 14px;
+            text-shadow: none;
+            width: 14px;
+            height: 14px;
+            text-align: center;
+            margin-top: 4px;
+            color: rgba(0,0,0,0.5);
 
             &:hover {
-                color: #e74c3c;
+                background: #e74c3c;
+                opacity: 1;
+                color: #fff;
             }
         }
     }
@@ -135,7 +149,7 @@
             height: 36px;
             right: 0px;
             left: 0px;
-            background: @codeboxActiveColor;
+            background: @tabBackground;
         }
 
         .tabs-content {

@@ -57,7 +57,7 @@ define([
                 e.stopPropagation();
             }
 
-            hr.History.navigate(this.model.url());
+            this.model.open();
         }
     });
 

@@ -229,7 +229,6 @@ define([
                 section: 0,             // Section to open in
                 parentId: null          // Parent tabid
             });
-
             tabid = options.uniqueId != null ? this.checkTabExists(options.uniqueId) : null;
             
             if (tabid == null) {

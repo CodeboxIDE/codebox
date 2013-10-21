@@ -20,13 +20,11 @@ define([
         initialize: function() {
             BodyView.__super__.initialize.apply(this, arguments);
             
-            session.on("openFile", function(options) {
+            session.codebox.on("openFile", function(path, options) {
                 options = _.defaults({}, options || {}, {
                     'path': '/'
                 });
-                this.addTab(FileTab, {
-                    'path': options.path
-                });
+                this.openFile(path);
             }, this);
 
             return this;
@@ -38,11 +36,20 @@ define([
         },
 
         // Open a new tab
-        addTab: function(Tab, options) {
+        addTab: function(Tab, buildOptions, options) {
             if (this.components.tabs == null) return;
 
-            this.components.tabs.add(Tab, options);
+            this.components.tabs.add(Tab, buildOptions, options);
             return this;
+        },
+
+        // Open a file
+        openFile: function(path) {
+            return this.addTab(FileTab, {
+                'path': path
+            }, {
+                'uniqueId': path
+            });
         }
     });
 

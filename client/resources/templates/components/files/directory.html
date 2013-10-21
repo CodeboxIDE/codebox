@@ -27,7 +27,7 @@
         <% if (!file.isRoot()) { %>
         <li class="file level-up">
             <span class="name">
-                <a href="<%- hr.urls.route(file.url(file.parentPath())) %>">..</a>
+                <a href="#">..</a>
             </span>
         </li>
         <% } %>
@@ -40,15 +40,8 @@
                 <i class="<%- cfile.icon() %>" style="color:<%- cfile.color("#666") %>"></i>
             </span>
             <span class="name">
-                <a href="<%- hr.urls.route(cfile.url()) %>"><%- cfile.get("name") %></a>
+                <a href="#"><%- cfile.get("name") %></a>
             </span>
-            <% if (_.size(cfile.get("collaborators")) > 0) { %>
-            <div class="collaborators">
-                <% _.each(cfile.get("collaborators"), function(collaborator) { %>
-                <a href="<%- hr.urls.route(collaborator.url) %>" title="<%- collaborator.name %>"><img src="<%- collaborator.image %>" /></a>
-                <% }); %>
-            </div>
-            <% } %>
             <span class="mtime"><%= view.component("hr.date.relative", {
                 time: cfile.get("mtime")/1000
             }, "date") %></span>

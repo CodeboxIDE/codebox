@@ -64,6 +64,14 @@ define([
         },
 
         /*
+         *  Open the tab for this file
+         */
+        open: function(options) {
+            this.codebox.trigger("openFile", this.path(), options);
+            return this;
+        },
+
+        /*
          *  Return true if file is valid
          */
         isValid: function() {
@@ -106,14 +114,6 @@ define([
                 path = "/";
             }
             return path;
-        },
-
-        /*
-         *  Return url for this file
-         */
-        url: function(path) {
-            path = this.path(path);
-            return this.codebox.vBaseUrl+path;
         },
 
         /*

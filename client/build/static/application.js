@@ -25527,7 +25527,7 @@ Logger, Requests, Urls, Storage, Cache, Template, Resources, Deferred, Queue, I1
         }
     }
 });
-define('hr/args',[],function() { return {"revision":1382368260953,"baseUrl":"/"}; });
+define('hr/args',[],function() { return {"revision":1382394016768,"baseUrl":"/"}; });
 define('models/user',[
     "Underscore",
     "hr/hr"
@@ -30273,6 +30273,14 @@ define('models/file',[
         },
 
         /*
+         *  Open the tab for this file
+         */
+        open: function(options) {
+            this.codebox.trigger("openFile", this.path(), options);
+            return this;
+        },
+
+        /*
          *  Return true if file is valid
          */
         isValid: function() {
@@ -30315,14 +30323,6 @@ define('models/file',[
                 path = "/";
             }
             return path;
-        },
-
-        /*
-         *  Return url for this file
-         */
-        url: function(path) {
-            path = this.path(path);
-            return this.codebox.vBaseUrl+path;
         },
 
         /*
@@ -31979,9 +31979,7 @@ define('views/layouts/menubar',[
         actionOpenRoot: function(e) {
             e.preventDefault();
 
-            session.trigger("openFile", {
-                'path': '/package.json'
-            });
+            session.codebox.root.open();
         }
     });
 
@@ -32338,7 +32336,6 @@ define('views/components/tabs',[
                 section: 0,             // Section to open in
                 parentId: null          // Parent tabid
             });
-
             tabid = options.uniqueId != null ? this.checkTabExists(options.uniqueId) : null;
             
             if (tabid == null) {
@@ -32879,6 +32876,7 @@ define('views/components/files/directory',[
         }),
         events: {
             "click .file": "selectOnlyFile",
+            "click .file .name a": "openFile",
             "click .file .select input": "selectFile",
             "change .uploader": "uploadStart",
             "change .uploader-directory": "uploadStart",
@@ -33081,6 +33079,18 @@ define('views/components/files/directory',[
             e.stopPropagation();
             var file = $(e.currentTarget).parents(".file");
             this.toggleFileSelection(file, $(e.currentTarget).is(":checked"));
+        },
+
+        // (event) Open a file
+        openFile: function(e) {
+            e.stopPropagation();
+            var file = $(e.currentTarget).parents(".file");
+            var path = file.data("filepath");
+            if (path == null || path.length == 0) { return; }
+            file = _.find(this.files, function(cfile) {
+                return cfile.path() == path;
+            });
+            file.open();
         },
 
         // (event) Select only one file
@@ -33347,13 +33357,11 @@ define('views/layouts/body',[
         initialize: function() {
             BodyView.__super__.initialize.apply(this, arguments);
             
-            session.on("openFile", function(options) {
+            session.codebox.on("openFile", function(path, options) {
                 options = _.defaults({}, options || {}, {
                     'path': '/'
                 });
-                this.addTab(FileTab, {
-                    'path': options.path
-                });
+                this.openFile(path);
             }, this);
 
             return this;
@@ -33365,11 +33373,20 @@ define('views/layouts/body',[
         },
 
         // Open a new tab
-        addTab: function(Tab, options) {
+        addTab: function(Tab, buildOptions, options) {
             if (this.components.tabs == null) return;
 
-            this.components.tabs.add(Tab, options);
+            this.components.tabs.add(Tab, buildOptions, options);
             return this;
+        },
+
+        // Open a file
+        openFile: function(path) {
+            return this.addTab(FileTab, {
+                'path': path
+            }, {
+                'uniqueId': path
+            });
         }
     });
 
@@ -36467,7 +36484,7 @@ define('views/components/files/tree',[
                 e.stopPropagation();
             }
 
-            hr.History.navigate(this.model.url());
+            this.model.open();
         }
     });
 

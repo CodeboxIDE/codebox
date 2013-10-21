@@ -16,6 +16,7 @@ define([
         }),
         events: {
             "click .file": "selectOnlyFile",
+            "click .file .name a": "openFile",
             "click .file .select input": "selectFile",
             "change .uploader": "uploadStart",
             "change .uploader-directory": "uploadStart",
@@ -218,6 +219,18 @@ define([
             e.stopPropagation();
             var file = $(e.currentTarget).parents(".file");
             this.toggleFileSelection(file, $(e.currentTarget).is(":checked"));
+        },
+
+        // (event) Open a file
+        openFile: function(e) {
+            e.stopPropagation();
+            var file = $(e.currentTarget).parents(".file");
+            var path = file.data("filepath");
+            if (path == null || path.length == 0) { return; }
+            file = _.find(this.files, function(cfile) {
+                return cfile.path() == path;
+            });
+            file.open();
         },
 
         // (event) Select only one file

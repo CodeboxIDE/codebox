@@ -30,9 +30,7 @@ define([
         actionOpenRoot: function(e) {
             e.preventDefault();
 
-            session.trigger("openFile", {
-                'path': '/package.json'
-            });
+            session.codebox.root.open();
         }
     });
 
