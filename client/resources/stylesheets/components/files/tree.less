@@ -7,20 +7,32 @@
 
     .component-files-tree-item {
         cursor: default;
-        line-height: 24px;
+        line-height: 26px;
 
         >.files {
             display: none;
             margin-left: 8px;
         }
 
+        &.active::before {
+            content:'';
+            position: absolute;
+            right: 0px;
+            left: 0px;
+            height: 26px;
+            background: @codeboxActiveColor;
+        }
+
         >.name {
-            color: #333;
+            color: inherit;
             .text-overflow();
+            display: block;
+            z-index: 1;
+            position: relative;
 
             >i {
                 width: 11px;
-                color: #555;
+                color: inherit;
                 text-align: center;
 
                 &.icon-file {
@@ -32,12 +44,12 @@
             }
             >.icon-caret-down {
                 display: none;
-            } 
+            }
         }
 
         &.type-directory {
             >.name {
-                color: #111;
+                color: inherit;
             }
         }
 

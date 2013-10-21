@@ -1,0 +1,37 @@
+.mixin-cursor-color(@color) {
+    (~".marker-@{color}") {
+        &.marker-cursor {
+            border-color: ~"#@{color}";
+        }
+        &.marker-selection {
+            background: ~"#@{color}";
+        }
+    }
+}
+
+
+.component-editor {
+    position: absolute !important;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+
+    .marker-cursor {
+        position: absolute;
+        border-left: 2px solid red;
+    }
+
+    .marker-selection {
+        position: absolute;
+        background: red;
+    }
+    .mixin-cursor-color("1abc9c");
+    .mixin-cursor-color("9b59b6");
+    .mixin-cursor-color("e67e22");
+    .mixin-cursor-color("16a085");
+    .mixin-cursor-color("c0392b");
+    .mixin-cursor-color("2980b9");
+    .mixin-cursor-color("f39c12");
+    .mixin-cursor-color("8e44ad");
+}

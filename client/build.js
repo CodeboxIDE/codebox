@@ -20,7 +20,8 @@ exports.config = {
     "static": {
         "templates": path.resolve(__dirname, "resources", "templates"),
         "images": path.resolve(__dirname, "resources", "images"),
-        "fonts": path.resolve(__dirname, "resources", "fonts")
+        "fonts": path.resolve(__dirname, "resources", "fonts"),
+        "ace": path.resolve(__dirname, "resources", "ace")
     },
 
     // Stylesheet entry point

@@ -10,7 +10,7 @@ define([
         template: "layouts/menubar.html",
         defaults: {},
         events: {
-            "click a[data-menuaction]": "menuAction"
+            "click .menu-action-open-root": "actionOpenRoot"
         },
 
         // Finish rendering
@@ -26,13 +26,12 @@ define([
             return MenuBarView.__super__.finish.apply(this, arguments);
         },
 
-        // Menu action
-        menuAction: function(e) {
+        // (action) Open root directory
+        actionOpenRoot: function(e) {
             e.preventDefault();
 
-            var action = $(e.currentTarget).data("menuaction");
-            session.trigger("open", {
-                'type': action
+            session.trigger("openFile", {
+                'path': '/package.json'
             });
         }
     });

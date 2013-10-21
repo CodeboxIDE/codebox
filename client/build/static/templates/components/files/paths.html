@@ -1,7 +1,0 @@
-<ul class="breadcrumb file-paths">
-    <% _.each(file.paths(), function(path) { %>
-        <% if (path.path.length >= base.length) { %>
-        <li <% if (path.path == file.path()) { %>class="active"<% } %>><a href="<%- hr.urls.route(path.url) %>"><%- path.name %></a><% if (path.path != file.path()) { %> <span class="divider">/</span><% } %></li>
-        <% } %>
-    <% }); %>
-</ul>

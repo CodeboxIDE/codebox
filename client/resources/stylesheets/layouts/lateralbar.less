@@ -5,10 +5,41 @@
 	bottom: 0px;
 	width: @codeboxLateralbarWidth;
 	background: @codeboxLateralbarBackground;
+	box-shadow: inset -8px 0px 9px -9px #000000;
+	color: @codeboxLateralbarColor;
 	overflow-y: auto;
 	overflow-x: hidden;
 
-	.files {
-		margin: 4px;
+	.search {
+		display: none;
+		position: absolute;
+		top: 0px;
+		bottom: 0px;
+		left: 0px;
+		right: 0px;
+		z-index: 10;
+		padding: 4px 6px;
+		background: @codeboxLateralbarBackground;
+
+		input.search-query {
+			border-radius: 2px;
+			background: #fff;
+			color: #222;
+			border: none;
+			width: 100%;
+			margin: 3px 0px;
+			padding: 4px 7px;
+			font-size: 12px;
+			line-height: 20px;
+
+			&:hover, &:focus {
+				outline: 0;
+			}
+		}
+	}
+
+	>.files {
+		margin: 4px 0px;
+		font-size: 15px;
 	}
 }

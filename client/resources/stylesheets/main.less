@@ -9,10 +9,20 @@
 @import "components/files/directory.less";
 @import "components/files/normal.less";
 @import "components/tabs.less";
+@import "components/editor.less";
 
 @import "layouts/lateralbar.less";
 @import "layouts/menubar.less";
 @import "layouts/body.less";
+
+.codebox-layout-fullscreen () {
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
+    z-index: 10000;
+}
 
 * {
     -webkit-overflow-scrolling: touch;

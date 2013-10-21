@@ -22,7 +22,13 @@
                 "search": "Search",
                 "root": "Files",
                 "terminal": "Terminal",
+                "run": "Run project",
                 "settings": "Settings"
+            }
+        },
+        "lateralbar": {
+            "search": {
+                "placeholder": "Search Project"
             }
         }
     },

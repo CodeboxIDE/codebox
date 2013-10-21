@@ -3,11 +3,19 @@ require([
     "hr/hr",
     "hr/args",
     "session",
+    "config",
     'views/views',
     'resources/resources',
-], function(_, hr, args, session) {
+], function(_, hr, args, session, config) {
     // Configure hr
     hr.configure(args);
+
+    // Extend template context
+    hr.Template.extendContext({
+        'app': {
+            'config': config
+        }
+    });
 
     // Define base application
     var Application = hr.Application.extend({

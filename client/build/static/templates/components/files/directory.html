@@ -1,22 +1,13 @@
 <div class="files-toolbar btn-toolbar">
-    <%= template.import("components/files/paths.html", {
-        "file": file,
-        "base": options.base
-    }) %>
-
-    <div class="btn-group pull-right">
-        <a href="#" class="btn btn-link action-file-refresh" title="<%- hr.i18n.t("components.files.directory.actions.refresh") %>"><i class="icon-refresh"></i></a>
-        <a href="#" class="btn btn-link  action-file-togglehidden" title="<%- hr.i18n.t("components.files.directory.actions.hidden") %>"><i class="icon-eye-open"></i></a>
-    </div>
     <% if (options.edition) { %>
-    <div class="btn-group pull-right">
-        <a href="#" class="btn btn-link action-file-create" title="<%- hr.i18n.t("components.files.directory.actions.create") %>"><i class="icon-file"></i></a>
-        <a href="#" class="btn btn-link action-file-mkdir" title="<%- hr.i18n.t("components.files.directory.actions.mkdir") %>"><i class="icon-folder-close"></i></a>
-        <a href="#" data-filesselection class="btn btn-link action-file-rename" title="<%- hr.i18n.t("components.files.directory.actions.rename") %>"><i class="icon-pencil"></i></a>
-        <a href="#" data-filesselection class="btn btn-link action-file-delete" title="<%- hr.i18n.t("components.files.directory.actions.delete") %>"><i class="icon-trash"></i></a>
-        <a href="#" data-filesselection class="btn btn-link action-file-download" title="<%- hr.i18n.t("components.files.directory.actions.download") %>"><i class="icon-download-alt"></i></a>
+    <div class="btn-group">
+        <a href="#" class="btn btn-default action-file-create" title="<%- hr.i18n.t("components.files.directory.actions.create") %>"><i class="icon-file"></i></a>
+        <a href="#" class="btn btn-default action-file-mkdir" title="<%- hr.i18n.t("components.files.directory.actions.mkdir") %>"><i class="icon-folder-close"></i></a>
+        <a href="#" data-filesselection class="btn btn-default action-file-rename" title="<%- hr.i18n.t("components.files.directory.actions.rename") %>"><i class="icon-pencil"></i></a>
+        <a href="#" data-filesselection class="btn btn-default action-file-delete" title="<%- hr.i18n.t("components.files.directory.actions.delete") %>"><i class="icon-trash"></i></a>
+        <a href="#" data-filesselection class="btn btn-default action-file-download" title="<%- hr.i18n.t("components.files.directory.actions.download") %>"><i class="icon-download-alt"></i></a>
         <div class="btn-group pull-right">
-            <a href="#" class="btn btn-link action-file-upload-select" data-toggle="dropdown" title="<%- hr.i18n.t("components.files.directory.actions.upload.select") %>"><i class="icon-upload-alt"></i> <span class="percent"></span></a>
+            <a href="#" class="btn btn-default action-file-upload-select" data-toggle="dropdown" title="<%- hr.i18n.t("components.files.directory.actions.upload.select") %>"><i class="icon-upload-alt"></i> <span class="percent"></span></a>
             <ul class="dropdown-menu">
                 <li><a href="#" class="action-file-upload"><%- hr.i18n.t("components.files.directory.actions.upload.files") %></a></li>
                 <li><a href="#" class="action-file-upload-directory"><%- hr.i18n.t("components.files.directory.actions.upload.directory") %></a></li>
@@ -26,6 +17,10 @@
         </div>
     </div>
     <% } %>
+    <div class="btn-group">
+        <a href="#" class="btn btn-default action-file-refresh" title="<%- hr.i18n.t("components.files.directory.actions.refresh") %>"><i class="icon-refresh"></i></a>
+        <a href="#" class="btn btn-default  action-file-togglehidden" title="<%- hr.i18n.t("components.files.directory.actions.hidden") %>"><i class="icon-eye-open"></i></a>
+    </div>
 </div>
 <div class="files-outer">
     <ul class="files">

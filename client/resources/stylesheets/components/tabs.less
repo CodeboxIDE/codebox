@@ -1,7 +1,3 @@
-@tabColor: #c5c5c5;
-@tabHoverColor: #c9c9c9;
-@tabActiveColor: #e1e1e1;
-
 .component-tab {
     position: relative;
     height:30px;
@@ -111,24 +107,6 @@
         right: 0px;
         bottom: 0px;
         background: #f1f1f1;
-
-        .ide-ui-loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            margin: 0px;
-            margin-top: -6px;
-            margin-left: -24px;
-            width: 48px;
-            height: 12px;
-
-            &.large {
-                width: 66px;
-                height: 18px;
-                margin-top: -9px;
-                margin-left: -33px;
-            }
-        }
     }
 
     &.active {
@@ -157,7 +135,7 @@
             height: 36px;
             right: 0px;
             left: 0px;
-            background: @codeboxLateralbarBackground;
+            background: @codeboxActiveColor;
         }
 
         .tabs-content {
@@ -166,7 +144,7 @@
             bottom: 0px;
             right: 0px;
             left: 0px;
-            background: #e1e1e1;
+            background: @tabActiveColor;
         }
     }
 }

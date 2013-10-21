@@ -36,6 +36,8 @@ define([
                 this.closeTab();
             }, this);
 
+            console.log(this.options);
+            
             // When tab is ready : load file
             this.on("tab:ready", function() {
                 this.adaptFile();

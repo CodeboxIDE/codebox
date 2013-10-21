@@ -4,17 +4,24 @@
 @FontAwesomePath: "@{FontPath}/fontawesome";
 
 /* Colors */
-@codeboxMainColor: #2ecc71;
+@codeboxActiveColor: #2ecc71;
 @codeboxMainColorDarker: #27ae60;
-@dropdown-link-hover-bg: @codeboxMainColor;
-
-/* Lateral bar */
-@codeboxLateralbarWidth: 232px;
-@codeboxLateralbarBackground: #f7f5fa;
+@dropdown-link-hover-bg: @codeboxActiveColor;
 
 /* Menu bar */
 @codeboxMenubarWidth: 42px;
-@codeboxMenubarBackground: #333;
+@codeboxMenubarBackground: #2c3e50;
+@codeboxMenubarMenuColor: #f1f1f1;
+
+/* Lateral bar */
+@codeboxLateralbarWidth: 232px;
+@codeboxLateralbarBackground: @codeboxMenubarBackground;
+@codeboxLateralbarColor: @codeboxMenubarMenuColor;
+
+/* Body Tabs */
+@tabColor: @codeboxMainColorDarker;
+@tabHoverColor: @tabColor;
+@tabActiveColor: #eaeaea;
 
 /* Fonts */
 @font-family-base: 'codeboxNormal';

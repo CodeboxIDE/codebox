@@ -20,8 +20,13 @@ define([
         initialize: function() {
             BodyView.__super__.initialize.apply(this, arguments);
             
-            session.on("open", function(options) {
-                this.addTab(this.tabTypes[options.type]);
+            session.on("openFile", function(options) {
+                options = _.defaults({}, options || {}, {
+                    'path': '/'
+                });
+                this.addTab(FileTab, {
+                    'path': options.path
+                });
             }, this);
 
             return this;
@@ -33,10 +38,10 @@ define([
         },
 
         // Open a new tab
-        addTab: function(Tab) {
+        addTab: function(Tab, options) {
             if (this.components.tabs == null) return;
 
-            this.components.tabs.add(Tab);
+            this.components.tabs.add(Tab, options);
             return this;
         }
     });
