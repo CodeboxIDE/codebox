@@ -25527,7 +25527,7 @@ Logger, Requests, Urls, Storage, Cache, Template, Resources, Deferred, Queue, I1
         }
     }
 });
-define('hr/args',[],function() { return {"revision":1382445660871,"baseUrl":"/"}; });
+define('hr/args',[],function() { return {"revision":1382452766195,"baseUrl":"/"}; });
 define('models/user',[
     "Underscore",
     "hr/hr"
@@ -30677,7 +30677,7 @@ define('models/shell',[
 
             this.codebox = this.options.codebox;
             this.stream = ss.createStream();
-            this.shellId = this.options.shellId || _.uniqueId("terminal");
+            this.shellId = this.options.shellId || _.uniqueId("term");
             
             return this;
         },
@@ -33358,36 +33358,60 @@ define('views/tabs/terminal',[
         },
 
         initialize: function(options) {
+            var that = this;
             TerminalTab.__super__.initialize.apply(this, arguments);
-            this.stream = ss.createStream();
             this.connected = false;
             this.codebox = session.codebox;
-            this.sessionId = _.uniqueId("term");
+
+            this.sessionId = this.options.shellId || _.uniqueId("term");
+            this.shell = this.codebox.openShell({
+                'shellId': this.options.shellId ? this.sessionId : this.sessionId+"-"+(new Date()).getTime()
+            });
 
             this.on("tab:close", function() {
-                if (this.connected) {
-                    this.socket().emit("shell.destroy", {
-                        "shellId": this.shellId
-                    });
-                    this.socket().disconnect();
-                }
+                this.shell.disconnect();
+            }, this);
+            this.setTabTitle("Terminal - "+this.sessionId);
+
+            this.shell.on("connect", function() {
+                that.connected = true;
+
+                that.shell.stream.once('data', function() {
+                    if (that.components.terminal != null) {
+                        that.shell.socket.emit("shell.resize", {
+                            "shellId": that.shell.shellId,
+                            "rows": that.components.terminal.term_h,
+                            "columns": that.components.terminal.term_w
+                        });
+                    }
+                });
+
+                that.shell.stream.on('error', function() {
+                    that.printLn("Error connecting to remote host");
+                });
+
+                that.shell.stream.on('end', function() {
+                    that.printLn("Connection closed by remote host");
+                });
+
+                that.shell.stream.on('data', function(chunk) {
+                    that.print(chunk.toString());
+                });
+
+                this.render();
             }, this);
 
-            this._shellId = this.options.shellId || this.sessionId;
-            this.shellId = this.options.shellId ? this._shellId : this._shellId+"-"+(new Date()).getTime();
-            this.setTabTitle("Terminal - "+this._shellId);
 
             if (this.options.directConnect) {
-                this.connect();
+                this.shell.connect();
             }
             return this;
         },
 
         templateContext: function() {
             return {
-                stream: this.options.terminal ? this.stream : null,
-                options: {
-                    resize: this.options.resize
+                'options': {
+                    'resize': this.options.resize
                 }
             };
         },
@@ -33400,16 +33424,29 @@ define('views/tabs/terminal',[
         },
 
         finish: function() {
-            this.components.terminal.on("resize", function(w, h) {
-                this.socket().emit("shell.resize", {
-                    "shellId": this.shellId,
+            var that = this;
+
+            var sendResize = function(w, h) {
+                if (!that.connected) return;
+
+                w = w || that.components.terminal.term_w;
+                h = h || that.components.terminal.term_h;
+
+                console.log("send resize ", w,h);
+                that.shell.socket.emit("shell.resize", {
+                    "shellId": that.shell.shellId,
                     "rows": h,
                     "columns": w
                 });
-            }, this);
+            };
+
+            this.components.terminal.on("resize", sendResize, this);
             this.components.terminal.on("data", function(data) {
-                this.stream.write(data);
+                this.shell.stream.write(data);
             }, this);
+
+            sendResize();
+
             return TerminalTab.__super__.finish.apply(this, arguments);
         },
 
@@ -33430,77 +33467,6 @@ define('views/tabs/terminal',[
         print: function(buf) {
             if (this.components.terminal == null) return this;
             this.components.terminal.write(buf);
-            return this;
-        },
-
-        /* Socket for the connexion */
-        socket: function() {
-            if (this._socket == null && this.codebox != null) {
-                this.codebox.socket("stream/shells", true).done(_.bind(function(s) {
-                    this._socket = s;
-                }, this));
-            }
-            return this._socket;
-        },
-
-        /* Connect to the server */
-        connect: function() {
-            var that = this;
-            if (this.socket() == null) return this;
-
-            var socket = this.socket();
-
-            socket.on("connect", function() {
-                that.connected = true;
-
-                // Send stream to server
-                ss(socket).emit('shell.open', that.stream, {
-                    "shellId": that.shellId,
-                    "opts": {
-                        "rows": 80,
-                        "columns": 24,
-                        "id": that.shellId
-                        /*
-                         * Other options
-                        uid: 501,
-                        gid: 20,
-                        id: "something",  // same as shellId
-                        cwd: "/app/"  // Folder to open shell in
-                        // ENV variables
-                        env: {
-                            HOME: "/home/something",
-                            DEV: "true"
-                        }
-                        */
-                    }
-                });
-
-                that.stream.once('data', function() {
-                    if (that.components.terminal != null) {
-                        that.socket().emit("shell.resize", {
-                            "shellId": that.shellId,
-                            "rows": that.components.terminal.term_h,
-                            "columns": that.components.terminal.term_w
-                        });
-                    }
-                });
-
-                that.stream.on('error', function() {
-                    that.printLn("Error connecting to remote host");
-                });
-
-                that.stream.on('end', function() {
-                    that.printLn("Connection closed by remote host");
-                });
-
-                that.stream.on('data', function(chunk) {
-                    that.print(chunk.toString());
-                });
-
-                that.render();
-            });
-
-
             return this;
         }
     });
@@ -42398,7 +42364,6 @@ define('views/components/terminal',[
     var TerminalView = hr.View.extend({
         className: "component-terminal",
         defaults: {
-            source: undefined,
             resize: true
         },
         events: {

@@ -18,7 +18,7 @@ define([
 
             this.codebox = this.options.codebox;
             this.stream = ss.createStream();
-            this.shellId = this.options.shellId || _.uniqueId("terminal");
+            this.shellId = this.options.shellId || _.uniqueId("term");
             
             return this;
         },

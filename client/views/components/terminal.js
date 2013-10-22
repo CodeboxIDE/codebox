@@ -9,7 +9,6 @@ define([
     var TerminalView = hr.View.extend({
         className: "component-terminal",
         defaults: {
-            source: undefined,
             resize: true
         },
         events: {
