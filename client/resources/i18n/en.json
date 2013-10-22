@@ -55,10 +55,10 @@
                 "actions": {
                     "refresh": "Refresh",
                     "hidden": "Toggle hidden files",
-                    "create": "Create a new file",
-                    "mkdir": "Create a new directory",
-                    "rename": "Rename file",
-                    "delete": "Delete files",
+                    "create": "New file",
+                    "mkdir": "New folder",
+                    "rename": "Rename",
+                    "delete": "Delete",
                     "upload": {
                         "select": "Upload a file or directory",
                         "files": "Upload files",

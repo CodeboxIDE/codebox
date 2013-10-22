@@ -20,9 +20,9 @@ define([
 
         // Finish Rendering
         finish: function() {
-            this.$('.files-toolbar .btn').tooltip({
+            /*this.$('.files-toolbar .btn').tooltip({
                 placement: "bottom"
-            });
+            });*/
             var file = this.components.editor != null ? this.components.editor : this.components.directory;
             file.on("all", function() {
                 this.trigger.apply(this, arguments);

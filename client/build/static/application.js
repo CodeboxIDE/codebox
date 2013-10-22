@@ -25527,7 +25527,7 @@ Logger, Requests, Urls, Storage, Cache, Template, Resources, Deferred, Queue, I1
         }
     }
 });
-define('hr/args',[],function() { return {"revision":1382429637461,"baseUrl":"/"}; });
+define('hr/args',[],function() { return {"revision":1382433717766,"baseUrl":"/"}; });
 define('models/user',[
     "Underscore",
     "hr/hr"
@@ -30424,9 +30424,9 @@ define('models/file',[
                 return _.reduce(extsIcon, function(memo, exts, icon) {
                     if (_.contains(exts, ext)) return icon; 
                     return memo;
-                }, "icon-file-text");
+                }, "icon-file-text-alt");
             } else {
-                return "icon-folder-close";
+                return "icon-folder-close-alt";
             }
         },
 
@@ -32950,9 +32950,9 @@ define('views/components/files/directory',[
         finish: function() {
             this.unselectFiles();
             this.$(".file-hidden").toggle(!this.options.hiddenFiles);
-            this.$(".collaborators a").tooltip({
+            /*this.$(".collaborators a").tooltip({
                 placement: "bottom"
-            });
+            });*/
             return FilesDirectoryView.__super__.finish.apply(this, arguments);
         },
 
@@ -33246,9 +33246,9 @@ define('views/components/files/normal',[
 
         // Finish Rendering
         finish: function() {
-            this.$('.files-toolbar .btn').tooltip({
+            /*this.$('.files-toolbar .btn').tooltip({
                 placement: "bottom"
-            });
+            });*/
             var file = this.components.editor != null ? this.components.editor : this.components.directory;
             file.on("all", function() {
                 this.trigger.apply(this, arguments);
@@ -36830,7 +36830,7 @@ define('views/views',[
     });
 }());
 
-define('text!resources/i18n/en.json',[],function () { return '{\n    "hr": {\n        "utils": {\n            "timeago": {\n                "error": "Error",\n                "yearago": "about 1 year ago",\n                "month": "about 1 month ago",\n                "months": "<%- months %> months ago",\n                "days": "<%- days %> days ago",\n                "day": "a day ago",\n                "hours": "about <%- hours %> hours ago",\n                "hour": "about 1 hour ago",\n                "minutes": "<%- minutes %> minutes ago",\n                "minute": "a minute ago",\n                "seconds": "less than a minute ago"\n            }\n        }\n    },\n    "layouts": {\n        "menubar": {\n            "menu": {\n                "search": "Search",\n                "root": "Files",\n                "terminal": "Terminal",\n                "run": "Run project",\n                "settings": "Settings"\n            }\n        },\n        "lateralbar": {\n            "search": {\n                "placeholder": "Search Project"\n            }\n        }\n    },\n\t"components": {\n\t\t"dialogs": {\n            "alert": {\n                "title": "Alert",\n                "cancel": "Close",\n            },\n            "confirm": {\n                "title": "Confirm",\n                "cancel": "Close",\n                "ok": "Ok"\n            },\n            "prompt": {\n                "title": "Input",\n                "cancel": "Cancel",\n                "ok": "OK"\n            }\n        },\n\n        "files": {\n            "directory": {\n                "actions": {\n                    "refresh": "Refresh",\n                    "hidden": "Toggle hidden files",\n                    "create": "Create a new file",\n                    "mkdir": "Create a new directory",\n                    "rename": "Rename file",\n                    "delete": "Delete files",\n                    "upload": {\n                        "select": "Upload a file or directory",\n                        "files": "Upload files",\n                        "directory": "Upload directory"\n                    },\n                    "download": "Download"\n                },\n                "labels": {\n                    "hidden": "hidden"\n                },\n                "dialogs": {\n                    "create": "Create a new file",\n                    "mkdir": "Create a new directory",\n                    "rename": "Rename <b><%- name %></b>",\n                    "delete": "Do you really want to remove <b><%- n %> file(s)</b> ?"\n                }\n            },\n            "file": {\n                "actions": {\n                    "settings": "Editor Settings",\n                    "mode": "Syntax",\n                    "fullscreen": "Toggle fullscreen",\n                    "state": "Synchronization",\n                    "delete": "Delete"\n                },\n                "dialogs": {\n                    "delete": "Delete this file"\n                }\n            }\n        }\n\t}\n}';});
+define('text!resources/i18n/en.json',[],function () { return '{\n    "hr": {\n        "utils": {\n            "timeago": {\n                "error": "Error",\n                "yearago": "about 1 year ago",\n                "month": "about 1 month ago",\n                "months": "<%- months %> months ago",\n                "days": "<%- days %> days ago",\n                "day": "a day ago",\n                "hours": "about <%- hours %> hours ago",\n                "hour": "about 1 hour ago",\n                "minutes": "<%- minutes %> minutes ago",\n                "minute": "a minute ago",\n                "seconds": "less than a minute ago"\n            }\n        }\n    },\n    "layouts": {\n        "menubar": {\n            "menu": {\n                "search": "Search",\n                "root": "Files",\n                "terminal": "Terminal",\n                "run": "Run project",\n                "settings": "Settings"\n            }\n        },\n        "lateralbar": {\n            "search": {\n                "placeholder": "Search Project"\n            }\n        }\n    },\n\t"components": {\n\t\t"dialogs": {\n            "alert": {\n                "title": "Alert",\n                "cancel": "Close",\n            },\n            "confirm": {\n                "title": "Confirm",\n                "cancel": "Close",\n                "ok": "Ok"\n            },\n            "prompt": {\n                "title": "Input",\n                "cancel": "Cancel",\n                "ok": "OK"\n            }\n        },\n\n        "files": {\n            "directory": {\n                "actions": {\n                    "refresh": "Refresh",\n                    "hidden": "Toggle hidden files",\n                    "create": "New file",\n                    "mkdir": "New folder",\n                    "rename": "Rename",\n                    "delete": "Delete",\n                    "upload": {\n                        "select": "Upload a file or directory",\n                        "files": "Upload files",\n                        "directory": "Upload directory"\n                    },\n                    "download": "Download"\n                },\n                "labels": {\n                    "hidden": "hidden"\n                },\n                "dialogs": {\n                    "create": "Create a new file",\n                    "mkdir": "Create a new directory",\n                    "rename": "Rename <b><%- name %></b>",\n                    "delete": "Do you really want to remove <b><%- n %> file(s)</b> ?"\n                }\n            },\n            "file": {\n                "actions": {\n                    "settings": "Editor Settings",\n                    "mode": "Syntax",\n                    "fullscreen": "Toggle fullscreen",\n                    "state": "Synchronization",\n                    "delete": "Delete"\n                },\n                "dialogs": {\n                    "delete": "Delete this file"\n                }\n            }\n        }\n\t}\n}';});
 
 define('resources/resources',[
     "hr/hr",

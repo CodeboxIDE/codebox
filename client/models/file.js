@@ -215,9 +215,9 @@ define([
                 return _.reduce(extsIcon, function(memo, exts, icon) {
                     if (_.contains(exts, ext)) return icon; 
                     return memo;
-                }, "icon-file-text");
+                }, "icon-file-text-alt");
             } else {
-                return "icon-folder-close";
+                return "icon-folder-close-alt";
             }
         },
 

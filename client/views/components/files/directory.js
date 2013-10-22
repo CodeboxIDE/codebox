@@ -90,9 +90,9 @@ define([
         finish: function() {
             this.unselectFiles();
             this.$(".file-hidden").toggle(!this.options.hiddenFiles);
-            this.$(".collaborators a").tooltip({
+            /*this.$(".collaborators a").tooltip({
                 placement: "bottom"
-            });
+            });*/
             return FilesDirectoryView.__super__.finish.apply(this, arguments);
         },
 
