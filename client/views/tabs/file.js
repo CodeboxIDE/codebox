@@ -71,8 +71,6 @@ define([
         /* Command save file */
         saveFile: function(e) {
             e.preventDefault();
-            if (this.file.model.isDirectory()) return;
-            this.file.model.save();
         }
     });
 

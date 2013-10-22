@@ -3,8 +3,9 @@ define([
     "jQuery",
     "hr/hr",
     "views/tabs/file",
+    "views/tabs/terminal",
     "session"
-], function(_, $, hr, FileTab, session) {
+], function(_, $, hr, FileTab, TerminalTab, session) {
 
     var BodyView = hr.View.extend({
         className: "layout-body",
@@ -20,11 +21,20 @@ define([
         initialize: function() {
             BodyView.__super__.initialize.apply(this, arguments);
             
+            // Open file
             session.codebox.on("openFile", function(path, options) {
                 options = _.defaults({}, options || {}, {
-                    'path': '/'
+                    
                 });
-                this.openFile(path);
+                this.openFile(path, options);
+            }, this);
+
+            // Open terminal
+            session.codebox.on("openTerminal", function(path, options) {
+                options = _.defaults({}, options || {}, {
+                    
+                });
+                this.openTerminal(options);
             }, this);
 
             return this;
@@ -61,13 +71,18 @@ define([
                 tab.view.load(path);
             } else {
                 // Add new tab
-                this.components.tabs.add(FileTab, {
+                this.addTab(FileTab, {
                     "path": path
                 }, {
                     "uniqueId": path,
                     "type": "file",
                 });
             }
+        },
+
+        // Open terminal
+        openTerminal: function() {
+            return this.addTab(TerminalTab);
         }
     });
 

@@ -10,8 +10,6 @@ define([
         className: "component-files-editor",
         template: "components/files/file.html",
         events: {
-            "click .action-file-delete":        "deleteFile",
-            "click .action-editor-state":       "pingSync",
             "click .action-file-fullscreen":    "toggleFullscreen",
             "click a[data-editormode]":         "changeEditorMode"
         },
@@ -51,19 +49,6 @@ define([
             e.preventDefault();
             var mode = $(e.currentTarget).data("editormode");
             this.components.editor.setMode(mode);
-        },
-
-        // (action) ping state
-        pingState: function(e) {
-            e.preventDefault();
-        },
-
-        // (action) delete the file
-        deleteFile: function(e) {
-            e.preventDefault();
-            Dialogs.confirm(hr.I18n.t("components.files.file.dialogs.delete")).done(_.bind(function(state) {
-                if (state == true) this.model.remove();
-            }, this));
         },
 
         // Update participants list

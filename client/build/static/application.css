@@ -1295,6 +1295,10 @@ a .icon-rotate-90:before,a .icon-rotate-180:before,a .icon-rotate-270:before,a .
 .component-editor .marker-f39c12.marker-selection{background:#f39c12;}
 .component-editor .marker-8e44ad.marker-cursor{border-color:#8e44ad;}
 .component-editor .marker-8e44ad.marker-selection{background:#8e44ad;}
+.component-terminal{background:black;color:white;display:inline-block;font-family:Courier New;position:absolute;top:0px;left:0px;right:0px;bottom:0px;overflow:auto;cursor:text;padding:3px;}.component-terminal *{padding:0px;margin:0px;}
+.component-workspace-terminal{position:absolute;width:100%;height:100%;background:#eaeaea;}.component-workspace-terminal.mode-fullscreen{position:fixed;top:0px;bottom:0px;right:0px;left:0px;z-index:10000;}
+.component-workspace-terminal .action-file-fullscreen{position:absolute;right:10px;top:10px;color:#fff;text-shadow:none;}.component-workspace-terminal .action-file-fullscreen:hover{text-decoration:none;}
+.component-workspace-terminal .terminal-body{position:absolute;top:0px;bottom:0px;left:0px;right:0px;margin:10px;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;overflow:hidden;width:auto;height:auto;}
 #codebox .layout-lateralbar{position:absolute;top:0px;left:42px;bottom:0px;width:232px;background:#353d48;box-shadow:inset -8px 0px 9px -9px #000000;color:#e1e1e1;overflow-y:auto;overflow-x:hidden;}#codebox .layout-lateralbar .search{display:none;position:absolute;top:0px;bottom:0px;left:0px;right:0px;z-index:10;padding:4px 6px;background:#353d48;}#codebox .layout-lateralbar .search input.search-query{border-radius:2px;background:#fff;color:#222;border:none;width:100%;margin:3px 0px;padding:4px 7px;font-size:12px;line-height:20px;}#codebox .layout-lateralbar .search input.search-query:hover,#codebox .layout-lateralbar .search input.search-query:focus{outline:0;}
 #codebox .layout-lateralbar>.files{margin:4px 0px;font-size:15px;}
 #codebox .layout-menubar{position:absolute;left:0px;width:42px;top:0px;bottom:0px;background:#353d48;}#codebox .layout-menubar .menu-section{margin-bottom:10px;}#codebox .layout-menubar .menu-section.menu-bottom{position:absolute;bottom:0px;margin:0px;}

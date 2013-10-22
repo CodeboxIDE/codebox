@@ -10,7 +10,8 @@ define([
         template: "layouts/menubar.html",
         defaults: {},
         events: {
-            "click .menu-action-open-root": "actionOpenRoot"
+            "click .menu-action-open-root": "actionOpenRoot",
+            "click .menu-action-open-terminal": "actionOpenTerminal"
         },
 
         // Finish rendering
@@ -31,6 +32,13 @@ define([
             e.preventDefault();
 
             session.codebox.root.open();
+        },
+
+        // (action) Open terminal
+        actionOpenTerminal: function(e) {
+            e.preventDefault();
+
+            session.codebox.trigger("openTerminal");
         }
     });
 
