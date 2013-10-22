@@ -25527,7 +25527,7 @@ Logger, Requests, Urls, Storage, Cache, Template, Resources, Deferred, Queue, I1
         }
     }
 });
-define('hr/args',[],function() { return {"revision":1382433717766,"baseUrl":"/"}; });
+define('hr/args',[],function() { return {"revision":1382434133741,"baseUrl":"/"}; });
 define('models/user',[
     "Underscore",
     "hr/hr"
@@ -32705,7 +32705,7 @@ define('views/dialogs/base',[
             className: ""
         },
         events: {
-            "hidden": "hidden",
+            "hidden.bs.modal": "hidden",
             "click .action-close": "close",
             "click .action-confirm": "actionConfirm",
             "click .action-prompt": "actionPrompt"

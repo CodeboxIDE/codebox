@@ -14,7 +14,7 @@ define([
             className: ""
         },
         events: {
-            "hidden": "hidden",
+            "hidden.bs.modal": "hidden",
             "click .action-close": "close",
             "click .action-confirm": "actionConfirm",
             "click .action-prompt": "actionPrompt"
