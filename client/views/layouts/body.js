@@ -45,11 +45,21 @@ define([
 
         // Open a file
         openFile: function(path) {
-            return this.addTab(FileTab, {
-                'path': path
-            }, {
-                'uniqueId': path
-            });
+
+            if (this.components.tabs == null || this.components.tabs.checkTabExists(path)) return;
+            var tab = this.components.tabs.getActiveTabByType("directory");
+            if (tab != null) {
+                // Change current tab to open the file
+                tab.view.load(path);
+            } else {
+                // Add new tab
+                this.components.tabs.add(FileTab, {
+                    "path": path
+                }, {
+                    "uniqueId": path,
+                    "type": "file",
+                });
+            }
         }
     });
 

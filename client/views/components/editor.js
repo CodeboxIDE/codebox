@@ -489,7 +489,7 @@ define([
             if (this.file != null) {
                 var socket = null;
                 logging.log("creating socket");
-                this.file.codebox.socket("socket.io").done(_.bind(function(s) {
+                this.file.codebox.socket("filesync").done(_.bind(function(s) {
                     socket = s;
                 }, this));
                 return socket;

@@ -27,7 +27,7 @@
         <% if (!file.isRoot()) { %>
         <li class="file level-up">
             <span class="name">
-                <a href="#">..</a>
+                <a href="#" class="action-open-parent">..</a>
             </span>
         </li>
         <% } %>
@@ -40,7 +40,7 @@
                 <i class="<%- cfile.icon() %>" style="color:<%- cfile.color("#666") %>"></i>
             </span>
             <span class="name">
-                <a href="#"><%- cfile.get("name") %></a>
+                <a href="#" class="action-open-file"><%- cfile.get("name") %></a>
             </span>
             <span class="mtime"><%= view.component("hr.date.relative", {
                 time: cfile.get("mtime")/1000

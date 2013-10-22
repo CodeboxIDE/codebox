@@ -25527,7 +25527,7 @@ Logger, Requests, Urls, Storage, Cache, Template, Resources, Deferred, Queue, I1
         }
     }
 });
-define('hr/args',[],function() { return {"revision":1382394016768,"baseUrl":"/"}; });
+define('hr/args',[],function() { return {"revision":1382429637461,"baseUrl":"/"}; });
 define('models/user',[
     "Underscore",
     "hr/hr"
@@ -30275,8 +30275,8 @@ define('models/file',[
         /*
          *  Open the tab for this file
          */
-        open: function(options) {
-            this.codebox.trigger("openFile", this.path(), options);
+        open: function(path, options) {
+            this.codebox.trigger("openFile", this.path(path), options);
             return this;
         },
 
@@ -32876,7 +32876,8 @@ define('views/components/files/directory',[
         }),
         events: {
             "click .file": "selectOnlyFile",
-            "click .file .name a": "openFile",
+            "click .action-open-file": "openFile",
+            "click .action-open-parent": "openParent",
             "click .file .select input": "selectFile",
             "change .uploader": "uploadStart",
             "change .uploader-directory": "uploadStart",
@@ -33083,7 +33084,7 @@ define('views/components/files/directory',[
 
         // (event) Open a file
         openFile: function(e) {
-            e.stopPropagation();
+            e.preventDefault();
             var file = $(e.currentTarget).parents(".file");
             var path = file.data("filepath");
             if (path == null || path.length == 0) { return; }
@@ -33091,6 +33092,12 @@ define('views/components/files/directory',[
                 return cfile.path() == path;
             });
             file.open();
+        },
+
+        // (event) Open parent folder
+        openParent: function(e) {
+            e.preventDefault();
+            this.model.open(this.model.parentPath());
         },
 
         // (event) Select only one file
@@ -33382,11 +33389,21 @@ define('views/layouts/body',[
 
         // Open a file
         openFile: function(path) {
-            return this.addTab(FileTab, {
-                'path': path
-            }, {
-                'uniqueId': path
-            });
+
+            if (this.components.tabs == null || this.components.tabs.checkTabExists(path)) return;
+            var tab = this.components.tabs.getActiveTabByType("directory");
+            if (tab != null) {
+                // Change current tab to open the file
+                tab.view.load(path);
+            } else {
+                // Add new tab
+                this.components.tabs.add(FileTab, {
+                    "path": path
+                }, {
+                    "uniqueId": path,
+                    "type": "file",
+                });
+            }
         }
     });
 
@@ -36114,7 +36131,7 @@ define('views/components/editor',[
             if (this.file != null) {
                 var socket = null;
                 logging.log("creating socket");
-                this.file.codebox.socket("socket.io").done(_.bind(function(s) {
+                this.file.codebox.socket("filesync").done(_.bind(function(s) {
                     socket = s;
                 }, this));
                 return socket;

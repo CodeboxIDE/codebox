@@ -16,7 +16,8 @@ define([
         }),
         events: {
             "click .file": "selectOnlyFile",
-            "click .file .name a": "openFile",
+            "click .action-open-file": "openFile",
+            "click .action-open-parent": "openParent",
             "click .file .select input": "selectFile",
             "change .uploader": "uploadStart",
             "change .uploader-directory": "uploadStart",
@@ -223,7 +224,7 @@ define([
 
         // (event) Open a file
         openFile: function(e) {
-            e.stopPropagation();
+            e.preventDefault();
             var file = $(e.currentTarget).parents(".file");
             var path = file.data("filepath");
             if (path == null || path.length == 0) { return; }
@@ -231,6 +232,12 @@ define([
                 return cfile.path() == path;
             });
             file.open();
+        },
+
+        // (event) Open parent folder
+        openParent: function(e) {
+            e.preventDefault();
+            this.model.open(this.model.parentPath());
         },
 
         // (event) Select only one file

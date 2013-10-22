@@ -66,8 +66,8 @@ define([
         /*
          *  Open the tab for this file
          */
-        open: function(options) {
-            this.codebox.trigger("openFile", this.path(), options);
+        open: function(path, options) {
+            this.codebox.trigger("openFile", this.path(path), options);
             return this;
         },
 
