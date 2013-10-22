@@ -25527,7 +25527,7 @@ Logger, Requests, Urls, Storage, Cache, Template, Resources, Deferred, Queue, I1
         }
     }
 });
-define('hr/args',[],function() { return {"revision":1382435531111,"baseUrl":"/"}; });
+define('hr/args',[],function() { return {"revision":1382438233598,"baseUrl":"/"}; });
 define('models/user',[
     "Underscore",
     "hr/hr"
@@ -30812,8 +30812,9 @@ define('models/box',[
     'hr/hr',
     'vendors/socket.io',
     'models/file',
-    'models/shell'
-], function (hr, io, File, Shell) {
+    'models/shell',
+    'models/user'
+], function (hr, io, File, Shell, User) {
     var logging = hr.Logger.addNamespace("codebox");
 
     var Codebox = hr.Model.extend({
@@ -30831,6 +30832,8 @@ define('models/box',[
         initialize: function() {
             this.baseUrl = this.options.baseUrl || "";
             this.state = false;
+
+            this.user = null;
 
             // Root file
             this.root = new File({
@@ -30906,10 +30909,12 @@ define('models/box',[
          */
         rpc: function(method, args, options) {
             var d = new hr.Deferred();
-            this.request("getJSON", "rpc"+method, args, options).done(function(data) {
+            this.request("getJSON", "rpc"+method, args, options).then(function(data) {
                 if (!data.ok) { d.reject(data.error); }
                 else { d.resolve(data.data); }
-            }, function() { d.reject(); });
+            }, function() {
+                d.reject();
+            });
 
             return d;
         },
@@ -30938,13 +30943,16 @@ define('models/box',[
         /*
          *  Join the box
          */
-        join: function(args) {
+        auth: function(token, user) {
             var that = this;
-            args = args || {};
 
-            if (args.toJSON != null) args = args.toJSON();
+            this.user = user || new User();
 
-            return this.rpc("/auth/join", args);
+            return this.rpc("/auth/join", {
+                'token': token
+            }).done(function(info) {
+                that.user.set(info);
+            })
         },
 
         /*
@@ -31032,12 +31040,15 @@ define('session',[
     "Underscore",
     "hr/hr",
     "models/user",
-    "models/box"
-], function(_, hr, User, Codebox) {
+    "models/box",
+    "utils/url"
+], function(_, hr, User, Codebox, Url) {
 
     var Session = hr.Class.extend({
         initialize: function() {
             Session.__super__.initialize.apply(this, arguments);
+
+            this.queries = Url.parseQueryString();
 
             this.user = new User();
             this.codebox = new Codebox();
@@ -31050,14 +31061,7 @@ define('session',[
             var that = this;
             var d = new hr.Deferred();
 
-            this.user.set({
-                'name': "Samy",
-                'email': "samypesse@gmail.com",
-                'userId': "Samy",
-                'token': "lol"
-            });
-
-            return this.codebox.join(this.user).then(function() {
+            return this.codebox.auth(this.queries.token, this.user).then(function() {
                 return that.codebox.status();
             });
         }

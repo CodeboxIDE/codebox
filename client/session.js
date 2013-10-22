@@ -2,12 +2,15 @@ define([
     "Underscore",
     "hr/hr",
     "models/user",
-    "models/box"
-], function(_, hr, User, Codebox) {
+    "models/box",
+    "utils/url"
+], function(_, hr, User, Codebox, Url) {
 
     var Session = hr.Class.extend({
         initialize: function() {
             Session.__super__.initialize.apply(this, arguments);
+
+            this.queries = Url.parseQueryString();
 
             this.user = new User();
             this.codebox = new Codebox();
@@ -20,14 +23,7 @@ define([
             var that = this;
             var d = new hr.Deferred();
 
-            this.user.set({
-                'name': "Samy",
-                'email': "samypesse@gmail.com",
-                'userId': "Samy",
-                'token': "lol"
-            });
-
-            return this.codebox.join(this.user).then(function() {
+            return this.codebox.auth(this.queries.token, this.user).then(function() {
                 return that.codebox.status();
             });
         }

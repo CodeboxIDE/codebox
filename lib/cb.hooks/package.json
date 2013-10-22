@@ -1,16 +1,16 @@
 {
-    "name": "cb.rpc.auth",
+    "name": "cb.hooks",
     "version": "0.0.1",
 
     "main": "./main.js",
     "private": true,
 
     "plugin": {
-        "provides": [],
         "consumes": [
-            "hooks",
-            "httpRPC",
-            "workspace"
+            "logger"
+        ],
+        "provides": [
+        	"hooks"
         ]
     }
 }

@@ -10,7 +10,8 @@
         "consumes": [
             "logger",
             "events",
-            "workspace"
+            "workspace",
+            "hooks"
         ]
     }
 }

@@ -2,8 +2,9 @@ define([
     'hr/hr',
     'vendors/socket.io',
     'models/file',
-    'models/shell'
-], function (hr, io, File, Shell) {
+    'models/shell',
+    'models/user'
+], function (hr, io, File, Shell, User) {
     var logging = hr.Logger.addNamespace("codebox");
 
     var Codebox = hr.Model.extend({
@@ -21,6 +22,8 @@ define([
         initialize: function() {
             this.baseUrl = this.options.baseUrl || "";
             this.state = false;
+
+            this.user = null;
 
             // Root file
             this.root = new File({
@@ -96,10 +99,12 @@ define([
          */
         rpc: function(method, args, options) {
             var d = new hr.Deferred();
-            this.request("getJSON", "rpc"+method, args, options).done(function(data) {
+            this.request("getJSON", "rpc"+method, args, options).then(function(data) {
                 if (!data.ok) { d.reject(data.error); }
                 else { d.resolve(data.data); }
-            }, function() { d.reject(); });
+            }, function() {
+                d.reject();
+            });
 
             return d;
         },
@@ -128,13 +133,16 @@ define([
         /*
          *  Join the box
          */
-        join: function(args) {
+        auth: function(token, user) {
             var that = this;
-            args = args || {};
 
-            if (args.toJSON != null) args = args.toJSON();
+            this.user = user || new User();
 
-            return this.rpc("/auth/join", args);
+            return this.rpc("/auth/join", {
+                'token': token
+            }).done(function(info) {
+                that.user.set(info);
+            })
         },
 
         /*
