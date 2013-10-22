@@ -1302,4 +1302,6 @@ a .icon-rotate-90:before,a .icon-rotate-180:before,a .icon-rotate-270:before,a .
 #codebox .layout-body{position:absolute;top:0px;left:274px;right:0px;bottom:0px;}
 *{-webkit-overflow-scrolling:touch;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:none;-webkit-touch-callout:none;}
 body{-webkit-font-smoothing:antialiased;font-smoothing:antialiased;}
+.modal-content{border-radius:1px;-webkit-box-shadow:none;box-shadow:none;}
+.dropdown-menu{border-radius:1px;margin-top:-1px;}
 #codebox{position:fixed;top:0px;left:0px;right:0px;bottom:0px;}

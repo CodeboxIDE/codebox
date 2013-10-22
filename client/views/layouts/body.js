@@ -32,6 +32,14 @@ define([
 
         // Finish rendering
         finish: function() {
+            // Tabs
+            this.components.tabs.on("tabs:default", function() {
+                this.openFile("/");
+            }, this);
+
+            // Open base tabs
+            this.openFile("/");
+
             return BodyView.__super__.finish.apply(this, arguments);
         },
 
