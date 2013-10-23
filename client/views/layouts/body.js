@@ -66,7 +66,7 @@ define([
 
             if (this.components.tabs == null) return;
             var tab = this.components.tabs.getActiveTabByType("directory");
-            if (tab != null) {
+            if (tab != null && !this.components.tabs.checkTabExists(path)) {
                 // Change current tab to open the file
                 tab.view.load(path);
             } else {

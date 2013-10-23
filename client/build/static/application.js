@@ -25527,7 +25527,7 @@ Logger, Requests, Urls, Storage, Cache, Template, Resources, Deferred, Queue, I1
         }
     }
 });
-define('hr/args',[],function() { return {"revision":1382531157628,"baseUrl":"/"}; });
+define('hr/args',[],function() { return {"revision":1382545652031,"baseUrl":"/"}; });
 define('models/user',[
     "Underscore",
     "hr/hr"
@@ -33494,11 +33494,11 @@ define('views/layouts/body',[
         // Constructor
         initialize: function() {
             BodyView.__super__.initialize.apply(this, arguments);
-            
+
             // Open file
             session.codebox.on("openFile", function(path, options) {
                 options = _.defaults({}, options || {}, {
-                    
+
                 });
                 this.openFile(path, options);
             }, this);
@@ -33506,7 +33506,7 @@ define('views/layouts/body',[
             // Open terminal
             session.codebox.on("openTerminal", function(path, options) {
                 options = _.defaults({}, options || {}, {
-                    
+
                 });
                 this.openTerminal(options);
             }, this);
@@ -33538,9 +33538,9 @@ define('views/layouts/body',[
         // Open a file
         openFile: function(path) {
 
-            if (this.components.tabs == null || this.components.tabs.checkTabExists(path)) return;
+            if (this.components.tabs == null) return;
             var tab = this.components.tabs.getActiveTabByType("directory");
-            if (tab != null) {
+            if (tab != null && !this.components.tabs.checkTabExists(path)) {
                 // Change current tab to open the file
                 tab.view.load(path);
             } else {
