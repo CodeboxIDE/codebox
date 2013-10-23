@@ -25527,7 +25527,7 @@ Logger, Requests, Urls, Storage, Cache, Template, Resources, Deferred, Queue, I1
         }
     }
 });
-define('hr/args',[],function() { return {"revision":1382452766195,"baseUrl":"/"}; });
+define('hr/args',[],function() { return {"revision":1382531157628,"baseUrl":"/"}; });
 define('models/user',[
     "Underscore",
     "hr/hr"
@@ -33431,8 +33431,7 @@ define('views/tabs/terminal',[
 
                 w = w || that.components.terminal.term_w;
                 h = h || that.components.terminal.term_h;
-
-                console.log("send resize ", w,h);
+                
                 that.shell.socket.emit("shell.resize", {
                     "shellId": that.shell.shellId,
                     "rows": h,
