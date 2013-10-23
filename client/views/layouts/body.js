@@ -20,11 +20,11 @@ define([
         // Constructor
         initialize: function() {
             BodyView.__super__.initialize.apply(this, arguments);
-            
+
             // Open file
             session.codebox.on("openFile", function(path, options) {
                 options = _.defaults({}, options || {}, {
-                    
+
                 });
                 this.openFile(path, options);
             }, this);
@@ -32,7 +32,7 @@ define([
             // Open terminal
             session.codebox.on("openTerminal", function(path, options) {
                 options = _.defaults({}, options || {}, {
-                    
+
                 });
                 this.openTerminal(options);
             }, this);
@@ -64,7 +64,7 @@ define([
         // Open a file
         openFile: function(path) {
 
-            if (this.components.tabs == null || this.components.tabs.checkTabExists(path)) return;
+            if (this.components.tabs == null) return;
             var tab = this.components.tabs.getActiveTabByType("directory");
             if (tab != null) {
                 // Change current tab to open the file
