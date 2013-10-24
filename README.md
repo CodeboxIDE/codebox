@@ -9,5 +9,5 @@ $ npm install -g git+ssh://git@github.com:FriendCode/codebox.git
 ## Testing with CodeNow:
 
 ```
-$ bin/codebox.js run --codenow="http://localhost:5000" --box="eb0c2df9-ba6f-415e-a899-6a23d53d5df1" --key="338d14d7-f24f-4521-8f55-d3041fca0139"
+$ bin/codebox.js run --codenowttp://localhost:5000 --box="3e5e948b-e757-453b-b149-e16139d39ab9" --key="6ec285a4-cbb2-456d-a5ba-9fd1f1dcfbe5"
 ```

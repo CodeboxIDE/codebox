@@ -41,6 +41,8 @@ require([
         // Template rendering context
         templateContext: function() {
             return {
+                'email': hr.Storage.get("email"),
+                'token': hr.Storage.get("token"),
                 'isAuth': this.isAuth
             };
         },
@@ -53,8 +55,17 @@ require([
             }
             var email = this.$(".login-box #login-email").val();
             var password = this.$(".login-box #login-token").val();
+            var tosave = this.$(".login-box #login-save").is(":checked");
 
             session.start(email, password).then(function() {
+                if (tosave) {
+                    hr.Storage.set("email", email);
+                    hr.Storage.set("token", password);
+                } else {
+                    hr.Storage.set("email", "");
+                    hr.Storage.set("token", "");
+                }
+
                 that.isAuth = true;
                 that.render();
             }, function() {
