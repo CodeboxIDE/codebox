@@ -26,15 +26,43 @@ require([
         },
         links: {
             "icon": hr.Urls.static("images/favicon.png")
+        },
+        events: {
+            "submit .login-box form": "actionLoginBox"
+        },
+
+        // Constructor
+        initialize: function() {
+            Application.__super__.initialize.apply(this, arguments);
+            this.isAuth = false;
+            return this;
+        },
+
+        // Template rendering context
+        templateContext: function() {
+            return {
+                'isAuth': this.isAuth
+            };
+        },
+
+        // Login to box
+        actionLoginBox: function(e) {
+            var that = this;
+            if (e) {
+                e.preventDefault();
+            }
+            var email = this.$(".login-box #login-email").val();
+            var password = this.$(".login-box #login-token").val();
+
+            session.start(email, password).then(function() {
+                that.isAuth = true;
+                that.render();
+            }, function() {
+                that.$(".login-box .form-group").addClass("has-error");
+            });
         }
     });
 
-    // Start session
-    session.start().then(function() {
-        // Start application
-        var app = new Application();
-        app.run();
-    }, function() {
-        alert("Error starting session");
-    });
+    var app = new Application();
+    app.run();
 });

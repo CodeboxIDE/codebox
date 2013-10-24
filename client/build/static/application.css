@@ -1304,6 +1304,8 @@ a .icon-rotate-90:before,a .icon-rotate-180:before,a .icon-rotate-270:before,a .
 #codebox .layout-menubar{position:absolute;left:0px;width:42px;top:0px;bottom:0px;background:#353d48;}#codebox .layout-menubar .menu-section{margin-bottom:10px;}#codebox .layout-menubar .menu-section.menu-bottom{position:absolute;bottom:0px;margin:0px;}
 #codebox .layout-menubar .menu-section .menu-item{margin:4px;font-size:18px;line-height:34px;width:34px;height:34px;display:inline-block;text-align:center;color:#e1e1e1;border-radius:3px;cursor:default;}#codebox .layout-menubar .menu-section .menu-item:hover{background:rgba(0, 0, 0, 0.15);text-decoration:none;}
 #codebox .layout-body{position:absolute;top:0px;left:274px;right:0px;bottom:0px;}
+#codebox .layout-login{position:absolute;top:0px;left:0px;right:0px;bottom:0px;background:#f16956;}#codebox .layout-login .login-box{position:absolute;top:50%;left:50%;width:340px;height:400px;margin-left:-170px;margin-top:-200px;}#codebox .layout-login .login-box .header{font-size:75px;line-height:150px;color:#fff;opacity:0.2;text-align:center;}#codebox .layout-login .login-box .header .icon-stack{width:2.8em;}
+#codebox .layout-login .login-box .inner{padding:8px;border-radius:6px;border:1px solid #fff;background:#fafafa;}
 *{-webkit-overflow-scrolling:touch;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:none;-webkit-touch-callout:none;}
 body{-webkit-font-smoothing:antialiased;font-smoothing:antialiased;}
 .modal-content{border-radius:1px;-webkit-box-shadow:none;box-shadow:none;}

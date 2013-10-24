@@ -25527,7 +25527,7 @@ Logger, Requests, Urls, Storage, Cache, Template, Resources, Deferred, Queue, I1
         }
     }
 });
-define('hr/args',[],function() { return {"revision":1382545652031,"baseUrl":"/"}; });
+define('hr/args',[],function() { return {"revision":1382632407551,"baseUrl":"/"}; });
 define('models/user',[
     "Underscore",
     "hr/hr"
@@ -30884,10 +30884,10 @@ define('models/box',[
          *  
          *  @status : boolean for the status
          */
-        setStatus: function(status) {
-            this.status = status;
-            logging.log("status ", this.status);
-            this.trigger("status", status);
+        setStatus: function(state) {
+            this.state = state;
+            logging.log("status ", this.state);
+            this.trigger("status", state);
         },
 
         /*
@@ -30943,14 +30943,12 @@ define('models/box',[
         /*
          *  Join the box
          */
-        auth: function(token, user) {
+        auth: function(authInfo, user) {
             var that = this;
 
             this.user = user || new User();
 
-            return this.rpc("/auth/join", {
-                'token': token
-            }).done(function(info) {
+            return this.rpc("/auth/join", authInfo).done(function(info) {
                 that.user.set(info);
             })
         },
@@ -31057,11 +31055,14 @@ define('session',[
         },
 
         // Start session
-        start: function() {
+        start: function(email, token) {
             var that = this;
             var d = new hr.Deferred();
 
-            return this.codebox.auth(this.queries.token, this.user).then(function() {
+            return this.codebox.auth({
+                'email': email,
+                'token': token
+            }, this.user).then(function() {
                 return that.codebox.status();
             });
         }
@@ -42886,16 +42887,44 @@ require([
         },
         links: {
             "icon": hr.Urls.static("images/favicon.png")
+        },
+        events: {
+            "submit .login-box form": "actionLoginBox"
+        },
+
+        // Constructor
+        initialize: function() {
+            Application.__super__.initialize.apply(this, arguments);
+            this.isAuth = false;
+            return this;
+        },
+
+        // Template rendering context
+        templateContext: function() {
+            return {
+                'isAuth': this.isAuth
+            };
+        },
+
+        // Login to box
+        actionLoginBox: function(e) {
+            var that = this;
+            if (e) {
+                e.preventDefault();
+            }
+            var email = this.$(".login-box #login-email").val();
+            var password = this.$(".login-box #login-token").val();
+
+            session.start(email, password).then(function() {
+                that.isAuth = true;
+                that.render();
+            }, function() {
+                that.$(".login-box .form-group").addClass("has-error");
+            });
         }
     });
 
-    // Start session
-    session.start().then(function() {
-        // Start application
-        var app = new Application();
-        app.run();
-    }, function() {
-        alert("Error starting session");
-    });
+    var app = new Application();
+    app.run();
 });
 define("main", function(){});

@@ -19,11 +19,14 @@ define([
         },
 
         // Start session
-        start: function() {
+        start: function(email, token) {
             var that = this;
             var d = new hr.Deferred();
 
-            return this.codebox.auth(this.queries.token, this.user).then(function() {
+            return this.codebox.auth({
+                'email': email,
+                'token': token
+            }, this.user).then(function() {
                 return that.codebox.status();
             });
         }

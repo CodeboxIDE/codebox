@@ -1,0 +1,40 @@
+#codebox .layout-login {
+	@boxWidth: 340px;
+	@boxHeight: 400px;
+
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	background: @codeboxActiveColor;
+
+	.login-box {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: @boxWidth;
+		height: @boxHeight;
+		margin-left: -(@boxWidth/2);
+		margin-top: -(@boxHeight/2);
+
+		.header {
+			font-size: 75px;
+			line-height: 150px;
+			color: #fff;
+			opacity: 0.2;
+			text-align: center;
+
+			.icon-stack {
+				width: 2.8em;
+			}
+		}
+
+		.inner {
+			padding: 8px;
+			border-radius: 6px;
+			border: 1px solid #fff;
+			background: #fafafa;
+		}
+	}
+}

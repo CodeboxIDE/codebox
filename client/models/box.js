@@ -74,10 +74,10 @@ define([
          *  
          *  @status : boolean for the status
          */
-        setStatus: function(status) {
-            this.status = status;
-            logging.log("status ", this.status);
-            this.trigger("status", status);
+        setStatus: function(state) {
+            this.state = state;
+            logging.log("status ", this.state);
+            this.trigger("status", state);
         },
 
         /*
@@ -133,14 +133,12 @@ define([
         /*
          *  Join the box
          */
-        auth: function(token, user) {
+        auth: function(authInfo, user) {
             var that = this;
 
             this.user = user || new User();
 
-            return this.rpc("/auth/join", {
-                'token': token
-            }).done(function(info) {
+            return this.rpc("/auth/join", authInfo).done(function(info) {
                 that.user.set(info);
             })
         },

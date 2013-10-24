@@ -6,42 +6,8 @@
 $ npm install -g git+ssh://git@github.com:FriendCode/codebox.git
 ```
 
-## Command line
-
-Create a new codebox for a project by cloning a git directory
+## Testing with CodeNow:
 
 ```
-$ codebox create [git url]
+$ bin/codebox.js run --codenow="http://localhost:5000" --box="eb0c2df9-ba6f-415e-a899-6a23d53d5df1" --key="338d14d7-f24f-4521-8f55-d3041fca0139"
 ```
-
-Start a codebox in a directory:
-
-```
-$ codebox run -d ./project
-```
-
-## APIs
-
-The Codebox API is a very simple HTTP RPC API
-
-#### Box
-
-```
-box/status
-Return Codebox status
-```
-
-#### Auth
-
-```
-auth/join
-Authenticate the user to the Codebox.
-
-Arguments:
-	userId: user identifiant
-	token: user private token for auth
-	name: user display name
-	email: user email (for git and display)
-	image: user display image
-```
-
