@@ -20,7 +20,7 @@ cli.command('run')
         _.extend(config, {
             'title': this.box,
             'hooks': {
-                'auth': host+"/api/box/"+this.box+"/user",
+                'auth': host+"/api/box/"+this.box+"/auth",
                 'events': host+"/api/box/"+this.box+"/events"
             },
             'webhook': {
