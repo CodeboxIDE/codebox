@@ -8,20 +8,24 @@ var codebox = require("../index.js");
 cli.command('run')
 .description('Run a Codebox into a folder.')
 .action(function() {
-    var path = this.directory || "./";
+    this.box = this.box || process.env.CODENOW_BOXID;
+    this.key = this.key || process.env.CODENOW_TOKEN;
+    this.codenow = this.codenow || process.env.CODENOW_HOST || "https://codenow.io";
+    this.directory = this.directory || "./";
+    this.title = this.title || process.env.CODENOW_NAME || "";
+
     var config = {
-        'root': path,
+        'root': this.directory,
         'title': this.title
     };
 
     // Use CodeNow
     if (this.box) {
-        var host = this.codenow || "https://codenow.io";
         _.extend(config, {
-            'title': this.box,
+            'title': this.title,
             'hooks': {
-                'auth': host+"/api/box/"+this.box+"/auth",
-                'events': host+"/api/box/"+this.box+"/events"
+                'auth': this.codenow+"/api/box/"+this.box+"/auth",
+                'events': this.codenow+"/api/box/"+this.box+"/events"
             },
             'webhook': {
                 'authToken': this.key

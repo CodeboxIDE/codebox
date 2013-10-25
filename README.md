@@ -8,6 +8,8 @@ $ npm install -g git+ssh://git@github.com:FriendCode/codebox.git
 
 ## Testing with CodeNow:
 
+Open the .env file to configure your box and run:
+
 ```
-$ bin/codebox.js run --codenow="http://localhost:5000" --box="3e5e948b-e757-453b-b149-e16139d39ab9" --key="6ec285a4-cbb2-456d-a5ba-9fd1f1dcfbe5"
+$ foreman start
 ```
