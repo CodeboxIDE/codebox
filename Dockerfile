@@ -31,3 +31,6 @@ RUN adduser --shell /bin/bash --gecos 'friendcode workspace user' --disabled-pas
 
 # Default init command
 CMD su friendcode /opt/codebox/init.sh
+
+# Needed Volumes
+VOLUME ["/opt/codebox"]
