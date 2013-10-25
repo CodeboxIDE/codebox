@@ -55,32 +55,8 @@
 		overflow-y: auto;
 		overflow-x: hidden;
 
-		.search {
+		.component-searchbar {
 			display: none;
-			position: absolute;
-			top: 0px;
-			bottom: 0px;
-			left: 0px;
-			right: 0px;
-			z-index: 10;
-			padding: 4px 6px;
-			background: @codeboxLateralbarBackground;
-
-			input.search-query {
-				border-radius: 2px;
-				background: #fff;
-				color: #222;
-				border: none;
-				width: 100%;
-				margin: 3px 0px;
-				padding: 4px 7px;
-				font-size: 12px;
-				line-height: 20px;
-
-				&:hover, &:focus {
-					outline: 0;
-				}
-			}
 		}
 
 		>.files {
@@ -90,7 +66,7 @@
 	}
 
 	&.mode-search {
-		.lateral-body .search {
+		.lateral-body .component-searchbar {
 			display: block;
 		}
 	}

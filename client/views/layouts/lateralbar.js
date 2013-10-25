@@ -25,7 +25,11 @@ define([
                 }
             });
 
-            return MenuBarView.__super__.finish.apply(this, arguments);
+            this.components.search.on("close", function() {
+                this.toggleSearch(false);
+            }, this);
+
+            return LateralBarView.__super__.finish.apply(this, arguments);
         },
 
         // (action) Open root directory
@@ -42,6 +46,7 @@ define([
             session.codebox.trigger("openTerminal");
         },
 
+        // (action) Toggle search
         toggleSearch: function(st, query) {
             if (!_.isBoolean(st)) {
                 st.preventDefault();
@@ -49,7 +54,13 @@ define([
             }
 
             this.$el.toggleClass("mode-search", st);
-            if (!this.$el.hasClass("mode-search")) query = "";
+
+            st = this.$el.hasClass("mode-search");
+            if (!st) {
+                query = "";
+            } else {
+                this.components.search.focus();
+            }
             if (query != null) this.$(".search-query").val(query);
         }
     });

@@ -220,7 +220,9 @@ define([
          */
         proxyUrl: function(url) {
             return this.baseUrl+"/proxy/"+encodeURIComponent(url);
-        },
+        }
     });
+    
+
     return Codebox;
 });

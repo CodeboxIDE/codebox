@@ -3,6 +3,7 @@ define([
 	"views/layouts/body",
 
 	"views/components/tabs",
+	"views/components/searchbar",
 	"views/components/editor",
 	"views/components/terminal",
 	

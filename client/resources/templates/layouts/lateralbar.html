@@ -17,9 +17,7 @@
 	</div>
 </div>
 <div class="lateral-body">
-	<div class="search">
-	<input type="text" class="search-query" placeholder="<%- hr.i18n.t("layouts.lateralbar.search.placeholder") %>" />
-	</div>
+	<%= view.component("component.searchbar", {}, "search") %>
 	<div class="files">
 		<%= view.component("component.files.tree", {
 		    'path': "/"
