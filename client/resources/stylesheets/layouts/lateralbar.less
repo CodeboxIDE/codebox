@@ -1,45 +1,97 @@
 #codebox .layout-lateralbar {
 	position: absolute;
 	top: 0px;
-	left: @codeboxMenubarWidth;
+	left: 0px;
 	bottom: 0px;
-	width: @codeboxLateralbarWidth;
+	width: @codeboxMenubarWidth+@codeboxLateralbarWidth;
 	background: @codeboxLateralbarBackground;
 	box-shadow: inset -8px 0px 9px -9px #000000;
 	color: @codeboxLateralbarColor;
-	overflow-y: auto;
-	overflow-x: hidden;
+	overflow: hidden;
 
-	.search {
-		display: none;
+
+	.lateral-menu {
 		position: absolute;
+		left: 0px;
+		width: @codeboxMenubarWidth;
 		top: 0px;
 		bottom: 0px;
-		left: 0px;
-		right: 0px;
-		z-index: 10;
-		padding: 4px 6px;
-		background: @codeboxLateralbarBackground;
 
-		input.search-query {
-			border-radius: 2px;
-			background: #fff;
-			color: #222;
-			border: none;
-			width: 100%;
-			margin: 3px 0px;
-			padding: 4px 7px;
-			font-size: 12px;
-			line-height: 20px;
+		.menu-section {
+			margin-bottom: 10px;
 
-			&:hover, &:focus {
-				outline: 0;
+			&.menu-bottom {
+				position: absolute;
+				bottom: 0px;
+				margin: 0px;
+			}
+
+			.menu-item {
+				margin: 4px;
+				font-size: 18px;
+				line-height: 34px;
+				width: 34px;
+				height: 34px;
+				display: inline-block;
+				text-align: center;
+				color: @codeboxMenubarMenuColor;
+				border-radius: 3px;
+				cursor: default;
+
+				&:hover {
+					background: rgba(0, 0, 0, 0.15);
+					text-decoration: none;
+				}
 			}
 		}
 	}
 
-	>.files {
-		margin: 4px 0px;
-		font-size: 15px;
+	.lateral-body {
+		position: absolute;
+		top: 0px;
+		left: @codeboxMenubarWidth;
+		bottom: 0px;
+		width: @codeboxLateralbarWidth;
+		overflow-y: auto;
+		overflow-x: hidden;
+
+		.search {
+			display: none;
+			position: absolute;
+			top: 0px;
+			bottom: 0px;
+			left: 0px;
+			right: 0px;
+			z-index: 10;
+			padding: 4px 6px;
+			background: @codeboxLateralbarBackground;
+
+			input.search-query {
+				border-radius: 2px;
+				background: #fff;
+				color: #222;
+				border: none;
+				width: 100%;
+				margin: 3px 0px;
+				padding: 4px 7px;
+				font-size: 12px;
+				line-height: 20px;
+
+				&:hover, &:focus {
+					outline: 0;
+				}
+			}
+		}
+
+		>.files {
+			margin: 4px 0px;
+			font-size: 15px;
+		}
+	}
+
+	&.mode-search {
+		.lateral-body .search {
+			display: block;
+		}
 	}
 }

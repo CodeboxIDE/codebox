@@ -1,5 +1,4 @@
 define([
-	"views/layouts/menubar",
 	"views/layouts/lateralbar",
 	"views/layouts/body",
 
