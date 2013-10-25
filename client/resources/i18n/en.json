@@ -23,7 +23,7 @@
                 "root": "Files",
                 "terminal": "Terminal",
                 "run": "Run project",
-                "settings": "Settings"
+                "codenow": "CodeNow.io"
             }
         },
         "lateralbar": {

@@ -8,6 +8,7 @@
     "plugin": {
         "provides": [],
         "consumes": [
+            "logger",
             "files_service",
             "socket_io"
         ]
