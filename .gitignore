@@ -15,3 +15,5 @@ npm-debug.log
 /.vagrant/
 
 client/build
+
+/.env
