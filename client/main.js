@@ -2,11 +2,12 @@ require([
     "Underscore",
     "hr/hr",
     "hr/args",
+    "utils/url",
     "session",
     "config",
     'views/views',
     'resources/resources',
-], function(_, hr, args, session, config) {
+], function(_, hr, args, url, session, config) {
     // Configure hr
     hr.configure(args);
 
@@ -34,15 +35,16 @@ require([
         // Constructor
         initialize: function() {
             Application.__super__.initialize.apply(this, arguments);
-            this.isAuth = false;
+            this.isAuth = false; 
             return this;
         },
 
         // Template rendering context
         templateContext: function() {
+            var queries = url.parseQueryString();
             return {
-                'email': hr.Storage.get("email"),
-                'token': hr.Storage.get("token"),
+                'email': queries.email || hr.Storage.get("email"),
+                'token': queries.token || hr.Storage.get("token"),
                 'isAuth': this.isAuth
             };
         },
