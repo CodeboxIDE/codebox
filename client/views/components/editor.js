@@ -713,8 +713,6 @@ define([
                 data.token = session.user.get("token");
                 data.path = this.file.path();
 
-                logging.log("send packet ", data);
-
                 var socket = this.socket();
                 if (socket != null) {
                     socket.json.send(data);

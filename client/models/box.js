@@ -140,7 +140,7 @@ define([
 
             return this.rpc("/auth/join", authInfo).done(function(info) {
                 that.user.set(info);
-            })
+            });
         },
 
         /*
