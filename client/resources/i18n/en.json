@@ -48,6 +48,23 @@
                 "title": "Input",
                 "cancel": "Cancel",
                 "ok": "OK"
+            },
+            "settings": {
+                "title": "Settings",
+                "cancel": "Cancel",
+                "save": "Save",
+                "editor": {
+                    "title": "Editor",
+                    "theme": "Appearance",
+                    "editor_theme": "Theme",
+                    "editor_keyboard": "Keyboard mode",
+                    "editor_fontsize": "Font Size",
+                    "editor_printmargincolumn": "Print Margin Column",
+                    "editor_showprintmargin": "Show Print Margin",
+                    "editor_highlightactiveline": "Highlight Active Line",
+                    "editor_enablesoftwrap": "Enable Soft Wrap",
+                    "editor_wraplimitrange": "Wrap Limit Range"
+                }
             }
         },
 
@@ -90,20 +107,5 @@
                 }
             }
         }
-	},
-
-    "settings": {
-        "editor": {
-            "title": "Editor",
-            "theme": "Appearance",
-            "editor_theme": "Theme",
-            "editor_keyboard": "Keyboard mode",
-            "editor_fontsize": "Font Size",
-            "editor_printmargincolumn": "Print Margin Column",
-            "editor_showprintmargin": "Show Print Margin",
-            "editor_highlightactiveline": "Highlight Active Line",
-            "editor_enablesoftwrap": "Enable Soft Wrap",
-            "editor_wraplimitrange": "Wrap Limit Range"
-        }
-    }
+	}
 }

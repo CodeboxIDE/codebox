@@ -2,8 +2,9 @@ define([
     "Underscore",
     "jQuery",
     "hr/hr",
-    "session"
-], function(_, $, hr, session) {
+    "session",
+    "views/dialogs/utils"
+], function(_, $, hr, session, Dialogs) {
 
     var LateralBarView = hr.View.extend({
         className: "layout-lateralbar",
@@ -51,7 +52,7 @@ define([
         actionOpenSettings: function(e) {
             e.preventDefault();
 
-            session.codebox.trigger("openSettings");
+            Dialogs.settings();
         },
 
         // (action) Toggle search
