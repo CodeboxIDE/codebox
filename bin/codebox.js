@@ -25,7 +25,8 @@ cli.command('run')
             'title': this.title,
             'hooks': {
                 'auth': this.codenow+"/api/box/"+this.box+"/auth",
-                'events': this.codenow+"/api/box/"+this.box+"/events"
+                'events': this.codenow+"/api/box/"+this.box+"/events",
+                'settings': this.codenow+"/api/account/settings"
             },
             'webhook': {
                 'authToken': this.key

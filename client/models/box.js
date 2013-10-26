@@ -20,6 +20,8 @@ define([
          *  Client interface to a codebox
          */
         initialize: function() {
+            Codebox.__super__.initialize.apply(this, arguments);
+
             this.baseUrl = this.options.baseUrl || "";
             this.state = false;
 
@@ -99,7 +101,16 @@ define([
          */
         rpc: function(method, args, options) {
             var d = new hr.Deferred();
-            this.request("getJSON", "rpc"+method, args, options).then(function(data) {
+            options = _.defaults({}, options || {}, {
+                dataType: "json",
+                options: {
+                    'headers': {
+                        'Content-type': 'application/json'
+                    }
+                }
+            });
+
+            this.request("post", "rpc"+method, JSON.stringify(args), options).then(function(data) {
                 if (!data.ok) { d.reject(data.error); }
                 else { d.resolve(data.data); }
             }, function() {

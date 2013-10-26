@@ -36,7 +36,7 @@ define([
                 e.stopPropagation();
             }
 
-            var editor_data = {
+            var data = {
                 "theme":                this.$("select[name='editor_theme']").val(),
                 "keyboard":             this.$("select[name='editor_keyboard']").val(),
                 "fontsize":             this.$("input[name='editor_fontsize']").val(),
@@ -47,9 +47,9 @@ define([
                 "enablesoftwrap":       this.$("input[name='editor_enablesoftwrap']").is(":checked"),
             };
 
-            session.user.set("settings.editor", editor_data);
-
-            this.close();
+            session.user.saveSettings(data).always(function() {
+                that.close();
+            });
         }
     });
 

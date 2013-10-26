@@ -67,7 +67,7 @@ define([
             this.setOptions(options);
 
             // Bind settings changement
-            session.user.on("change:settings.editor", function() {
+            session.user.on("change:settings", function() {
                 var ops = _.clone(this.baseOptions);
                 _.extend(ops, {
                     "mode": this.options.mode,
@@ -186,7 +186,7 @@ define([
             var defaults = _.clone(this.defaults);
 
             // Extend configs
-            defaults = _.extend(defaults, session.user.get("settings.editor"));
+            defaults = _.extend(defaults, session.user.get("settings"));
             this.options = _.extend(defaults, this.options);
 
             this.setMode(this.options.mode);

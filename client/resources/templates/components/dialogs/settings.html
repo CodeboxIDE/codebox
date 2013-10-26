@@ -13,7 +13,7 @@
                             <% for (var theme in app.config.editor.themes) { %>
                                 <option
                                     value="<%- theme %>"
-                                    <% if (session.user.get("settings.editor.theme", app.config.editor.default_theme) == theme) { %>
+                                    <% if (session.user.get("settings.theme", app.config.editor.default_theme) == theme) { %>
                                         selected
                                     <% } %>
                                     ><%- app.config.editor.themes[theme] %></option>
@@ -30,7 +30,7 @@
                             <% for (var keyboard in app.config.editor.keyboards) { %>
                                 <option
                                     value="<%- keyboard %>"
-                                    <% if (session.user.get("settings.editor.keyboard", app.config.editor.default_keyboard) == keyboard) { %>
+                                    <% if (session.user.get("settings.keyboard", app.config.editor.default_keyboard) == keyboard) { %>
                                         selected
                                     <% } %>
                                     ><%- app.config.editor.keyboards[keyboard] %></option>
@@ -43,7 +43,7 @@
                 <div class="form-group">
                     <label class="col-lg-3 control-label" for="editor_fontsize"><%- hr.i18n.t("components.dialogs.settings.editor.editor_fontsize") %></label>
                     <div class="col-lg-9">
-                        <input class="form-control editor-preview-input" type="number" name="editor_fontsize" step="1" min="10" max="30" value="<%- session.user.get("settings.editor.fontsize",13) %>" />
+                        <input class="form-control editor-preview-input" type="number" name="editor_fontsize" step="1" min="10" max="30" value="<%- session.user.get("settings.fontsize",13) %>" />
                     </div>
                 </div>
 
@@ -51,7 +51,7 @@
                 <div class="form-group">
                     <label class="col-lg-3 control-label" for="editor_printmargincolumn"><%- hr.i18n.t("components.dialogs.settings.editor.editor_printmargincolumn") %></label>
                     <div class="col-lg-9">
-                        <input class="form-control editor-preview-input" type="number" name="editor_printmargincolumn" step="1" min="0" max="1000" value="<%- session.user.get("settings.editor.printmargincolumn",50) %>" />
+                        <input class="form-control editor-preview-input" type="number" name="editor_printmargincolumn" step="1" min="0" max="1000" value="<%- session.user.get("settings.printmargincolumn",50) %>" />
                     </div>
                 </div>
 
@@ -59,7 +59,7 @@
                 <div class="form-group">
                     <label class="col-lg-3 control-label" for="editor_showprintmargin"><%- hr.i18n.t("components.dialogs.settings.editor.editor_showprintmargin") %></label>
                     <div class="col-lg-9">
-                        <input class="editor-preview-input" type="checkbox" name="editor_showprintmargin" <% if(session.user.get("settings.editor.showprintmargin")) { %>checked<% } %> />
+                        <input class="editor-preview-input" type="checkbox" name="editor_showprintmargin" <% if(session.user.get("settings.showprintmargin")) { %>checked<% } %> />
                     </div>
                 </div>
 
@@ -67,7 +67,7 @@
                 <div class="form-group">
                     <label class="col-lg-3 control-label" for="editor_enablesoftwrap"><%- hr.i18n.t("components.dialogs.settings.editor.editor_enablesoftwrap") %></label>
                     <div class="col-lg-9">
-                        <input class="editor-preview-input" type="checkbox" name="editor_enablesoftwrap" <% if(session.user.get("settings.editor.enablesoftwrap")) { %>checked<% } %> />
+                        <input class="editor-preview-input" type="checkbox" name="editor_enablesoftwrap" <% if(session.user.get("settings.enablesoftwrap")) { %>checked<% } %> />
                     </div>
                 </div>
 
@@ -75,7 +75,7 @@
                 <div class="form-group">
                     <label class="col-lg-3 control-label" for="editor_wraplimitrange"><%- hr.i18n.t("components.dialogs.settings.editor.editor_wraplimitrange") %></label>
                     <div class="col-lg-9">
-                        <input class="form-control editor-preview-input" type="number" name="editor_wraplimitrange" step="1" min="0" max="1000" value="<%- session.user.get("settings.editor.wraplimitrange",80) %>" />
+                        <input class="form-control editor-preview-input" type="number" name="editor_wraplimitrange" step="1" min="0" max="1000" value="<%- session.user.get("settings.wraplimitrange",80) %>" />
                     </div>
                 </div>
 
@@ -83,7 +83,7 @@
                 <div class="form-group">
                     <label class="col-lg-3 control-label" for="editor_highlightactiveline"><%- hr.i18n.t("components.dialogs.settings.editor.editor_highlightactiveline") %></label>
                     <div class="col-lg-9">
-                        <input class="editor-preview-input" type="checkbox" name="editor_highlightactiveline" <% if(session.user.get("settings.editor.highlightactiveline")) { %>checked<% } %> />
+                        <input class="editor-preview-input" type="checkbox" name="editor_highlightactiveline" <% if(session.user.get("settings.highlightactiveline")) { %>checked<% } %> />
                     </div>
                 </div>
             </div>

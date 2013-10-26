@@ -14,8 +14,11 @@ define([
 
             this.queries = Url.parseQueryString();
 
-            this.user = new User();
+            
             this.codebox = new Codebox();
+            this.user = new User({
+                'codebox': this.codebox
+            });
 
 
             // Search for files
