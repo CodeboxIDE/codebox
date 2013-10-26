@@ -37,7 +37,7 @@ define([
                 handler(query).then(function(results) {
                     callback({
                         'title': name
-                    }, results);
+                    }, results, query);
                 });
             }, this);
         }

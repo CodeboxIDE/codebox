@@ -58,6 +58,7 @@ define([
             st = this.$el.hasClass("mode-search");
             if (!st) {
                 query = "";
+                this.components.search.clearResults();
             } else {
                 this.components.search.focus();
             }

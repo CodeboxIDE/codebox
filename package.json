@@ -24,7 +24,8 @@
         "vfs-local": "0.3.13",
         "watchr": "2.4.3",
         "gittle": "git+ssh://git@github.com:FriendCode/gittle.js.git#0.0.6",
-        "uuid": "1.4.1"
+        "uuid": "1.4.1",
+        "glob": "3.2.6"
     },
     "bin": {
         "codebox": "./bin/codebox.js"

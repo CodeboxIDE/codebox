@@ -21,8 +21,8 @@ define([
             // Search for files
             search.handler("files", function(query) {
                 var d = new hr.Deferred();
-                that.codebox.searchFiles(query).done(function(files) {
-                    d.resolve(_.map(_.keys(files), _.bind(function(path) {
+                that.codebox.searchFiles(query).done(function(data) {
+                    d.resolve(_.map(data.files, _.bind(function(path) {
                         var filename = _.last(path.split("/"));
                         if (filename.length == 0) filename = path;
                         return {

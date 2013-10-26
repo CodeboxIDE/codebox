@@ -88,11 +88,13 @@ define([
 
             this.query = query;
             this.nResults = 0;
-            $results.empty();
+            this.clearResults();
 
             if (this.query.length == 0) return this;
 
-            search.query(this.query, function(category, results) {
+            search.query(this.query, function(category, results, query) {
+                if (this.query != query) return;
+
                 var n = 0;
                 var $cat = $("<ul>", {
                     "class": "category"
@@ -145,6 +147,7 @@ define([
         /* Clear results */
         clearResults: function() {
             this.$(".results").empty();
+            this.openCallback = {};
             return this;
         },
 
