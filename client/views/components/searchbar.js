@@ -47,6 +47,7 @@ define([
                 /* ESC */
                 e.preventDefault();
                 this.blur();
+                this.clearResults();
                 this.trigger("close");
                 return;
             } else if (key == 38) {
@@ -138,6 +139,12 @@ define([
             if (this.selected >= this.nResults) this.selected = this.nResults - 1;
             this.$(".result").removeClass("selected");
             this.$(".result[data-result='"+this.selected+"']").addClass("selected");
+            return this;
+        },
+
+        /* Clear results */
+        clearResults: function() {
+            this.$(".results").empty();
             return this;
         },
 
