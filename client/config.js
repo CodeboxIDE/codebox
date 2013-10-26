@@ -2,7 +2,7 @@ define([], function() {
     var configs = {
         /* Editor */
         editor: {
-            default_theme: "tomorrow",
+            default_theme: "github",
             default_keyboard: "textinput",
             themes: {
                 "clouds":                   "Clouds",
@@ -26,7 +26,8 @@ define([], function() {
                 "pastel_on_dark":           "Pastel On Dark",
                 "solarized_dark":           "Solarized Dark",
                 "solarized_light":          "Solarized Light",
-                "textmate":                 "Textmate"
+                "textmate":                 "Textmate",
+                "github":                   "GitHub"
             },
             keyboards: {
                 "vim": "Vim",

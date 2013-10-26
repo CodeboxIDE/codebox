@@ -12,7 +12,8 @@ define([
         events: {
             "click .menu-action-search": "toggleSearch",
             "click .menu-action-open-root": "actionOpenRoot",
-            "click .menu-action-open-terminal": "actionOpenTerminal"
+            "click .menu-action-open-terminal": "actionOpenTerminal",
+            "click .menu-action-open-settings": "actionOpenSettings"
         },
 
         // Finish rendering
@@ -44,6 +45,13 @@ define([
             e.preventDefault();
 
             session.codebox.trigger("openTerminal");
+        },
+
+        // (action) Open settings
+        actionOpenSettings: function(e) {
+            e.preventDefault();
+
+            session.codebox.trigger("openSettings");
         },
 
         // (action) Toggle search

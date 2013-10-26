@@ -4,8 +4,9 @@ define([
     "hr/hr",
     "views/tabs/file",
     "views/tabs/terminal",
+    "views/tabs/settings",
     "session"
-], function(_, $, hr, FileTab, TerminalTab, session) {
+], function(_, $, hr, FileTab, TerminalTab, SettingsTab, session) {
 
     var BodyView = hr.View.extend({
         className: "layout-body",
@@ -30,11 +31,16 @@ define([
             }, this);
 
             // Open terminal
-            session.codebox.on("openTerminal", function(path, options) {
+            session.codebox.on("openTerminal", function(options) {
                 options = _.defaults({}, options || {}, {
 
                 });
                 this.openTerminal(options);
+            }, this);
+
+            // Open settings
+            session.codebox.on("openSettings", function(options) {
+                this.openSettings();
             }, this);
 
             return this;
@@ -83,6 +89,14 @@ define([
         // Open terminal
         openTerminal: function() {
             return this.addTab(TerminalTab);
+        },
+
+        // Open settings
+        openSettings: function() {
+            return this.addTab(SettingsTab, {}, {
+                "uniqueId": "settings",
+                "type": "settings"
+            });
         }
     });
 

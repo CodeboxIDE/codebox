@@ -23,6 +23,7 @@
                 "root": "Files",
                 "terminal": "Terminal",
                 "run": "Run project",
+                "settings": "Settings",
                 "codenow": "CodeNow.io"
             }
         },
@@ -89,5 +90,20 @@
                 }
             }
         }
-	}
+	},
+
+    "settings": {
+        "editor": {
+            "title": "Editor",
+            "theme": "Appearance",
+            "editor_theme": "Theme",
+            "editor_keyboard": "Keyboard mode",
+            "editor_fontsize": "Font Size",
+            "editor_printmargincolumn": "Print Margin Column",
+            "editor_showprintmargin": "Show Print Margin",
+            "editor_highlightactiveline": "Highlight Active Line",
+            "editor_enablesoftwrap": "Enable Soft Wrap",
+            "editor_wraplimitrange": "Wrap Limit Range"
+        }
+    }
 }

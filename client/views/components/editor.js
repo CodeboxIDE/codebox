@@ -4,8 +4,9 @@ define([
     "hr/hr",
     "vendors/diff_match_patch",
     "vendors/crypto",
+    "config",
     "session",
-], function(_, $, hr, diff_match_patch, CryptoJS, session) {
+], function(_, $, hr, diff_match_patch, CryptoJS, config, session) {
 
     var ace_init = false;
     var logging = hr.Logger.addNamespace("editor");
@@ -14,14 +15,14 @@ define([
         className: "component-editor",
         defaults: {
             mode: "text",
-            theme: "github",
+            theme: config.editor.default_theme,
             fontsize: "12",
             printmargincolumn: 80,
             showprintmargin: false,
             highlightactiveline: false,
             wraplimitrange: 80,
             enablesoftwrap: false,
-            keyboard: "textinput",
+            keyboard: config.editor.default_keyboard,
             readonly: false,
             colors: [
                 "#1abc9c",
@@ -64,6 +65,16 @@ define([
             this.editor = ace.edit(this.el);
             this.editor.session.setUseWorker(true);
             this.setOptions(options);
+
+            // Bind settings changement
+            session.user.on("change:settings.editor", function() {
+                var ops = _.clone(this.baseOptions);
+                _.extend(ops, {
+                    "mode": this.options.mode,
+                    "readonly": this.options.readonly
+                });
+                this.setOptions(ops);
+            }, this);
 
             // Bind editor changement
             this.editor.getSession().selection.on('changeSelection', function(){
@@ -175,6 +186,7 @@ define([
             var defaults = _.clone(this.defaults);
 
             // Extend configs
+            defaults = _.extend(defaults, session.user.get("settings.editor"));
             this.options = _.extend(defaults, this.options);
 
             this.setMode(this.options.mode);

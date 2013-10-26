@@ -35,8 +35,6 @@ define([
             this.file.model.on("destroy", function() {
                 this.closeTab();
             }, this);
-
-            console.log(this.options);
             
             // When tab is ready : load file
             this.on("tab:ready", function() {
