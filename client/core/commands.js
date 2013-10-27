@@ -4,5 +4,5 @@ define([
 ], function (hr, Commands) {
     // Collection for all current commands
     var commands = new Commands();
-    return commands
+    return commands;
 });

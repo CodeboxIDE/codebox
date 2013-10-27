@@ -5,8 +5,8 @@ define([
     "vendors/diff_match_patch",
     "vendors/crypto",
     "config",
-    "session",
-], function(_, $, hr, diff_match_patch, CryptoJS, config, session) {
+    "core/user",
+], function(_, $, hr, diff_match_patch, CryptoJS, config, user) {
 
     var ace_init = false;
     var logging = hr.Logger.addNamespace("editor");
@@ -67,7 +67,7 @@ define([
             this.setOptions(options);
 
             // Bind settings changement
-            session.user.on("change:settings", function() {
+            user.on("change:settings", function() {
                 var ops = _.clone(this.baseOptions);
                 _.extend(ops, {
                     "mode": this.options.mode,
@@ -186,7 +186,7 @@ define([
             var defaults = _.clone(this.defaults);
 
             // Extend configs
-            defaults = _.extend(defaults, session.user.get("settings"));
+            defaults = _.extend(defaults, user.get("settings"));
             this.options = _.extend(defaults, this.options);
 
             this.setMode(this.options.mode);
@@ -441,12 +441,12 @@ define([
 
                     switch (data.action) {
                         case "cursor":
-                            if (data.from != session.user.get("userId")) {
+                            if (data.from != user.get("userId")) {
                                 self.cursorMove(data.from, data.cursor.x, data.cursor.y);
                             }
                             break;
                         case "select":
-                            if (data.from != session.user.get("userId")) {
+                            if (data.from != user.get("userId")) {
                                 self.selectionMove(data.from, data.start.x, data.start.y, data.end.x, data.end.y);
                             }
                             break;
@@ -527,7 +527,7 @@ define([
          *  @y : position y of the cursor (line)
          */
         cursorMove: function(id, x, y) {
-            if (session.user.get("userId") == id) {
+            if (user.get("userId") == id) {
                 return this;
             }
             if (this.cursors[id] != null) {
@@ -575,7 +575,7 @@ define([
          *  @ey : position end y of the selection (line)
          */
         selectionMove: function(id, sx, sy, ex, ey) {
-            if (session.user.get("userId") == id) {
+            if (user.get("userId") == id) {
                 return this;
             }
             if (this.selections[id] != null) {
@@ -721,8 +721,8 @@ define([
         send: function(action, data) {
             if (this.file != null && action != null) {
                 data.action = action;
-                data.from = session.user.get("userId");
-                data.token = session.user.get("token");
+                data.from = user.get("userId");
+                data.token = user.get("token");
                 data.path = this.file.path();
 
                 var socket = this.socket();

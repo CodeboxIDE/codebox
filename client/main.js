@@ -3,12 +3,12 @@ require([
     "hr/hr",
     "hr/args",
     "utils/url",
-    "core/commands",
-    "session",
+    "core/box",
+    "core/session",
     "config",
     'views/views',
     'resources/resources',
-], function(_, hr, args, url, commands, session, config) {
+], function(_, hr, args, url, box, session, config) {
     // Configure hr
     hr.configure(args);
 
@@ -16,7 +16,6 @@ require([
     hr.Template.extendContext({
         'app': {
             'config': config,
-            'commands': commands
         }
     });
 
@@ -39,7 +38,7 @@ require([
             Application.__super__.initialize.apply(this, arguments);
             this.isAuth = false;
 
-            session.codebox.on("status", function(state) {
+            box.on("status", function(state) {
                 this.$(".codebox-connexion-alert").toggle(!state);
             }, this);
             return this;

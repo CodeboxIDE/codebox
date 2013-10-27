@@ -2,7 +2,7 @@ define([
     "Underscore",
     "jQuery",
     "hr/hr",
-    "utils/search"
+    "core/search"
 ], function(_, $, hr, search) {
 
     var SearchBarView = hr.View.extend({

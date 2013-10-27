@@ -1,0 +1,28 @@
+define([
+    'hr/hr',
+    'models/box',
+    'core/search'
+], function (hr, Codebox, search) {
+    // Current box
+    var box = new Codebox();
+
+    // Search for files
+    search.handler("files", function(query) {
+        var d = new hr.Deferred();
+        box.searchFiles(query).done(function(data) {
+            d.resolve(_.map(data.files, _.bind(function(path) {
+                var filename = _.last(path.split("/"));
+                if (filename.length == 0) filename = path;
+                return {
+                    "text": filename,
+                    "callback": _.bind(function() {
+                        box.trigger("openFile", path);
+                    }, this)
+                };
+            }, this)));
+        });
+        return d;
+    });
+
+    return box;
+});

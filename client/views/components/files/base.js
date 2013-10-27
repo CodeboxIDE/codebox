@@ -4,8 +4,8 @@ define([
     "hr/hr",
     "models/box",
     "models/file",
-    "session"
-], function(_, $, hr, Codebox, File, session) {
+    "core/box"
+], function(_, $, hr, Codebox, File, box) {
 
     var FilesBaseView = hr.View.extend({
         defaults: {
@@ -19,12 +19,8 @@ define([
         // Constructor
         initialize: function(options) {
             FilesBaseView.__super__.initialize.apply(this, arguments);
-            this.codebox = session.codebox;
-            if (this.codebox == null) {
-                throw "Error : creating fileview without codebox context";
-            }
             if (this.model == null) this.model = new File({
-                "codebox": this.codebox
+                "codebox": box
             });
             this.model.on("set", this.render, this);
             if (this.options.path != null) this.load(this.options.path);
@@ -59,7 +55,6 @@ define([
             this.model.getByPath(path).then(function() {
                 that.trigger("file:load");
             }, function() {
-                console.log("error loading file");
                 that.trigger("file:error");
             })
         },

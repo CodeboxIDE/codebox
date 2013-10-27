@@ -2,10 +2,9 @@ define([
     "Underscore",
     "jQuery",
     "hr/hr",
-    "models/user",
     "views/dialogs/base",
-    "session"
-], function(_, $, hr, User, DialogView, session) {
+    "core/user"
+], function(_, $, hr, DialogView, user) {
 
     var DialogSettingsView = DialogView.extend({
         className: "component-dialog component-dialog-settings modal fade",
@@ -47,7 +46,7 @@ define([
                 "enablesoftwrap":       this.$("input[name='editor_enablesoftwrap']").is(":checked"),
             };
 
-            session.user.saveSettings(data).always(function() {
+            user.saveSettings(data).always(function() {
                 that.close();
             });
         }

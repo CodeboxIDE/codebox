@@ -4,8 +4,8 @@ define([
     "hr/hr",
     "views/tabs/file",
     "views/tabs/terminal",
-    "session"
-], function(_, $, hr, FileTab, TerminalTab, session) {
+    "core/box"
+], function(_, $, hr, FileTab, TerminalTab, box) {
 
     var BodyView = hr.View.extend({
         className: "layout-body",
@@ -22,7 +22,7 @@ define([
             BodyView.__super__.initialize.apply(this, arguments);
 
             // Open file
-            session.codebox.on("openFile", function(path, options) {
+            box.on("openFile", function(path, options) {
                 options = _.defaults({}, options || {}, {
 
                 });
@@ -30,7 +30,7 @@ define([
             }, this);
 
             // Open terminal
-            session.codebox.on("openTerminal", function(options) {
+            box.on("openTerminal", function(options) {
                 options = _.defaults({}, options || {}, {
 
                 });

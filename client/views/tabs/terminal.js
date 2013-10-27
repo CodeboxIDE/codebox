@@ -4,8 +4,8 @@ define([
     "hr/hr",
     "vendors/socket.io-stream",
     "views/tabs/base",
-    "session"
-], function(_, $, hr, ss, BaseTab, session) {
+    "core/box"
+], function(_, $, hr, ss, BaseTab, box) {
     var TerminalTab = BaseTab.extend({
         className: BaseTab.prototype.className+ " component-workspace-terminal",
         template: "tabs/terminal.html",
@@ -22,10 +22,9 @@ define([
             var that = this;
             TerminalTab.__super__.initialize.apply(this, arguments);
             this.connected = false;
-            this.codebox = session.codebox;
 
             this.sessionId = this.options.shellId || _.uniqueId("term");
-            this.shell = this.codebox.openShell({
+            this.shell = box.openShell({
                 'shellId': this.options.shellId ? this.sessionId : this.sessionId+"-"+(new Date()).getTime()
             });
 

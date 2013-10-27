@@ -2,10 +2,10 @@ define([
     "Underscore",
     "jQuery",
     "hr/hr",
-    "session",
+    "core/box",
     "core/commands",
     "views/dialogs/utils"
-], function(_, $, hr, session, commands, Dialogs) {
+], function(_, $, hr, box, commands, Dialogs) {
 
     var LateralBarView = hr.View.extend({
         className: "layout-lateralbar",
@@ -36,7 +36,7 @@ define([
                 title: "Files",
                 icon: "folder-close-alt"
             }, function() {
-                session.codebox.root.open();
+                box.root.open();
             });
 
             // Terminal command
@@ -44,7 +44,7 @@ define([
                 title: "Terminal",
                 icon: "terminal"
             }, function() {
-                session.codebox.trigger("openTerminal");
+                box.trigger("openTerminal");
             });
 
             return this;
