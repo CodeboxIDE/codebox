@@ -35,7 +35,11 @@ require([
         // Constructor
         initialize: function() {
             Application.__super__.initialize.apply(this, arguments);
-            this.isAuth = false; 
+            this.isAuth = false;
+
+            session.codebox.on("status", function(state) {
+                this.$(".codebox-connexion-alert").toggle(!state);
+            }, this);
             return this;
         },
 
