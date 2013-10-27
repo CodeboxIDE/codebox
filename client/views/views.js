@@ -1,9 +1,11 @@
 define([
 	"views/layouts/lateralbar",
 	"views/layouts/body",
+	
+	"views/components/lateralbar/searchbar",
+    "views/components/lateralbar/commands",
 
-	"views/components/tabs",
-	"views/components/searchbar",
+    "views/components/tabs",
 	"views/components/editor",
 	"views/components/terminal",
 	

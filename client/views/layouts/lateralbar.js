@@ -3,8 +3,9 @@ define([
     "jQuery",
     "hr/hr",
     "session",
+    "core/commands",
     "views/dialogs/utils"
-], function(_, $, hr, session, Dialogs) {
+], function(_, $, hr, session, commands, Dialogs) {
 
     var LateralBarView = hr.View.extend({
         className: "layout-lateralbar",
@@ -17,9 +18,41 @@ define([
             "click .menu-action-open-settings": "actionOpenSettings"
         },
 
+        // Constructor
+        initialize: function(options) {
+            LateralBarView.__super__.initialize.apply(this, arguments);
+            var that = this;
+            
+            // Search command
+            commands.register("search", {
+                title: "Search",
+                icon: "search"
+            }, function() {
+                that.toggleSearch();
+            });
+
+            // Root file command
+            commands.register("files", {
+                title: "Files",
+                icon: "folder-close-alt"
+            }, function() {
+                session.codebox.root.open();
+            });
+
+            // Terminal command
+            commands.register("terminal", {
+                title: "Terminal",
+                icon: "terminal"
+            }, function() {
+                session.codebox.trigger("openTerminal");
+            });
+
+            return this;
+        },
+
         // Finish rendering
         finish: function() {
-            this.$(".menu-item").tooltip({
+            this.$(".menu-bottom .menu-item a").tooltip({
                 'placement': 'right',
                 'delay': {
                     'show': 600,
@@ -27,25 +60,12 @@ define([
                 }
             });
 
+
             this.components.search.on("close", function() {
                 this.toggleSearch(false);
             }, this);
 
             return LateralBarView.__super__.finish.apply(this, arguments);
-        },
-
-        // (action) Open root directory
-        actionOpenRoot: function(e) {
-            e.preventDefault();
-
-            session.codebox.root.open();
-        },
-
-        // (action) Open terminal
-        actionOpenTerminal: function(e) {
-            e.preventDefault();
-
-            session.codebox.trigger("openTerminal");
         },
 
         // (action) Open settings
@@ -57,11 +77,6 @@ define([
 
         // (action) Toggle search
         toggleSearch: function(st, query) {
-            if (!_.isBoolean(st)) {
-                st.preventDefault();
-                st = undefined;
-            }
-
             this.$el.toggleClass("mode-search", st);
 
             st = this.$el.hasClass("mode-search");

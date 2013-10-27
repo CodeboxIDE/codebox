@@ -3,18 +3,20 @@ require([
     "hr/hr",
     "hr/args",
     "utils/url",
+    "core/commands",
     "session",
     "config",
     'views/views',
     'resources/resources',
-], function(_, hr, args, url, session, config) {
+], function(_, hr, args, url, commands, session, config) {
     // Configure hr
     hr.configure(args);
 
     // Extend template context
     hr.Template.extendContext({
         'app': {
-            'config': config
+            'config': config,
+            'commands': commands
         }
     });
 

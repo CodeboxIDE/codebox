@@ -1,10 +1,11 @@
 define([
     'hr/hr',
     'vendors/socket.io',
+    'core/api',
     'models/file',
     'models/shell',
     'models/user'
-], function (hr, io, File, Shell, User) {
+], function (hr, io, api, File, Shell, User) {
     var logging = hr.Logger.addNamespace("codebox");
 
     var Codebox = hr.Model.extend({
@@ -83,44 +84,6 @@ define([
         },
 
         /*
-         *  Execute a request
-         *
-         *  @param mode : mode "get", "post", "getJSON", "put", "delete"
-         *  @param method : url for the request
-         *  @args : args for the request
-         */
-        request: function(mode, method, args, options) {
-            return hr.Requests[mode](this.baseUrl+method, args, options);
-        },
-
-        /*
-         *  Execute a rpc request
-         *
-         *  @param method to call
-         *  @args : args for the request
-         */
-        rpc: function(method, args, options) {
-            var d = new hr.Deferred();
-            options = _.defaults({}, options || {}, {
-                dataType: "json",
-                options: {
-                    'headers': {
-                        'Content-type': 'application/json'
-                    }
-                }
-            });
-
-            this.request("post", "rpc"+method, JSON.stringify(args), options).then(function(data) {
-                if (!data.ok) { d.reject(data.error); }
-                else { d.resolve(data.data); }
-            }, function() {
-                d.reject();
-            });
-
-            return d;
-        },
-
-        /*
          *  Socket for the connexion
          *
          *  @namespace : namespace for the socket
@@ -149,7 +112,7 @@ define([
 
             this.user = user || new User();
 
-            return this.rpc("/auth/join", authInfo).done(function(info) {
+            return api.rpc("/auth/join", authInfo).done(function(info) {
                 that.user.set(info);
             });
         },
@@ -159,7 +122,7 @@ define([
          */
         status: function() {
             var that = this;
-            return this.rpc("/box/status").done(function(data) {
+            return api.rpc("/box/status").done(function(data) {
                 that.set(data);
             });
         },
@@ -168,35 +131,35 @@ define([
          *  Get list of collaborators
          */
         collaborators: function() {
-            return this.rpc("/users/list");
+            return api.rpc("/users/list");
         },
 
         /*
          *  Get git status
          */
         gitStatus: function() {
-            return this.rpc("/git/status");
+            return api.rpc("/git/status");
         },
 
         /*
          *  Get git changes
          */
         changes: function() {
-            return this.rpc("/git/diff_working");
+            return api.rpc("/git/diff_working");
         },
 
         /*
          *  Get commits chages
          */
         commitsPending: function() {
-            return this.rpc("/git/commits_pending");
+            return api.rpc("/git/commits_pending");
         },
 
         /*
          *  Search files
          */
         searchFiles: function(q) {
-            return this.rpc("/search/files", {
+            return api.rpc("/search/files", {
                 "query": q
             });
         },
@@ -206,7 +169,7 @@ define([
          */
         commit: function(args) {
             args = _.extend(args || {});
-            return this.rpc("/git/commit", args);
+            return api.rpc("/git/commit", args);
         },
 
         /*
@@ -214,7 +177,7 @@ define([
          */
         sync: function(args) {
             args = _.extend(args || {}, {});
-            return this.rpc("/git/sync", args);
+            return api.rpc("/git/sync", args);
         },
 
         /*

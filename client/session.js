@@ -3,22 +3,23 @@ define([
     "hr/hr",
     "models/user",
     "models/box",
-    "utils/url",
+    "collections/addons",
     "utils/search"
-], function(_, hr, User, Codebox, Url, search) {
+], function(_, hr, User, Codebox, Addons, search) {
 
     var Session = hr.Class.extend({
         initialize: function() {
             var that = this;
             Session.__super__.initialize.apply(this, arguments);
-
-            this.queries = Url.parseQueryString();
-
-            
+             
             this.codebox = new Codebox();
-            this.user = new User({
-                'codebox': this.codebox
-            });
+            this.user = new User();
+            this.addons = new Addons();
+
+            // Load new installed addons
+            this.addons.on("add", function(addon) {
+                addon.load();
+            }, this);
 
 
             // Search for files
@@ -51,6 +52,10 @@ define([
                 'email': email,
                 'token': token
             }, this.user).then(function() {
+                // Load addons
+                that.addons.getInstalled();
+
+                // Return box status
                 return that.codebox.status();
             });
         }

@@ -1,6 +1,6 @@
 <div class="lateral-menu">
 	<div class="menu-section">
-		<a href="#" class="menu-item menu-action-search" title="<%- hr.i18n.t("layouts.menubar.menu.search") %>">
+		<!--<a href="#" class="menu-item menu-action-search" title="<%- hr.i18n.t("layouts.menubar.menu.search") %>">
 			<i class="icon-search"></i>
 		</a>
 		<a href="#" class="menu-item menu-action-open-root" title="<%- hr.i18n.t("layouts.menubar.menu.root") %>">
@@ -8,19 +8,28 @@
 		</a>
 		<a href="#" class="menu-item menu-action-open-terminal" title="<%- hr.i18n.t("layouts.menubar.menu.terminal") %>">
 			<i class="icon-terminal"></i>
-		</a>
+		</a>-->
+		<%= view.component("component.lateralbar.commands", {
+			'collection': app.commands
+		}, "comands") %>
 	</div>
 	<div class="menu-section menu-bottom">
-		<a href="#" class="menu-item menu-action-open-settings" title="<%- hr.i18n.t("layouts.menubar.menu.settings") %>">
-			<i class="icon-cog"></i>
-		</a>
-		<a href="http://codenow.io" target="_blank" class="menu-item" title="<%- hr.i18n.t("layouts.menubar.menu.codenow") %>">
-			<i class="icon-cloud"></i>
-		</a>
+		<ul class="menu-commands">
+			<li class="menu-item">
+				<a href="#" class="menu-action-open-settings" title="<%- hr.i18n.t("layouts.menubar.menu.settings") %>">
+					<i class="icon-cog"></i>
+				</a>
+			</li>
+			<li class="menu-item">
+				<a href="http://codenow.io" target="_blank" title="<%- hr.i18n.t("layouts.menubar.menu.codenow") %>">
+					<i class="icon-cloud"></i>
+				</a>
+			</li>
+		</ul>
 	</div>
 </div>
 <div class="lateral-body">
-	<%= view.component("component.searchbar", {}, "search") %>
+	<%= view.component("component.lateralbar.searchbar", {}, "search") %>
 	<div class="files">
 		<%= view.component("component.files.tree", {
 		    'path': "/"

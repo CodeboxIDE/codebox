@@ -1,9 +1,10 @@
 define([
     "Underscore",
     "hr/hr",
+    "core/api",
     "utils/url",
     'utils/languages'
-], function(_, hr, Url, Languages) {
+], function(_, hr, api, Url, Languages) {
     var logging = hr.Logger.addNamespace("files");
 
     if (typeof String.prototype.endsWith !== 'function') {
@@ -260,7 +261,7 @@ define([
 
             var parentPath = this.parentPath(path);
             var filename = this.filename(path);
-            this.codebox.request("getJSON", this.vfsUrl(parentPath, true)).then(function(filesData) {
+            api.request("getJSON", this.vfsUrl(parentPath, true)).then(function(filesData) {
                 var fileData = _.find(filesData, function(file) {
                     return file.name == filename;
                 });
@@ -380,7 +381,7 @@ define([
                 group: true
             });
 
-            this.codebox.request("getJSON", this.vfsUrl(null, true)).then(function(filesData) {
+            api.request("getJSON", this.vfsUrl(null, true)).then(function(filesData) {
                 var files = _.map(filesData, function(file) {
                     return new File({
                         "codebox": that.codebox
@@ -408,7 +409,7 @@ define([
          *  @name : name of the file to create
          */
         createFile: function(name) {
-            return this.codebox.request("put", this.vfsUrl(null, true)+"/"+name);
+            return api.request("put", this.vfsUrl(null, true)+"/"+name);
         },
 
         /*
@@ -417,14 +418,14 @@ define([
          *  @name : name of the directory to create
          */
         mkdir: function(name) {
-            return this.codebox.request("put", this.vfsUrl(null, true)+"/"+name+"/");
+            return api.request("put", this.vfsUrl(null, true)+"/"+name+"/");
         },
 
         /*
          *  Remove the file or directory
          */
         remove: function() {
-            return this.codebox.request("delete", this.vfsUrl(null));
+            return api.request("delete", this.vfsUrl(null));
         },
 
         /*
@@ -435,7 +436,7 @@ define([
         rename: function(name) {
             var parentPath = this.parentPath();
             var newPath = parentPath+"/"+name;
-            return this.codebox.request("post", this.vfsUrl(newPath), JSON.stringify({
+            return api.request("post", this.vfsUrl(newPath), JSON.stringify({
                 "renameFrom": this.path()
             }));
         }

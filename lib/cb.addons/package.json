@@ -1,15 +1,16 @@
 {
-    "name": "cb.addons.status",
+    "name": "cb.addons",
     "version": "0.0.1",
 
     "main": "./main.js",
     "private": true,
 
     "plugin": {
-        "consumes": [
-            "httpRPC",
-            "workspace",
+        "provides": [
             "addons"
+        ],
+        "consumes": [
+            "events", "logger", "server"
         ]
     }
 }

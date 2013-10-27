@@ -7,7 +7,7 @@ define([
 
     var SearchBarView = hr.View.extend({
         className: "component-searchbar",
-        template: "components/searchbar.html",
+        template: "components/lateralbar/searchbar.html",
         defaults: {
             
         },
@@ -171,7 +171,7 @@ define([
             this.$el.toggleClass("mode-results", this.query.length > 0);
         }
     });
-    hr.View.Template.registerComponent("component.searchbar", SearchBarView);
+    hr.View.Template.registerComponent("component.lateralbar.searchbar", SearchBarView);
 
     return SearchBarView;
 });
