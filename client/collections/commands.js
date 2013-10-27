@@ -10,6 +10,10 @@ define([
 
         /*
          *  Register a new command
+         *
+         *  id: unique id for the command
+         *  properties: properties to define the command
+         *  handler: command handler
          */
         register: function(id, properties, handler) {
             logging.log("register", id, properties);
@@ -23,6 +27,19 @@ define([
             this.add(command);
 
             return command;
+        },
+
+        /*
+         *  Run a command
+         *
+         *  commandId: unique id of the command to run
+         */
+        run: function(commandId) {
+            var command = this.find(function(command) {
+                return command.get("id") == commandId;
+            });
+            if (!command) return false;
+            return command.run.apply(command, Array.prototype.slice.call(arguments, 1));
         }
     });
 

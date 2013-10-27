@@ -31,22 +31,6 @@ define([
                 that.toggleSearch();
             });
 
-            // Root file command
-            commands.register("files", {
-                title: "Files",
-                icon: "folder-close-alt"
-            }, function() {
-                box.root.open();
-            });
-
-            // Terminal command
-            commands.register("terminal", {
-                title: "Terminal",
-                icon: "terminal"
-            }, function() {
-                box.trigger("openTerminal");
-            });
-
             return this;
         },
 
@@ -59,7 +43,6 @@ define([
                     'hide': 0
                 }
             });
-
 
             this.components.search.on("close", function() {
                 this.toggleSearch(false);

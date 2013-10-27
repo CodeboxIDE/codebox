@@ -3,8 +3,9 @@ define([
     "hr/hr",
     "core/api",
     "utils/url",
-    'utils/languages'
-], function(_, hr, api, Url, Languages) {
+    'utils/languages',
+    'core/commands'
+], function(_, hr, api, Url, Languages, commands) {
     var logging = hr.Logger.addNamespace("files");
 
     if (typeof String.prototype.endsWith !== 'function') {
@@ -68,7 +69,7 @@ define([
          *  Open the tab for this file
          */
         open: function(path, options) {
-            this.codebox.trigger("openFile", this.path(path), options);
+            commands.run("files.open", this.path(path), options);
             return this;
         },
 

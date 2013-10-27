@@ -2,10 +2,11 @@ define([
     "Underscore",
     "jQuery",
     "hr/hr",
+    "core/box",
+    "core/commands",
     "views/tabs/file",
-    "views/tabs/terminal",
-    "core/box"
-], function(_, $, hr, FileTab, TerminalTab, box) {
+    "views/tabs/terminal"
+], function(_, $, hr, box, commands, FileTab, TerminalTab) {
 
     var BodyView = hr.View.extend({
         className: "layout-body",
@@ -20,22 +21,25 @@ define([
         // Constructor
         initialize: function() {
             BodyView.__super__.initialize.apply(this, arguments);
+            var that = this;
 
-            // Open file
-            box.on("openFile", function(path, options) {
-                options = _.defaults({}, options || {}, {
+            // Root file command
+            commands.register("files.open", {
+                title: "Files",
+                icon: "folder-close-alt"
+            }, function(path, options) {
+                options = _.defaults({}, options || {}, {});
+                that.openFile(path, options);
+            });
 
-                });
-                this.openFile(path, options);
-            }, this);
-
-            // Open terminal
-            box.on("openTerminal", function(options) {
-                options = _.defaults({}, options || {}, {
-
-                });
-                this.openTerminal(options);
-            }, this);
+            // Terminal command
+            commands.register("terminal.open", {
+                title: "Terminal",
+                icon: "terminal"
+            }, function(options) {
+                options = _.defaults({}, options || {}, {});
+                that.openTerminal(options);
+            });
 
             return this;
         },

@@ -9,7 +9,9 @@ define([
             'id': "",
             'title': "",
             'icon': "sign-blank",
-            'handler': function() {}
+            'handler': function() {},
+            'menu': true,
+            'search': true
         },
 
         // Run the command
