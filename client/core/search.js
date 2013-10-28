@@ -34,11 +34,18 @@ define([
             callback = _.bind(callback, context);
 
             _.each(this.handlers, function(handler, name) {
-                handler(query).then(function(results) {
+                var addResults = function(results) {
                     callback({
                         'title': name
                     }, results, query);
-                });
+                };
+                var d = handler(query);
+
+                if (_.isArray(d)) {
+                    addResults(d);
+                } else {
+                    d.done(addResults);
+                }
             }, this);
         }
     });

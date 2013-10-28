@@ -1,8 +1,9 @@
 define([
     'hr/hr',
     'models/box',
-    'core/search'
-], function (hr, Codebox, search) {
+    'core/search',
+    'core/commands'
+], function (hr, Codebox, search, commands) {
     // Current box
     var box = new Codebox();
 
@@ -16,7 +17,7 @@ define([
                 return {
                     "text": filename,
                     "callback": _.bind(function() {
-                        box.trigger("openFile", path);
+                        commands.run("files.open", path);
                     }, this)
                 };
             }, this)));
