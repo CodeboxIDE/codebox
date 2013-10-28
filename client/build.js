@@ -37,6 +37,9 @@ exports.config = {
                 'vendors/bootstrap/tooltip'
             ]
         },
+        'vendors/require': {
+            exports: 'getRequire'
+        },
         'vendors/socket.io': {
             exports: 'io'
         },
@@ -55,5 +58,12 @@ exports.config = {
         'vendors/term': {
             exports: 'Terminal'
         }
-    }
+    },
+    'options': {
+        /*wrap: {
+            start: "(function() {",
+            end: "}());"
+        },*/
+    },
+
 };

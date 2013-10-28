@@ -1,0 +1,9 @@
+{
+    "name": "Video Chat",
+    "version": "0.0.1",
+    "description": "Video Chat with your collaborators",
+    "homepage": "https://codenow.io",
+    "author": "Samy Pessé <samypesse@gmail.com> (http://samypesse.fr)",
+    "license": "MIT",
+    "main": "main"
+}

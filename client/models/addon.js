@@ -13,7 +13,7 @@ define([
             'description': "",
             'version': "0.0.1",
             'author': "",
-            'main': "main.js"
+            'main': "main"
         },
 
         // Return base url for the addon
@@ -24,12 +24,13 @@ define([
         // Load the addon
         load: function() {
             logging.log("Load", this.get("id"));
-            $.getScript(this.url()+"/"+this.get("main")).done(function(script, textStatus ) {
-                console.log(arguments);
-            
-            }).fail(function( jqxhr, settings, exception ) {
-                logging.error("Error loading addon: ", exception);
+
+            var addonRequire = require.config({
+                'context': "addon-"+this.get("name"),
+                'baseUrl': this.url()
             });
+
+            addonRequire([this.get("main")]);
         }
     });
 
