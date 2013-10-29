@@ -1,9 +1,11 @@
 {
-    "name": "Video Chat",
+    "name": "manager",
     "version": "0.0.1",
-    "description": "Video Chat with your collaborators",
+
+    "title": "Add-ons",
+    "description": "Add-ons manager",
     "homepage": "https://codenow.io",
     "author": "Samy Pessé <samypesse@gmail.com> (http://samypesse.fr)",
-    "license": "MIT",
+    "license": "Apache",
     "main": "main"
 }

@@ -20,6 +20,33 @@ define([
             return api.rpc("/addons/list").done(function(data) {
                 that.add(_.values(data));
             });
+        },
+
+        // Check addons is installed
+        isInstalled: function(name) {
+            return this.find(function(addon) {
+                return addon.get("name") == name;
+            }) != null;
+        },
+
+        // Install an addon
+        install: function(git) {
+            var that = this;
+
+            return api.rpc("/addons/install", {
+                'git': git
+            }).done(function(data) {
+                that.add(data);
+            });
+        },
+        uninstall: function(name) {
+            var that = this;
+
+            return api.rpc("/addons/uninstall", {
+                'name': name
+            }).done(function() {
+               
+            });
         }
     });
 

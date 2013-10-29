@@ -1,9 +1,0 @@
-{
-    "name": "Hello World",
-    "version": "0.0.1",
-    "description": "Hello World addon for CodeNow",
-    "homepage": "https://codenow.io",
-    "author": "Your Name <your@email> (http://your.url)",
-    "license": "MIT",
-    "main": "main"
-}

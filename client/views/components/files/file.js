@@ -3,7 +3,7 @@ define([
     "jQuery",
     "hr/hr",
     "views/components/files/base",
-    "views/dialogs/utils"
+    "utils/dialogs"
 ], function(_, $, hr, FilesBaseView, Dialogs) {
 
     var FileEditorView = FilesBaseView.extend({

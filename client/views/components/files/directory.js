@@ -4,7 +4,7 @@ define([
     "hr/hr",
     "utils/uploader",
     "views/components/files/base",
-    "views/dialogs/utils"
+    "utils/dialogs"
 ], function(_, $, hr, Uploader, FilesBaseView, Dialogs) {
 
     var FilesDirectoryView = FilesBaseView.extend({

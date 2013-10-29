@@ -9,7 +9,7 @@ define([
          *  Open a dialog with some configs
          *  @options : option for the dialog
          */
-        open: function(options, cls) {
+        open: function(cls, options) {
             var d = new hr.Deferred();
 
             cls = cls || DialogView;
@@ -33,7 +33,7 @@ define([
          *  @defaultmsg : default value
          */
         prompt: function(message, defaultmsg) {
-            return Dialogs.open({
+            return Dialogs.open(null, {
                 "message": message,
                 "dialog": "prompt",
                 "default": defaultmsg
@@ -45,7 +45,7 @@ define([
          *  @message : message to print
          */
         confirm: function(message) {
-            return Dialogs.open({
+            return Dialogs.open(null, {
                 "message": message,
                 "dialog": "confirm"
             });
@@ -56,7 +56,7 @@ define([
          *  @message : message to print
          */
         alert: function(title, message) {
-            return Dialogs.open({
+            return Dialogs.open(null, {
                 "title": title,
                 "message": message,
                 "dialog": "alert"
@@ -67,9 +67,7 @@ define([
          *  Open settings window
          */
         settings: function(title, message) {
-            return Dialogs.open({
-                
-            }, DialogSettingsView);
+            return Dialogs.open(DialogSettingsView);
         }
     };
 

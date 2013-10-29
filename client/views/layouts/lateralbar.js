@@ -4,7 +4,7 @@ define([
     "hr/hr",
     "core/box",
     "core/commands",
-    "views/dialogs/utils"
+    "utils/dialogs"
 ], function(_, $, hr, box, commands, Dialogs) {
 
     var LateralBarView = hr.View.extend({

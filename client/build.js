@@ -21,7 +21,8 @@ exports.config = {
         "templates": path.resolve(__dirname, "resources", "templates"),
         "images": path.resolve(__dirname, "resources", "images"),
         "fonts": path.resolve(__dirname, "resources", "fonts"),
-        "ace": path.resolve(__dirname, "resources", "ace")
+        "ace": path.resolve(__dirname, "resources", "ace"),
+        "require-tools": path.resolve(__dirname, "resources", "require-tools")
     },
 
     // Stylesheet entry point
@@ -36,9 +37,6 @@ exports.config = {
                 'vendors/bootstrap/modal',
                 'vendors/bootstrap/tooltip'
             ]
-        },
-        'vendors/require': {
-            exports: 'getRequire'
         },
         'vendors/socket.io': {
             exports: 'io'
