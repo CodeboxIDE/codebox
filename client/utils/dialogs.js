@@ -1,9 +1,8 @@
 define([
     "jQuery",
     "hr/hr",
-    "views/dialogs/base",
-    "views/dialogs/settings"
-], function ($, hr, DialogView, DialogSettingsView) {
+    "views/dialogs/base"
+], function ($, hr, DialogView) {
     var Dialogs = {
         /*
          *  Open a dialog with some configs
@@ -61,13 +60,6 @@ define([
                 "message": message,
                 "dialog": "alert"
             });
-        },
-
-        /*
-         *  Open settings window
-         */
-        settings: function(title, message) {
-            return Dialogs.open(DialogSettingsView);
         }
     };
 

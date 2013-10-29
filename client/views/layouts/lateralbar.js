@@ -14,8 +14,7 @@ define([
         events: {
             "click .menu-action-search": "toggleSearch",
             "click .menu-action-open-root": "actionOpenRoot",
-            "click .menu-action-open-terminal": "actionOpenTerminal",
-            "click .menu-action-open-settings": "actionOpenSettings"
+            "click .menu-action-open-terminal": "actionOpenTerminal"
         },
 
         // Constructor
@@ -49,13 +48,6 @@ define([
             }, this);
 
             return LateralBarView.__super__.finish.apply(this, arguments);
-        },
-
-        // (action) Open settings
-        actionOpenSettings: function(e) {
-            e.preventDefault();
-
-            Dialogs.settings();
         },
 
         // (action) Toggle search
