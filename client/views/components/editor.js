@@ -556,13 +556,20 @@ define([
         },
 
         /*
+         *  Return hash for a participant cursor
+         */
+        cursorHash: function(participant) {
+            return String(CryptoJS.MD5(participant.userId))
+        },
+
+        /*
          *  Render cursors
          */
         cursorsRender: function() {
-            _.each(this.participants, function(participant) {
-                this.$(".web-selection-"+participant.userId).css("background", participant.color);
-                this.$(".web-cursor-"+participant.userId).css("borderColor", participant.color);
-            }, this);
+            /*_.each(this.participants, function(participant) {
+                this.$(".web-selection-"+this.cursorHash(participant)).css("background", participant.color);
+                this.$(".web-cursor-"+this.cursorHash(participant)).css("borderColor", participant.color);
+            }, this);*/
             return this;
         },
 

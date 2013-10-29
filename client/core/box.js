@@ -17,7 +17,9 @@ define([
                 return {
                     "text": filename,
                     "callback": _.bind(function() {
-                        commands.run("files.open", path);
+                        commands.run("files.open", {
+                            'path': path
+                        });
                     }, this)
                 };
             }, this)));

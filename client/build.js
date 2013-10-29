@@ -33,9 +33,18 @@ exports.config = {
     "shim": {
         'views/views': {
             deps: [
+                'vendors/bootstrap/carousel',
                 'vendors/bootstrap/dropdown',
+                'vendors/bootstrap/button',
                 'vendors/bootstrap/modal',
-                'vendors/bootstrap/tooltip'
+                'vendors/bootstrap/affix',
+                'vendors/bootstrap/alert',
+                'vendors/bootstrap/collapse',
+                'vendors/bootstrap/tooltip',
+                'vendors/bootstrap/popover',
+                'vendors/bootstrap/scrollspy',
+                'vendors/bootstrap/tab',
+                'vendors/bootstrap/transition'
             ]
         },
         'vendors/socket.io': {

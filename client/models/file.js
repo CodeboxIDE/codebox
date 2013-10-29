@@ -68,8 +68,10 @@ define([
         /*
          *  Open the tab for this file
          */
-        open: function(path, options) {
-            commands.run("files.open", this.path(path), options);
+        open: function(path) {
+            commands.run("files.open", {
+                'path': this.path(path)
+            });
             return this;
         },
 

@@ -10,13 +10,16 @@ define([
             'title': "",
             'icon': "sign-blank",
             'handler': function() {},
-            'menu': true,
-            'search': true
+            'popover':  null,
+
+            // Options
+            'visible': true,   // Visible in lateral bar
+            'search': true,    // Visible in search
         },
 
         // Run the command
-        run: function() {
-            return this.get("handler").apply(this, arguments);
+        run: function(args) {
+            return this.get("handler").apply(this, [args]);
         }
     });
 

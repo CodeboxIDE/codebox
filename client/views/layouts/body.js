@@ -27,18 +27,19 @@ define([
             commands.register("files.open", {
                 title: "Files",
                 icon: "folder-close-alt"
-            }, function(path, options) {
-                options = _.defaults({}, options || {}, {});
-                that.openFile(path, options);
+            }, function(args) {
+                args = _.defaults({}, args || {}, {
+                    'path': "/"
+                });
+                that.openFile(args.path);
             });
 
             // Terminal command
             commands.register("terminal.open", {
                 title: "Terminal",
                 icon: "terminal"
-            }, function(options) {
-                options = _.defaults({}, options || {}, {});
-                that.openTerminal(options);
+            }, function() {
+                that.openTerminal();
             });
 
             return this;

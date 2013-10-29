@@ -1,1 +1,1 @@
-web: node_modules/.bin/hr.js -d client build; node bin/codebox.js run -d ./test
+web: node_modules/.bin/hr.js -d client build; node bin/codebox.js run -d /Users/samypesse/Desktop/python-flask-sample/
