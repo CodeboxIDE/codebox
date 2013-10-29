@@ -132,7 +132,7 @@ define([
         actionCreate: function(e) {
             var self = this;
             e.preventDefault();
-            Dialogs.prompt(hr.I18n.t("components.files.directory.dialogs.create"), "newfile.txt").done(function(name) {
+            Dialogs.prompt("Create a new file", "newfile.txt").done(function(name) {
                 if (name.length > 0) self.model.createFile(name);
             });
         },
@@ -141,7 +141,7 @@ define([
         actionMkdir: function(e) {
             var self = this;
             e.preventDefault();
-            Dialogs.prompt(hr.I18n.t("components.files.directory.dialogs.mkdir"), "newdirectory").done(function(name) {
+            Dialogs.prompt("Create a new directory", "newdirectory").done(function(name) {
                 if (name.length > 0) self.model.mkdir(name);
             });
         },
@@ -155,9 +155,7 @@ define([
             selection = this.getFilesSelection();
             if (_.size(selection) == 0) return;
 
-            Dialogs.prompt(hr.I18n.t("components.files.directory.dialogs.rename", {
-                "name": selection[0].get("name")
-            }), selection[0].get("name")).done(function(name) {
+            Dialogs.prompt("Rename", selection[0].get("name")).done(function(name) {
                 if (name.length > 0) selection[0].rename(name);
             });
         },
@@ -171,9 +169,7 @@ define([
             selection = this.getFilesSelection();
             if (_.size(selection) == 0) return;
 
-            Dialogs.confirm(hr.I18n.t("components.files.directory.dialogs.delete", {
-                "n": _.size(selection)
-            })).done(function(st) {
+            Dialogs.confirm("Do your really want to remove these files?").done(function(st) {
                 if (st != true) return;
                 _.each(selection, function(file) {
                     file.remove();

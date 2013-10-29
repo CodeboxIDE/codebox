@@ -2,12 +2,12 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title"><%- options.title || hr.i18n.t("components.dialogs.settings.title") %></h4>
+                <h4 class="modal-title">Settings</h4>
             </div>
             <div class="modal-body">
                 <!-- Theme -->
                 <div class="form-group">
-                    <label class="col-lg-3 control-label" for="editor_theme"><%- hr.i18n.t("components.dialogs.settings.editor.editor_theme") %></label>
+                    <label class="col-lg-3 control-label" for="editor_theme">Theme</label>
                     <div class="col-lg-9">
                         <select class="form-control editor-preview-input" name="editor_theme">
                             <% for (var theme in app.config.editor.themes) { %>
@@ -24,7 +24,7 @@
 
                 <!-- Keyboard -->
                 <div class="form-group">
-                    <label class="col-lg-3 control-label" for="editor_keyboard"><%- hr.i18n.t("components.dialogs.settings.editor.editor_keyboard") %></label>
+                    <label class="col-lg-3 control-label" for="editor_keyboard">Keyboard mode</label>
                     <div class="col-lg-9">
                         <select class="form-control editor-preview-input" name="editor_keyboard">
                             <% for (var keyboard in app.config.editor.keyboards) { %>
@@ -41,7 +41,7 @@
 
                 <!-- Font size -->
                 <div class="form-group">
-                    <label class="col-lg-3 control-label" for="editor_fontsize"><%- hr.i18n.t("components.dialogs.settings.editor.editor_fontsize") %></label>
+                    <label class="col-lg-3 control-label" for="editor_fontsize">Font Size</label>
                     <div class="col-lg-9">
                         <input class="form-control editor-preview-input" type="number" name="editor_fontsize" step="1" min="10" max="30" value="<%- session.user.get("settings.fontsize",13) %>" />
                     </div>
@@ -49,7 +49,7 @@
 
                 <!-- Print Margin Column -->
                 <div class="form-group">
-                    <label class="col-lg-3 control-label" for="editor_printmargincolumn"><%- hr.i18n.t("components.dialogs.settings.editor.editor_printmargincolumn") %></label>
+                    <label class="col-lg-3 control-label" for="editor_printmargincolumn">Print Margin Column</label>
                     <div class="col-lg-9">
                         <input class="form-control editor-preview-input" type="number" name="editor_printmargincolumn" step="1" min="0" max="1000" value="<%- session.user.get("settings.printmargincolumn",50) %>" />
                     </div>
@@ -57,7 +57,7 @@
 
                 <!-- Show Print Margin -->
                 <div class="form-group">
-                    <label class="col-lg-3 control-label" for="editor_showprintmargin"><%- hr.i18n.t("components.dialogs.settings.editor.editor_showprintmargin") %></label>
+                    <label class="col-lg-3 control-label" for="editor_showprintmargin">Show Print Margin</label>
                     <div class="col-lg-9">
                         <input class="editor-preview-input" type="checkbox" name="editor_showprintmargin" <% if(session.user.get("settings.showprintmargin")) { %>checked<% } %> />
                     </div>
@@ -65,7 +65,7 @@
 
                 <!-- Enable Soft Wrap -->
                 <div class="form-group">
-                    <label class="col-lg-3 control-label" for="editor_enablesoftwrap"><%- hr.i18n.t("components.dialogs.settings.editor.editor_enablesoftwrap") %></label>
+                    <label class="col-lg-3 control-label" for="editor_enablesoftwrap">Enable Soft Wrap</label>
                     <div class="col-lg-9">
                         <input class="editor-preview-input" type="checkbox" name="editor_enablesoftwrap" <% if(session.user.get("settings.enablesoftwrap")) { %>checked<% } %> />
                     </div>
@@ -73,7 +73,7 @@
 
                 <!-- wrap limit range -->
                 <div class="form-group">
-                    <label class="col-lg-3 control-label" for="editor_wraplimitrange"><%- hr.i18n.t("components.dialogs.settings.editor.editor_wraplimitrange") %></label>
+                    <label class="col-lg-3 control-label" for="editor_wraplimitrange">Wrap Limit Range</label>
                     <div class="col-lg-9">
                         <input class="form-control editor-preview-input" type="number" name="editor_wraplimitrange" step="1" min="0" max="1000" value="<%- session.user.get("settings.wraplimitrange",80) %>" />
                     </div>
@@ -81,15 +81,15 @@
 
                 <!-- highlight active line -->
                 <div class="form-group">
-                    <label class="col-lg-3 control-label" for="editor_highlightactiveline"><%- hr.i18n.t("components.dialogs.settings.editor.editor_highlightactiveline") %></label>
+                    <label class="col-lg-3 control-label" for="editor_highlightactiveline">Highlight Active Line</label>
                     <div class="col-lg-9">
                         <input class="editor-preview-input" type="checkbox" name="editor_highlightactiveline" <% if(session.user.get("settings.highlightactiveline")) { %>checked<% } %> />
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-default"><%= hr.i18n.t("components.dialogs.settings.save") %></button>
-                <button class="btn btn-default action-close"><%= hr.i18n.t("components.dialogs.settings.cancel") %></button>
+                <button type="submit" class="btn btn-default">Save</button>
+                <button class="btn btn-default action-close">Cancel</button>
             </div>
         </div>
     </div>
