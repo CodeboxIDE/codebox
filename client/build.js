@@ -29,7 +29,9 @@ exports.config = {
     "style": path.resolve(__dirname, "resources/stylesheets/main.less"),
 
     // Modules paths
-    'paths': {},
+    'paths': {
+        'moment': 'vendors/moment'
+    },
     "shim": {
         'views/views': {
             deps: [
@@ -67,10 +69,6 @@ exports.config = {
         }
     },
     'options': {
-        /*wrap: {
-            start: "(function() {",
-            end: "}());"
-        },*/
-    },
-
+        
+    }
 };

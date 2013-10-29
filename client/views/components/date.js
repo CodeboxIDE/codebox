@@ -1,7 +1,8 @@
 define([
     "Underscore",
-    "hr/hr"
-], function(_, hr) {
+    "hr/hr",
+    "moment"
+], function(_, hr, moment) {
     
     var DateView = hr.View.extend({
         tagName: "span",
@@ -23,7 +24,7 @@ define([
             if (this.interval != null) clearInterval(this.interval);
             this.interval = setInterval(_.bind(this.render, this), this.options.update); 
             this.options.update = this.options.update*this.options.updateD;
-            this.$el.html(this.options.time);
+            this.$el.html(moment(this.options.time*1000).fromNow());
             return this.ready();
         },
     });
