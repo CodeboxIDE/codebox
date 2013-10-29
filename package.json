@@ -25,7 +25,10 @@
         "watchr": "2.4.3",
         "gittle": "git+ssh://git@github.com:FriendCode/gittle.js.git#0.0.6",
         "uuid": "1.4.1",
-        "glob": "3.2.6"
+        "glob": "3.2.6",
+        "gift": "0.1.1",
+        "temp": "0.6.0",
+        "wrench": "1.5.4"
     },
     "bin": {
         "codebox": "./bin/codebox.js"
