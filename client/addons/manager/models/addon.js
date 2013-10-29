@@ -16,10 +16,10 @@ define(function() {
         },
 
         install: function() {
-            addons.install(this.get("git"))
+            return addons.install(this.get("git"));
         },
         uninstall: function() {
-            addons.uninstall(this.get("name"))
+            return addons.uninstall(this.get("name"));
         }
     });
 

@@ -58,7 +58,7 @@ define(['require'], function(require) {
       }
 
       var fileUrl = req.toUrl(lessId + '.less');
-      //fileUrl = normalize.absoluteURI(fileUrl, baseUrl);
+      fileUrl = normalize.absoluteURI(fileUrl, baseUrl);
 
       parser = parser || new lessc.Parser(window.less);
 

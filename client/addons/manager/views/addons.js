@@ -16,11 +16,11 @@ define([
 
         install: function(e) {
             if (e) e.preventDefault();
-            this.model.install();
+            this.model.install().done(_.bind(this.render, this));
         },
         uninstall: function(e) {
             if (e) e.preventDefault();
-            this.model.uninstall();
+            this.model.uninstall().done(_.bind(this.render, this));
         } 
     });
 

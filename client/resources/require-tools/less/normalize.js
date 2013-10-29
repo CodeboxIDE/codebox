@@ -45,9 +45,6 @@ define(function() {
     if(uri.indexOf("data:") === 0)
       return uri;
     uri = removeDoubleSlashes(uri);
-    // absolute urls are left in tact
-    if (uri.match(/^\//) || uri.match(protocolRegEx))
-      return uri;
     // if toBase specifies a protocol path, ensure this is the same protocol as fromBase, if not
     // use absolute path at fromBase
     var toBaseProtocol = toBase.match(protocolRegEx);
@@ -63,7 +60,11 @@ define(function() {
   // given a relative URI, calculate the absolute URI
   function absoluteURI(uri, base) {
     if (uri.substr(0, 2) == './')
-      uri = uri.substr(2);    
+      uri = uri.substr(2);
+
+    // absolute urls are left in tact
+    if (uri.match(/^\//) || uri.match(protocolRegEx))
+      return uri;
     
     var baseParts = base.split('/');
     var uriParts = uri.split('/');
