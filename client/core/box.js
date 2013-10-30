@@ -8,7 +8,10 @@ define([
     var box = new Codebox();
 
     // Search for files
-    search.handler("files", function(query) {
+    search.handler({
+        'id': "files",
+        'title': "Files"
+    }, function(query) {
         var d = new hr.Deferred();
         box.searchFiles(query).done(function(data) {
             d.resolve(_.map(data.files, _.bind(function(path) {

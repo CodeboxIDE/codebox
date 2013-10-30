@@ -22,8 +22,15 @@ define([
          *  @name: name for the search handler
          *  @getter: method which returns a promise with results
          */
-        handler: function(name, getter) {
-            this.handlers[name] = getter;
+        handler: function(infos, getter) {
+            if (!infos.id || !infos.title) {
+                throw new Error("Need 'id' and 'title' to define a search handler");
+            }
+            this.handlers[infos.id] = _.defaults({
+                'getter': getter
+            }, infos, {
+
+            });
             return this;
         },
 
@@ -36,10 +43,10 @@ define([
             _.each(this.handlers, function(handler, name) {
                 var addResults = function(results) {
                     callback({
-                        'title': name
+                        'title': handler.title
                     }, results, query);
                 };
-                var d = handler(query);
+                var d = handler.getter(query);
 
                 if (_.isArray(d)) {
                     addResults(d);

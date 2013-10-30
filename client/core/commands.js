@@ -8,7 +8,10 @@ define([
     var commands = new Commands();
 
     // Add commands to search
-    search.handler("commands", function(query) {
+    search.handler({
+        'id': "commands",
+        'title': "Commands"
+    }, function(query) {
         return _.map(commands.filter(function(command) {
             return (
                 command.get("title").toLowerCase().indexOf(query) != -1
