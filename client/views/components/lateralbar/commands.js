@@ -6,7 +6,7 @@ define([
     // List Item View
     var CommandItem = hr.List.Item.extend({
         className: "menu-item",
-        template: "components/lateralbar/command.html",
+        template: "lateralbar/command.html",
         events: {
             "click a": "run"
         },

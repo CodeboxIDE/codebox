@@ -2,10 +2,12 @@ define([
     "Underscore",
     "hr/hr",
     "core/api",
+    "core/commands",
     "utils/url",
-    'utils/languages',
-    'core/commands'
-], function(_, hr, api, Url, Languages, commands) {
+    "utils/languages",
+    "utils/filesync",
+    "utils/uploader"
+], function(_, hr, api, commands, Url, Languages, FileSync, Uploader) {
     var logging = hr.Logger.addNamespace("files");
 
     if (typeof String.prototype.endsWith !== 'function') {
@@ -210,18 +212,18 @@ define([
          */
         icon: function() {
             var extsIcon = {
-                "icon-picture": [".png", ".jpg", ".gif", ".tiff", ".jpeg", ".bmp", ".webp", ".svg"],
-                "icon-music": [".mp3", ".wav"],
-                "icon-film": [".avi", ".mp4"]
+                "picture": [".png", ".jpg", ".gif", ".tiff", ".jpeg", ".bmp", ".webp", ".svg"],
+                "music": [".mp3", ".wav"],
+                "film": [".avi", ".mp4"]
             }
             if (!this.isDirectory()) {
                 var ext = this.extension().toLowerCase();
                 return _.reduce(extsIcon, function(memo, exts, icon) {
                     if (_.contains(exts, ext)) return icon; 
                     return memo;
-                }, "icon-file-text-alt");
+                }, "file-text-o");
             } else {
-                return "icon-folder-close-alt";
+                return "folder-o";
             }
         },
 

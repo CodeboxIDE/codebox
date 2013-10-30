@@ -9,7 +9,7 @@ define([
 
     var LateralBarView = hr.View.extend({
         className: "layout-lateralbar",
-        template: "layouts/lateralbar.html",
+        template: "lateralbar/main.html",
         defaults: {},
         events: {
             "click .menu-action-search": "toggleSearch",

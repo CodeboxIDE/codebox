@@ -2,7 +2,10 @@ define([
     "Underscore",
     "jQuery",
     "hr/hr",
-    "core/api"
+    "core/api",
+
+    // addons dependencies
+    "utils/tabs"
 ], function(_, $, hr, api) {
     var logging = hr.Logger.addNamespace("addon");
 

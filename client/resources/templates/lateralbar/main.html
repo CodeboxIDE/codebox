@@ -1,0 +1,24 @@
+<div class="lateral-menu">
+    <div class="menu-section">
+        <%= view.component("component.lateralbar.commands", {
+            'collection': session.commands
+        }, "comands") %>
+    </div>
+    <div class="menu-section menu-bottom">
+        <ul class="menu-commands">
+            <li class="menu-item">
+                <a href="http://codenow.io" target="_blank" title="codenow.io">
+                    <i class="fa fa-cloud"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="lateral-body">
+    <%= view.component("component.lateralbar.searchbar", {}, "search") %>
+    <div class="files">
+        <%= view.component("component.lateralbar.files", {
+            'path': "/"
+        }, "tree") %>
+    </div>
+</div>
