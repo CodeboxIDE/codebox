@@ -63,9 +63,6 @@ exports.config = {
         },
         'vendors/mousetrap': {
             exports: 'Mousetrap'
-        },
-        'vendors/term': {
-            exports: 'Terminal'
         }
     },
     'options': {

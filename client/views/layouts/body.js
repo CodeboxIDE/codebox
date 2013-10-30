@@ -4,9 +4,8 @@ define([
     "hr/hr",
     "core/box",
     "core/commands",
-    "views/tabs/file",
-    "views/tabs/terminal"
-], function(_, $, hr, box, commands, FileTab, TerminalTab) {
+    "views/tabs/file"
+], function(_, $, hr, box, commands, FileTab) {
 
     var BodyView = hr.View.extend({
         className: "layout-body",
@@ -32,14 +31,6 @@ define([
                     'path': "/"
                 });
                 that.openFile(args.path);
-            });
-
-            // Terminal command
-            commands.register("terminal.open", {
-                title: "Terminal",
-                icon: "terminal"
-            }, function() {
-                that.openTerminal();
             });
 
             return this;
@@ -83,11 +74,6 @@ define([
                     "type": "file",
                 });
             }
-        },
-
-        // Open terminal
-        openTerminal: function() {
-            return this.addTab(TerminalTab);
         }
     });
 

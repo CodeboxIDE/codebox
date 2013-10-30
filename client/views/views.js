@@ -7,7 +7,6 @@ define([
 
     "views/components/tabs",
 	"views/components/editor",
-	"views/components/terminal",
     "views/components/date",
 	
     "views/components/files/directory",
