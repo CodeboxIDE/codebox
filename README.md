@@ -1,15 +1,18 @@
 # Codebox
+> "Extensible cloud ide."
+
+Codebox is a complete and extensible ide that runs as a workspace. It cans runs on any linux machines.
 
 ## Installation
 
 ```
-$ npm install -g git+ssh://git@github.com:FriendCode/codebox.git
+$ npm install -g codebox
 ```
 
-## Testing with CodeNow:
+## Run Codebox into a GIT workspace
 
-Open the .env file to configure your box and run:
+Codebox can only be run on GIT workspace.
 
 ```
-$ foreman start
+$ codebox run -d ./myworkspace
 ```

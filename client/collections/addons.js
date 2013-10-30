@@ -45,7 +45,8 @@ define([
             return api.rpc("/addons/uninstall", {
                 'name': name
             }).done(function() {
-               
+                that.reset([]);
+                that.getInstalled();
             });
         }
     });
