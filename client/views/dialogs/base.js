@@ -21,7 +21,7 @@ define([
         },
         template: function() {
             if (this.options.template != null) return this.options.template;
-            return "components/dialogs/"+this.options.dialog+".html";
+            return "dialogs/"+this.options.dialog+".html";
         },
         templateContext: function() {
             return {
