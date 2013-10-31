@@ -14,7 +14,7 @@
         "googlediff": "0.1.0",
         "cryptojs": "2.5.3",
         "eventemitter2": "0.4.13",
-        "architect": "0.1.10",
+        "engineer": "0.0.2",
         "express": "3.3.5",
         "socket.io": "0.9.16",
         "socket.io-stream": "git+https://github.com/nkzawa/socket.io-stream.git#aab13aabe9474a45f7af478eedf41318f53271de",
