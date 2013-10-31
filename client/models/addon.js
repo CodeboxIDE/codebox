@@ -16,7 +16,9 @@ define([
             'description': "",
             'version': "0.0.1",
             'author': "",
-            'main': "main"
+            'client': {
+                'main': "client"
+            }
         },
 
         // Return base url for the addon
@@ -52,7 +54,7 @@ define([
             });
 
             // Load main module
-            addonRequire([this.get("main")]);
+            addonRequire([this.get("client.main", "client")]);
         }
     });
 

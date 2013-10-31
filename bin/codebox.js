@@ -33,7 +33,8 @@ cli.command('run')
             }
         });
     }
-    console.log("start codebox with config ", config);
+    
+    // Start Codebox
     codebox.start(config).fail(function(err) {
 
         console.error('Error initializing CodeBox');
@@ -45,18 +46,11 @@ cli.command('run')
     });
 });
 
-// Command 'create'
-cli.command('create [git]')
-.description('Create a new codebox from a git repository.')
-.action(function(gitUrl) {
-    
-});
-
 cli.on('--help', function(){
     console.log('  Examples:');
     console.log('');
+    console.log('    $ codebox run');
     console.log('    $ codebox run -d ./myProject');
-    console.log('    $ codebox create https://github.com/FriendCode/codebox.git');
     console.log('');
 });
 
