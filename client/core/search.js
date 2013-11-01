@@ -8,9 +8,7 @@ define([
     var logging = hr.Logger.addNamespace("search");
 
     var Search = hr.Class.extend({
-        defaults: {
-            
-        },
+        defaults: {},
 
         // Constructor
         initialize: function(){
@@ -54,6 +52,8 @@ define([
                 'default': true
             });
 
+            logging.log("add search handler", infos.id);
+
             return this;
         },
 
@@ -67,7 +67,7 @@ define([
                 if (!user.get("settings.search."+name, true)) {
                     return;
                 }
-                
+
                 var addResults = function(results) {
                     callback({
                         'title': handler.title

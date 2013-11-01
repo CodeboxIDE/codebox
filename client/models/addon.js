@@ -36,7 +36,7 @@ define([
             var addonRequire = require.config({
                 'context': context,
                 'baseUrl': this.url(),
-                'urlArgs': "bust=" + (new Date()).getTime(),
+                'urlArgs': "bust=" + hr.configs.revision+"&version="+this.get("version"),
                 'paths': {
                     "require-tools": "/static/require-tools"
                 },
