@@ -1,6 +1,6 @@
-<% _.each(settings.fields, function(field, key) { 
-    var field_name = settings.namespace+"_"+key;
-    var field_selector = "settings."+settings.namespace+"."+key;
+<% _.each(fields, function(field, key) { 
+    var field_name = namespace+"_"+key;
+    var field_selector = "settings."+namespace+"."+key;
 %>
 <div class="form-group">
     <label class="col-lg-3 control-label" for="<%- field_name %>"><%- field.label %></label>
@@ -10,7 +10,7 @@
         <% } else if (field.type == "number") { %>
         <input class="form-control" type="number" name="<%- field_name %>" step="<%- field.step || 1 %>" min="<%- field.min || 0 %>" max="<%- field.max || 10 %>" value="<%- session.user.get(field_selector, field.default) %>" />
         <% } else if (field.type == "checkbox") { %>
-        <input type="checkbox" <% if(session.user.get(field_selector, field.default)) { %>checked<% } %> />
+        <input type="checkbox" name="<%- field_name %>" <% if(session.user.get(field_selector, field.default)) { %>checked<% } %> />
         <% } else if (field.type == "select") { %>
         <select class="form-control" name="<%- field_name %>">
             <% _.each(field.options, function(opname, opkey) { %>

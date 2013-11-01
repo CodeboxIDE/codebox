@@ -1,8 +1,9 @@
 define([
     'hr/hr',
     'jQuery',
-    'Underscore'
-],function(hr, $, _) {
+    'Underscore',
+    'utils/settings'
+],function(hr, $, _, settings) {
     var logging = hr.Logger.addNamespace("search");
 
     var Search = hr.Class.extend({
@@ -13,7 +14,20 @@ define([
         // Constructor
         initialize: function(){
             Search.__super__.initialize.apply(this, arguments);
+
+            // Search handlers
             this.handlers = {};
+
+            // Settings
+            this.settings = settings.add({
+                'namespace': "search",
+                'section': "main",
+                'title': "Search",
+                'fields': {
+                    
+                }
+            });
+
             return this;
         },
 
@@ -26,11 +40,19 @@ define([
             if (!infos.id || !infos.title) {
                 throw new Error("Need 'id' and 'title' to define a search handler");
             }
+
+            // Define handler
             this.handlers[infos.id] = _.defaults({
                 'getter': getter
-            }, infos, {
+            }, infos, {});
 
+            // Define settings
+            this.settings.setField(infos.id, {
+                'label': infos.title,
+                'type': "checkbox",
+                'default': true
             });
+
             return this;
         },
 

@@ -27,8 +27,8 @@ define([
 
             var tab = new Tab(options);
 
-            var section = tab.settings.section || "main";
-            var namespace = tab.settings.namespace || "main";
+            var section = tab.section || "main";
+            var namespace = tab.namespace || "main";
 
             if (!settings.sections[section]) settings.sections[section] = {};
 
@@ -52,7 +52,7 @@ define([
         save: function() {
             var data = {};
             this.each(function(tab) {
-                data[tab.settings.namespace] = tab.submit();
+                data[tab.namespace] = tab.submit();
             });
             return user.saveSettings(data);
         }

@@ -17,18 +17,25 @@ define([
         initialize: function() {
             SettingsPageView.__super__.initialize.apply(this, arguments);
 
-            this.settings = {
-                'namespace': this.options.namespace,
-                'section': this.options.section,
-                'title': this.options.title,
-                'fields': this.options.fields || {}
-            };
+            this.namespace = this.options.namespace;
+            this.title = this.options.title || this.namespace;
+            this.section = this.options.section;
+            this.fields = this.options.fields || {};
+        },
+
+        // Define a field
+        setField: function(fieldId, field) {
+            this.fields[fieldId] = field;
+            this.trigger("field:change", fieldId);
+            return this;
         },
 
         // Template context
         templateContext: function() {
             return {
-                'settings': this.settings
+                'fields': this.fields,
+                'namespace': this.namespace,
+                'section': this.section
             }
         },
 
@@ -44,8 +51,8 @@ define([
                 'checkbox': function(el) { return el.is(":checked"); },
             };
 
-            _.each(this.settings.fields, function(field, key) {
-                data[key] = selectors[field.type](that.$("*[name='"+ that.settings.namespace+"_"+key+"']"));
+            _.each(this.fields, function(field, key) {
+                data[key] = selectors[field.type](that.$("*[name='"+ that.namespace+"_"+key+"']"));
             });
 
             return data;
