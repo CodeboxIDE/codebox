@@ -48,8 +48,6 @@ define([
                 data[key] = selectors[field.type](that.$("*[name='"+ that.settings.namespace+"_"+key+"']"));
             });
 
-            console.log(data);
-
             return data;
         }
     });

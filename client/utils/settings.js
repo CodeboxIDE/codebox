@@ -21,7 +21,6 @@ define([
         add: function(Tab, options) {
             var section, namespace;
             if (!_.isFunction(Tab)) {
-                console.log("is object:", Tab);
                 options = Tab;
                 Tab = SettingsPageView;
             }
