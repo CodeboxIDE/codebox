@@ -5,7 +5,8 @@ define([
     "core/api",
 
     // addons dependencies
-    "utils/tabs"
+    "utils/tabs",
+    "utils/settings"
 ], function(_, $, hr, api) {
     var logging = hr.Logger.addNamespace("addon");
 
