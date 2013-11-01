@@ -2,8 +2,9 @@ define([
     'hr/hr',
     'jQuery',
     'Underscore',
+    'core/user',
     'utils/settings'
-],function(hr, $, _, settings) {
+],function(hr, $, _, user, settings) {
     var logging = hr.Logger.addNamespace("search");
 
     var Search = hr.Class.extend({
@@ -63,6 +64,10 @@ define([
             callback = _.bind(callback, context);
 
             _.each(this.handlers, function(handler, name) {
+                if (!user.get("settings.search."+name, true)) {
+                    return;
+                }
+                
                 var addResults = function(results) {
                     callback({
                         'title': handler.title

@@ -3,10 +3,9 @@ define([
     "hr/hr",
     "core/user",
     "core/box",
-    "core/search",
     "core/addons",
     "core/commands"
-], function(_, hr, user, box, search, addons, commands) {
+], function(_, hr, user, box, addons, commands) {
     // Extend template context
     hr.Template.extendContext({
         'session': {
