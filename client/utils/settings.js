@@ -18,14 +18,24 @@ define([
          *  Define a new settings tab
          *  Tab: View for the tab
          */
-        add: function(Tab) {
-            var section = Tab.prototype.settings.section || "main";
-            var namespace = Tab.prototype.settings.namespace || "main";
+        add: function(Tab, options) {
+            var section, namespace;
+            if (!_.isFunction(Tab)) {
+                console.log("is object:", Tab);
+                options = Tab;
+                Tab = SettingsPageView;
+            }
+
+            var tab = new Tab(options);
+
+            var section = tab.settings.section || "main";
+            var namespace = tab.settings.namespace || "main";
 
             if (!settings.sections[section]) settings.sections[section] = {};
 
             logging.log("add settings tab", section, namespace);
-            settings.sections[section][namespace] = new Tab();
+            settings.sections[section][namespace] = tab;
+            return tab;
         },
 
         /*
