@@ -1,8 +1,9 @@
 define([
     "Underscore",
     "hr/hr",
+    "utils/gravatar",
     "core/api"
-], function(_, hr, api) {
+], function(_, hr, gravatar, api) {
     var logging = hr.Logger.addNamespace("user");
 
     var User = hr.Model.extend({
@@ -17,6 +18,11 @@ define([
         initialize: function() {
             User.__super__.initialize.apply(this, arguments);
             return this;
+        },
+
+        // Return url for avatar
+        avatar: function(options) {
+            return gravatar.get(this.get("email"), options);
         },
 
         // Save user settings

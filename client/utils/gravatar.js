@@ -10,7 +10,7 @@ define([
                 'defaultImage': 'mm'
             });
 
-            return "https://secure.gravatar.com/avatar/" + String(CryptoJS.MD5(email.toLowerCase().trim()) + "?size=" + options.size + "&default=" + encodeURIComponent(options.defaultImage);
+            return "https://secure.gravatar.com/avatar/" + String(CryptoJS.MD5(email.toLowerCase().trim())) + "?size=" + options.size + "&default=" + encodeURIComponent(options.defaultImage);
         }
     };
 });

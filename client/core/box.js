@@ -2,10 +2,22 @@ define([
     'hr/hr',
     'models/box',
     'core/search',
-    'core/commands'
-], function (hr, Codebox, search, commands) {
+    'core/commands',
+    'core/collaborators'
+], function (hr, Codebox, search, commands, collaborators) {
     // Current box
     var box = new Codebox();
+
+    // Bind collaborators changement
+    box.on("box:users:add", function(e) {
+        collaborators.add(e.data);
+    });
+    box.on("box:users:remove", function(e) {
+        collaborators.remove(collaborators.getById(e.data.userId));
+    });
+    box.on("set", function() {
+        collaborators.getCollaborators();
+    })
 
     // Search for files
     search.handler({
