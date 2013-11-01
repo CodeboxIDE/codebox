@@ -11,7 +11,7 @@ cli.command('run')
     this.box = this.box || process.env.CODENOW_BOXID;
     this.key = this.key || process.env.CODENOW_TOKEN;
     this.codenow = this.codenow || process.env.CODENOW_HOST || "https://codenow.io";
-    this.directory = this.directory || process.env.CODEBOX_DIR || "./";
+    this.directory = this.directory || process.env.WORKSPACE_DIR || "./";
     this.title = this.title || process.env.CODENOW_NAME || "";
 
     var config = {
