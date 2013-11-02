@@ -25,6 +25,25 @@ define([
             return gravatar.get(this.get("email"), options);
         },
 
+        // Return a settings namespace
+        settings: function(namespace) {
+            var that = this;
+            return {
+                'get': function(key, def) {
+                    return that.get("settings."+namespace+"."+key, def);
+                },
+                'set': function(key, value) {
+                    return that.set("settings."+namespace+"."+key, value);
+                },
+                'save': function() {
+                    return that.saveSettings();
+                },
+                'change': function(callback, context) {
+                    return that.on("change:settings."+namespace, callback, context);
+                }
+            }
+        },
+
         // Save user settings
         saveSettings: function(data) {
             var that = this;
