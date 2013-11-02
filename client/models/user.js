@@ -29,6 +29,9 @@ define([
         settings: function(namespace) {
             var that = this;
             return {
+                'all': function(def) {
+                    return that.get("settings."+namespace, def);
+                },
                 'get': function(key, def) {
                     return that.get("settings."+namespace+"."+key, def);
                 },
