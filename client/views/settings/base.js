@@ -11,7 +11,9 @@ define([
             'title': "",
             'settings': {}
         },
-        events: {},
+        events: {
+            "click button[data-settings-action]": "triggerFieldAction"
+        },
 
         // Constructor
         initialize: function() {
@@ -37,6 +39,21 @@ define([
                 'namespace': this.namespace,
                 'section': this.section
             }
+        },
+
+        // Trigger action
+        triggerFieldAction: function(e) {
+            e.preventDefault();
+
+            var $btn = $(e.currentTarget);
+            var fieldId = $btn.data("settings-action");
+
+            if (!this.fields[fieldId]) return;
+
+            $btn.button("loading");
+            this.fields[fieldId].trigger(fieldId).always(function() {
+                $btn.button("reset");
+            });
         },
 
         // Get settings to save
