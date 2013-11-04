@@ -6,6 +6,9 @@
     "private": true,
 
     "plugin": {
+        "consumes": [
+            "workspace"
+        ],
         "provides": [
             "shells"
         ]
