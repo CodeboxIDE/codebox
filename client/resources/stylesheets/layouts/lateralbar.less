@@ -1,0 +1,56 @@
+#codebox .layout-lateralbar {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	bottom: 0px;
+	width: @codeboxMenubarWidth+@codeboxLateralbarWidth;
+	background: @codeboxLateralbarBackground;
+	box-shadow: inset -8px 0px 9px -9px #000000;
+	color: @codeboxLateralbarColor;
+
+	.lateral-menu {
+		position: absolute;
+		left: 0px;
+		width: @codeboxMenubarWidth;
+		top: 0px;
+		bottom: 0px;
+
+		.menu-section {
+			margin-bottom: 10px;
+
+			&.menu-bottom {
+				position: absolute;
+				bottom: 0px;
+				margin: 0px;
+			}
+		}
+	}
+
+	.lateral-body {
+		position: absolute;
+		top: 0px;
+		left: @codeboxMenubarWidth;
+		bottom: 0px;
+		width: @codeboxLateralbarWidth;
+		overflow-y: auto;
+		overflow-x: hidden;
+
+		.searchbar {
+			display: none;
+		}
+
+		>.files {
+			margin: 4px 0px;
+			font-size: 15px;
+		}
+	}
+
+	&.mode-search {
+		.lateral-body .searchbar {
+			display: block;
+		}
+		.lateral-body >.files {
+			display: none;
+		}
+	}
+}

@@ -1,0 +1,67 @@
+@import "bootstrap/bootstrap.less";
+@import "fontawesome/font-awesome.less";
+
+@import "variables.less";
+@import "fonts.less";
+
+@import "components/lateralbar/files.less";
+@import "components/lateralbar/searchbar.less";
+@import "components/lateralbar/commands.less";
+@import "components/tabs.less";
+
+@import "layouts/lateralbar.less";
+@import "layouts/body.less";
+@import "layouts/login.less";
+
+.codebox-layout-fullscreen () {
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
+    z-index: 10000;
+}
+
+* {
+    -webkit-overflow-scrolling: touch;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: none;
+    -webkit-touch-callout: none;
+}
+
+a:focus {
+    outline: 0;
+}
+
+body {
+	-webkit-font-smoothing: antialiased;
+	font-smoothing: antialiased;
+}
+
+.modal-content {
+    border-radius: 1px;
+    .box-shadow(none);
+}
+
+.dropdown-menu {
+    border-radius: 1px;
+    margin-top: -1px;
+}
+
+#codebox {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+
+    .codebox-connexion-alert {
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        bottom: 0px;
+        right: 0px;
+        z-index: 1000;
+        background: rgba(0,0,0, 0.4);
+    }
+}

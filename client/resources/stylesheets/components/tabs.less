@@ -1,0 +1,202 @@
+.component-tab {
+    position: relative;
+    height:30px;
+    padding-left: 18px;
+    padding-right: 18px;
+    margin-top: 6px;
+    margin-right: -14px;
+    float: left;
+    z-index: 1;
+    cursor: default;
+
+    .inner {
+        .box-sizing(border-box);
+        height: 30px;
+        background: @tabColor;
+        padding: 5px 5px;
+        .user-select(none);
+
+        .close {
+            margin-left: 8px;
+            font-weight: 200;
+            cursor: default;
+            padding: 0px;
+            line-height: 13px;
+            border-radius: 30px;
+            background: rgba(0,0,0,0.05);
+            opacity: 1;
+            font-size: 14px;
+            text-shadow: none;
+            width: 14px;
+            height: 14px;
+            text-align: center;
+            margin-top: 4px;
+            color: rgba(0,0,0,0.5);
+
+            &:hover {
+                background: #e74c3c;
+                opacity: 1;
+                color: #fff;
+            }
+        }
+    }
+
+    &:before{
+        width:0;
+        height:0;
+        content:"";
+        display:inline-block;
+        border-top:30px solid transparent;
+        border-right:18px solid @tabColor;
+        position:absolute;
+        left:0;
+        top:0;
+    }
+    &:after{
+        width:0;
+        height:0;
+        content:"";
+        display:inline-block;
+        border-top:30px solid transparent;
+        border-left:18px solid @tabColor;
+        position:absolute;
+        right:0;
+        top:0;
+    }
+    &:hover {
+        .inner {
+            background: @tabHoverColor;
+        }
+
+        &:before {
+            border-right-color: @tabHoverColor;
+        }
+        &:after {
+            border-left-color: @tabHoverColor;
+        }
+    }
+
+    &.active {
+        z-index: 10; 
+        .inner {
+            background: @tabActiveColor;
+        }
+
+        &:before {
+            border-right-color: @tabActiveColor;
+        }
+        &:after {
+            border-left-color: @tabActiveColor;
+        }
+    }
+}
+
+.component-tab-panel {
+    display: none;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    
+    .tab-panel-inner {
+        margin: 10px;
+        background: #fff;
+        border-radius: 3px;
+
+        &.full-tab {
+            position: absolute;
+            top: 0px;
+            bottom: 0px;
+            right: 0px;
+            left: 0px;
+            overflow: hidden;
+        }
+    }
+
+    .tabs-loading {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        bottom: 0px;
+        background: #f1f1f1;
+    }
+
+    &.active {
+        display: block;
+    }
+}
+
+.component-tabs {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+    .section {
+        position: absolute;
+        top: 0px;
+        bottom: 0px;
+        left: 0px;
+
+        &.dragover {
+            .opacity(60);
+        }
+
+        .tabs-header {
+            position: absolute;
+            top: 0px;
+            height: 36px;
+            right: 0px;
+            left: 0px;
+            background: @tabBackground;
+            padding-left: 5px;
+        }
+
+        .tabs-content {
+            position: absolute;
+            top: 36px;
+            bottom: 0px;
+            right: 0px;
+            left: 0px;
+            background: @tabActiveColor;
+        }
+    }
+}
+
+.component-tab-panel {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    
+    .tab-panel-toolbar {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        height: 20px;
+        margin: 0px;
+        padding: 0px;
+    }
+
+    .tab-panel-inner {
+        position: absolute;
+        top: 0px;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
+        border-radius: 3px;
+        overflow: hidden;
+        width: auto;
+        height: auto;
+        margin: 10px;
+        padding: 0px;
+        background: #fff;
+        border: 1px solid #ccc;
+        overflow-y: auto;
+
+        &.with-panel {
+            top: 40px;
+        }
+    }
+}

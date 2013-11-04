@@ -1,0 +1,54 @@
+<% if (isAuth) { %>
+<div id="codebox">
+	<!-- Lateral bar -->
+	<%= view.component("layout.lateralbar", {}, "lateralbar") %>
+
+	<!-- Body -->
+	<%= view.component("layout.body", {}, "body") %>
+
+	<div class="codebox-connexion-alert" style="display: none;">
+		<div class="modal fade in" style="display: block;">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+					    <h4 class="modal-title">Connexion Error</h4>
+					</div>
+					<div class="modal-body">
+					    <p>This workspace has encountered an error. We are looking into the problem now. This could be due to a lack of network connectivity (error with websocket).</p>
+	            		<p>Please try to reload the page. If the error persists, please signal the issue at <a target="_blank" href="https://github.com/FriendCode/codebox/issues">feedback</a>.</p>
+					</div>
+				</div>
+			</div>
+	    </div>
+	</div>
+</div>
+<% } else { %>
+<div id="codebox">
+	<div class="layout-login">
+		<div class="login-box">
+			<div class="header">
+				<span class="fa-stack">
+				  <i class="fa fa-cloud fa-stack-2x"></i>
+				  <i class="fa fa-terminal fa-stack-1x fa-inverse"></i>
+				</span>
+			</div>
+			<div class="inner">
+				<form role="form">
+					<div class="form-group">
+						<input type="email" class="form-control" id="login-email" placeholder="Enter email" value="<%- email %>">
+					</div>
+					<div class="form-group">
+						<input type="password" class="form-control" id="login-token" placeholder="Enter token" value="<%- token %>">
+					</div>
+					<div class="checkbox">
+						<label>
+							<input type="checkbox" id="login-save" checked> Remember me
+						</label>
+					</div>
+					<button type="submit" class="btn btn-lg btn-block btn-default">Login</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<% } %>

@@ -1,113 +1,67 @@
 #!/usr/bin/env node
+var _ = require('underscore');
+var cli = require('commander');
+var pkg = require('../package.json');
+var codebox = require("../index.js");
 
+// Command 'run'
+cli.command('run')
+.description('Run a Codebox into a folder.')
+.action(function() {
+    this.box = this.box || process.env.CODEBOXIO_BOXID;
+    this.key = this.key || process.env.CODEBOXIO_TOKEN;
+    this.codeboxio = this.codeboxio || process.env.CODEBOXIO_HOST || "https://api.codenow.io";
 
-// Requires
-var Q = require('q');
-var path = require('path');
-var architect = require('architect');
+    this.directory = this.directory || process.env.WORKSPACE_DIR || "./";
+    this.title = this.title || process.env.WORKSPACE_NAME || "";
 
-// The root of our plugins
-var pluginPath = path.resolve(
-    __dirname, '..', 'lib'
-);
+    var config = {
+        'root': this.directory,
+        'title': this.title
+    };
 
-// Plugins to load
-var plugins = [
-    // Core
-    {
-        // Path to plugin
-        packagePath: "./cb.core",
+    // Use Codebox
+    if (this.box) {
+        _.extend(config, {
+            'title': this.title,
+            'hooks': {
+                'auth': this.codeboxio+"/api/box/"+this.box+"/auth",
+                'events': this.codeboxio+"/api/box/"+this.box+"/events",
+                'settings': this.codeboxio+"/api/account/settings"
+            },
+            'webhook': {
+                'authToken': this.key
+            }
+        });
+    }
+    
+    // Start Codebox
+    codebox.start(config).fail(function(err) {
 
-        // Options
-        root: process.env.WORKSPACE_DIR
-    },
+        console.error('Error initializing CodeBox');
+        console.error(err);
+        console.error(err.stack);
 
-    // Event bus
-    "./cb.events",
-    "./cb.events.log",
-    "./cb.events.socketio",
-    {
-        // Path to plugin
-        packagePath: "./cb.events.webhook",
-
-        // Options
-        url: process.env.WEBHOOK_URL,
-        timeout: process.env.WEBHOOK_TIMEOUT,
-    },
-
-    // Express server
-    "./cb.server",
-
-    // Middleware (session, auth, ...)
-    {
-        packagePath: "./cb.middleware",
-
-        disableAuth: process.env.DISABLE_AUTH == "true",
-    },
-
-    // Status endpoint (root)
-    "./cb.status",
-
-    // RPC
-    "./cb.httpRPC",
-
-    // VFS
-    "./cb.vfs",
-    "./cb.vfs_http",
-
-    // Shells
-    "./cb.shells",
-    "./cb.shells.rpc",
-    "./cb.shells.stream",
-
-    // Detect project types
-    "./cb.projectType",
-
-    // Autorun
-    // "./cb.autorun"
-
-    // Socket.io
-    "./cb.socket.io",
-
-    // Files
-    "./cb.files.service",
-    "./cb.files.sync",
-
-    // Git
-    "./cb.git",
-    "./cb.git.rpc",
-
-    // Search
-    "./cb.search",
-    "./cb.search.rpc",
-
-    // Auth
-    "./cb.auth.rpc",
-
-    // Proxy
-    "./cb.proxy.http",
-
-    // Users
-    "./cb.users.rpc",
-
-    // Watch (file modifications)
-    "./cb.watch",
-
-    // Now start the damn server
-    "./cb.main",
-];
-
-// Create app
-Q.nfcall(architect.createApp, architect.resolveConfig(plugins, pluginPath))
-.then(function(app) {
-    console.info('Started CodeBox');
-})
-.fail(function(err) {
-
-    console.error('Error initializing CodeBox');
-    console.error(err);
-    console.error(err.stack);
-
-    // Kill process
-    process.exit(1);
+        // Kill process
+        process.exit(1);
+    });
 });
+
+cli.on('--help', function(){
+    console.log('  Examples:');
+    console.log('');
+    console.log('    $ codebox run');
+    console.log('    $ codebox run -d ./myProject');
+    console.log('');
+});
+
+
+cli.option('-d, --directory <path to project directory>', 'Define working directory for the project.');
+cli.option('-t, --title <title>', 'Title for the project.');
+cli.option('-b, --box <box id>', 'CodeNow Bow to configure for.');
+cli.option('-k, --key <web token>', 'CodeNow Bauth token.');
+cli.option('-c, --codeboxio <codebox manager host>', 'Codebox host (ex: https://api.codenow.io).');
+
+cli.version(pkg.version).parse(process.argv);
+if (!cli.args.length) cli.help();
+

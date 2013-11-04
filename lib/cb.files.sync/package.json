@@ -1,5 +1,5 @@
 {
-    "name": "cb.skeleton",
+    "name": "cb.files.sync",
     "version": "0.0.1",
 
     "main": "./main.js",
@@ -8,6 +8,7 @@
     "plugin": {
         "provides": [],
         "consumes": [
+            "logger",
             "files_service",
             "socket_io"
         ]

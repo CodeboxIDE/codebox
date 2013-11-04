@@ -10,7 +10,7 @@
             "watch"
         ],
         "consumes": [
-            "events"
+            "events", "logger"
         ]
     }
 }

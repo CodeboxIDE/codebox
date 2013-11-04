@@ -8,6 +8,7 @@
     "plugin": {
         "provides": [],
         "consumes": [
+            "logger",
             "events",
             "workspace"
         ]

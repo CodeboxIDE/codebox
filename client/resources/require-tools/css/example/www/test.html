@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<script type='text/javascript' src='../../../require.js'></script>
+<script>
+  require.config({
+    map: {
+      '*': {
+        'css': 'require-css/css'
+      } 
+    }
+  });
+</script>
+
+<body>
+<h1>test</h1>
+</body>
+
+
+<script>
+  require(['app'], function(){});
+  require(['popup'], function(popupHTML) {
+    var div = document.createElement('div');
+    div.innerHTML = popupHTML;
+    document.body.appendChild(div);
+    alert(div.childNodes[0].offsetWidth == 340 ? 'Style query passed' : 'Style query failed');
+  });
+</script>

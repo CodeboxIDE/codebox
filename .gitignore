@@ -13,3 +13,8 @@ results
 npm-debug.log
 /node_modules/
 /.vagrant/
+
+client/build
+addons/*
+
+/.env
