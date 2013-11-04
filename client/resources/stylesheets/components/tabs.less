@@ -163,3 +163,36 @@
         }
     }
 }
+
+.component-tab-panel {
+    .tab-panel-toolbar {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        height: 20px;
+        margin: 0px;
+        padding: 0px;
+    }
+
+    .tab-panel-inner {
+        position: absolute;
+        top: 0px;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
+        border-radius: 3px;
+        overflow: hidden;
+        width: auto;
+        height: auto;
+        margin: 10px;
+        padding: 0px;
+        background: #fff;
+        border: 1px solid #ccc;
+        overflow-y: auto;
+
+        &.with-panel {
+            top: 40px;
+        }
+    }
+}

@@ -5,6 +5,7 @@ define([
     "core/api",
 
     // addons dependencies
+    "utils/themes",
     "utils/tabs",
     "utils/settings"
 ], function(_, $, hr, api) {

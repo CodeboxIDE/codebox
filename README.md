@@ -2,13 +2,13 @@
 > "Open and Extensible Cloud IDE."
 
 Codebox is a complete and extensible IDE that runs as a workspace. It cans runs on any linux machines.
-Codebox is an open-source component of CodeNow (http://codenow.io).
+Codebox is an open-source component of Codebox.io (https://www.codebox.io).
 
 ## Why is CodeBox great?
 
 * Easy to run
 * Fully web IDE
-* 
+* Collaborative
 
 ## How to use it?
 
