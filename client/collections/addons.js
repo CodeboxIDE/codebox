@@ -29,6 +29,15 @@ define([
             }) != null;
         },
 
+        // Check addons is a default addon
+        isDefault: function(name) {
+            var m = this.find(function(addon) {
+                return addon.get("name") == name;
+            });
+            if (m == null) return false;
+            return m.get("default");
+        },
+
         // Install an addon
         install: function(git) {
             var that = this;
