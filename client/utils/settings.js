@@ -31,9 +31,13 @@ define([
             var namespace = tab.namespace || "main";
 
             if (!settings.sections[section]) settings.sections[section] = {};
-
             logging.log("add settings tab", section, namespace);
             settings.sections[section][namespace] = tab;
+
+            var defaults = options.defaults || {};
+            var currentValues = user.get("settings."+namespace, {});
+            currentValues = _.defaults(currentValues, defaults);
+            user.set("settings."+namespace, currentValues);
             return tab;
         },
 
