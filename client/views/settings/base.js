@@ -71,7 +71,7 @@ define([
 
             _.each(this.fields, function(field, key) {
                 var v = selectors[field.type](that.$("*[name='"+ that.namespace+"_"+key+"']"));
-                if (v) data[key] = v;
+                if (v !== null) data[key] = v;
             });
 
             return data;
