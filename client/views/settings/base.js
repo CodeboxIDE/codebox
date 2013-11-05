@@ -23,6 +23,7 @@ define([
             this.title = this.options.title || this.namespace;
             this.section = this.options.section;
             this.fields = this.options.fields || {};
+            this.defaults = this.options.defaults || {};
         },
 
         // Define a field
@@ -36,6 +37,7 @@ define([
         templateContext: function() {
             return {
                 'fields': this.fields,
+                'defaults': this.defaults,
                 'namespace': this.namespace,
                 'section': this.section
             }
