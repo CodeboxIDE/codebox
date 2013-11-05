@@ -1,15 +1,15 @@
-# Codebox: Open and Extensible Cloud IDE
+# Codebox: Open Cloud IDE
 
-![Image](../master/docs/assets/base_722.png?raw=true)
+![Image](../master/docs/assets/base.png?raw=true)
 
-Codebox is a complete and extensible IDE that runs as a workspace. It cans runs on any linux machines.
-Codebox is an open-source component of Codebox.io (https://www.codebox.io).
+Codebox is a complete and extensible Cloud IDE. It cans runs on any unix machines (Linux, Mac OS X). 
 
 ## Why is CodeBox great?
 
 * Easy to run
 * Fully web IDE
-* Collaborative
+* Collaborative: Boxes are natively collaborative (code editor, terminals, ...)
+* Extensible: Codebox is build on a very modular architecture
 
 ## How to use it?
 
@@ -29,3 +29,15 @@ $ codebox run -d ./myworkspace
 
 * [Configuration with environment variables](https://github.com/FriendCode/codebox/blob/master/docs/env.md)
 * [Managing addons](https://github.com/FriendCode/codebox/blob/master/docs/addons.md)
+
+## What is it looks like?
+
+![Image](../master/docs/assets/realtime_722.png?raw=true)
+
+![Image](../master/docs/assets/addons_722.png?raw=true)
+
+![Image](../master/docs/assets/search_722.png?raw=true)
+
+![Image](../master/docs/assets/terminal_722.png?raw=true)
+
+![Image](../master/docs/assets/settings_722.png?raw=true)
