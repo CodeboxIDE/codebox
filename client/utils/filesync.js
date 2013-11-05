@@ -442,6 +442,7 @@ define([
             var cursor_y = cursor.y;
 
             content = content || this.content_value_t0;
+            patches = patches || [];
 
             var cursor_index = self.cursorIndexBypos(cursor_x, cursor_y, content);
 
