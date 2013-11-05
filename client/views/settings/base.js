@@ -66,10 +66,12 @@ define([
                 'number': function(el) { return el.val(); },
                 'select': function(el) { return el.val(); },
                 'checkbox': function(el) { return el.is(":checked"); },
+                'action': function(el)  { return null; }
             };
 
             _.each(this.fields, function(field, key) {
-                data[key] = selectors[field.type](that.$("*[name='"+ that.namespace+"_"+key+"']"));
+                var v = selectors[field.type](that.$("*[name='"+ that.namespace+"_"+key+"']"));
+                if (v) data[key] = v;
             });
 
             return data;
