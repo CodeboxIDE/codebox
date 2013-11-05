@@ -1,6 +1,6 @@
 # Codebox: Open and Extensible Cloud IDE
 
-[![Screen](https://raw.github.com/FriendCode/codebox/master/docs/assets/base_722.png)](https://raw.github.com/FriendCode/codebox/master/docs/assets/base.png)
+![Image](../master/docs/assets/base_722.png?raw=true)
 
 Codebox is a complete and extensible IDE that runs as a workspace. It cans runs on any linux machines.
 Codebox is an open-source component of Codebox.io (https://www.codebox.io).
