@@ -24,16 +24,7 @@ You can now run Codebox into a directory (Codebox can only be run on GIT reposit
 $ codebox run -d ./myworkspace
 ```
 
-## Architecture
+## Documentation
 
-
-## How to build an extension?
-
-Extension can currently only run in the client-side. Check out some examples:
-
-* [HelloWorld](https://github.com/FriendCode/codebox-addon-helloworld): Simple HelloWorld Dialog
-* [Doks](https://github.com/FriendCode/codebox-addon-doks): Search documentation from search bar
-* [Code Editor](https://github.com/FriendCode/codebox-addon-editor): Code Editor using Ace
-* [GIT](https://github.com/FriendCode/codebox-addon-git): Interface for managing the GIT repository
-* [Terminal](https://github.com/FriendCode/codebox-addon-terminal): Full terminal
-
+* [Configuration with environment variables](https://github.com/FriendCode/codebox/blob/master/docs/env.md)
+* [Managing addons](https://github.com/FriendCode/codebox/blob/master/docs/addons.md)
