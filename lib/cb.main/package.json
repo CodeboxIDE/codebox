@@ -10,8 +10,7 @@
             "logger",
             "server",
             "workspace",
-            "watch",
-            "addons"
+            "watch"
         ]
     }
 }
