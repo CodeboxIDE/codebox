@@ -29,15 +29,3 @@ $ codebox run -d ./myworkspace
 
 * [Configuration with environment variables](https://github.com/FriendCode/codebox/blob/master/docs/env.md)
 * [Managing addons](https://github.com/FriendCode/codebox/blob/master/docs/addons.md)
-
-## What is it looks like?
-
-![Image](../master/docs/assets/realtime_722.png?raw=true)
-
-![Image](../master/docs/assets/addons_722.png?raw=true)
-
-![Image](../master/docs/assets/search_722.png?raw=true)
-
-![Image](../master/docs/assets/terminal_722.png?raw=true)
-
-![Image](../master/docs/assets/settings_722.png?raw=true)
