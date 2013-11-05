@@ -15,14 +15,14 @@ WORKSPACE_ADDONS_DEFAULTS=https://github.com/FriendCode/codebox-addon-manager.gi
 Codebox need to directories for managing addons:
 
 * A directory for storing defaults addons: WORKSPACE_ADDONS_DEFAULTS_DIR
-* A diretcory for storing all the installed addons: WORKSPACE_ADDONS_DIR
+* A directory for storing all the installed addons: WORKSPACE_ADDONS_DIR
 
 By default, Codebox will store these directories into the 'addons' directory of the repository.
 Caution: If the directories doesn't exists, Codebox will recursively create them.
 
 ### Forcing last version of defaults addons
 
-When starting Codebox will check if the defaults addons diretcory is empty, if yes it will install from the git repositories the last versions.
+When starting Codebox will check if the defaults addons directory is empty, if yes it will install from the git repositories the last versions.
 
 ### Publish an addon
 

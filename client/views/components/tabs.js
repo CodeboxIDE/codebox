@@ -98,7 +98,6 @@ define([
             TabPanelView.__super__.initialize.apply(this, arguments);
             this.tabid = this.options.tabid;
             this.tabs = this.parent;
-            //this.setKeyboardShortcuts(this.navigations);
             return this;
         },
 
@@ -344,6 +343,7 @@ define([
                 active = (tab.tabid == this.activeTab);
                 tab.tab.$el.toggleClass("active", active);
                 tab.view.$el.toggleClass("active", active);
+                tab.view.trigger("tab:state", active);
             }, this);
 
             this.checkTabs();
