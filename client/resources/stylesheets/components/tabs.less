@@ -1,13 +1,12 @@
 .component-tab {
     position: relative;
     height:30px;
-    padding-left: 18px;
-    padding-right: 18px;
-    margin-top: 6px;
-    margin-right: -14px;
     float: left;
-    z-index: 1;
+    z-index: 0;
     cursor: default;
+    margin: 6px 10px 0px;
+    box-shadow: 0px 30px 50px #000;
+
 
     .inner {
         .box-sizing(border-box);
@@ -23,14 +22,14 @@
             padding: 0px;
             line-height: 13px;
             border-radius: 30px;
-            background: rgba(0,0,0,0.05);
+            background: transparent;
             opacity: 1;
             font-size: 14px;
             text-shadow: none;
             width: 14px;
             height: 14px;
             text-align: center;
-            margin-top: 4px;
+            margin-top: 3px;
             color: rgba(0,0,0,0.5);
 
             &:hover {
@@ -49,8 +48,8 @@
         border-top:30px solid transparent;
         border-right:18px solid @tabColor;
         position:absolute;
-        left:0;
-        top:0;
+        left: -18px;
+        top: 0;
     }
     &:after{
         width:0;
@@ -60,8 +59,8 @@
         border-top:30px solid transparent;
         border-left:18px solid @tabColor;
         position:absolute;
-        right:0;
-        top:0;
+        right: -18px;
+        top: 0;
     }
     &:hover {
         .inner {
@@ -151,15 +150,17 @@
             left: 0px;
             background: @tabBackground;
             padding-left: 5px;
+            overflow: hidden;
         }
 
         .tabs-content {
             position: absolute;
-            top: 36px;
+            top: 35px;
             bottom: 0px;
             right: 0px;
             left: 0px;
             background: @tabActiveColor;
+            border-top: 1px solid #bbb;
         }
     }
 }
