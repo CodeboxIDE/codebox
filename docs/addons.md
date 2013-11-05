@@ -23,3 +23,7 @@ Caution: If the directories doesn't exists, Codebox will recursively create them
 ### Forcing last version of defaults addons
 
 When starting Codebox will check if the defaults addons diretcory is empty, if yes it will install from the git repositories the last versions.
+
+### Publish an addon
+
+You can publish an addon for the addon manager by doing a Pull-Request on https://github.com/FriendCode/codebox-addons/blob/master/index.json.
