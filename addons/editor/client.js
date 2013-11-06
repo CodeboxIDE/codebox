@@ -15,7 +15,6 @@ define([
     // Add settings
     settings.add({
         'namespace': "editor",
-        'section': "main",
         'title': "Editor",
         'defaults': {
             'theme': config.editor.default_theme,

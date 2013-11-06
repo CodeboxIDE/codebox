@@ -7,7 +7,6 @@ define([
         template: "settings/base.html",
         defaults: {
             'namespace': "",
-            'section': "",
             'title': "",
             'settings': {}
         },
@@ -21,7 +20,6 @@ define([
 
             this.namespace = this.options.namespace;
             this.title = this.options.title || this.namespace;
-            this.section = this.options.section;
             this.fields = this.options.fields || {};
             this.defaults = this.options.defaults || {};
         },

@@ -7,7 +7,6 @@ define(["views/dialog"], function(InstallerDialog) {
     // Add settings
     settings.add({
         'namespace': "manager",
-        'section': "main",
         'title': "Addons",
         'defaults': {
             'registry': "https://api.codebox.io"

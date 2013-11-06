@@ -12,7 +12,7 @@ define([
     var logging = hr.Logger.addNamespace("settings");
 
     var settings = {
-        sections: {'main': {}},
+        sections: {},
 
         /*
          *  Define a new settings tab
@@ -27,12 +27,10 @@ define([
 
             var tab = new Tab(options);
 
-            var section = tab.section || "main";
             var namespace = tab.namespace || "main";
 
-            if (!settings.sections[section]) settings.sections[section] = {};
-            logging.log("add settings tab", section, namespace);
-            settings.sections[section][namespace] = tab;
+            logging.log("add settings tab", namespace);
+            settings.sections[namespace] = tab;
 
             var defaults = options.defaults || {};
             var currentValues = user.get("settings."+namespace, {});
@@ -45,9 +43,7 @@ define([
          *  For all tabs
          */
         each: function(callback, context) {
-            _.each(settings.sections, function(sections) {
-                _.each(sections, callback, context);
-            });
+            _.each(settings.sections, callback, context);
         },
 
         /*

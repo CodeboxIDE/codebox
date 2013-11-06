@@ -1,6 +1,7 @@
 define([
     "less!stylesheets/dialog.less"
 ], function() {
+    var _ = require("underscore");
     var DialogView = require("views/dialogs/base");
     var settings = require("utils/settings");
 
@@ -16,7 +17,9 @@ define([
         // Template settings
         templateContext: function() {
             return {
-                'settings': settings
+                'settings': settings,
+                'tabs': _.pairs(settings.sections),
+                'limit': 3
             }
         },
 
