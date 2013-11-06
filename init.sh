@@ -89,7 +89,7 @@ function start_server () {
     echo "Calling start_server ..."
 
     cd ${WORKSPACE}
-    exec node ${SERVER_SCRIPT}
+    exec ${SERVER_SCRIPT} run -d .
 }
 
 # Do all setups
