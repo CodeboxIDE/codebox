@@ -1,6 +1,7 @@
 define([
+    'q',
     'hr/hr'
-], function (hr) {
+], function (Q, hr) {
     var Api = hr.Class.extend({
         /*
          *  Execute a request
@@ -20,7 +21,6 @@ define([
          *  @args : args for the request
          */
         rpc: function(method, args, options) {
-            var d = new hr.Deferred();
             options = _.defaults({}, options || {}, {
                 dataType: "json",
                 options: {
@@ -30,14 +30,10 @@ define([
                 }
             });
 
-            this.request("post", "rpc"+method, JSON.stringify(args), options).then(function(data) {
-                if (!data.ok) { d.reject(data.error); }
-                else { d.resolve(data.data); }
-            }, function() {
-                d.reject();
+            return this.request("post", "rpc"+method, JSON.stringify(args), options).then(function(data) {
+                if (!data.ok) return Q.reject(new Error(data.error));
+                return Q(data.data);
             });
-
-            return d;
         },
     });
 

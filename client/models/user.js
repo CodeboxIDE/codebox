@@ -1,5 +1,5 @@
 define([
-    "Underscore",
+    "underscore",
     "hr/hr",
     "utils/gravatar",
     "core/api"

@@ -1,5 +1,5 @@
 define([
-    "Underscore",
+    "underscore",
     "hr/hr",
     "core/user",
     "core/box",
@@ -22,15 +22,14 @@ define([
         // Start session
         start: function(email, token) {
             var that = this;
-            var d = new hr.Deferred();
 
             return box.auth({
                 'email': email,
                 'token': token
             }, user).then(function() {
-                // Load addons
-                addons.getInstalled();
-
+                // Get installed addons
+                return addons.getInstalled();
+            }).then(function() {
                 // Return box status
                 return box.status();
             });

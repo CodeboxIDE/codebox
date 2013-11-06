@@ -1,9 +1,10 @@
 define([
-    "Underscore",
+    "q",
+    "underscore",
     "hr/hr",
     "core/api",
     "models/addon"
-], function(_, hr, api, Addon) {
+], function(Q, _, hr, api, Addon) {
     var Addons = hr.Collection.extend({
         model: Addon,
         defaults: _.defaults({
@@ -17,7 +18,7 @@ define([
             
             options = _.defaults(options || {}, {});
 
-            return api.rpc("/addons/list").done(function(data) {
+            return api.rpc("/addons/list").then(function(data) {
                 that.add(_.values(data));
             });
         },
@@ -44,7 +45,7 @@ define([
 
             return api.rpc("/addons/install", {
                 'git': git
-            }).done(function(data) {
+            }).then(function(data) {
                 that.add(data);
             });
         },
@@ -53,10 +54,17 @@ define([
 
             return api.rpc("/addons/uninstall", {
                 'name': name
-            }).done(function() {
+            }).then(function() {
                 that.reset([]);
                 that.getInstalled();
             });
+        },
+
+        // Load all this addons collection
+        loadAll: function() {
+            return Q.allSettled(this.map(function(addon) {
+                return addon.load();
+            }));
         }
     });
 

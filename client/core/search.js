@@ -1,7 +1,7 @@
 define([
     'hr/hr',
     'jQuery',
-    'Underscore',
+    'underscore',
     'core/user',
     'utils/settings'
 ],function(hr, $, _, user, settings) {

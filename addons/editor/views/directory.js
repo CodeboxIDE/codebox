@@ -2,7 +2,7 @@ define([
     "views/base",
     "less!stylesheets/directory.less"
 ], function(FilesBaseView) {
-    var _ = require("Underscore");
+    var _ = require("underscore");
     var $ = require("jQuery");
     var hr = require("hr/hr");
     var Uploader = require("utils/uploader");

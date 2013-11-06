@@ -46,7 +46,7 @@ define([
         listenEvents: function() {
             var that = this;
 
-            this.socket("events").done(function(socket) {
+            this.socket("events").then(function(socket) {
                 socket.on('event', function(data) {
                     var eventName = "box:"+data.event.replace(/\./g, ":");
                     that.trigger(eventName, data);
@@ -90,18 +90,14 @@ define([
          *  @forceCreate : force creation of a new socket
          */
         socket: function(namespace, forceCreate) {
-            var d = new hr.Deferred();
             if (this.baseUrl == null) {
-                d.reject();
-            } else {
-                var socket = io.connect([window.location.protocol, '//', window.location.host].join('')+"/"+namespace, {
-                    'force new connection': forceCreate
-                });
-
-                d.resolve(socket);
+                return Q.reject(new Error("Need a 'baseUrl'"));
             }
+            var socket = io.connect([window.location.protocol, '//', window.location.host].join('')+"/"+namespace, {
+                'force new connection': forceCreate
+            });
 
-            return d;
+            return Q(socket);
         },
 
         /*
@@ -112,8 +108,9 @@ define([
 
             this.user = user || new User();
 
-            return api.rpc("/auth/join", authInfo).done(function(info) {
+            return api.rpc("/auth/join", authInfo).then(function(info) {
                 that.user.set(info);
+                return Q(info);
             });
         },
 
@@ -122,8 +119,9 @@ define([
          */
         status: function() {
             var that = this;
-            return api.rpc("/box/status").done(function(data) {
+            return api.rpc("/box/status").then(function(data) {
                 that.set(data);
+                return Q(data);
             });
         },
 

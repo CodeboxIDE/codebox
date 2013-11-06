@@ -1,5 +1,5 @@
 define([
-    "Underscore",
+    "underscore",
     "hr/hr",
     "models/command"
 ], function(_, hr, Command) {

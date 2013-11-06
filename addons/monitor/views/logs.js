@@ -2,7 +2,7 @@ define([
     "collections/logs",
     "less!stylesheets/logs.less"
 ], function(Logs) {
-    var _ = require("Underscore");
+    var _ = require("underscore");
     var $ = require("jQuery");
     var hr = require("hr/hr");
     var Tab = require("views/tabs/base")

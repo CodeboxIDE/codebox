@@ -5,10 +5,5 @@ define([
     // Collection for all installed addons
     var addons = new Addons();
 
-    // Load new addons
-    addons.on("add", function(addon) {
-        addon.load();
-    });
-
     return addons;
 });

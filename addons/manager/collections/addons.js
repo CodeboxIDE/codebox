@@ -3,8 +3,9 @@ define([
     "utils/base64",
     "models/addon"
 ], function(config, base64, Addon) {
+    var Q = require("q");
     var hr = require("hr/hr");
-    var _ = require("Underscore");
+    var _ = require("underscore");
     var addons = require("core/addons");
 
     var Addons = hr.Collection.extend({
@@ -22,13 +23,15 @@ define([
 
             this._index = hr.Cache.get("addons", "index");
             if (this._index) {
-                return (new hr.Deferred()).resolve();
+                return Q(this._index);
             }
 
             return hr.Requests.getJSON(config.indexUrl).then(function(index) {
                 window.toDecode = index.content;
                 that._index = JSON.parse(base64.decode(index.content));
                 hr.Cache.set("addons", "index", that._index, 60*60);
+
+                return Q(that._index);
             });
         },
         

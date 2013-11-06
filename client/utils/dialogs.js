@@ -1,15 +1,16 @@
 define([
+    "q",
     "jQuery",
     "hr/hr",
     "views/dialogs/base"
-], function ($, hr, DialogView) {
+], function (Q, $, hr, DialogView) {
     var Dialogs = {
         /*
          *  Open a dialog with some configs
          *  @options : option for the dialog
          */
         open: function(cls, options) {
-            var d = new hr.Deferred();
+            var d = Q.defer();
 
             cls = cls || DialogView;
             var diag = new cls(options);
@@ -23,7 +24,7 @@ define([
             });
             diag.render();
 
-            return d;
+            return d.promise;
         },
 
         /*

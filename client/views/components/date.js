@@ -1,5 +1,5 @@
 define([
-    "Underscore",
+    "underscore",
     "hr/hr",
     "moment"
 ], function(_, hr, moment) {

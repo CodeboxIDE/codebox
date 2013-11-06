@@ -1,5 +1,5 @@
 define([
-    "Underscore",
+    "underscore",
     "hr/hr",
     "core/api",
     "models/user"

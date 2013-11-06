@@ -1,5 +1,6 @@
 define([
-    "Underscore",
+    "q",
+    "underscore",
     "jQuery",
     "hr/hr",
     "core/api",
@@ -8,7 +9,7 @@ define([
     "utils/themes",
     "utils/tabs",
     "utils/settings"
-], function(_, $, hr, api) {
+], function(Q, _, $, hr, api) {
     var logging = hr.Logger.addNamespace("addon");
 
     var Addon = hr.Model.extend({
@@ -30,6 +31,8 @@ define([
 
         // Load the addon
         load: function() {
+            var d = Q.defer();
+
             logging.log("Load", this.get("name"));
             var context = "addon."+this.get("name");
 
@@ -56,7 +59,11 @@ define([
             });
 
             // Load main module
-            addonRequire([this.get("client.main", "client")]);
+            addonRequire([this.get("client.main", "client")], function() {
+                d.resolve();
+            });
+
+            return d.promise;
         }
     });
 

@@ -1,5 +1,5 @@
 define([
-    "Underscore",
+    "underscore",
     "jQuery",
     "hr/hr",
     "models/file",

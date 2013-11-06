@@ -1,6 +1,7 @@
 define([
-    'jQuery'
-], function ($) {
+    'jQuery',
+    'hr/hr'
+], function ($, hr) {
 
     /*
      *  This module define a unify way to manage themes

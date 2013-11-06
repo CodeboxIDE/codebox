@@ -1,5 +1,5 @@
 define([
-    'Underscore'
+    'underscore'
 ], function (_) {
     var Languages = {
         /* Initialize */

@@ -2,8 +2,9 @@ define([
     'hr/hr',
     'utils/url',
     'core/box',
-    'core/session'
-], function (hr, url, box, session) {
+    'core/session',
+    'core/addons'
+], function (hr, url, box, session, addons) {
 
     // Define base application
     var Application = hr.Application.extend({
@@ -38,6 +39,23 @@ define([
                 'token': queries.token || hr.Storage.get("token"),
                 'isAuth': this.isAuth
             };
+        },
+
+        // Finish rendering
+        finish: function() {
+            var that = this;
+
+            if (this.isAuth) {
+                addons.loadAll().then(function() {
+                    that.$(".codebox-loading-alert").remove();
+                    
+                    // Load new addons
+                    addons.on("add", function(addon) {
+                        addon.load();
+                    });
+                });
+            }
+            return Application.__super__.finish.apply(this, arguments);
         },
 
         // Login to box

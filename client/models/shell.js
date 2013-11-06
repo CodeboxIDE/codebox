@@ -1,5 +1,5 @@
 define([
-    "Underscore",
+    "underscore",
     "hr/hr",
     "vendors/socket.io-stream",
 ], function(_, hr, ss) {

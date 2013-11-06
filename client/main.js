@@ -1,5 +1,5 @@
 require([
-    "Underscore",
+    "underscore",
     "hr/hr",
     "hr/args",
     "core/app",

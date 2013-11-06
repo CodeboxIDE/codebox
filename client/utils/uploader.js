@@ -1,7 +1,7 @@
 define([
     'hr/hr',
     'jQuery',
-    'Underscore'
+    'underscore'
 ],function(hr, $, _) {
     var logging = hr.Logger.addNamespace("uploader");
 

@@ -3,7 +3,7 @@ define([
     'less!stylesheets/addons'
 ], function(Addons) {
     var hr = require("hr/hr");
-    var _ = require("Underscore");
+    var _ = require("underscore");
 
     var AddonItem = hr.List.Item.extend({
         className: "addon-item",

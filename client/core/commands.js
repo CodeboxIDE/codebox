@@ -1,5 +1,5 @@
 define([
-    'Underscore',
+    'underscore',
     'hr/hr',
     'collections/commands',
     'core/search'

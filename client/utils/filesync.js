@@ -186,8 +186,7 @@ define([
          *  Update current file
          */
         updateFile: function(options) {
-            var socket, self;
-            self = this;
+            var self = this;
 
             options = _.defaults({}, options || {}, {
                 cache: true
@@ -199,70 +198,71 @@ define([
             // Read file
             this.file.download({
                 cache: options.cache
-            }).done(_.bind(function(content) {
+            }).then(_.bind(function(content) {
                 this.setContent(content);
             }, this));
 
             // Connect to file
             if (this.sync) {
                 this.setSyncState(false);
-                socket = this.socket();
-                logging.log("creating socket");
-                socket.on('connect', function() {
-                    logging.log("socket connect");
-                });
-                socket.on('connect_failed', function() {
-                    logging.warn("socket connect failed");
-                });
-                socket.on('disconnect', function() {
-                    logging.log("socket disconnect");
-                    self.setSyncState(false);
-                });
-                socket.on('connecting', function() {
-                    logging.log("socket connecting ...");
-                });
-                socket.on('message', function(data) {
-                    logging.log("socket editor packet ", data);
-                    self.ping = true;
-                    if (data.action == null || data.path == null || self.file.path() != data.path) {
-                        return;
-                    }
+                this.socket().then(function(socket) {
+                    logging.log("creating socket");
+                    socket.on('connect', function() {
+                        logging.log("socket connect");
+                    });
+                    socket.on('connect_failed', function() {
+                        logging.warn("socket connect failed");
+                    });
+                    socket.on('disconnect', function() {
+                        logging.log("socket disconnect");
+                        self.setSyncState(false);
+                    });
+                    socket.on('connecting', function() {
+                        logging.log("socket connecting ...");
+                    });
+                    socket.on('message', function(data) {
+                        logging.log("socket editor packet ", data);
+                        self.ping = true;
+                        if (data.action == null || data.path == null || self.file.path() != data.path) {
+                            return;
+                        }
 
-                    switch (data.action) {
-                        case "cursor":
-                            if (data.from != user.get("userId")) {
-                                self.cursorMove(data.from, data.cursor.x, data.cursor.y);
-                            }
-                            break;
-                        case "select":
-                            if (data.from != user.get("userId")) {
-                                self.selectionMove(data.from, data.start.x, data.start.y, data.end.x, data.end.y);
-                            }
-                            break;
-                        case "participants":
-                            if (data.participants != null) {
-                                self.setParticipants(data.participants)
-                            }
-                            break;
-                        case "sync":
-                            if (data.content != null) {
-                                self.synced = true;
-                                self.setContent(data.content);
-                            }
-                            if (data.participants != null) {
-                                self.setParticipants(data.participants)
-                            }
-                            break;
-                        case "patch":
-                            if (data.patch != null) {
-                                self.patchContent(data);
-                            }
-                            break;
-                    }
-                    self.setSyncState(true);
-                });
+                        switch (data.action) {
+                            case "cursor":
+                                if (data.from != user.get("userId")) {
+                                    self.cursorMove(data.from, data.cursor.x, data.cursor.y);
+                                }
+                                break;
+                            case "select":
+                                if (data.from != user.get("userId")) {
+                                    self.selectionMove(data.from, data.start.x, data.start.y, data.end.x, data.end.y);
+                                }
+                                break;
+                            case "participants":
+                                if (data.participants != null) {
+                                    self.setParticipants(data.participants)
+                                }
+                                break;
+                            case "sync":
+                                if (data.content != null) {
+                                    self.synced = true;
+                                    self.setContent(data.content);
+                                }
+                                if (data.participants != null) {
+                                    self.setParticipants(data.participants)
+                                }
+                                break;
+                            case "patch":
+                                if (data.patch != null) {
+                                    self.patchContent(data);
+                                }
+                                break;
+                        }
+                        self.setSyncState(true);
+                    });
 
-                this.sendSync();
+                    self.sendSync();
+                });
             }
         },
 
@@ -290,13 +290,9 @@ define([
         /* Socket for the connexion */
         socket: function() {
             if (this.file != null) {
-                var socket = null;
-                this.file.codebox.socket("filesync").done(_.bind(function(s) {
-                    socket = s;
-                }, this));
-                return socket;
+                return this.file.codebox.socket("filesync");
             } else {
-                return null;
+                throw new Error("need 'file' to creat sync socket");
             }
         },
 
@@ -520,10 +516,9 @@ define([
                     'path': this.file.path()
                 });
 
-                var socket = this.socket();
-                if (socket != null) {
+                this.socket().then(function(socket) {
                     socket.json.send(data);
-                }
+                })
             } else {
                 this.setSyncState(false);
             }

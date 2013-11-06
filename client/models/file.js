@@ -1,5 +1,6 @@
 define([
-    "Underscore",
+    "q",
+    "underscore",
     "hr/hr",
     "core/api",
     "core/commands",
@@ -7,7 +8,7 @@ define([
     "utils/languages",
     "utils/filesync",
     "utils/uploader"
-], function(_, hr, api, commands, Url, Languages, FileSync, Uploader) {
+], function(Q, _, hr, api, commands, Url, Languages, FileSync, Uploader) {
     var logging = hr.Logger.addNamespace("files");
 
     if (typeof String.prototype.endsWith !== 'function') {
@@ -248,7 +249,6 @@ define([
          */
         getByPath: function(path) {
             var that = this;
-            var d = new hr.Deferred();
 
             path = this.path(path);
             if (path == "/") {
@@ -260,25 +260,22 @@ define([
                     "href": "/vfs/"
                 };
                 this.set(fileData);
-                d.resolve(fileData);
-                return d;
+                return Q(fileData);
             }
 
             var parentPath = this.parentPath(path);
             var filename = this.filename(path);
-            api.request("getJSON", this.vfsUrl(parentPath, true)).then(function(filesData) {
+            return api.request("getJSON", this.vfsUrl(parentPath, true)).then(function(filesData) {
                 var fileData = _.find(filesData, function(file) {
                     return file.name == filename;
                 });
                 if (fileData != null) {
                     that.set(fileData);
-                    d.resolve(fileData);
+                    return Q(fileData);
                 } else {
-                    d.reject();
+                    return Q.reject(new Error("Can't find file"));
                 }
-            }, function() { d.reject(); });
-
-            return d;
+            });
         },
 
         /*
@@ -313,7 +310,7 @@ define([
          */
         write: function(content) {
             var uploadurl = this.codebox.baseUrl+this.vfsUrl(null);
-            var d = new hr.Deferred();
+            var d = Q.defer();
             var xhr = new XMLHttpRequest(),
                 upload = xhr.upload,
                 start_time = new Date().getTime(),
@@ -344,21 +341,18 @@ define([
                 }
             }
 
-            return d;
+            return d.promise;
         },
 
         /*
          *  Return content
          */
         getCache: function(callback) {
-            var d = new hr.Deferred();
             if (this.content != null) {
-                d.resolve(this.content);
+                return Q(this.content);
             } else {
                 return this.download();
             }
-
-            return d;
         },
 
         /*
@@ -375,7 +369,6 @@ define([
          */
         listdir: function(options) {
             var that = this;
-            var d = new hr.Deferred();
 
             if (!this.isDirectory()) {
                 throw "Try getting files in a non directory"
@@ -386,7 +379,7 @@ define([
                 group: true
             });
 
-            api.request("getJSON", this.vfsUrl(null, true)).then(function(filesData) {
+            return api.request("getJSON", this.vfsUrl(null, true)).then(function(filesData) {
                 var files = _.map(filesData, function(file) {
                     return new File({
                         "codebox": that.codebox
@@ -402,10 +395,8 @@ define([
                     });
                     files = [].concat(groups["directory"] || []).concat(groups["file"] || []);
                 }
-                d.resolve(files);
-            }, function() { d.reject(); });
-
-            return d;
+                return Q(files);
+            });
         },
 
         /*

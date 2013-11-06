@@ -3,7 +3,7 @@ define([
     "views/editor",
     "less!stylesheets/file.less"
 ], function(FilesBaseView, EditorView) {
-    var _ = require("Underscore");
+    var _ = require("underscore");
     var $ = require("jQuery");
     var hr = require("hr/hr");
     var Dialogs = require("utils/dialogs");

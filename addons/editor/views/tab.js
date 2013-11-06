@@ -3,7 +3,7 @@ define([
     "views/file",
     "less!stylesheets/tab.less"
 ], function(FilesDirectoryView, FileEditorView) {
-    var _ = require("Underscore");
+    var _ = require("underscore");
     var $ = require("jQuery");
     var hr = require("hr/hr");
     var Tab = require("views/tabs/base")
@@ -64,7 +64,8 @@ define([
         /* Change the file */
         load: function(path) {
             var that = this;
-            this.file.getByPath(path).fail(function() {
+            this.file.getByPath(path).then(null, function() {
+                console.log(arguments);
                 that.closeTab();
             })
             return this;

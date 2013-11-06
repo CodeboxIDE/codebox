@@ -1,10 +1,11 @@
 define([
+    'q',
     'hr/hr',
     'models/box',
     'core/search',
     'core/commands',
     'core/collaborators'
-], function (hr, Codebox, search, commands, collaborators) {
+], function (Q, hr, Codebox, search, commands, collaborators) {
     // Current box
     var box = new Codebox();
 
@@ -24,9 +25,8 @@ define([
         'id': "files",
         'title': "Files"
     }, function(query) {
-        var d = new hr.Deferred();
-        box.searchFiles(query).done(function(data) {
-            d.resolve(_.map(data.files, _.bind(function(path) {
+        return box.searchFiles(query).then(function(data) {
+            return Q(_.map(data.files, _.bind(function(path) {
                 var filename = _.last(path.split("/"));
                 if (filename.length == 0) filename = path;
                 return {
@@ -39,7 +39,6 @@ define([
                 };
             }, this)));
         });
-        return d;
     });
 
     return box;

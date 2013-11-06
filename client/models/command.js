@@ -1,5 +1,5 @@
 define([
-    "Underscore",
+    "underscore",
     "hr/hr"
 ], function(_, hr) {
     var logging = hr.Logger.addNamespace("command");

@@ -1,5 +1,5 @@
 define([], function() {
-    var _ = require("Underscore");
+    var _ = require("underscore");
     var $ = require("jQuery");
     var hr = require("hr/hr");
     var Tab = require("views/tabs/base");
