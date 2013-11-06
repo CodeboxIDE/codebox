@@ -23,6 +23,10 @@ function setup_workspace () {
 function setup_ssh () {
     echo "Calling setup_ssh ..."
 
+    if [ ! $RSA_PUBLIC ] || [ ! $RSA_PRIVATE ]; then
+        echo "Skipping setup_ssh, no private and public keys to setup ..."
+    fi
+
     # Ensure directory
     mkdir -p ${SSH_DIR}
 
@@ -34,6 +38,12 @@ function setup_ssh () {
 
 function setup_netrc () {
     echo "Calling setup_netrc ..."
+
+    # No valid things to setup
+    if [ ! $GIT_HOST ] || [ ! $GIT_USER ] || [ ! $GIT_PASSWD ]; then
+        echo "Skipping setup_netrc ..."
+        return
+    fi
 
     local filename="${HOME}/.netrc"
 
@@ -57,6 +67,14 @@ function setup_git () {
 
     # Skip if git directory exists
     if [ -d "$WORKSPACE.git" ]; then
+        "Skipping setup_git because WORKSPACE is already setup ..."
+        return
+    fi
+
+    if [ ! $GIT_URL ]; then
+        echo "Skipping setup_git because no GIT_URL given ..."
+        echo "Init empty git repository in workspace ..."
+        git init ${WORKSPACE}
         return
     fi
 
