@@ -8,6 +8,7 @@ function setup(options, imports, register) {
 
 	// Defaults hooks
 	var baseHooks = _.defaults(options.hooks || {}, {
+		// Auth an user
 		'auth': function(data) {
 			if (!data.email
 			|| !data.token) {
@@ -20,12 +21,22 @@ function setup(options, imports, register) {
 				'userId': userId,
 				'name': userId,
 				'token': data.token,
-				'email': data.email
+				'email': data.email,
+				'settings': {}
 			});
 		},
+
+		// Report list of events
 		'events': null,
+
+		// Store and valid user settings
 		'settings': function(data) {
 			return Q(data);
+		},
+
+		// Valid installation of an addon
+		'addon': function(addon) {
+			return Q(true);
 		}
 	});
 

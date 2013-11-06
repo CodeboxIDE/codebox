@@ -13,6 +13,7 @@ function setup(options, imports, register, app) {
     var logger = imports.logger.namespace("addons");
     var server = imports.server;
     var events = imports.events;
+    var hooks = imports.hooks;
 
     // Addons paths
     var defaultsPath = path.resolve(options.defaultsPath);
@@ -111,6 +112,9 @@ function setup(options, imports, register, app) {
             // Copy temp dir to addons dir
             addonDir = path.join(addonsPath, addon.name);
             return Q.nfcall(wrench.copyDirRecursive, tempDir, addonDir, {forceDelete: true});
+        }).then(function() {
+            // Valid installation of addon with a hook
+            return this.hooks.use("addons", addon);
         }).then(function() {
             // Remove temporary dir
             return Q.nfcall(wrench.rmdirRecursive, tempDir, false);

@@ -23,7 +23,10 @@ var start = function(config) {
             'events': process.env.WORKSPACE_HOOK_EVENTS,
 
             // Settings: send user settings to a hook
-            'settings': process.env.WORKSPACE_HOOK_SETTINGS
+            'settings': process.env.WORKSPACE_HOOK_SETTINGS,
+
+            // Valid addons installation with a hook
+            'addons': process.env.WORKSPACE_HOOK_ADDONS
         },
         'webhook': {
             // Token to pass as Authorization header
