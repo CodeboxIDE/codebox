@@ -1,11 +1,10 @@
 define([
-    "config",
-    "utils/base64",
     "models/addon"
-], function(config, base64, Addon) {
+], function(Addon) {
     var Q = require("q");
     var hr = require("hr/hr");
     var _ = require("underscore");
+    var user = require("core/user");
     var addons = require("core/addons");
 
     var Addons = hr.Collection.extend({
@@ -26,10 +25,10 @@ define([
                 return Q(this._index);
             }
 
-            return hr.Requests.getJSON(config.indexUrl).then(function(index) {
-                window.toDecode = index.content;
-                that._index = JSON.parse(base64.decode(index.content));
-                hr.Cache.set("addons", "index", that._index, 60*60);
+            return hr.Requests.getJSON(user.settings("manager").get("registry")+"/api/addons?callback=?").then(function(index) {
+                that._index = index;
+                console.log("addons", index);
+                hr.Cache.set("addons", user.settings("manager").get("registry"), that._index, 60*60);
 
                 return Q(that._index);
             });
@@ -41,7 +40,7 @@ define([
             options = _.defaults({}, options || {}, this.options);
 
             return this.getIndex().then(function(index) {
-                var results = filter(index);
+                var results = filter(index.addons);
 
                 that.add({
                     'list': results.slice(options.startIndex, options.startIndex+options.limit),

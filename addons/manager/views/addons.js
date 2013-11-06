@@ -18,7 +18,7 @@ define([
             if (e) e.preventDefault();
             var btn = this.$(".action-install");
             btn.button('loading');
-            this.model.install().done(_.bind(this.render, this)).always(function() {
+            this.model.install().done(_.bind(this.render, this)).fin(function() {
                 btn.button('reset');
             });
         },
@@ -26,7 +26,7 @@ define([
             if (e) e.preventDefault();
             var btn = this.$(".action-install");
             btn.button('loading');
-            this.model.uninstall().done(_.bind(this.render, this)).always(function() {
+            this.model.uninstall().done(_.bind(this.render, this)).fin(function() {
                 btn.button('reset');
             });
         } 

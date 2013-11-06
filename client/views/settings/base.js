@@ -53,7 +53,7 @@ define([
             if (!this.fields[fieldId]) return;
 
             $btn.button("loading");
-            this.fields[fieldId].trigger(fieldId).always(function() {
+            this.fields[fieldId].trigger(fieldId).fin(function() {
                 $btn.button("reset");
             });
         },

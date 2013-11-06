@@ -40,7 +40,7 @@ define([
                 e.stopPropagation();
             }
 
-            settings.save().always(function() {
+            settings.save().fin(function() {
                 that.close();
             });
         },
