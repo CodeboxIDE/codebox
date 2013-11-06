@@ -25,7 +25,7 @@ define([
                 return Q(this._index);
             }
 
-            return hr.Requests.getJSON(user.settings("manager").get("registry")+"/api/addons?callback=?").then(function(index) {
+            return hr.Requests.getJSON(user.settings("manager").get("registry")+"/api/addons?limit=1000&callback=?").then(function(index) {
                 that._index = index;
                 console.log("addons", index);
                 hr.Cache.set("addons", user.settings("manager").get("registry"), that._index, 60*60);
