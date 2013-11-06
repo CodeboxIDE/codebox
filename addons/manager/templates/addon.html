@@ -1,0 +1,17 @@
+<% if (!model.isDefault()) { %>
+<div class="actions">
+    <% if (!model.isInstalled()) { %>
+    <a href="#" class="btn action-install btn-default" data-loading-text="Installation...">Install</a>
+    <% } else { %>
+    <a href="#" class="btn action-uninstall btn-danger btn-default" data-loading-text="Uninstallation...">Uninstall</a>
+    <% } %>
+</div>
+<% } %>
+<div class="base">
+    <p class="name"><%- model.get("title") %></p>
+    <p class="version"><%- model.get("version") %></p>
+</div>
+<div class="more">
+    <p class="description"><%- model.get("description") %></p>
+    <p class="homepage"><a href="<%- model.get("homepage") %>" target="_blank">More info.</a> - <a href="<%- model.get("author.url") %>" target="_blank"><%- model.get("author.name") %></a></p>
+</div>

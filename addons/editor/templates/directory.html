@@ -1,0 +1,64 @@
+<div class="tab-panel-toolbar files-toolbar btn-toolbar">
+    <div class="btn-group btn-group-sm">
+        <a href="#" class="btn btn-default action-file-create">
+            <i class="fa fa-file"></i> New file
+        </a>
+        <a href="#" class="btn btn-default action-file-mkdir">
+            <i class="fa fa-folder-o"></i> New folder
+        </a>
+    </div>
+    <div class="btn-group btn-group-sm">
+        <a href="#" data-filesselection class="btn btn-default action-file-rename">
+            <i class="fa fa-pencil"></i> Rename
+        </a>
+        <a href="#" data-filesselection class="btn btn-default action-file-delete">
+            <i class="fa fa-trash-o"></i> Delete
+        </a>
+    </div>
+    <div class="btn-group btn-group-sm">
+        <div class="btn-group btn-group-sm">
+            <a href="#" class="btn btn-default action-file-upload-select" data-toggle="dropdown"><i class="fa fa-upload"></i> <span class="percent"></span></a>
+            <ul class="dropdown-menu">
+                <li><a href="#" class="action-file-upload">Upload files</a></li>
+                <li><a href="#" class="action-file-upload-directory">Upload directory</a></li>
+            </ul>
+        </div>
+        <a href="#" data-filesselection class="btn btn-default action-file-download"><i class="fa fa-download"></i></a>
+    </div>
+    <div class="btn-group btn-group-sm pull-right">
+        <a href="#" class="btn btn-default action-file-refresh"><i class="fa fa-refresh"></i></a>
+        <a href="#" class="btn btn-default  action-file-togglehidden"><i class="fa fa-eye"></i></a>
+    </div>
+</div>
+<div class="tab-panel-inner with-panel files-outer">
+    <ul class="files">
+        <% if (!file.isRoot()) { %>
+        <li class="file level-up">
+            <span class="name">
+                <a href="#" class="action-open-parent">..</a>
+            </span>
+        </li>
+        <% } %>
+        <% _.each(files, function(cfile) { %>
+        <li class="file <% if (cfile.isHidden()) { %>file-hidden<% } %>" data-filepath="<%- cfile.path() %>">
+            <span class="select">
+                <input type="checkbox" />
+            </span>
+            <span class="icon">
+                <i class="fa fa-<%- cfile.icon() %>" style="color:<%- cfile.color("#666") %>"></i>
+            </span>
+            <span class="name">
+                <a href="#" class="action-open-file"><%- cfile.get("name") %></a>
+            </span>
+            <span class="mtime"><%= view.component("components.date", {
+                time: cfile.get("mtime")/1000
+            }, "date") %></span>
+            <% if (cfile.isHidden()) { %>
+            <span class="label label-warning">hidden</span>
+            <% } %>
+        </li>
+        <% }); %>
+    </ul>
+</div>
+<input type="file" class="uploader hidden" multiple />
+<input type="file" class="uploader-directory hidden" multiple webkitdirectory directory />

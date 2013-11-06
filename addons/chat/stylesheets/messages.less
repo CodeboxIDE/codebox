@@ -1,0 +1,53 @@
+.messages-list {
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+
+    .message-item {
+        margin: 8px;
+
+        .message-body {
+            min-width: 120px;
+            max-width: 210px;
+            background: #fff;
+            padding: 6px 8px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            float: left;
+        }
+
+        .message-from {
+            float: left;
+            width: 32px;
+            height: 32px;
+            position: relative;
+            background: #fff;
+
+            &::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 0;
+                height: 0;
+                border: 5px solid #f1f1f1;
+                border-left-color: transparent;
+                border-bottom-color: transparent;
+            }
+        }
+
+        &.self {
+            .message-from {
+                float: right;
+
+                &::after {
+                    border-right-color: transparent;
+                    border-top-color: transparent;
+                }
+            }
+
+            .message-body {
+                float: right;
+            }
+        }
+    }
+}

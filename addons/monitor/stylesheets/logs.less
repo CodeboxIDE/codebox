@@ -1,0 +1,42 @@
+.monitor-logs-list {
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+
+    .log-item {
+        position: relative;
+        span {
+            padding: 4px 8px;
+            display: block;
+            position: absolute;
+            top: 0px;
+            bottom: 0px;
+
+            &.log-section {
+                background: #eee;
+                left: 0px;
+                width: 100px;
+                text-align: center;
+            }
+
+            &.log-type {
+                color: #fff;
+                left: 100px;
+                width: 50px;
+                text-align: center;
+
+                &.type-error {
+                    background: #c0392b;
+                }
+                &.type-log {
+                    background: #3498db;
+                }
+            }
+
+            &.log-content {
+                position: static;
+                margin-left: 150px;
+            }
+        }
+    }
+}

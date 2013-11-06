@@ -1,0 +1,16 @@
+{
+    "name": "settings",
+    "version": "0.1.2",
+    "title": "Settings",
+    "description": "Configuration interface for your workspace.",
+    "homepage": "https://github.com/FriendCode/codebox-addon-settings",
+    "license": "Apache",
+    "author": {
+        "name": "Samy Pessé",
+        "email": "samypesse@gmaiL.com",
+        "url": "http://samypesse.fr"
+    },
+    "client": {
+        "main": "client"
+    }
+}

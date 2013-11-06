@@ -1,0 +1,16 @@
+{
+    "name": "manager",
+    "version": "0.1.3",
+    "title": "Add-ons",
+    "description": "Add-ons manager",
+    "homepage": "https://codenow.io",
+    "license": "Apache",
+    "author": {
+        "name": "Samy Pessé",
+        "email": "samypesse@gmaiL.com",
+        "url": "http://samypesse.fr"
+    },
+    "client": {
+        "main": "client"
+    }
+}

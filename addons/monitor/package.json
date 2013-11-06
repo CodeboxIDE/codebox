@@ -1,0 +1,16 @@
+{
+    "name": "monitor",
+    "version": "0.0.3",
+    "title": "Monitor",
+    "description": "Monitoring console for your workspace.",
+    "homepage": "https://github.com/FriendCode/codebox-addon-monitor",
+    "license": "Apache",
+    "author": {
+        "name": "Samy Pessé",
+        "email": "samypesse@gmaiL.com",
+        "url": "http://samypesse.fr"
+    },
+    "client": {
+        "main": "client"
+    }
+}
