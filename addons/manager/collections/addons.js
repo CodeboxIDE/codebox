@@ -38,29 +38,18 @@ define([
         // Addon from indexes
         getFromIndex: function(options, filter) {
             var that = this;
-            var d = new hr.Deferred();
-            
             options = _.defaults({}, options || {}, this.options);
 
-            var resolveWithIndex = function() {
-                var results = filter(that._index);
+            return this.getIndex().then(function(index) {
+                var results = filter(index);
 
                 that.add({
                     'list': results.slice(options.startIndex, options.startIndex+options.limit),
                     'n': _.size(results)
                 });
-                d.resolve();
-            }
 
-            if (this._index) {
-                resolveWithIndex();
-            } else {
-                this.getIndex().then(resolveWithIndex, function() {
-                    d.reject();
-                });
-            }
-
-            return d;
+                return Q(results);
+            });
         },
 
         // Get index
