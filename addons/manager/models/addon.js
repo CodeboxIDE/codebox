@@ -5,10 +5,8 @@ define(function() {
     var Addon = hr.Model.extend({
         defaults: {
             'name': "",
-            'title': "",
-            'description': "",
-            'version': "0.0.1",
-            'author': "",
+            'git': "",
+            'package': {},
         },
 
         isInstalled: function() {

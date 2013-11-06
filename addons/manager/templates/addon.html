@@ -8,10 +8,10 @@
 </div>
 <% } %>
 <div class="base">
-    <p class="name"><%- model.get("title") %></p>
-    <p class="version"><%- model.get("version") %></p>
+    <p class="name"><%- model.get("package.title") %></p>
+    <p class="version"><%- model.get("package.version") %></p>
 </div>
 <div class="more">
-    <p class="description"><%- model.get("description") %></p>
-    <p class="homepage"><a href="<%- model.get("homepage") %>" target="_blank">More info.</a> - <a href="<%- model.get("author.url") %>" target="_blank"><%- model.get("author.name") %></a></p>
+    <p class="description"><%- model.get("package.description") %></p>
+    <p class="homepage"><a href="<%- model.get("package.homepage") %>" target="_blank">More info.</a> - <a href="<%- model.get("package.author.url") %>" target="_blank"><%- model.get("package.author.name") %></a></p>
 </div>

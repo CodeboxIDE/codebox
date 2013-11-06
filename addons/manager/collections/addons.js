@@ -73,9 +73,9 @@ define([
                 return _.filter(index, function(addon) {
                     var text = [
                         addon.name,
-                        addon.description,
-                        addon.author,
-                        addon.title
+                        addon["package"].description,
+                        addon["package"].author,
+                        addon["package"].title
                     ].join(" ").toLowerCase();
                     return text.search(query) >= 0;
                 });
