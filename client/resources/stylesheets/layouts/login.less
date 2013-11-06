@@ -7,7 +7,7 @@
 	left: 0px;
 	right: 0px;
 	bottom: 0px;
-	background: @codeboxActiveColor;
+	background: #eef0f2;
 
 	.login-box {
 		position: absolute;
@@ -18,26 +18,26 @@
 		margin-left: -(@boxWidth/2);
 		margin-top: -(@boxHeight/2);
 
+		.form-control {
+			border-color: #cbcfd1;
+			box-shadow: none;
+		}
+
 		.header {
-			font-size: 75px;
+			font-size: 40px;
 			line-height: 150px;
-			color: #fff;
-			opacity: 0.2;
+			color: #cbcfd1;
 			text-align: center;
 
 			.fa-stack {
 				width: 2.8em;
-
-				.fa-inverse {
-					color: #111;
-				}
 			}
 		}
 
 		.inner {
 			padding: 8px;
 			border-radius: 6px;
-			border: 1px solid #fff;
+			border: 2px solid #cbcfd1;
 			background: #fafafa;
 		}
 	}
