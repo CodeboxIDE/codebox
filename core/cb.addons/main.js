@@ -59,19 +59,25 @@ function setup(options, imports, register, app) {
         });
     };
 
+    // Initialize a node addon
+    // Caution: be sure it's a node addon
+    var initNodeAddon = function(addon) {
+        var addonPath = path.resolve(addonsPath + '/' + addon + '/');
+        logger.log("addon", addon, "is a node addon:", addonPath);
+        return app.load([
+            {
+                packagePath: addonPath
+            }
+        ]);
+    }
+
     // Initialize node addons
     var initNodeAddons = function() {
         logger.log("Load node addons");
         return loadAddonsInfos().then(function(addons) {
             return Q.all(_.map(addons, function(addon) {
                 if (!addon.main) return;
-                var addonPath = path.resolve(addonsPath + '/' + addon.name + '/');
-                logger.log("addon", addon.name, "is a node addon:", addonPath);
-                return app.load([
-                    {
-                        packagePath: addonPath
-                    }
-                ]);
+                return initNodeAddon(addon.name);
             }));
         });  
     };
@@ -121,11 +127,16 @@ function setup(options, imports, register, app) {
             // Remove temporary dir
             return Q.nfcall(wrench.rmdirRecursive, tempDir, false);
         }).then(function() {
+            // Install node dependencies
             return installDependencies(addon.name);
+        }).then(function() {
+            // If node addon them initialize it
+            if (!addon.main) return;
+            return initNodeAddon(addon.name);
         }).then(function(stdout, stderr) {
             // Reload addons
             if (!options.reload) {
-                return Q({});
+                return;
             }
             return loadAddonsInfos();
         }).then(function() {
