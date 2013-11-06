@@ -35,7 +35,7 @@ function setup(options, imports, register) {
 		},
 
 		// Valid installation of an addon
-		'addon': function(addon) {
+		'addons': function(addon) {
 			return Q(true);
 		}
 	});

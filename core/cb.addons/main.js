@@ -111,10 +111,12 @@ function setup(options, imports, register, app) {
 
             // Copy temp dir to addons dir
             addonDir = path.join(addonsPath, addon.name);
-            return Q.nfcall(wrench.copyDirRecursive, tempDir, addonDir, {forceDelete: true});
-        }).then(function() {
+
             // Valid installation of addon with a hook
-            return this.hooks.use("addons", addon);
+            return hooks.use("addons", addon);
+        }).then(function() {
+            // Copy to addons dir
+            return Q.nfcall(wrench.copyDirRecursive, tempDir, addonDir, {forceDelete: true});
         }).then(function() {
             // Remove temporary dir
             return Q.nfcall(wrench.rmdirRecursive, tempDir, false);

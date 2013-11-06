@@ -10,7 +10,7 @@
             "addons"
         ],
         "consumes": [
-            "events", "logger", "server"
+            "events", "logger", "server", "hooks"
         ]
     }
 }
