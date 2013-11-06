@@ -24,7 +24,7 @@
             content:"";
             display:inline-block;
             border-top:@tabHeight solid transparent;
-            border-right:@tabRadius solid @tabColor;
+            border-right:(@tabRadius - 1px) solid @tabColor;
             position:absolute;
             left: -@tabRadius + 1px;
             top: 0;
@@ -35,7 +35,7 @@
             content:"";
             display:inline-block;
             border-top:@tabHeight solid transparent;
-            border-left:@tabRadius solid @tabColor;
+            border-left:(@tabRadius - 1px) solid @tabColor;
             position:absolute;
             right: -@tabRadius + 1px;
             top: 0;
