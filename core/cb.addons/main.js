@@ -20,9 +20,6 @@ function setup(options, imports, register, app) {
     if (!fs.existsSync(addonsPath)) {
         wrench.mkdirSyncRecursive(addonsPath);
     }
-    if (!fs.existsSync(defaultsPath)) {
-        wrench.mkdirSyncRecursive(defaultsPath);
-    }
 
     // Valid a package.json info
     var validPackage = function(addon) {
@@ -78,13 +75,19 @@ function setup(options, imports, register, app) {
         });  
     };
 
+    // Install dependencies for an addon
+    var installDependencies = function(addon) {
+        var addonDir = path.join(addonsPath, addon);
+        logger.log("Install dependencies ", addonDir);
+        return Q.nfcall(exec, "cd "+addonDir+" && npm install .");
+    };
+
     // Install an addon by its git url
     var installAddon = function(git, options) {
         var addon, tempDir, addonDir;
 
         options = _.defaults({}, options || {}, {
-            'reload': true,
-            'path': addonsPath
+            'reload': true
         });
 
         logger.log("Install add-on", git);
@@ -106,15 +109,13 @@ function setup(options, imports, register, app) {
             }
 
             // Copy temp dir to addons dir
-            addonDir = path.join(options.path, addon.name);
+            addonDir = path.join(addonsPath, addon.name);
             return Q.nfcall(wrench.copyDirRecursive, tempDir, addonDir, {forceDelete: true});
         }).then(function() {
             // Remove temporary dir
             return Q.nfcall(wrench.rmdirRecursive, tempDir, false);
         }).then(function() {
-            // Install dependencies
-            logger.log("Install dependencies ", addonDir);
-            return Q.nfcall(exec, "cd "+addonDir+" && npm install .");
+            return installDependencies(addon.name);
         }).then(function(stdout, stderr) {
             // Reload addons
             if (!options.reload) {
@@ -150,42 +151,28 @@ function setup(options, imports, register, app) {
     // Install default addons
     var installDefaults = function() {
         return Q.nfcall(fs.readdir, defaultsPath).then(function(dirs) {
-            dirs = _.filter(dirs, function(dir) {
-                return fs.lstatSync(path.join(defaultsPath, dir)).isDirectory();
-            });
-            if (_.size(dirs) > 0) return Q();
+            return Q.allSettled(_.map(dirs, function(dir) {
+                var defaultAddon = path.join(defaultsPath, dir);
+                var addonPath = path.join(addonsPath, dir);
 
-            // Install defaults addons from git
-            return Q.all(_.map(options.defaults, function(git) {
-                return installAddon(git, {
-                    reload: false,
-                    path: defaultsPath
+                return Q.nfcall(fs.lstat, defaultAddon).then(function(stat) {
+                    if (stat.isDirectory()) {
+                        return Q();
+                    } else {
+                        throw new Error("There is a file inside defaults addons directory: "+defaultAddon);
+                    }
+                }).then(function() {
+                    logger.log("update default addon", addonPath);
+                    return Q.nfcall(wrench.copyDirRecursive, defaultAddon, addonPath, {
+                        forceDelete: true,
+                        excludeHiddenUnix: false,
+                        preserveFiles: false
+                    }).then(function() {
+                        return installDependencies(dir);
+                    });
                 });
             }));
-        }).then(function() {
-            // Copy all addons from defaultsPath to addonsPath
-            return Q.nfcall(fs.readdir, defaultsPath).then(function(dirs) {
-                return Q.allSettled(_.map(dirs, function(dir) {
-                    var defaultAddon = path.join(defaultsPath, dir);
-                    var addonPath = path.join(addonsPath, dir);
-
-                    return Q.nfcall(fs.lstat, defaultAddon).then(function(stat) {
-                        if (stat.isDirectory()) {
-                            return Q();
-                        } else {
-                            throw new Error("There is a file inside defaults addons directory: "+defaultAddon);
-                        }
-                    }).then(function() {
-                        logger.log("update default addon", addonPath);
-                        return Q.nfcall(wrench.copyDirRecursive, defaultAddon, addonPath, {
-                            forceDelete: true,
-                            excludeHiddenUnix: false,
-                            preserveFiles: false
-                        });
-                    });
-                }));
-            });
-        })
+        });
     };
 
     // Init addons

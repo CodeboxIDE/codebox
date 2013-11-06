@@ -1,1 +1,1 @@
-module.exports = require("./lib/codebox.js");
+module.exports = require("./core/codebox.js");
