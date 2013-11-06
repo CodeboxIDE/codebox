@@ -1,19 +1,46 @@
 .component-tab {
     position: relative;
-    height:30px;
+    height: @tabHeight;
     float: left;
     z-index: 0;
     cursor: default;
-    margin: 6px 10px 0px;
-    box-shadow: 0px 30px 50px #000;
+    margin: @tabMarginTop 10px 0px;
+    box-shadow: 0px 18px 35px #000;
 
 
     .inner {
         .box-sizing(border-box);
-        height: 30px;
+        height: @tabHeight;
         background: @tabColor;
-        padding: 5px 5px;
+        padding: @tabInnerVPadding 5px;
         .user-select(none);
+        position: relative;
+        border-top: 1px solid @tabBorder;
+        font-size: @tabFontSize;
+
+        &:before{
+            width:0;
+            height:0;
+            content:"";
+            display:inline-block;
+            border-top:@tabHeight solid transparent;
+            border-right:@tabRadius solid @tabColor;
+            position:absolute;
+            left: -@tabRadius + 1px;
+            top: 0;
+        }
+        &:after{
+            width:0;
+            height:0;
+            content:"";
+            display:inline-block;
+            border-top:@tabHeight solid transparent;
+            border-left:@tabRadius solid @tabColor;
+            position:absolute;
+            right: -@tabRadius + 1px;
+            top: 0;
+            z-index: 1;
+        }
 
         .close {
             margin-left: 8px;
@@ -40,15 +67,16 @@
         }
     }
 
+    /* External border */
     &:before{
         width:0;
         height:0;
         content:"";
         display:inline-block;
-        border-top:30px solid transparent;
-        border-right:18px solid @tabColor;
+        border-top:@tabHeight solid transparent;
+        border-right:@tabRadius solid @tabBorder;
         position:absolute;
-        left: -18px;
+        left: -@tabRadius;
         top: 0;
     }
     &:after{
@@ -56,36 +84,45 @@
         height:0;
         content:"";
         display:inline-block;
-        border-top:30px solid transparent;
-        border-left:18px solid @tabColor;
+        border-top:@tabHeight solid transparent;
+        border-left:@tabRadius solid @tabBorder;
         position:absolute;
-        right: -18px;
+        right: -@tabRadius;
         top: 0;
     }
+
     &:hover {
         .inner {
             background: @tabHoverColor;
-        }
 
-        &:before {
-            border-right-color: @tabHoverColor;
-        }
-        &:after {
-            border-left-color: @tabHoverColor;
+            &:before {
+                border-right-color: @tabHoverColor;
+            }
+            &:after {
+                border-left-color: @tabHoverColor;
+            }
         }
     }
 
     &.active {
         z-index: 10; 
-        .inner {
-            background: @tabActiveColor;
-        }
-
         &:before {
-            border-right-color: @tabActiveColor;
+            border-right-color: @tabActiveBorder;
         }
         &:after {
-            border-left-color: @tabActiveColor;
+            border-left-color: @tabActiveBorder;
+        }
+
+        .inner {
+            border-color: @tabActiveBorder;
+            background: @tabActiveColor;
+
+            &:before {
+                border-right-color: @tabActiveColor;
+            }
+            &:after {
+                border-left-color: @tabActiveColor;
+            }
         }
     }
 }
@@ -145,7 +182,7 @@
         .tabs-header {
             position: absolute;
             top: 0px;
-            height: 36px;
+            height: @tabHeight+@tabMarginTop;
             right: 0px;
             left: 0px;
             background: @tabBackground;
@@ -155,12 +192,12 @@
 
         .tabs-content {
             position: absolute;
-            top: 35px;
+            top: @tabHeight+@tabMarginTop - 1px;
             bottom: 0px;
             right: 0px;
             left: 0px;
             background: @tabActiveColor;
-            border-top: 1px solid transparent;
+            border-top: 1px solid @tabActiveBorder;
         }
     }
 }
@@ -190,7 +227,7 @@
         overflow: hidden;
         width: auto;
         height: auto;
-        margin: 10px;
+        margin: 6px;
         padding: 0px;
         background: #fff;
         border: 1px solid #ccc;
