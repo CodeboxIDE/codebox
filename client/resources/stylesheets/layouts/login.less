@@ -18,9 +18,11 @@
 		margin-left: -(@boxWidth/2);
 		margin-top: -(@boxHeight/2);
 
-		.form-control {
-			border-color: #cbcfd1;
-			box-shadow: none;
+		.form-group {
+			&:not(.has-error) .form-control {
+				border-color: #cbcfd1;
+				box-shadow: none;
+			}
 		}
 
 		.header {

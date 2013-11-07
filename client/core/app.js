@@ -45,7 +45,12 @@ define([
         finish: function() {
             var that = this;
 
-            if (this.isAuth) {
+            var email = this.$(".login-box #login-email").val();
+            var password = this.$(".login-box #login-token").val();
+
+            if (email && password) {
+                this.doLogin(email, password, true);
+            } else if (this.isAuth) {
                 addons.loadAll().then(function() {
                     that.$(".codebox-loading-alert").remove();
                     
@@ -68,7 +73,15 @@ define([
             var password = this.$(".login-box #login-token").val();
             var tosave = this.$(".login-box #login-save").is(":checked");
 
-            session.start(email, password).then(function() {
+            this.doLogin(email, password, tosave).fail(function() {
+                that.$(".login-box .form-group").addClass("has-error");
+            });
+        },
+
+        // Do login
+        doLogin: function(email, password, tosave) {
+            var that = this;
+            return session.start(email, password).then(function() {
                 if (tosave) {
                     hr.Storage.set("email", email);
                     hr.Storage.set("token", password);
@@ -79,8 +92,6 @@ define([
 
                 that.isAuth = true;
                 that.render();
-            }, function() {
-                that.$(".login-box .form-group").addClass("has-error");
             });
         }
     });
