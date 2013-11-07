@@ -1105,7 +1105,7 @@ Terminal.prototype.bindMouse = function() {
   //  on(self.document, 'mousemove', sendMove);
   //}
 
-  on(el, wheelEvent, function(ev) {
+  /*on(el, wheelEvent, function(ev) {
     if (!self.mouseEvents) return;
     if (self.x10Mouse
         || self.vt300Mouse
@@ -1125,7 +1125,7 @@ Terminal.prototype.bindMouse = function() {
       self.scrollDisp(ev.wheelDeltaY > 0 ? -5 : 5);
     }
     return cancel(ev);
-  });
+  });*/
 };
 
 /**

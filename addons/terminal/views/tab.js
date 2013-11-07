@@ -30,11 +30,12 @@ define([
                 cols: this.term_w,
                 rows: this.term_h,
                 screenKeys: true,
-                useStyle: true
+                useStyle: false,
+                scrollback: 0
             });
             this.term.open(this.term_el);
 
-            setInterval(_.bind(this.resize, this), 2000);
+            this.interval = setInterval(_.bind(this.resize, this), 2000);
             this.clear();
 
             // Init codebox stream
@@ -44,7 +45,9 @@ define([
             });
 
             this.on("tab:close", function() {
+                clearInterval(this.interval);
                 this.shell.disconnect();
+                this.term.destroy();
             }, this);
             this.setTabTitle("Terminal - "+this.sessionId);
 
@@ -65,6 +68,7 @@ define([
 
                 that.shell.stream.on('end', function() {
                     that.writeln("Connection closed by remote host");
+                    that.closeTab();
                 });
 
                 that.shell.stream.on('data', function(chunk) {
@@ -84,12 +88,13 @@ define([
                 w = w || that.term_w;
                 h = h || that.term_h;
                 
+                console.log("send size");
                 that.shell.socket.emit("shell.resize", {
                     "shellId": that.shell.shellId,
                     "rows": h,
                     "columns": w
                 });
-            })
+            });
 
             this.shell.connect();
             return this;
@@ -107,18 +112,20 @@ define([
             
             w = w || _.min([
                 400,
-                _.max([Math.floor(this.$el.outerWidth()/8)-1, 10])
+                _.max([Math.floor((this.$el.outerWidth()-10)/8)-1, 10])
             ]);
             h = h || _.min([
                 400,
-                _.max([Math.floor(this.$el.outerHeight()/21), 10])
+                _.max([Math.floor(this.$el.outerHeight()/20)-1, 10])
             ]);
             if (w == this.term_w && h == this.term_h) {
                 return this;
             }
+            console.log("resize to "+w+":"+h);
             this.term_w = w;
             this.term_h = h;
             this.term.resize(this.term_w, this.term_h);
+            console.log(this.term.rows, this.term.cols);
 
             this.trigger("resize", this.term_w, this.term_h)
 

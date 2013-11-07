@@ -5,17 +5,21 @@
     background: transparent;
 
     .terminal-body {
-        font-family: Courier New;
         background: #000;
         border-color: #000;
         overflow: auto;
         cursor: text;
+        padding: 0px;
+        font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
         padding: 3px;
-        
-        *
-        {
-            padding: 0px;
-            margin: 0px;
+
+        * {
+            white-space: nowrap;
+        }
+
+        .terminal-cursor {
+            background: #fff;
+            color: #000;
         }
     }
 }
