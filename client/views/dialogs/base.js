@@ -10,14 +10,17 @@ define([
             template: null,
             dialog: null,
             open: true,
-            big: false,
-            className: ""
+            autoFocus: false,
+            keyboard: true,
+            className: "",
+            valueSelector: true
         },
         events: {
+            "keydown": "keydown",
             "hidden.bs.modal": "hidden",
+            "shown.bs.modal": "shown",
             "click .action-close": "close",
-            "click .action-confirm": "actionConfirm",
-            "click .action-prompt": "actionPrompt"
+            "click .action-confirm": "actionConfirm"
         },
         template: function() {
             if (this.options.template != null) return this.options.template;
@@ -31,9 +34,14 @@ define([
 
         initialize: function(options) {
             DialogView.__super__.initialize.apply(this, arguments);
-            if (this.options.big) this.$el.addClass("modal-big");
             this.$el.addClass(this.options.className);
+
             this.value = null;
+
+            if (this.options.keyboard) {
+                $(document).keydown(_.bind(this.keydown, this));
+            }
+
             return this;
         },
 
@@ -74,25 +82,63 @@ define([
         },
 
         /*
-         *  (event) action: confirm
+         * (event) Modal is shown
+         */
+        shown: function() {
+            if (this.options.autoFocus) {
+                this.$("input").focus();
+            }
+        },
+
+        /*
+         *  (event) action: confirm: close dialog with value from selector
          */
         actionConfirm: function(e) {
             if (e != null) {
                 e.preventDefault();
             }
-            this.value = true;
+            this.value = this._getValue();
             this.close();
         },
 
         /*
-         *  (event) action: prompt
+         *  Selector for prompt dialog
          */
-        actionPrompt: function(e) {
-            if (e != null) {
-                e.preventDefault();
+        selectorPrompt: function() {
+            return this.$(".input").val();
+        },
+
+        /*
+         *  Return final value
+         */
+        _getValue: function() {
+            var selector = this.options.valueSelector;
+            if (_.isFunction(selector)) {
+                this.value = selector(this);
+            } else if (_.isString(selector)) {
+                this.value = this[selector]();
+            } else {
+                this.value = selector;
             }
-            this.value = this.$(".input").val();
-            this.close();
+            return this.value;
+        },
+
+        /*
+         *  (event) keydown
+         */
+        keydown: function(e) {
+            if (!this.options.keyboard) return;
+
+            var key = e.keyCode || e.which;
+
+            // Enter: valid
+            if (key == 13) {
+                this.actionConfirm(e);
+            } else 
+            // Esc: close
+            if (key == 27) {
+                this.close(e);
+            }
         }
     }, {
         current: null,

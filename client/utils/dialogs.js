@@ -36,7 +36,9 @@ define([
             return Dialogs.open(null, {
                 "message": message,
                 "dialog": "prompt",
-                "default": defaultmsg
+                "default": defaultmsg,
+                "autoFocus": true,
+                "valueSelector": "selectorPrompt"
             });
         },
 
