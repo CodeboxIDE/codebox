@@ -49,6 +49,10 @@ define([
                 this.shell.disconnect();
                 this.term.destroy();
             }, this);
+            this.on("tab:state", function(state) {
+                if (state) this.term.focus();
+            }, this);
+
             this.setTabTitle("Terminal - "+this.sessionId);
 
             this.shell.on("connect", function() {
