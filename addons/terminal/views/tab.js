@@ -25,7 +25,7 @@ define([
             this.term_h = 24;
             this.term_el = $("<div>", {
                 'class': "tab-panel-inner terminal-body"
-            }).appendTo(this.$el).get(0);
+            }).appendTo($("<div>", {"class": "tab-panel-body"}).appendTo(this.$el)).get(0);
             this.term = new Terminal({
                 cols: this.term_w,
                 rows: this.term_h,

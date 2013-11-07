@@ -1,12 +1,11 @@
-<div class="editor">
-    <a href="#" class="btn action-file action-file-fullscreen" title="Zen mode"><i class="icon-resize-full"></i></a>
-    <div class="btn-group file-settings">
-        <a href="#" class="btn btn-link action-file-mode" data-toggle="dropdown">text</a>
-        <ul class="dropdown-menu">
-        <% _.each(app.config.editor.modes, function(mode, modeid) { %>
-            <li><a href="#" data-editormode="<%- modeid %>"><%- mode %></a></li>
-        <% }); %>
-        </ul>
+<div class="tab-panel-lateralopener"></div>
+<div class="tab-panel-body editor">
+    <div class="tab-panel-lateralbar">
+        <div class="list-group">
+            <% _.each(app.config.editor.modes, function(mode, modeid) { %>
+                <a href="#" class="list-group-item" data-editormode="<%- modeid %>"><%- mode %></a>
+            <% }); %>
+        </div>
     </div>
     <div class="tab-panel-inner editor-inner"></div>
 </div>

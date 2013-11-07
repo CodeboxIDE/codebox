@@ -25,9 +25,7 @@ define([
             this.editor = new EditorView();
 
             // Bind editor mode changements
-            this.editor.on("change:mode", function() {
-                this.$(".action-file-mode").text(this.editor.getMode());
-            }, this);
+            this.editor.on("change:mode", this.modeChanged, this);
 
             // Bind editor sync state changements
             this.editor.on("sync:state", function(state) {
@@ -54,6 +52,7 @@ define([
         finish: function() {
             // Add editor to content
             this.editor.$el.appendTo(this.$(".editor-inner"));
+            this.modeChanged();
 
             return FileEditorView.__super__.finish.apply(this, arguments);
         },
@@ -68,7 +67,14 @@ define([
         changeEditorMode: function(e) {
             e.preventDefault();
             var mode = $(e.currentTarget).data("editormode");
-            this.components.editor.setMode(mode);
+            this.editor.setMode(mode);
+        },
+
+        // (event) Mode changed
+        modeChanged: function() {
+            var mode = this.editor.getMode();
+            this.$("a[data-editormode!='"+mode+"']").removeClass("active");
+            this.$("a[data-editormode='"+mode+"']").addClass("active");
         },
 
         // Update participants list

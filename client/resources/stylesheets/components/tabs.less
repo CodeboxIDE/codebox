@@ -134,30 +134,6 @@
     left: 0px;
     right: 0px;
     bottom: 0px;
-    
-    .tab-panel-inner {
-        margin: 10px;
-        background: #fff;
-        border-radius: 3px;
-
-        &.full-tab {
-            position: absolute;
-            top: 0px;
-            bottom: 0px;
-            right: 0px;
-            left: 0px;
-            overflow: hidden;
-        }
-    }
-
-    .tabs-loading {
-        position: absolute;
-        top: 0px;
-        left: 0px;
-        right: 0px;
-        bottom: 0px;
-        background: #f1f1f1;
-    }
 
     &.active {
         display: block;
@@ -207,35 +183,76 @@
     position: absolute;
     width: 100%;
     height: 100%;
-    
-    .tab-panel-toolbar {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        right: 10px;
-        height: 20px;
-        margin: 0px;
-        padding: 0px;
-    }
 
-    .tab-panel-inner {
+    .tab-panel-lateralopener {
+        position: absolute;
+        top: 0px;
+        bottom: 0px;
+        right: 0px;
+        width: @tabPanelPadding;
+        z-index: 0;
+    }
+    
+    .tab-panel-body {
         position: absolute;
         top: 0px;
         bottom: 0px;
         left: 0px;
         right: 0px;
-        border-radius: 3px;
-        overflow: hidden;
-        width: auto;
-        height: auto;
-        margin: 6px;
-        padding: 0px;
-        background: #fff;
-        border: 1px solid #ccc;
-        overflow-y: auto;
+        z-index: 1;
+        margin: @tabPanelPadding;
 
-        &.with-panel {
-            top: 40px;
+        &.with-lateralpanel {
+            .tab-panel-inner, .tab-panel-toolbar {
+                right: @tabPanelLateralWidth+@tabPanelPadding;
+            }
+            .tab-panel-lateralbar {
+                right: 0px;
+            }
+        }
+
+        .tab-panel-toolbar {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            right: 0px;
+            height: 20px;
+            margin: 0px;
+            padding: 0px;
+            z-index: 2;
+        }
+
+        .tab-panel-inner {
+            position: absolute;
+            top: 0px;
+            bottom: 0px;
+            left: 0px;
+            right: 0px;
+            z-index: 2;
+            border-radius: 3px;
+            overflow: hidden;
+            width: auto;
+            height: auto;
+            background: #fff;
+            border: 1px solid #ccc;
+            overflow-y: auto;
+            .transition(.3s ease-in-out right);
+
+            &.with-toolbar {
+                top: 36px;
+            }
+        }
+
+        /* Lateral panel */
+        .tab-panel-lateralbar {
+            position: absolute;
+            top: 0px;
+            bottom: 0px;
+            right: - (@tabPanelLateralWidth+@tabPanelPadding);
+            z-index: 1;
+            width: @tabPanelLateralWidth;
+            overflow-y: auto;
+            .transition(.3s ease-in-out right);
         }
     }
 }

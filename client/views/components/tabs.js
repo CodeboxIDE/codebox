@@ -92,6 +92,10 @@ define([
     // Tab body view
     var TabPanelView = hr.View.extend({
         className: "component-tab-panel",
+        events: {
+            "mouseenter .tab-panel-lateralopener": "openLateralPanel",
+            "mouseleave .tab-panel-lateralbar": "closeLateralPanel"
+        },
 
         // Constructor
         initialize: function() {
@@ -130,6 +134,16 @@ define([
         isActiveTab: function() {
             var active = this.tabs.getCurrentTab();
             return !(active == null || active.tabid != this.tabid);
+        },
+
+        // Open the lateral panel
+        openLateralPanel: function() {
+            this.$(".tab-panel-body").addClass("with-lateralpanel");
+        },
+
+        // Close the lateral panel
+        closeLateralPanel: function() {
+            this.$(".tab-panel-body").removeClass("with-lateralpanel");
         }
     });
 
