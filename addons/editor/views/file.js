@@ -88,7 +88,8 @@ define([
                     'class': "list-group-item",
                     'css': {
                         'border-left-color': participant.color
-                    }
+                    },
+                    'click': function(e) { e.preventDefault(); }
                 }).appendTo($participants);
             }, this);
         }
