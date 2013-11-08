@@ -96,7 +96,7 @@ function setup_env () {
     # Set home
     export CODEBOX_USER=${USER}
     export WORKSPACE_DIR=${WORKSPACE}
-    export WORKSPACE_ADDONS_DIR="${HOME}/.addons/"
+    export WORKSPACE_ADDONS_DIR="${HOME}/.codebox-addons/"
 
     # Unset sensitive stuff
     unset RSA_PRIVATE
