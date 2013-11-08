@@ -34,7 +34,7 @@ define([
             }, this);
 
             // Bind collaborators changements
-            this.editor.on("participants:change", this.updateParticipants, this);
+            this.editor.sync.on("participants:change", this.updateParticipants, this);
 
             // Define file for code editor
             this.editor.sync.setFile(this.model, {
@@ -53,6 +53,7 @@ define([
             // Add editor to content
             this.editor.$el.appendTo(this.$(".editor-inner"));
             this.modeChanged();
+            this.updateParticipants();
 
             return FileEditorView.__super__.finish.apply(this, arguments);
         },
@@ -79,9 +80,16 @@ define([
 
         // Update participants list
         updateParticipants: function() {
-            this.$(".file-participants").empty();
-            _.each(this.editor.participants, function(participant) {
-                
+            var $participants = this.$(".file-participants").empty();
+            _.each(this.editor.sync.participants, function(participant) {
+                $("<a>", {
+                    'text': participant.user.get("name"),
+                    'href': "#",
+                    'class': "list-group-item",
+                    'css': {
+                        'border-left-color': participant.color
+                    }
+                }).appendTo($participants);
             }, this);
         }
     });

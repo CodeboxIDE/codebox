@@ -1,6 +1,7 @@
 <div class="tab-panel-lateralopener"></div>
 <div class="tab-panel-body editor">
     <div class="tab-panel-lateralbar">
+        <div class="list-group file-participants"></div>
         <div class="list-group">
             <% _.each(app.config.editor.modes, function(mode, modeid) { %>
                 <a href="#" class="list-group-item" data-editormode="<%- modeid %>"><%- mode %></a>

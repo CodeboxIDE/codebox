@@ -2,8 +2,9 @@ define([
     "hr/hr",
     "vendors/diff_match_patch",
     "vendors/crypto",
-    "core/user"
-], function(hr, diff_match_patch, CryptoJS, user) {
+    "core/user",
+    "core/collaborators"
+], function(hr, diff_match_patch, CryptoJS, user, collaborators) {
 
     /*
     FileSync let you easily sync text content in files and access 
@@ -482,10 +483,15 @@ define([
          *  Set lists of participants
          */
         setParticipants: function(parts) {
-            this.participants = _.map(parts, function(participant, i) {
+            this.participants = _.compact(_.map(parts, function(participant, i) {
+                participant.user = collaborators.getById(participant.userId);
+                if (!participant.user) {
+                    logger.error("participant non user:", participant.userId);
+                    return null;
+                }
                 participant.color = this.options.colors[i % this.options.colors.length];
                 return participant;
-            }, this);
+            }, this));
             this.trigger("participants:change");
             return this;
         },
