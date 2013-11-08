@@ -8,7 +8,7 @@ exports.config = {
     "name": "Codebox",
 
     // Mode debug
-    "debug": true,
+    "debug": process.env.CLIENT_DEBUG != null,
 
     // Main entry point for application
     "main": "main",
