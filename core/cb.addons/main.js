@@ -18,6 +18,7 @@ function setup(options, imports, register, app) {
     // Addons paths
     var defaultsPath = path.resolve(options.defaultsPath);
     var addonsPath = path.resolve(options.path);
+    var tempPath = options.tempPath ? path.resolve(options.tempPath) : null;
     if (!fs.existsSync(addonsPath)) {
         wrench.mkdirSyncRecursive(addonsPath);
     }
@@ -99,8 +100,19 @@ function setup(options, imports, register, app) {
 
         logger.log("Install add-on", git);
 
+        var createTempDirectory = function() {
+            if (!tempPath) {
+                return Q.nfcall(temp.mkdir, 'addons');
+            } else {
+                var ret = path.join(tempPath, "t"+Date.now());
+                return Q.nfcall(fs.mkdir, ret).then(function() {
+                    return Q(ret);
+                });
+            }
+        };
+
         // Create temporary dir
-        return Q.nfcall(temp.mkdir, 'addon').then(function(dirPath) {
+        return createTempDirectory().then(function(dirPath) {
             // Clone git repo
             tempDir = dirPath;
             return Q.nfcall(Gift.clone, git, tempDir);

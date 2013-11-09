@@ -35,7 +35,8 @@ var start = function(config) {
         'addons': {
             // Base path
             'path': process.env.WORKSPACE_ADDONS_DIR || path.resolve(__dirname + '/../.addons'),
-            'defaultsPath': process.env.WORKSPACE_ADDONS_DEFAULTS_DIR || path.resolve(__dirname + '/../addons')
+            'defaultsPath': process.env.WORKSPACE_ADDONS_DEFAULTS_DIR || path.resolve(__dirname + '/../addons'),
+            'tempPath': process.env.WORKSPACE_ADDONS_TEMP_DIR
         }
     });
 
@@ -88,6 +89,7 @@ var start = function(config) {
 
             // Options
             'path': config.addons.path,
+            'tempPath': config.addons.tempPath,
             'defaultsPath': config.addons.defaultsPath
         },
 
