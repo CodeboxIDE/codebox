@@ -36,7 +36,7 @@ var start = function(config) {
             // Base path
             'path': process.env.WORKSPACE_ADDONS_DIR || path.resolve(__dirname + '/../.addons'),
             'defaultsPath': process.env.WORKSPACE_ADDONS_DEFAULTS_DIR || path.resolve(__dirname + '/../addons'),
-            'tempPath': process.env.WORKSPACE_ADDONS_TEMP_DIR
+            'tempPath': process.env.WORKSPACE_ADDONS_TEMP_DIR || '/tmp/codebox-addons'
         }
     });
 
