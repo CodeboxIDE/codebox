@@ -27,10 +27,10 @@ RUN apt-get -y install php5-cli
 
 # Configure a local user
 # Prepare user and directories
-RUN adduser --shell /bin/bash --gecos 'friendcode workspace user' --disabled-password --home /home/friendcode friendcode
+RUN adduser --shell /bin/bash --gecos 'codebox workspace user' --disabled-password --home /home/codebox codebox
 
 # Default init command
-CMD su friendcode /opt/codebox/init.sh
+CMD su codebox /opt/codebox/init.sh
 
 # Needed Volumes
 VOLUME ["/opt/codebox"]
