@@ -12,7 +12,7 @@ var start = function(config) {
     config = _.defaults({}, config || {}, {
         'root': process.env.WORKSPACE_DIR || process.cwd(),
         'title': process.env.WORKSPACE_NAME || "Workspace",
-        'public': process.env.WORKSPACE_PUBLIC != null,
+        'public': process.env.WORKSPACE_PUBLIC != "false",
 
         'hooks': {
             // Hooks could be:
