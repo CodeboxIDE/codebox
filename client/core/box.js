@@ -16,9 +16,6 @@ define([
     box.on("box:users:remove", function(e) {
         collaborators.remove(collaborators.getById(e.data.userId));
     });
-    box.on("set", function() {
-        collaborators.getCollaborators();
-    })
 
     // Search for files
     search.handler({

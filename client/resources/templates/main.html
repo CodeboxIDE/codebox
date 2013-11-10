@@ -1,4 +1,4 @@
-<% if (isAuth) { %>
+<% if (session.box.isAuth()) { %>
 <div id="codebox">
 	<!-- Lateral bar -->
 	<%= view.component("layout.lateralbar", {}, "lateralbar") %>
@@ -37,10 +37,15 @@
 				<form role="form">
 					<div class="form-group">
 						<input type="email" class="form-control" id="login-email" placeholder="Enter email" value="<%- email %>">
+						<% if (session.box.get("public")) { %>
+						<p class="help-block">This box is public, please enter an email to log in.</p>
+						<% } %>
 					</div>
+					<% if (!session.box.get("public")) { %>
 					<div class="form-group">
 						<input type="password" class="form-control" id="login-token" placeholder="Enter token" value="<%- token %>">
 					</div>
+					<% } %>
 					<div class="checkbox">
 						<label>
 							<input type="checkbox" id="login-save" checked> Remember me

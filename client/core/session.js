@@ -19,6 +19,11 @@ define([
     });
 
     return {
+        // Prepare session
+        prepare: function() {
+            return box.status();
+        },
+
         // Start session
         start: function(email, token) {
             var that = this;
@@ -27,11 +32,12 @@ define([
                 'email': email,
                 'token': token
             }, user).then(function() {
+                console.log("auth succeed");
                 // Get installed addons
                 return addons.getInstalled();
             }).then(function() {
-                // Return box status
-                return box.status();
+                // Get collaborators
+                return collaborators.getCollaborators();
             });
         }
     };

@@ -3,10 +3,11 @@ require([
     "hr/hr",
     "hr/args",
     "core/app",
+    "core/session",
     "config",
     'views/views',
     'resources/resources',
-], function(_, hr, args, app, config) {
+], function(_, hr, args, app, session, config) {
     // Configure hr
     hr.configure(args);
 
@@ -17,5 +18,7 @@ require([
         }
     });
     
-    app.run();
+    session.prepare().then(function() {
+        app.run();
+    });
 });

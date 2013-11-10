@@ -12,6 +12,8 @@ var start = function(config) {
     config = _.defaults({}, config || {}, {
         'root': process.env.WORKSPACE_DIR || process.cwd(),
         'title': process.env.WORKSPACE_NAME || "Workspace",
+        'public': process.env.WORKSPACE_PUBLIC != null,
+
         'hooks': {
             // Hooks could be:
             //  - string: considered as url
@@ -65,7 +67,8 @@ var start = function(config) {
 
             // Options
             'title': config.title,
-            'root': config.root
+            'root': config.root,
+            'public': config.public
         },
 
         // Utils

@@ -15,6 +15,7 @@ define([
             'uptime': 0,
             'mtime': 0,
             'collaborators': 0,
+            'auth': false
         },
 
         /*
@@ -110,8 +111,19 @@ define([
 
             return api.rpc("/auth/join", authInfo).then(function(info) {
                 that.user.set(info);
+                that.set("auth", true);
                 return Q(info);
+            }, function(err) {
+                that.set("auth", false);
+                return Q.reject(err);
             });
+        },
+
+        /*
+         *  test if logged to the box
+         */
+        isAuth: function() {
+            return this.get("auth", false);
         },
 
         /*

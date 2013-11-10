@@ -12,6 +12,8 @@ function AuthRPCService(workspace, hooks) {
 AuthRPCService.prototype.join = function(args, meta) {
 	var that = this;
 	
+    meta.req.session.userId = null;
+    
 	return this.hooks.use("auth", {
 		'email': args.email,
 		'token': args.token

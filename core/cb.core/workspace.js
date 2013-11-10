@@ -8,18 +8,29 @@ var User = require('./user').User;
 var qfail = require('../utils').qfail;
 
 
-function Workspace(name, root, events, id) {
+function Workspace(options, events) {
+    options = _.defaults({}, options, {
+        'id': uuid.v4(),
+        'secret': uuid.v4(),
+        'name': 'codebox',
+        'public': true,
+        'root': "./"
+    });
+
     // Public ID of workspace (ok to share)
-    this.id = id || uuid.v4();
+    this.id = options.id;
 
     // Secret token used for securing cookies, sessions ...
-    this.secret = uuid.v4();
+    this.secret = options.secret;
 
     // Name
-    this.name = name || "project";
+    this.name = options.name;
+
+    // Public
+    this.public = options.public;
 
     // Base folder
-    this.root = root;
+    this.root = options.root;
 
     // Mapping of directories
     this._users = {};

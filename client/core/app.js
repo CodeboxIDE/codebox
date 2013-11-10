@@ -3,8 +3,9 @@ define([
     'utils/url',
     'core/box',
     'core/session',
-    'core/addons'
-], function (hr, url, box, session, addons) {
+    'core/addons',
+    'core/box'
+], function (hr, url, box, session, addons, box) {
 
     // Define base application
     var Application = hr.Application.extend({
@@ -23,7 +24,6 @@ define([
         // Constructor
         initialize: function() {
             Application.__super__.initialize.apply(this, arguments);
-            this.isAuth = false;
 
             box.on("status", function(state) {
                 this.$(".codebox-connexion-alert").toggle(!state);
@@ -37,7 +37,6 @@ define([
             return {
                 'email': queries.email || hr.Storage.get("email"),
                 'token': queries.token || hr.Storage.get("token"),
-                'isAuth': this.isAuth
             };
         },
 
@@ -50,7 +49,7 @@ define([
 
             if (email && password) {
                 this.doLogin(email, password, true);
-            } else if (this.isAuth) {
+            } else if (box.isAuth()) {
                 addons.loadAll().then(function() {
                     that.$(".codebox-loading-alert").remove();
                     
@@ -73,14 +72,18 @@ define([
             var password = this.$(".login-box #login-token").val();
             var tosave = this.$(".login-box #login-save").is(":checked");
 
-            this.doLogin(email, password, tosave).fail(function() {
-                that.$(".login-box .form-group").addClass("has-error");
-            });
+            this.doLogin(email, password, tosave);
         },
 
         // Do login
         doLogin: function(email, password, tosave) {
             var that = this;
+
+            // If no password: generate a random one
+            if (!password) {
+                password = Math.random().toString(36).substring(8);
+            }
+
             return session.start(email, password).then(function() {
                 if (tosave) {
                     hr.Storage.set("email", email);
@@ -89,9 +92,9 @@ define([
                     hr.Storage.set("email", "");
                     hr.Storage.set("token", "");
                 }
-
-                that.isAuth = true;
                 that.render();
+            }).fail(function() {
+                that.$(".login-box .form-group").addClass("has-error");
             });
         }
     });
