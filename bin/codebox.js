@@ -13,7 +13,7 @@ cli.command('run')
     this.codeboxio = this.codeboxio || process.env.CODEBOXIO_HOST || "https://api.codenow.io";
 
     this.directory = this.directory || process.env.WORKSPACE_DIR || "./";
-    this.title = this.title || process.env.WORKSPACE_NAME || "";
+    this.title = this.title || process.env.WORKSPACE_NAME;
 
     var config = {
         'root': this.directory,
@@ -23,7 +23,6 @@ cli.command('run')
     // Use Codebox
     if (this.box) {
         _.extend(config, {
-            'title': this.title,
             'hooks': {
                 'auth': this.codeboxio+"/api/box/"+this.box+"/auth",
                 'events': this.codeboxio+"/api/box/"+this.box+"/events",

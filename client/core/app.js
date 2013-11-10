@@ -28,6 +28,9 @@ define([
             box.on("status", function(state) {
                 this.$(".codebox-connexion-alert").toggle(!state);
             }, this);
+            box.on("change:name", function() {
+                this.title(box.get("name"));
+            }, this);
             return this;
         },
 

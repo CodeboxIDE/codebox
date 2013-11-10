@@ -9,12 +9,11 @@ function setup(options, imports, register) {
     var events = imports.events;
 
     // Options: root dir, title
-    var title = options.title;
     var rootPath = options.root || path.resolve(__dirname, '..', '..');
 
     var workspace = new Workspace({
         'root': rootPath,
-        'title': title,
+        'name': options.title,
         'public': options.public
     }, events);
 
