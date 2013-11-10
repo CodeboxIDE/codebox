@@ -1,4 +1,6 @@
-define([], function() {
+define([
+    "ace/ace"
+], function(ace) {
     var _ = require("underscore");
     var $ = require("jQuery");
     var hr = require("hr/hr");

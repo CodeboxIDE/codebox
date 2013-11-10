@@ -1,7 +1,7 @@
-define('ace/snippets/scad', ['require', 'exports', 'module' ], function(require, exports, module) {
+define(function(require, exports, module) {
+"use strict";
 
-
-exports.snippetText = "";
+exports.snippetText = require("../requirejs/text!./scad.snippets");
 exports.scope = "scad";
 
 });

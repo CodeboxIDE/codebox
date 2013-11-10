@@ -1,7 +1,7 @@
-define('ace/snippets/jsoniq', ['require', 'exports', 'module' ], function(require, exports, module) {
+define(function(require, exports, module) {
+"use strict";
 
-
-exports.snippetText = "";
+exports.snippetText = require("../requirejs/text!./jsoniq.snippets");
 exports.scope = "jsoniq";
 
 });

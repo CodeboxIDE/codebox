@@ -1,7 +1,7 @@
 define([
     "views/tab",
     "ace/ace"
-], function(EditorTab) {
+], function(EditorTab, ace) {
     var $ = require("jQuery");
     var commands = require("core/commands");
     var tabs = require("utils/tabs");
@@ -9,6 +9,7 @@ define([
     var config = require("config");
 
     // Configure ace
+    // ace version used is the content of https://github.com/ajaxorg/ace/tree/master/lib/ace
     var aceconfig = ace.require("ace/config");
     aceconfig.set("basePath", "static/addons/editor/ace");
 

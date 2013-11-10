@@ -1,7 +1,7 @@
-define('ace/snippets/pascal', ['require', 'exports', 'module' ], function(require, exports, module) {
+define(function(require, exports, module) {
+"use strict";
 
-
-exports.snippetText = "";
+exports.snippetText = require("../requirejs/text!./pascal.snippets");
 exports.scope = "pascal";
 
 });
