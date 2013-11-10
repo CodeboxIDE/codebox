@@ -1,7 +1,10 @@
 // Requires
-var _ = require('underscore');
 var Q = require('q');
+var _ = require('underscore');
+
+var os = require('os');
 var path = require('path');
+
 var engineer = require('engineer');
 
 var start = function(config) {
@@ -36,7 +39,7 @@ var start = function(config) {
             // Base path
             'path': process.env.WORKSPACE_ADDONS_DIR || path.resolve(__dirname + '/../.addons'),
             'defaultsPath': process.env.WORKSPACE_ADDONS_DEFAULTS_DIR || path.resolve(__dirname + '/../addons'),
-            'tempPath': process.env.WORKSPACE_ADDONS_TEMP_DIR || '/tmp/codebox-addons'
+            'tempPath': process.env.WORKSPACE_ADDONS_TEMP_DIR || os.tmpDir()
         }
     });
 
