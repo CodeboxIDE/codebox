@@ -34,6 +34,11 @@ function setup(options, imports, register, app) {
         return fs.existsSync(path.join(defaultsPath, addon));
     };
 
+    // Check if an addon is client side
+    var isClientside = function(addon) {
+        return (addon.client && addon.client);
+    };
+
     // Load addons list
     var loadAddonsInfos = function() {
         var addons = {};
@@ -50,8 +55,6 @@ function setup(options, imports, register, app) {
                 if (!validPackage(addon)) {
                     return;
                 }
-
-                logger.log("Load add-on", addon.name, addon.version);
                 addon.default = isDefaultAddon(addon.name);
                 addons[dir] = addon;
             });
@@ -72,6 +75,30 @@ function setup(options, imports, register, app) {
         ]);
     }
 
+    // Optimize client addon
+    var optimizeAddon = function(addon) {
+        if (!isClientside(addon)) {
+            return Q.reject(new Error("Not a cleint side addon"));
+        }
+
+        // Base directory for the addon
+        var addonPath = path.resolve(addonsPath + '/' + addon.name + '/');
+
+        // Path to the require-tools
+        var requiretoolsPath = path.resolve("../../client/build/static/require-tools");
+
+        // Base main
+        var main = addon.client.main;
+
+        // Output file
+        var output = path.resolve(addonPath, "addon-built.js");
+
+        var command = "r.js -o baseUrl="+addonPath+" paths.require-tools="+requiretoolsPath+" name="+main+" map.*.css=require-tools/css/css map.*.less=require-tools/less/less out="+output;
+        logger.log("command", command);
+        //return Q(command);
+        return Q.nfcall(exec, command);
+    };
+
     // Initialize node addons
     var initNodeAddons = function() {
         logger.log("Load node addons");
@@ -79,6 +106,18 @@ function setup(options, imports, register, app) {
             return Q.all(_.map(addons, function(addon) {
                 if (!addon.main) return;
                 return initNodeAddon(addon.name);
+            }));
+        });  
+    };
+
+    // Optimize client addons
+    var optimzeClientsAddons = function() {
+        logger.log("Optimize client addons");
+        return loadAddonsInfos().then(function(addons) {
+            return Q.all(_.map(addons, function(addon) {
+                console.log(addon);
+                if (!isClientside(addon)) return;
+                return optimizeAddon(addon);
             }));
         });  
     };
@@ -139,6 +178,10 @@ function setup(options, imports, register, app) {
             // Remove temporary dir
             return Q.nfcall(wrench.rmdirRecursive, tempDir, false);
         }).then(function() {
+            // If client side addon then optimize it
+            if (!isClientside(addon)) return;
+            return optimizeAddon(addon);
+        }).then(function() {
             // Install node dependencies
             return installDependencies(addon.name);
         }).then(function() {
@@ -197,6 +240,7 @@ function setup(options, imports, register, app) {
                         excludeHiddenUnix: false,
                         preserveFiles: false
                     }).then(function() {
+                        // Install node dependences
                         return installDependencies(dir);
                     });
                 });
@@ -214,7 +258,9 @@ function setup(options, imports, register, app) {
     }, function(err) {
         logger.error("Error with init of addons:");
         logger.exception(err, false);
-    }).fin(initNodeAddons).fail(function(err) {
+    }).fin(optimzeClientsAddons).then(function() {
+        return initNodeAddons()
+    }).fail(function(err) {
         logger.error("Error with external node addons:");
         logger.exception(err);
     });
