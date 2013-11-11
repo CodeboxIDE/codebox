@@ -2,7 +2,7 @@
     "name": "codebox",
     "description": "Open Cloud IDE",
     "homepage": "https://www.codebox.io",
-    "version": "0.2.6",
+    "version": "0.2.7",
     "author": "contact@friendco.de",
     "dependencies": {
         "q": "0.9.6",
