@@ -33,6 +33,12 @@ function setup_ssh () {
     # Store/Update keys
     echo "${RSA_PUBLIC}" | tee "${SSH_DIR}id_rsa.pub"
     echo "${RSA_PRIVATE}" | tee "${SSH_DIR}id_rsa"
+
+    chmod 600 "${SSH_DIR}id_rsa.pub"
+    chmod 600 "${SSH_DIR}id_rsa"
+
+    ssh-keyscan -H github.com >> "${SSH_DIR}known_hosts"
+    ssh-keyscan -H bitbucket.org >> "${SSH_DIR}known_hosts"
 }
 
 
@@ -87,6 +93,7 @@ function setup_perm () {
     echo "Calling setup_perm ..."
 
     chown ${USER} -R ${HOME}
+    chmod 0600 -R ${SSH_DIR}
 }
 
 
