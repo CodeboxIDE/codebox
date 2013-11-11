@@ -23,20 +23,30 @@ define([
             });
         },
 
-        // Check addons is installed
-        isInstalled: function(name) {
+        // Get by name
+        getByName: function(name) {
             return this.find(function(addon) {
                 return addon.get("name") == name;
-            }) != null;
+            });
+        },
+
+        // Check addons is installed
+        isInstalled: function(name) {
+            return this.getByName(name) != null;
         },
 
         // Check addons is a default addon
         isDefault: function(name) {
-            var m = this.find(function(addon) {
-                return addon.get("name") == name;
-            });
+            var m = this.getByName(name);
             if (m == null) return false;
             return m.get("default");
+        },
+
+        // Get addon state
+        getState: function(name) {
+            var m = this.getByName(name);
+            if (m == null) return null;
+            return m.get("state");
         },
 
         // Install an addon
@@ -62,7 +72,7 @@ define([
 
         // Load all this addons collection
         loadAll: function() {
-            return Q.allSettled(this.map(function(addon) {
+            return Q.all(this.map(function(addon) {
                 return addon.load();
             }));
         }

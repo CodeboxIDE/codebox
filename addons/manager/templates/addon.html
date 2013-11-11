@@ -1,5 +1,8 @@
 <% if (!model.isDefault()) { %>
 <div class="actions">
+    <% if (model.state() == "error") { %>
+    <button class="btn btn-warning disabled"><i class="fa fa-warning"></i></button>
+    <% } %>
     <% if (!model.isInstalled()) { %>
     <a href="#" class="btn action-install btn-default" data-loading-text="Installation...">Install</a>
     <% } else { %>

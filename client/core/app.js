@@ -1,11 +1,12 @@
 define([
     'hr/hr',
     'utils/url',
+    'utils/dialogs',
     'core/box',
     'core/session',
     'core/addons',
     'core/box'
-], function (hr, url, box, session, addons, box) {
+], function (hr, url, dialogs, box, session, addons, box) {
 
     // Define base application
     var Application = hr.Application.extend({
@@ -53,7 +54,9 @@ define([
             if (email && password) {
                 this.doLogin(email, password, true);
             } else if (box.isAuth()) {
-                addons.loadAll().then(function() {
+                addons.loadAll().fail(function(err) {
+                    dialogs.alert("Warning!", "Error when initializing addons, it's possible that one of the addons is not correctly loaded. Please check addons states using the addons manager.");
+                }).fin(function() {
                     that.$(".codebox-loading-alert").remove();
                     
                     // Load new addons

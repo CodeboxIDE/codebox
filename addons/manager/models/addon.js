@@ -13,6 +13,10 @@ define([], function() {
             return addons.isInstalled(this.get("name"));
         },
 
+        state: function() {
+            return addons.getState(this.get("name"));
+        },
+
         isDefault: function() {
             return addons.isDefault(this.get("name"));
         },

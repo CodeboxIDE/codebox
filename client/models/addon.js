@@ -22,7 +22,8 @@ define([
             'author': "",
             'client': {
                 'main': "client"
-            }
+            },
+            'state': "notloaded"  // addons state: "notloaded", "loaded", "error"
         },
 
         // Return base url for the addon
@@ -32,14 +33,16 @@ define([
 
         // Load the addon
         load: function() {
+            var context, main, addonRequireConfig,
+            addonRequire, that = this
             var d = Q.defer();
 
             logging.log("Load", this.get("name"));
-            var context = "addon."+this.get("name");
-            var main = this.get("client.main", "client");
+            context = "addon."+this.get("name");
+            main = this.get("client.main", "client");
 
             // Require config
-            var addonRequireConfig = {
+            addonRequireConfig = {
                 'context': context,
                 'baseUrl': this.url(),
                 'waitSeconds': 200,
@@ -57,7 +60,7 @@ define([
             addonRequireConfig.paths[main] = "addon-built";
 
             // Require context
-            var addonRequire = require.config(addonRequireConfig);
+            addonRequire = require.config(addonRequireConfig);
 
             // Ressources
             hr.Resources.addNamespace(context+".templates", {
@@ -67,7 +70,11 @@ define([
 
             // Load main module
             addonRequire([main], function() {
+                that.set("state", "loaded");
                 d.resolve();
+            }, function(err) {
+                that.set("state", "error");
+                d.reject(err);
             });
 
             return d.promise;
