@@ -35,9 +35,10 @@ define([
 
             logging.log("Load", this.get("name"));
             var context = "addon."+this.get("name");
+            var main = this.get("client.main", "client");
 
-            // Require context
-            var addonRequire = require.config({
+            // Require config
+            var addonRequireConfig = {
                 'context': context,
                 'baseUrl': this.url(),
                 'waitSeconds': 200,
@@ -46,12 +47,16 @@ define([
                     "require-tools": "/static/require-tools"
                 },
                 'map': {
-                  '*': {
-                    'css': 'require-tools/css/css',
-                    'less': 'require-tools/less/less'
-                  }
+                    '*': {
+                        'css': 'require-tools/css/css',
+                        'less': 'require-tools/less/less'
+                    }
                 }
-            });
+            };
+            addonRequireConfig.paths[main] = "addon-built";
+
+            // Require context
+            var addonRequire = require.config(addonRequireConfig);
 
             // Ressources
             hr.Resources.addNamespace(context+".templates", {
@@ -60,7 +65,7 @@ define([
             });
 
             // Load main module
-            addonRequire([this.get("client.main", "client")], function() {
+            addonRequire([main], function() {
                 d.resolve();
             });
 

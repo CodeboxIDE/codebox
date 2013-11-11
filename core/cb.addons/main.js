@@ -85,7 +85,7 @@ function setup(options, imports, register, app) {
         var addonPath = path.resolve(addonsPath + '/' + addon.name + '/');
 
         // Path to the require-tools
-        var requiretoolsPath = path.resolve("../../client/build/static/require-tools");
+        var requiretoolsPath = path.resolve(__dirname, "../../client/build/static/require-tools");
 
         // Base main
         var main = addon.client.main;
@@ -94,9 +94,13 @@ function setup(options, imports, register, app) {
         var output = path.resolve(addonPath, "addon-built.js");
 
         var command = "r.js -o baseUrl="+addonPath+" paths.require-tools="+requiretoolsPath+" name="+main+" map.*.css=require-tools/css/css map.*.less=require-tools/less/less out="+output;
-        logger.log("command", command);
-        //return Q(command);
-        return Q.nfcall(exec, command);
+        
+        logger.log("Optimizing", addon.name);
+        return Q.nfcall(exec, command).fail(function(err) {
+            logger.error("error for",addon.name);
+            logger.exception(err, false);
+            return Q.reject(err);
+        });
     };
 
     // Initialize node addons
@@ -115,7 +119,6 @@ function setup(options, imports, register, app) {
         logger.log("Optimize client addons");
         return loadAddonsInfos().then(function(addons) {
             return Q.all(_.map(addons, function(addon) {
-                console.log(addon);
                 if (!isClientside(addon)) return;
                 return optimizeAddon(addon);
             }));

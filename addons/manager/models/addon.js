@@ -1,4 +1,4 @@
-define(function() {
+define([], function() {
     var hr = require("hr/hr");
     var addons = require("core/addons");
 
