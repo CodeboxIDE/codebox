@@ -37,9 +37,11 @@ define([
             this.$el.addClass(this.options.className);
 
             this.value = null;
+            this.keydownHandler = _.bind(this.keydown, this)
 
+            // Bind keyboard
             if (this.options.keyboard) {
-                $(document).keydown(_.bind(this.keydown, this));
+                $(document).bind("keydown", this.keydownHandler);
             }
 
             return this;
@@ -69,6 +71,11 @@ define([
             if (e != null) {
                 e.preventDefault();
             }
+
+            // Unbind dowument keydown
+            $(document).unbind("keydown", this.keydownHandler);
+
+            // Hide modal
             this.$el.modal('hide');
             DialogView.current = null;
         },
