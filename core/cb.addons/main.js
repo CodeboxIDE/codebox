@@ -119,8 +119,11 @@ function setup(options, imports, register, app) {
         var command = rjs+" -o baseUrl="+addonPath+" paths.require-tools="+requiretoolsPath+" name="+main+" map.*.css=require-tools/css/css map.*.less=require-tools/less/less out="+output;
 
         // Run optimization
-        logger.log("Optimizing", addon.name, command);
-        return Q.nfcall(exec, command).fail(function(err) {
+        logger.log("Optimizing", addon.name);
+        return Q.nfcall(exec, command).then(function() {
+            logger.log("Finished", addon.name, "optimization");
+            return Q(output);
+        }, function(err) {
             logger.error("error for",addon.name);
             logger.exception(err, false);
             return Q.reject(err);
@@ -287,17 +290,18 @@ function setup(options, imports, register, app) {
         logger.exception(err, false);
     }).fin(optimzeClientsAddons).then(function() {
         return initNodeAddons()
-    }).fail(function(err) {
+    }).then(function() {
+        logger.log("Addons are ready");
+        register(null, {
+            'addons': {
+                'list': loadAddonsInfos,
+                'install': installAddon,
+                'uninstall': uninstallAddon
+            }
+        });
+    }, function(err) {
         logger.error("Error with external node addons:");
         logger.exception(err);
-    });
-
-    register(null, {
-        'addons': {
-            'list': loadAddonsInfos,
-            'install': installAddon,
-            'uninstall': uninstallAddon
-        }
     });
 };
 
