@@ -1,8 +1,8 @@
 define(["views/dialog"], function(InstallerDialog) {
-    var commands = require("core/commands");
-    var app = require("core/app");
-    var dialogs = require("utils/dialogs");
-    var settings = require("utils/settings");
+    var commands = codebox.require("core/commands");
+    var app = codebox.require("core/app");
+    var dialogs = codebox.require("utils/dialogs");
+    var settings = codebox.require("utils/settings");
 
     // Add settings
     settings.add({

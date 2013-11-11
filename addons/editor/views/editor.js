@@ -1,13 +1,13 @@
 define([
     "ace/ace"
 ], function(ace) {
-    var _ = require("underscore");
-    var $ = require("jQuery");
-    var hr = require("hr/hr");
-    var Dialogs = require("utils/dialogs");
-    var FileSync = require("utils/filesync");
-    var user = require("core/user");
-    var config = require("config");
+    var _ = codebox.require("underscore");
+    var $ = codebox.require("jQuery");
+    var hr = codebox.require("hr/hr");
+    var Dialogs = codebox.require("utils/dialogs");
+    var FileSync = codebox.require("utils/filesync");
+    var user = codebox.require("core/user");
+    var config = codebox.require("config");
     
     var logging = hr.Logger.addNamespace("editor");
     var settings = user.settings("editor");

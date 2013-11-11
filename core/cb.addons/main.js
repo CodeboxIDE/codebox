@@ -7,6 +7,7 @@ var Gittle = require('gittle');
 var Gift = require('gift');
 var temp = require('temp');
 var wrench = require('wrench');
+var requirejs = require('requirejs');
 var exec = require('child_process').exec;
 
 function setup(options, imports, register, app) {
@@ -77,9 +78,14 @@ function setup(options, imports, register, app) {
 
     // Optimize client addon
     var optimizeAddon = function(addon) {
+        var d = Q.defer();
+
         if (!isClientside(addon)) {
             return Q.reject(new Error("Not a cleint side addon"));
         }
+
+        // R.js bin
+        var rjs = path.resolve(__dirname, "../../node_modules/.bin/r.js");
 
         // Base directory for the addon
         var addonPath = path.resolve(addonsPath + '/' + addon.name + '/');
@@ -93,9 +99,27 @@ function setup(options, imports, register, app) {
         // Output file
         var output = path.resolve(addonPath, "addon-built.js");
 
-        var command = "r.js -o baseUrl="+addonPath+" paths.require-tools="+requiretoolsPath+" name="+main+" map.*.css=require-tools/css/css map.*.less=require-tools/less/less out="+output;
-        
-        logger.log("Optimizing", addon.name);
+        // Build config
+        var optconfig = {
+            'baseUrl': addonPath,
+            'name': main,
+            'out': output,
+            'paths': {
+                'require-tools': requiretoolsPath
+            },
+            'optimize': "none",
+            'map': {
+                '*': {
+                    'css': "require-tools/css/css",
+                    'less': "require-tools/less/less"
+                }
+            }
+        };
+
+        var command = rjs+" -o baseUrl="+addonPath+" paths.require-tools="+requiretoolsPath+" name="+main+" map.*.css=require-tools/css/css map.*.less=require-tools/less/less out="+output;
+
+        // Run optimization
+        logger.log("Optimizing", addon.name, command);
         return Q.nfcall(exec, command).fail(function(err) {
             logger.error("error for",addon.name);
             logger.exception(err, false);

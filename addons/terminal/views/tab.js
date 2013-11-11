@@ -2,11 +2,11 @@ define([
     "vendors/term",
     "less!stylesheets/tab.less"
 ], function() {
-    var _ = require("underscore");
-    var $ = require("jQuery");
-    var hr = require("hr/hr");
-    var Tab = require("views/tabs/base")
-    var box = require("core/box");
+    var _ = codebox.require("underscore");
+    var $ = codebox.require("jQuery");
+    var hr = codebox.require("hr/hr");
+    var Tab = codebox.require("views/tabs/base")
+    var box = codebox.require("core/box");
 
     var TerminalTab = Tab.extend({
         className: Tab.prototype.className+ " addon-terminal-tab",
@@ -125,11 +125,9 @@ define([
             if (w == this.term_w && h == this.term_h) {
                 return this;
             }
-            console.log("resize to "+w+":"+h);
             this.term_w = w;
             this.term_h = h;
             this.term.resize(this.term_w, this.term_h);
-            console.log(this.term.rows, this.term.cols);
 
             this.trigger("resize", this.term_w, this.term_h)
 

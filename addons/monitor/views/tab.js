@@ -1,11 +1,11 @@
 define([
     "views/logs"
 ], function(LogsList) {
-    var _ = require("underscore");
-    var $ = require("jQuery");
-    var hr = require("hr/hr");
-    var Tab = require("views/tabs/base")
-    var box = require("core/box");
+    var _ = codebox.require("underscore");
+    var $ = codebox.require("jQuery");
+    var hr = codebox.require("hr/hr");
+    var Tab = codebox.require("views/tabs/base")
+    var box = codebox.require("core/box");
 
     var MonitorTab = Tab.extend({
         templateLoader: "addon.monitor.templates",

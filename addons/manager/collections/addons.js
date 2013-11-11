@@ -1,11 +1,11 @@
 define([
     "models/addon"
 ], function(Addon) {
-    var Q = require("q");
-    var hr = require("hr/hr");
-    var _ = require("underscore");
-    var user = require("core/user");
-    var addons = require("core/addons");
+    var Q = codebox.require("q");
+    var hr = codebox.require("hr/hr");
+    var _ = codebox.require("underscore");
+    var user = codebox.require("core/user");
+    var addons = codebox.require("core/addons");
 
     var Addons = hr.Collection.extend({
         model: Addon,
@@ -27,7 +27,6 @@ define([
 
             return hr.Requests.getJSON(user.settings("manager").get("registry")+"/api/addons?limit=1000&callback=?").then(function(index) {
                 that._index = index;
-                console.log("addons", index);
                 hr.Cache.set("addons", user.settings("manager").get("registry"), that._index, 60*60);
 
                 return Q(that._index);

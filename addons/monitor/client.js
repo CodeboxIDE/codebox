@@ -1,8 +1,8 @@
 define([
     "views/tab"
 ], function(MonitorTab) {
-    var commands = require("core/commands");
-    var tabs = require("utils/tabs");
+    var commands = codebox.require("core/commands");
+    var tabs = codebox.require("utils/tabs");
 
     // Add opening command
     commands.register("monitor.open", {

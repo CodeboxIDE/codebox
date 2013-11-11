@@ -1,6 +1,6 @@
 define([], function() {
-    var hr = require("hr/hr");
-    var addons = require("core/addons");
+    var hr = codebox.require("hr/hr");
+    var addons = codebox.require("core/addons");
 
     var Addon = hr.Model.extend({
         defaults: {

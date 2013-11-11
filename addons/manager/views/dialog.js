@@ -1,10 +1,10 @@
 define([
     "views/addons"
 ], function(AddonsList) {
-    var $ = require("jQuery");
-    var DialogView = require("views/dialogs/base");
-    var dialogs = require("utils/dialogs");
-    var addons = require("core/addons");
+    var $ = codebox.require("jQuery");
+    var DialogView = codebox.require("views/dialogs/base");
+    var dialogs = codebox.require("utils/dialogs");
+    var addons = codebox.require("core/addons");
 
     var InstallerDialog = DialogView.extend({
         className: "addon-manager-dialog modal fade",

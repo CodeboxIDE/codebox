@@ -1,9 +1,9 @@
 define([
     "less!stylesheets/dialog.less"
 ], function() {
-    var _ = require("underscore");
-    var DialogView = require("views/dialogs/base");
-    var settings = require("utils/settings");
+    var _ = codebox.require("underscore");
+    var DialogView = codebox.require("views/dialogs/base");
+    var settings = codebox.require("utils/settings");
 
     var SettingsDialog = DialogView.extend({
         className: "addon-settings-dialog modal fade",

@@ -3,10 +3,10 @@ define([
     "views/editor",
     "less!stylesheets/file.less"
 ], function(FilesBaseView, EditorView) {
-    var _ = require("underscore");
-    var $ = require("jQuery");
-    var hr = require("hr/hr");
-    var Dialogs = require("utils/dialogs");
+    var _ = codebox.require("underscore");
+    var $ = codebox.require("jQuery");
+    var hr = codebox.require("hr/hr");
+    var Dialogs = codebox.require("utils/dialogs");
 
     var FileEditorView = FilesBaseView.extend({
         className: "editor-files-editor",

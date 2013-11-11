@@ -3,12 +3,12 @@ define([
     "views/file",
     "less!stylesheets/tab.less"
 ], function(FilesDirectoryView, FileEditorView) {
-    var _ = require("underscore");
-    var $ = require("jQuery");
-    var hr = require("hr/hr");
-    var Tab = require("views/tabs/base")
-    var box = require("core/box");
-    var File = require("models/file");
+    var _ = codebox.require("underscore");
+    var $ = codebox.require("jQuery");
+    var hr = codebox.require("hr/hr");
+    var Tab = codebox.require("views/tabs/base")
+    var box = codebox.require("core/box");
+    var File = codebox.require("models/file");
 
     var EditorTab = Tab.extend({
         className: Tab.prototype.className+ " addon-editor-tab",

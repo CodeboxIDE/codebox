@@ -2,11 +2,11 @@ define([
     "views/base",
     "less!stylesheets/directory.less"
 ], function(FilesBaseView) {
-    var _ = require("underscore");
-    var $ = require("jQuery");
-    var hr = require("hr/hr");
-    var Uploader = require("utils/uploader");
-    var Dialogs = require("utils/dialogs");
+    var _ = codebox.require("underscore");
+    var $ = codebox.require("jQuery");
+    var hr = codebox.require("hr/hr");
+    var Uploader = codebox.require("utils/uploader");
+    var Dialogs = codebox.require("utils/dialogs");
 
     var FilesDirectoryView = FilesBaseView.extend({
         className: "editor-files-directory",

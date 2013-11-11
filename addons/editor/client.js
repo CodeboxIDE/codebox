@@ -2,11 +2,11 @@ define([
     "views/tab",
     "ace/ace"
 ], function(EditorTab, ace) {
-    var $ = require("jQuery");
-    var commands = require("core/commands");
-    var tabs = require("utils/tabs");
-    var settings = require("utils/settings");
-    var config = require("config");
+    var $ = codebox.require("jQuery");
+    var commands = codebox.require("core/commands");
+    var tabs = codebox.require("utils/tabs");
+    var settings = codebox.require("utils/settings");
+    var config = codebox.require("config");
 
     // Configure ace
     // ace version used is the content of https://github.com/ajaxorg/ace/tree/master/lib/ace

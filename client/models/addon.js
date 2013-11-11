@@ -6,6 +6,7 @@ define([
     "core/api",
 
     // addons dependencies
+    "core/globals",
     "utils/themes",
     "utils/tabs",
     "utils/settings"
