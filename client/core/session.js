@@ -32,7 +32,6 @@ define([
                 'email': email,
                 'token': token
             }, user).then(function() {
-                console.log("auth succeed");
                 // Get installed addons
                 return addons.getInstalled();
             }).then(function() {
