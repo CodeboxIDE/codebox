@@ -68,7 +68,16 @@ function setup(options, imports, register, app) {
 
     // Copy defaults addons
     var copyDefaultsAddons = function() {
-        return loadAddonsInfos(configDefaultsPath).then(runAddonsOperation(function(addon) {
+        var first = loadAddonsInfos(configDefaultsPath);
+
+        if (options.dev) {
+            logger.log("Optmize defaults addons for production");
+            first = first.then(runAddonsOperation(function(addon) {
+                return addon.optimizeClient();
+            }));
+        }
+
+        return first.then(runAddonsOperation(function(addon) {
             logger.log("Adding default addon", addon.infos.name);
             return addon.transfer(configAddonsPath);
         }));

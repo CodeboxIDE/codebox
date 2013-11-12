@@ -13,6 +13,7 @@ var start = function(config) {
         'root': process.env.WORKSPACE_DIR || process.cwd(),
         'title': process.env.WORKSPACE_NAME,
         'public': process.env.WORKSPACE_PUBLIC != "false",
+        'dev': process.env.DEV != null,
 
         'hooks': {
             // Hooks could be:
@@ -51,6 +52,11 @@ var start = function(config) {
     // Default title
     if (config.title == null) {
         config.title = path.basename(config.root)
+    }
+
+    // Is dev mode
+    if (config.dev) {
+        console.log("WARNING! your codebox is in dev mode");
     }
 
     // The root of our plugins
@@ -94,6 +100,7 @@ var start = function(config) {
             'packagePath': "./cb.addons",
 
             // Options
+            'dev': config.dev,
             'path': config.addons.path,
             'tempPath': config.addons.tempPath,
             'defaultsPath': config.addons.defaultsPath
