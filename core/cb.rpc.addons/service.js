@@ -22,7 +22,9 @@ AddonsRPCService.prototype.install = function(args, meta) {
 	if (!args.git) {
         return Q.reject(new Error("Need 'git' argument"));
     }
-    return this.addons.install(args.git);
+    return this.addons.install(args.git).then(function(addon) {
+        return addon.infos;
+    });
 };
 
 AddonsRPCService.prototype.uninstall = function(args, meta) {
