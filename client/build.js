@@ -1,4 +1,5 @@
 var path = require("path");
+var pkg = require("../package.json");
 
 exports.config = {
     // Base directory for the application
@@ -64,7 +65,7 @@ exports.config = {
             exports: 'Mousetrap'
         }
     },
-    'options': {
-        
+    'args': {
+        'version': pkg.version
     }
 };

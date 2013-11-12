@@ -1,5 +1,6 @@
 define([
-    "views/logs"
+    "views/logs",
+    "less!stylesheets/tab.less"
 ], function(LogsList) {
     var _ = codebox.require("underscore");
     var $ = codebox.require("jQuery");
@@ -12,7 +13,8 @@ define([
         template: "tab.html",
         className: Tab.prototype.className+ " addon-monitor-tab",
         events: {
-            "click .action-monitor-clear": "clearLogs"
+            "click .action-monitor-clear": "clearLogs",
+            "keyup .filter-query": "filterLogs"
         },
 
         initialize: function(options) {
@@ -47,6 +49,14 @@ define([
         clearLogs: function(e) {
             if (e) e.preventDefault();
             this.logs.collection.reset([]);
+        },
+
+        // Filter logs
+        filterLogs: function(e) {
+            var q = this.$(".filter-query").val().toLowerCase();
+            this.logs.filter(function(log) {
+                return log.get("section", "").toLowerCase().search(q) >= 0;
+            }, this)
         }
     });
 

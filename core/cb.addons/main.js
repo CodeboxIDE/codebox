@@ -12,7 +12,7 @@ var exec = require('child_process').exec;
 var Addon = require("./addon");
 
 function setup(options, imports, register, app) {
-    var logger = imports.logger.namespace("addons");
+    var logger = imports.logger.namespace("addons", true);
     var server = imports.server;
     var events = imports.events;
     var hooks = imports.hooks;

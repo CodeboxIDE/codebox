@@ -3,6 +3,7 @@ define([], function() {
 
     var Log = hr.Model.extend({
         defaults: {
+            'section': null,
             'type': null,
             'content': []
         },
