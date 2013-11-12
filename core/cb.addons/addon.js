@@ -132,7 +132,8 @@ var Addon = function(logger, _rootPath) {
 
         var addonPath = path.join(newRoot, this.infos.name);
         return Q.nfcall(wrench.copyDirRecursive, this.root, addonPath, options).then(function() {
-            return Q(new Addon(logger, addonPath));
+            var addon = new Addon(logger, addonPath);
+            return addon.load();
         });
     };
 

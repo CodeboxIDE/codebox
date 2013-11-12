@@ -23,7 +23,7 @@ function setup(options, imports, register, app) {
     // Directory with all the box addons
     var configAddonsPath = path.resolve(options.path);
 
-    // Diretcory for temporary storage
+    // Directory for temporary storage
     var configTempPath = options.tempPath ? path.resolve(options.tempPath) : null;
 
     // Build the directory for stroign addons
@@ -33,7 +33,8 @@ function setup(options, imports, register, app) {
 
     // Check if an addons is a default addons
     var isDefaultAddon = function(addon) {
-        return fs.existsSync(path.join(configDefaultsPath, addon.infos.name));
+        if (!_.isString(addon)) addon = addon.infos.name;
+        return fs.existsSync(path.join(configDefaultsPath, addon));
     };
 
     // Load addons list from a directory return as a map name -> addon
@@ -75,7 +76,7 @@ function setup(options, imports, register, app) {
 
     // Install an addon by its git url
     var installAddon = function(git, options) {
-        var addon, addonDir, tempDir;
+        var addon, tempDir;
 
         options = _.defaults({}, options || {}, {
             
@@ -83,7 +84,7 @@ function setup(options, imports, register, app) {
 
         logger.log("Install add-on", git);
 
-        tempDir = path.join(tempPath, "t"+Date.now());
+        tempDir = path.join(configTempPath, "t"+Date.now());
 
         // Create temporary dir
         return Q.nfcall(fs.mkdir, tempDir).then(function() {
@@ -98,8 +99,7 @@ function setup(options, imports, register, app) {
             return hooks.use("addons", addon.infos);
         }).then(function() {
             // Copy to addons dir
-            addonDir = path.join(addonsPath, addon.name);
-            return addon.transfer(addonDir);
+            return addon.transfer(configAddonsPath);
         }).then(function(newAddon) {
             addon = newAddon;
 
@@ -115,7 +115,7 @@ function setup(options, imports, register, app) {
             return addon.start(app);
         }).then(function() {
             // Emit events
-            events.emit('addons.install', addon);
+            events.emit('addons.install', addon.infos);
 
             // Return addon infos
             return Q(addon);
