@@ -11,7 +11,11 @@ function AddonsRPCService(addons, workspace) {
 }
 
 AddonsRPCService.prototype.list = function(args, meta) {
-    return this.addons.list();
+    return this.addons.list().then(function(addons) {
+        return _.map(addons, function(addon) {
+            return addon.infos;
+        });
+    })
 };
 
 AddonsRPCService.prototype.install = function(args, meta) {
