@@ -45,6 +45,9 @@ define([
             this.parent.on("tab:state", function(state) {
                 if (state) this.editor.focus();
             }, this);
+            this.parent.on("tab:close", function() {
+                this.editor.sync.close();
+            }, this);
             this.editor.focus();
         },
 

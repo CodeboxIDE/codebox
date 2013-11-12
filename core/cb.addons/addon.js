@@ -53,12 +53,12 @@ var Addon = function(logger, _rootPath) {
     };
 
     // Optimize the addon
-    this.optimizeClient = function() {
+    this.optimizeClient = function(force) {
         var that = this;
         var d = Q.defer();
 
         if (!this.isClientside()
-        || this.isOptmized()) {
+        || (this.isOptmized() && !force)) {
             return Q(this);
         }
 

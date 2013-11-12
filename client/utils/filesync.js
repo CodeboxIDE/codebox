@@ -293,7 +293,7 @@ define([
             if (this.file != null) {
                 return this.file.codebox.socket("filesync");
             } else {
-                throw new Error("need 'file' to creat sync socket");
+                throw new Error("need 'file' to create sync socket");
             }
         },
 
@@ -600,7 +600,14 @@ define([
         sendSync: function() {
             this.send("sync");
             return true;
-        }
+        },
+
+        /*
+         *  Close the connexion
+         */
+        close: function() {
+            return this.send("close");
+        },
     });
 
     return FileSync;

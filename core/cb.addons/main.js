@@ -73,7 +73,7 @@ function setup(options, imports, register, app) {
         if (options.dev) {
             logger.log("Optmize defaults addons for production");
             first = first.then(runAddonsOperation(function(addon) {
-                return addon.optimizeClient();
+                return addon.optimizeClient(true);
             }));
         }
 
