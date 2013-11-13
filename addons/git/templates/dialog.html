@@ -23,7 +23,7 @@
 
             <!-- Tab panes -->
             <div class="tab-content">
-                <div class="tab-pane fade in active" id="git-tab-changes">
+                <div class="git-changes tab-pane fade in active" id="git-tab-changes">
                     <form class="git-commit">
                         <div class="form-group">
                             <textarea class="form-control" rows="2" placeholder="Commit summary"></textarea>
@@ -31,9 +31,12 @@
                         <button type="submit" class="btn btn-default">Commit</button>
                         <button type="button" class="btn btn-git-sync btn-default" data-toggle="button"><i class="fa fa-refresh"></i></button>
                     </form>
-                    <ul class="git-changes">
+                    <ul class="git-changes-files">
                     <% _.each(git.files || {}, function(file, path) { %>
-                        <li class="file type-<%- file.type || 'A' %>"><%- path %></li>
+                        <li class="file">
+                            <span class="file-type type-<%- file.type || 'A' %>"><%- file.type || 'A' %></span>
+                            <span class="path"><%- path %></span>
+                        </li>
                     <% }); %>
                     </ul>
                 </div>

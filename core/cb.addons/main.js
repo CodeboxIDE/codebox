@@ -160,7 +160,7 @@ function setup(options, imports, register, app) {
         return addon.installDependencies();
     })).then(runAddonsOperation(function(addon) {
         // Optimized addons
-        return addon.optimizeClient();
+        return addon.optimizeClient(options.dev);
     })).then(runAddonsOperation(function(addon) {
         // Start addons
         return addon.start(app);
