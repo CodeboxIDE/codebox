@@ -14,7 +14,8 @@ function setup(options, imports, register) {
     var workspace = new Workspace({
         'root': rootPath,
         'name': options.title,
-        'public': options.public
+        'public': options.public,
+        'maxUsers': options.maxUsers
     }, events);
 
     register(null, {

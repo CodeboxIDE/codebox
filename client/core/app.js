@@ -99,8 +99,9 @@ define([
                     hr.Storage.set("token", "");
                 }
                 that.render();
-            }).fail(function() {
+            }).fail(function(err) {
                 that.$(".login-box .form-group").addClass("has-error");
+                dialogs.alert("Error at login", err.message);
             });
         }
     });

@@ -7,6 +7,7 @@ Codebox use environment variables for defining its conffiguration, here is a lis
 | WORKSPACE_DIR | Workspace current directory | Shell current directory |
 | WORKSPACE_NAME | Name for this workspace | "Workspace" |
 | WORKSPACE_PUBLIC | If defined the workspace will be considered as public | false |
+| WORKSPACE_USERS_MAX | Max number of users | 100 |
 | WORKSPACE_HOOK_AUTH | Url for the authentification hook | |
 | WORKSPACE_HOOK_EVENTS | Url for the events hook | |
 | WORKSPACE_HOOK_SETTINGS | Url for the settings hook | |

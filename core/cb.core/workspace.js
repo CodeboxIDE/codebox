@@ -14,7 +14,8 @@ function Workspace(options, events) {
         'secret': uuid.v4(),
         'name': 'codebox',
         'public': true,
-        'root': "./"
+        'root': "./",
+        'maxUsers': 100
     });
 
     // Public ID of workspace (ok to share)
@@ -32,8 +33,10 @@ function Workspace(options, events) {
     // Base folder
     this.root = options.root;
 
-    // Mapping of directories
+    // Mapping of users
     this._users = {};
+    this.maxUsers = options.maxUsers;
+    console.log("limit users", this.maxUsers);
 
     // Last modification
     this.mtime = null;
@@ -66,6 +69,11 @@ Workspace.prototype.addUser = function(user) {
 
     if(!user.isValid()) {
         return qfail(new Error("Could not add user, because user object is not valid (missing data)"));
+    }
+
+    // Limit count
+    if (_.size(this._users) >= this.maxUsers) {
+        return qfail(new Error("Could not add user, because there are already too much users (limit="+this.maxUsers+")"));
     }
 
     // Add to map

@@ -43,6 +43,10 @@ var start = function(config) {
             'path': process.env.WORKSPACE_ADDONS_DIR || path.resolve(__dirname + '/../.addons'),
             'defaultsPath': process.env.WORKSPACE_ADDONS_DEFAULTS_DIR || path.resolve(__dirname + '/../addons'),
             'tempPath': process.env.WORKSPACE_ADDONS_TEMP_DIR || os.tmpDir()
+        },
+        'users': {
+            // Max number of collaborators
+            'max': parseInt(process.env.WORKSPACE_USERS_MAX || 100)
         }
     });
 
@@ -74,7 +78,8 @@ var start = function(config) {
             // Options
             'title': config.title,
             'root': config.root,
-            'public': config.public
+            'public': config.public,
+            'maxUsers': config.users.max
         },
 
         // Utils
