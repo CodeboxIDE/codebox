@@ -17,16 +17,28 @@ define([
          *  @callback : function to call
          */
         bind: function(keys, callback, context) {
+            // List of shortcuts for same action
             if (_.isArray(keys)) {
-                _.each(keys, function(key) { Keyboard.bind(key, callback) });
+                _.each(keys, function(key) { this.bind(key, callback) }, this);
                 return;
             }
+
+            // Map shortcut -> action
+            if (_.isObject(keys)) {
+                _.each(keys, function(method, key) {
+                    this.bind(key, method);
+                }, this)
+                return;
+            }
+
+            // Bind
             if (this.bindings[keys] == null) {
                 this.bindings[keys] = new hr.Class();
                 Mousetrap.bind(keys, _.bind(function(e) {
                     this.bindings[keys].trigger("action", e);
                 }, this));
             }
+            console.log("bind ", keys);
             this.bindings[keys].on("action", callback, context);
             return;
         },

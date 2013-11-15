@@ -2,8 +2,9 @@ define([
     "underscore",
     "jQuery",
     "hr/hr",
-    "utils/dragdrop"
-], function(_, $, hr, DragDrop) {
+    "utils/dragdrop",
+    "utils/keyboard"
+], function(_, $, hr, DragDrop, Keyboard) {
     // Tab header
     var TabView = hr.View.extend({
         className: "component-tab",
@@ -96,13 +97,38 @@ define([
             "mouseenter .tab-panel-lateralopener": "openLateralPanel",
             "mouseleave .tab-panel-lateralbar": "closeLateralPanel"
         },
+        shortcuts: {
+            "mod+shift+c": "closeTab"
+        },
 
         // Constructor
         initialize: function() {
             TabPanelView.__super__.initialize.apply(this, arguments);
             this.tabid = this.options.tabid;
             this.tabs = this.parent;
+            this.setShortcuts(this.shortcuts || {});
             return this;
+        },
+
+        // Define keyboard shortcuts
+        setShortcuts: function(navigations) {
+            var navs = {};
+
+            _.each(navigations, function(method, key) {
+                navs[key] = _.bind(function() {
+                    // Trigger only if active tab
+                    if (!this.isActiveTab()) return;
+
+                    // Get method
+                    if (!_.isFunction(method)) method = this[method];
+
+                    // Appl method
+                    if (!method) return;
+                    method.apply(this, arguments);
+                }, this);
+            }, this);
+
+            Keyboard.bind(navs);
         },
 
         // Close the tab

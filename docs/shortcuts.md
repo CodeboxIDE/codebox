@@ -9,6 +9,16 @@
 | /, s | /, s | Display search lateral bar |
 | t | t | Open a new terminal tab |
 
+---------------------------------------
+
+### Tabs
+
+
+| PC (Windows/Linux)             | Mac                            | action                         |
+|-------------------------------|-------------------------------|-------------------------------|
+| Ctrl-Shift-C | Command-Shift-C | Close the current tab |
+
+---------------------------------------
 
 
 ### Code Editor (ace)
