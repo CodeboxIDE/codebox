@@ -1,0 +1,60 @@
+define([
+    "showdown",
+    "extensions/github",
+    "extensions/table",
+    "less!stylesheets/page.less"
+], function(Showdown) {
+    var hr = codebox.require("hr/hr");
+    var _ = codebox.require("underscore");
+    var $ = codebox.require("jQuery");
+
+    var PageView = hr.View.extend({
+        className: "addon-help-page",
+        events: {
+            "click a": "clickLink"
+        },
+
+        // Constructor
+        initialize: function() {
+            PageView.__super__.initialize.apply(this, arguments);
+            this.converter = new Showdown.converter({ extensions: ['github', 'table'] });
+
+            this.content = "";
+            this.loadPage(this.options.page);
+            return this;
+        },
+
+        // Load page
+        loadPage: function(page) {
+            var that = this;
+
+            this.currentPage = page || "README.md";
+            return hr.Requests.get("/docs/"+this.currentPage).then(function(content) {
+                that.content = content;
+            }, function() {
+                that.content = "# Error with page: "+_.escape(that.currentPage);
+            }).fin(function() {
+                that.render();
+            });
+        },
+
+        // Render
+        render: function() {
+            this.$el.html(this.converter.makeHtml(this.content));
+            return this.ready();
+        },
+
+        // Click link
+        clickLink: function(e) {
+            var a = $(e.currentTarget);
+            var url = a.attr("href");
+            var r = new RegExp('^(?:[a-z]+:)?//', 'i');
+            if (!r.test(url)) {
+                e.preventDefault();
+                this.loadPage(url);
+            }
+        } 
+    });
+
+    return PageView;
+});

@@ -2,17 +2,20 @@
 
 ### Commands
 
+
 | PC (Windows/Linux)             | Mac                            | action                         |
-|:-------------------------------|:-------------------------------|:-------------------------------|
+|-------------------------------|-------------------------------|-------------------------------|
 | ? | ? | Open help dialog |
 | /, s | /, s | Display search lateral bar |
 | t | t | Open a new terminal tab |
 
 
+
 ### Code Editor (ace)
 
+
 | PC (Windows/Linux)             | Mac                            | action                         |
-|:-------------------------------|:-------------------------------|:-------------------------------|
+|-------------------------------|-------------------------------|-------------------------------|
 | Ctrl-, | Command-, | Show the settings menu |
 | Ctrl-Alt-Up | Ctrl-Option-Up | add multi-cursor above |
 | Ctrl-Alt-Down | Ctrl-Option-Down | add multi-cursor below |

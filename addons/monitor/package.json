@@ -3,7 +3,7 @@
     "version": "0.0.3",
     "title": "Monitor",
     "description": "Monitoring console for your workspace.",
-    "homepage": "https://github.com/FriendCode/codebox-addon-monitor",
+    "homepage": "https://github.com/FriendCode/codebox",
     "license": "Apache",
     "author": {
         "name": "Samy Pessé",

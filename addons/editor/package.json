@@ -3,7 +3,7 @@
     "version": "0.1.1",
     "title": "Code Editor",
     "description": "Code Editor with files explorer.",
-    "homepage": "https://github.com/FriendCode/codebox-addon-editor",
+    "homepage": "https://github.com/FriendCode/codebox",
     "license": "Apache",
     "author": {
         "name": "Samy Pessé",

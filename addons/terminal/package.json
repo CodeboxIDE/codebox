@@ -3,7 +3,7 @@
     "version": "0.0.4",
     "title": "Terminal",
     "description": "Terminal tab integration into your workspace.",
-    "homepage": "https://github.com/FriendCode/codebox-addon-terminal",
+    "homepage": "https://github.com/FriendCode/codebox",
     "license": "Apache",
     "author": {
         "name": "Samy Pessé",

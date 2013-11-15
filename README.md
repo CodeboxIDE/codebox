@@ -25,7 +25,4 @@ You can now run Codebox into a directory (Codebox can only be run on GIT reposit
 $ codebox run -d ./myworkspace
 ```
 
-## Documentation
-
-* [Configuration with environment variables](https://github.com/FriendCode/codebox/blob/master/docs/env.md)
-* [Managing addons](https://github.com/FriendCode/codebox/blob/master/docs/addons.md)
+Complete documentation can be found in [docs](https://github.com/FriendCode/codebox/blob/master/docs).

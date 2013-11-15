@@ -2,7 +2,7 @@ var _ = require('underscore');
 var fs  =  require('fs');
 var path = require('path');
 var wrench = require('wrench');
-var exec = require('child_process').exec;
+var exec = require('child-process-promise').exec;
 var Q = require("q");
 
 var Addon = function(logger, _rootPath) {
@@ -98,11 +98,13 @@ var Addon = function(logger, _rootPath) {
 
         // Run optimization
         logger.log("Optimizing", this.infos.name);
-        return Q.nfcall(exec, command).then(function() {
+        return exec(command).then(function() {
             logger.log("Finished", that.infos.name, "optimization");
             return Q(that);
         }, function(err) {
             logger.error("error for optimization of", that.infos.name);
+            logger.error("command=",command);
+            logger.error(err.stdout);
             logger.exception(err, false);
             return Q.reject(err);
         });
@@ -117,7 +119,7 @@ var Addon = function(logger, _rootPath) {
             }
         }
         logger.log("Install dependencies for", this.root);
-        return Q.nfcall(exec, "cd "+this.root+" && npm install .").then(function() {
+        return exec("cd "+this.root+" && npm install .").then(function() {
             return Q(that);
         });
     };

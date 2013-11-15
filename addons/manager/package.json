@@ -3,7 +3,7 @@
     "version": "0.1.3",
     "title": "Add-ons",
     "description": "Add-ons manager",
-    "homepage": "https://codenow.io",
+    "homepage": "https://github.com/FriendCode/codebox",
     "license": "Apache",
     "author": {
         "name": "Samy Pessé",

@@ -3,7 +3,7 @@
     "version": "0.0.3",
     "title": "GIT",
     "description": "Integration of Git into your workspace.",
-    "homepage": "https://github.com/FriendCode/codebox-addon-git",
+    "homepage": "https://github.com/FriendCode/codebox",
     "license": "Apache",
     "author": {
         "name": "Samy Pessé",

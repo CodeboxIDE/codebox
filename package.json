@@ -15,6 +15,7 @@
         "googlediff": "0.1.0",
         "cryptojs": "2.5.3",
         "eventemitter2": "0.4.13",
+        "child-process-promise": "0.2.0",
         "engineer": "0.0.7",
         "express": "3.3.5",
         "socket.io": "0.9.16",
