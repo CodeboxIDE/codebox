@@ -7,7 +7,10 @@ define([
     // Add opening command
     commands.register("terminal.open", {
         title: "Terminal",
-        icon: "terminal"
+        icon: "terminal",
+        shortcuts: [
+            "t"
+        ]
     }, function() {
         tabs.open(TerminalTab);
     });
