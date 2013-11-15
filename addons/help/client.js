@@ -6,7 +6,7 @@ define(["views/dialog"], function(HelpDialog) {
     // Add opening command
     commands.register("addons.client", {
         title: "Help",
-        icon: "question",
+        icon: "question-circle",
         shortcuts: [
             '?'
         ]
