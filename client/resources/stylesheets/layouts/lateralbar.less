@@ -1,8 +1,11 @@
 #codebox .layout-lateralbar {
+	@transitionSpeed: 800ms;
+
 	position: absolute;
 	top: 0px;
 	left: 0px;
 	bottom: 0px;
+	overflow: hidden;
 	width: @codeboxMenubarWidth+@codeboxLateralbarWidth;
 	background: @codeboxLateralbarBackground;
 	box-shadow: inset -8px 0px 9px -9px #000000;
@@ -15,6 +18,7 @@
 		width: @codeboxMenubarWidth;
 		top: 0px;
 		bottom: 0px;
+		.transition(all @transitionSpeed);
 
 		.menu-section {
 			margin-bottom: 10px;
@@ -35,10 +39,7 @@
 		width: @codeboxLateralbarWidth;
 		overflow-y: auto;
 		overflow-x: hidden;
-
-		.searchbar {
-			display: none;
-		}
+		.transition(all @transitionSpeed);
 
 		>.files {
 			margin: 4px 0px;
@@ -46,12 +47,20 @@
 		}
 	}
 
+	.searchbar {
+		left: @codeboxMenubarWidth+@codeboxLateralbarWidth;
+		.transition(all @transitionSpeed);
+	}
+
 	&.mode-search {
-		.lateral-body .searchbar {
-			display: block;
+		.searchbar {
+			left: 0px;
 		}
-		.lateral-body >.files {
-			display: none;
+		.lateral-body {
+			left: -(@codeboxMenubarWidth+@codeboxLateralbarWidth);
+		}
+		.lateral-menu {
+			left: -(@codeboxMenubarWidth+2*@codeboxLateralbarWidth);
 		}
 	}
 }

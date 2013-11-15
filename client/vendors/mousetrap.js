@@ -17,10 +17,10 @@
  * Mousetrap is a simple keyboard shortcut library for Javascript with
  * no external dependencies
  *
- * @version 1.4.4
+ * @version 1.4.6
  * @url craig.is/killing/mice
  */
-(function() {
+(function(window, document, undefined) {
 
     /**
      * mapping of special keycodes to their corresponding keys
@@ -403,6 +403,36 @@
     }
 
     /**
+     * prevents default for this event
+     *
+     * @param {Event} e
+     * @returns void
+     */
+    function _preventDefault(e) {
+        if (e.preventDefault) {
+            e.preventDefault();
+            return;
+        }
+
+        e.returnValue = false;
+    }
+
+    /**
+     * stops propogation for this event
+     *
+     * @param {Event} e
+     * @returns void
+     */
+    function _stopPropagation(e) {
+        if (e.stopPropagation) {
+            e.stopPropagation();
+            return;
+        }
+
+        e.cancelBubble = true;
+    }
+
+    /**
      * actually calls the callback function
      *
      * if your callback function returns false this will use the jquery
@@ -412,24 +442,16 @@
      * @param {Event} e
      * @returns void
      */
-    function _fireCallback(callback, e, combo) {
+    function _fireCallback(callback, e, combo, sequence) {
 
         // if this event should not happen stop here
-        if (Mousetrap.stopCallback(e, e.target || e.srcElement, combo)) {
+        if (Mousetrap.stopCallback(e, e.target || e.srcElement, combo, sequence)) {
             return;
         }
 
         if (callback(e, combo) === false) {
-            if (e.preventDefault) {
-                e.preventDefault();
-            }
-
-            if (e.stopPropagation) {
-                e.stopPropagation();
-            }
-
-            e.returnValue = false;
-            e.cancelBubble = true;
+            _preventDefault(e);
+            _stopPropagation(e);
         }
     }
 
@@ -481,7 +503,7 @@
 
                 // keep a list of which sequences were matches for later
                 doNotReset[callbacks[i].seq] = 1;
-                _fireCallback(callbacks[i].callback, e, callbacks[i].combo);
+                _fireCallback(callbacks[i].callback, e, callbacks[i].combo, callbacks[i].seq);
                 continue;
             }
 
@@ -912,7 +934,7 @@
             }
 
             // stop for input, select, and textarea
-            return element.tagName == 'INPUT' || element.tagName == 'SELECT' || element.tagName == 'TEXTAREA' || (element.contentEditable && element.contentEditable == 'true');
+            return element.tagName == 'INPUT' || element.tagName == 'SELECT' || element.tagName == 'TEXTAREA' || element.isContentEditable;
         },
 
         /**
@@ -928,4 +950,4 @@
     if (typeof define === 'function' && define.amd) {
         define(Mousetrap);
     }
-}) ();
+}) (window, document);

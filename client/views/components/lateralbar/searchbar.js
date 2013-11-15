@@ -33,8 +33,17 @@ define([
         /* (event) Key input in search */
         keydown: function(e) {
             var key = e.which || e.keyCode;
+            var q = $(e.currentTarget).val();
+
             if (key == 38 || key == 40 || key == 13) {
                 e.preventDefault();
+            }
+
+            if (q.length == 0 && key == 8) {
+                e.preventDefault();
+                this.blur();
+                this.clearResults();
+                this.trigger("close");
             }
         },
 
@@ -43,7 +52,7 @@ define([
             var key = e.which || e.keyCode;
             var q = $(e.currentTarget).val();
 
-            if (q.length == 0 || key == 27) {
+            if (key == 27) {
                 /* ESC */
                 e.preventDefault();
                 this.blur();

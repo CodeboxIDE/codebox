@@ -1,8 +1,9 @@
 define([
     "underscore",
     "hr/hr",
-    "models/command"
-], function(_, hr, Command) {
+    "models/command",
+    "utils/keyboard"
+], function(_, hr, Command, Keyboard) {
     var logging = hr.Logger.addNamespace("command");
 
     var Commands = hr.Collection.extend({
@@ -25,6 +26,14 @@ define([
 
             var command = new this.model({}, properties);
             this.add(command);
+
+            // Bind keyboard shortcuts
+            _.each(command.get("shortcuts", []), function(shortcut) {
+                Keyboard.bind(shortcut, function(e) {
+                    e.preventDefault();
+                    command.run();
+                });
+            });
 
             return command;
         },

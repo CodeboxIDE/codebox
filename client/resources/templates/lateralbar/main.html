@@ -15,10 +15,10 @@
     </div>
 </div>
 <div class="lateral-body">
-    <%= view.component("component.lateralbar.searchbar", {}, "search") %>
     <div class="files">
         <%= view.component("component.lateralbar.files", {
             'path': "/"
         }, "tree") %>
     </div>
 </div>
+<%= view.component("component.lateralbar.searchbar", {}, "search") %>

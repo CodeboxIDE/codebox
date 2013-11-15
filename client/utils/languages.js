@@ -250,7 +250,7 @@ define([
                              'extensions': ['.dpatch'],
                              'primary_extension': '.darcspatch',
                              'search_term': 'dpatch'},
-             'Dart': {'primary_extension': '.dart', 'type': 'programming'},
+             'Dart': {'primary_extension': '.dart', 'color': "#98BAD6", 'type': 'programming'},
              'Delphi': {'color': '#b0ce4e',
                         'extensions': ['.lpr'],
                         'primary_extension': '.pas',

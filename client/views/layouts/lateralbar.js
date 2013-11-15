@@ -25,9 +25,12 @@ define([
             // Search command
             commands.register("search", {
                 title: "Search",
-                icon: "search"
+                icon: "search",
+                shortcuts: [
+                    "s", "/"
+                ]
             }, function() {
-                that.toggleSearch();
+                that.toggleSearch(true);
             });
 
             return this;
