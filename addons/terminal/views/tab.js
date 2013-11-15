@@ -92,7 +92,6 @@ define([
                 w = w || that.term_w;
                 h = h || that.term_h;
                 
-                console.log("send size");
                 that.shell.socket.emit("shell.resize", {
                     "shellId": that.shell.shellId,
                     "rows": h,

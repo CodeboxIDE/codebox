@@ -50,6 +50,11 @@ define([
                 });
             }
 
+            // Hide
+            if (!this.model.get("visible")) {
+                this.$el.hide();
+            }
+
             return CommandItem.__super__.finish.apply(this, arguments);
         },
 

@@ -7,7 +7,8 @@ define([
     // Add opening command
     commands.register("monitor.open", {
         title: "Monitor",
-        icon: "dashboard"
+        icon: "dashboard",
+        visible: false
     }, function() {
         tabs.open(MonitorTab, {}, {
             "uniqueId": "monitor",

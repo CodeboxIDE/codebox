@@ -10,7 +10,6 @@ define([
             'title': "",
             'icon': "sign-blank",
             'handler': function() {},
-            'popover':  null,
 
             // Options
             'shortcuts': [],
