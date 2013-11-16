@@ -1,5 +1,6 @@
 define([
-    "ace/ace"
+    "ace/ace",
+    "ace/ext/language_tools"
 ], function(ace) {
     var _ = codebox.require("underscore");
     var $ = codebox.require("jQuery");
@@ -43,6 +44,12 @@ define([
             this.setOptions(options);
             this.markersS = {};
             this.markersC = {};
+
+            // Configure editor
+            this.editor.setOptions({
+                enableBasicAutocompletion: true,
+                enableSnippets: true
+            });
 
             // Bind settings changement
             settings.change(function() {

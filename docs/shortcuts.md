@@ -8,6 +8,7 @@
 | ? | ? | Open help dialog |
 | /, s | /, s | Display search lateral bar |
 | t | t | Open a new terminal tab |
+| Ctrl-, | Command-, | Show the settings dialog |
 
 ---------------------------------------
 
@@ -27,6 +28,7 @@
 | PC (Windows/Linux)             | Mac                            | action                         |
 |-------------------------------|-------------------------------|-------------------------------|
 | Ctrl-, | Command-, | Show the settings menu |
+| Ctrl-Space | Ctrl-Space | Show autocomplete popup |
 | Ctrl-Alt-Up | Ctrl-Option-Up | add multi-cursor above |
 | Ctrl-Alt-Down | Ctrl-Option-Down | add multi-cursor below |
 | Ctrl-Alt-Right | Ctrl-Option-Right | add next occurrence to multi-selection |

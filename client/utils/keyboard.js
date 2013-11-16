@@ -38,7 +38,6 @@ define([
                     this.bindings[keys].trigger("action", e);
                 }, this));
             }
-            console.log("bind ", keys);
             this.bindings[keys].on("action", callback, context);
             return;
         },
