@@ -17,7 +17,7 @@ function setup(options, imports, register) {
         })
         .fail(function(err) {
             logger.error("Failed to start Watch because of:");
-            logger.exception(err);
+            logger.exception(err, false);
         });
     });
 

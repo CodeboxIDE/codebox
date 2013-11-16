@@ -19,6 +19,12 @@ function init(logger, events, rootPath) {
     // Construct
     watchr.watch({
         paths: [rootPath],
+
+        // Following links causes issues with broken symlinks
+        // crashing the whole watchr instance and thus codebox
+        // so disabling link following for now
+        followLinks: false,
+
         listeners: {
             log: function(logLevel) {
                 /*
