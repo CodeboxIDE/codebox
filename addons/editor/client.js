@@ -1,7 +1,9 @@
 define([
     "views/tab",
-    "ace/ace"
-], function(EditorTab, ace) {
+    "ace/ace",
+    "ace/ext/modelist",
+    "ace/ext/themelist"
+], function(EditorTab, ace, aceModes, aceThemes) {
     var $ = codebox.require("jQuery");
     var commands = codebox.require("core/commands");
     var tabs = codebox.require("utils/tabs");
@@ -13,30 +15,43 @@ define([
     var aceconfig = ace.require("ace/config");
     aceconfig.set("basePath", "static/addons/editor/ace");
 
+    console.log(aceModes);
+    console.log(aceThemes);
+
+    // Build themes map
+    var themesMap = {};
+    _.each(aceThemes.themes, function(theme) {
+        themesMap[theme.name] = theme.desc;
+    })
+
     // Add settings
     settings.add({
         'namespace': "editor",
         'title': "Editor",
         'defaults': {
-            'theme': config.editor.default_theme,
+            'theme': "github",
             'fontsize': "12",
             'printmargincolumn': 80,
             'showprintmargin': false,
             'highlightactiveline': false,
             'wraplimitrange': 80,
             'enablesoftwrap': false,
-            'keyboard': config.editor.default_keyboard
+            'keyboard': "textinput"
         },
         'fields': {
             'theme': {
                 'label': "Theme",
                 'type': "select",
-                'options': config.editor.themes
+                'options': themesMap
             },
             'keyboard': {
                 'label': "Keyboard mode",
                 'type': "select",
-                'options': config.editor.keyboards
+                'options': {
+                    "vim": "Vim",
+                    "emacs": "Emacs",
+                    "textinput": "Default"
+                }
             },
             'fontsize': {
                 'label': "Font Size",

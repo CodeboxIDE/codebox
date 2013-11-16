@@ -17,14 +17,14 @@ define([
         className: "editor-ace",
         defaults: {
             mode: "text",
-            theme: config.editor.default_theme,
+            theme: "textmate",
             fontsize: "12",
             printmargincolumn: 80,
             showprintmargin: false,
             highlightactiveline: false,
             wraplimitrange: 80,
             enablesoftwrap: false,
-            keyboard: config.editor.default_keyboard,
+            keyboard: "textinput",
             readonly: false
         },
         events: {
