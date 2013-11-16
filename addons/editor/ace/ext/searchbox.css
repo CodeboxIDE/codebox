@@ -7,7 +7,7 @@
     background-color: #ddd;
     border: 1px solid #cbcbcb;
     border-top: 0 none;
-    max-width: 297px;
+    max-width: 300px;
     overflow: hidden;
     margin: 0;
     padding: 4px;
@@ -51,7 +51,7 @@
     height: 22px;
     outline: 0;
     padding: 0 7px;
-    width: 214px;
+    width: 190px;
     margin: 0;
 }
 .ace_searchbtn,
@@ -64,7 +64,7 @@
     float: left;
     height: 22px;
     margin: 0;
-    padding: 0;
+    padding: 0 6px;
     position: relative;
 }
 .ace_searchbtn:last-child,

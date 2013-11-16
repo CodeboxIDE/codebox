@@ -6,7 +6,10 @@ define(["views/dialog"], function(SettingsDialog) {
     // Add opening command
     commands.register("addons.settings.open", {
         title: "Settings",
-        icon: "cog"
+        icon: "cog",
+        shortcuts: [
+            "mod+,"
+        ]
     }, function() {
         dialogs.open(SettingsDialog);
     });
