@@ -1,7 +1,8 @@
 define([
     "ace/ace",
+    "ace/range",
     "ace/ext/language_tools"
-], function(ace) {
+], function(ace, CRange) {
     var _ = codebox.require("underscore");
     var $ = codebox.require("jQuery");
     var hr = codebox.require("hr/hr");
@@ -27,9 +28,7 @@ define([
             keyboard: "textinput",
             readonly: false
         },
-        events: {
-            
-        },
+        events: {},
 
         initialize: function(options) {
             EditorView.__super__.initialize.apply(this, arguments);
@@ -113,14 +112,12 @@ define([
                 this.editor.getSession().getSelection().selectTo(cursor_lead.y, cursor_lead.x);
             }, this);
             this.sync.on("cursor:move", function(cId, c) {
-                var CRange = ace.require('ace/range').Range;
-                var range = new CRange(c.y, c.x, c.y, c.x+1);
+                var range = new CRange.Range(c.y, c.x, c.y, c.x+1);
                 if (this.markersC[cId]) this.editor.getSession().removeMarker(this.markersC[cId]);
                 this.markersC[cId] = this.editor.getSession().addMarker(range, "marker-cursor marker-"+c.color.replace("#", ""), "text", true);
             }, this);
             this.sync.on("selection:move", function(cId, c) {
-                var CRange = ace.require('ace/range').Range;
-                var range = new CRange(c.start.y, c.start.x, c.end.y, c.end.x);
+                var range = new CRange.Range(c.start.y, c.start.x, c.end.y, c.end.x);
                 if (this.markersS[cId]) this.editor.getSession().removeMarker(this.markersS[cId]);
                 this.markersS[cId] = this.editor.getSession().addMarker(range, "marker-selection marker-"+c.color.replace("#", ""), "line", false);
             }, this);
@@ -133,7 +130,7 @@ define([
                 name: 'save',
                 bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
                 exec: _.bind(function(editor) {
-                    
+
                 }, this)
             });
             this.focus();
@@ -290,7 +287,7 @@ define([
             this.readonly = b;
             this.editor.setReadOnly(b);
             return this;
-        },
+        }
     });
 
     return EditorView;
