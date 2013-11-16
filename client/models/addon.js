@@ -32,7 +32,7 @@ define([
         },
 
         // Load the addon
-        load: function() {
+        load: function(config, imports) {
             var context, main, addonRequireConfig,
             addonRequire, that = this
             var d = Q.defer();
@@ -68,14 +68,25 @@ define([
                 base: "/addons/"+this.get("name")+"/templates"
             });
 
-            // Load main module
-            addonRequire([main], function() {
+            // Register addons
+            var register = function(err, globals) {
+                if (err) {
+                    that.set("state", "error");
+                    d.reject(err);
+                    return;
+                }
                 that.set("state", "loaded");
-                d.resolve();
-            }, function(err) {
-                that.set("state", "error");
-                d.reject(err);
-            });
+                d.resolve(globals);
+            };
+
+            // Load main module
+            addonRequire([main], function(globals) {
+                if (_.isFunction(globals)) {
+                    globals(config, imports, register);
+                } else {
+                    register(null, globals);
+                }
+            }, register);
 
             return d.promise;
         }

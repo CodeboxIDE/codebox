@@ -67,5 +67,8 @@ exports.config = {
     },
     'args': {
         'version': pkg.version
+    },
+    'options': {
+        
     }
 };

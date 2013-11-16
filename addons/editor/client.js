@@ -108,4 +108,9 @@ define([
 
     // Open base tabs
     commands.run("files.open");
+
+    // Return globals
+    return {
+        'ace': ace
+    };
 });
