@@ -44,8 +44,11 @@ define([
         },
 
         /* Change the file */
-        load: function(path) {
+        load: function(path, handler) {
             var that = this;
+            if (handler) {
+                this.fileHandler = handler;
+            }
             this.model.getByPath(path).then(null, function() {
                 that.closeTab();
             })

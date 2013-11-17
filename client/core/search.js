@@ -3,7 +3,7 @@ define([
     'jQuery',
     'underscore',
     'core/user',
-    'utils/settings'
+    'core/settings'
 ],function(hr, $, _, user, settings) {
     var logging = hr.Logger.addNamespace("search");
 

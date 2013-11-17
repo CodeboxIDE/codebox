@@ -7,7 +7,7 @@ define([
     var $ = codebox.require("jQuery");
     var commands = codebox.require("core/commands");
     var tabs = codebox.require("utils/tabs");
-    var settings = codebox.require("utils/settings");
+    var settings = codebox.require("core/settings");
     var files = codebox.require("core/files");
     var config = codebox.require("config");
 

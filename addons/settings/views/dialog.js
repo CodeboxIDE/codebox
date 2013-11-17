@@ -3,7 +3,7 @@ define([
 ], function() {
     var _ = codebox.require("underscore");
     var DialogView = codebox.require("views/dialogs/base");
-    var settings = codebox.require("utils/settings");
+    var settings = codebox.require("core/settings");
 
     var SettingsDialog = DialogView.extend({
         className: "addon-settings-dialog modal fade",

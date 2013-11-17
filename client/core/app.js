@@ -5,8 +5,9 @@ define([
     'core/box',
     'core/session',
     'core/addons',
-    'core/box'
-], function (hr, url, dialogs, box, session, addons, box) {
+    'core/box',
+    'core/files'
+], function (hr, url, dialogs, box, session, addons, box, files) {
 
     // Define base application
     var Application = hr.Application.extend({
@@ -63,6 +64,9 @@ define([
                     addons.on("add", function(addon) {
                         addon.load();
                     });
+
+                    // Open root files
+                    files.open(box.root);
                 });
             }
             return Application.__super__.finish.apply(this, arguments);

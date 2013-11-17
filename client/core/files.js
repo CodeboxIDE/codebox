@@ -3,13 +3,14 @@ define([
     'underscore',
     'hr/hr',
     'models/file',
+    'core/user',
     'core/box',
-    'utils/settings',
+    'core/settings',
     'utils/dialogs',
     'utils/tabs',
     'views/tabs/file',
     'views/files/base'
-], function(Q, _, hr, File, box, settings, dialogs, tabs, FileTab) {
+], function(Q, _, hr, File, user, box, settings, dialogs, tabs, FileTab) {
     var logging = hr.Logger.addNamespace("files");
 
     // Settings for files manager
@@ -18,6 +19,7 @@ define([
         'title': "Files",
         'fields': {}
     });
+    var userSettings = user.settings("files");
 
     // Files handlers map
     var handlers = {};
@@ -40,7 +42,7 @@ define([
                 var tab = manager.getActiveTabByType("directory");
                 if (tab != null && !manager.checkTabExists(path)) {
                     // Change current tab to open the file
-                    tab.view.load(path);
+                    tab.view.load(path, handler);
                 } else {
                     // Add new tab
                     tabs.open(FileTab, {
@@ -68,7 +70,7 @@ define([
     // Get handler for a file
     var getHandlers = function(file, defaultHandler) {
         return _.filter(handlers, function(handler) {
-            return handler.valid(file);
+            return userSettings.get(handler.id, true) && handler.valid(file);
         });
     };
 
