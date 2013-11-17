@@ -1,7 +1,7 @@
 define([
     "views/explorer"
 ], function(ExplorerView) {
-    var files = codebox.require("utils/files");
+    var files = codebox.require("core/files");
 
     files.addHandler("explorer", {
         name: "Explorer",

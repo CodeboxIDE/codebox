@@ -1,7 +1,7 @@
 define([
     "views/editor",
     "less!stylesheets/file.less"
-], function(FilesBaseView, EditorView) {
+], function(EditorView) {
     var _ = codebox.require("underscore");
     var $ = codebox.require("jQuery");
     var hr = codebox.require("hr/hr");

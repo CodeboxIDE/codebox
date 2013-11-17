@@ -8,7 +8,7 @@ define([
     var commands = codebox.require("core/commands");
     var tabs = codebox.require("utils/tabs");
     var settings = codebox.require("utils/settings");
-    var files = codebox.require("utils/files");
+    var files = codebox.require("core/files");
     var config = codebox.require("config");
 
     // Configure ace

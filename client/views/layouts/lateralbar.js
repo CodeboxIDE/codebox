@@ -4,8 +4,9 @@ define([
     "hr/hr",
     "core/box",
     "core/commands",
+    "core/files",
     "utils/dialogs"
-], function(_, $, hr, box, commands, Dialogs) {
+], function(_, $, hr, box, commands, files, Dialogs) {
 
     var LateralBarView = hr.View.extend({
         className: "layout-lateralbar",
@@ -31,6 +32,22 @@ define([
                 ]
             }, function() {
                 that.toggleSearch(true);
+            });
+
+            // Files command
+            commands.register("files.open", {
+                title: "Files",
+                icon: "folder-o",
+                shortcuts: [
+                    "f"
+                ]
+            }, function(args) {
+                args = _.defaults({}, args || {}, {
+                    'path': "/"
+                });
+                files.open(args.path).fail(function(err) {
+                    console.error(err);
+                });
             });
 
             return this;

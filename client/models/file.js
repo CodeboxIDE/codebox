@@ -3,12 +3,11 @@ define([
     "underscore",
     "hr/hr",
     "core/api",
-    "core/commands",
     "utils/url",
     "utils/languages",
     "utils/filesync",
     "utils/uploader"
-], function(Q, _, hr, api, commands, Url, Languages, FileSync, Uploader) {
+], function(Q, _, hr, api, Url, Languages, FileSync, Uploader) {
     var logging = hr.Logger.addNamespace("files");
 
     if (typeof String.prototype.endsWith !== 'function') {
@@ -72,10 +71,8 @@ define([
          *  Open the tab for this file
          */
         open: function(path) {
-            commands.run("files.open", {
-                'path': this.path(path)
-            });
-            return this;
+            var files = require("core/files");
+            return files.open(path ? path : this);
         },
 
         /*

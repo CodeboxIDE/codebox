@@ -6,11 +6,7 @@ define([
     "core/api",
 
     // addons dependencies
-    "core/globals",
-    "utils/themes",
-    "utils/tabs",
-    "utils/settings",
-    "utils/files"
+    "core/globals"
 ], function(Q, _, $, hr, api) {
     var logging = hr.Logger.addNamespace("addon");
 
