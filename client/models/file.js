@@ -210,7 +210,7 @@ define([
          */
         icon: function() {
             var extsIcon = {
-                "picture": [".png", ".jpg", ".gif", ".tiff", ".jpeg", ".bmp", ".webp", ".svg"],
+                "picture-o": [".png", ".jpg", ".gif", ".tiff", ".jpeg", ".bmp", ".webp", ".svg"],
                 "music": [".mp3", ".wav"],
                 "film": [".avi", ".mp4"]
             }

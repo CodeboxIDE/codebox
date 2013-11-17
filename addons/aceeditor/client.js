@@ -10,6 +10,7 @@ define([
     var settings = codebox.require("core/settings");
     var files = codebox.require("core/files");
     var config = codebox.require("config");
+    var languages = codebox.require("utils/languages");
 
     // Configure ace
     var aceconfig = ace.require("ace/config");
@@ -86,12 +87,22 @@ define([
         }
     });
 
+    // Build code files extensions list
+    var textExts = _.reduce(languages.LIST, function(list, language) {
+        list = list.concat(language.extensions || []);
+        if (language.primary_extension) list.push(language.primary_extension);
+        return list;
+    }, [
+        // Defaults extensions
+        '.txt'
+    ]);
+
     // Add files handler
     files.addHandler("ace", {
         name: "ACE Code Editor",
         View: FileEditorView,
         valid: function(file) {
-            return !file.isDirectory();
+            return (!file.isDirectory() && _.contains(textExts, file.extension()));
         }
     });
 

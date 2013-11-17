@@ -87,7 +87,7 @@ define([
 
         var handlers = getHandlers(file);
         if (_.size(handlers) == 0) {
-            dialogs.alert("No handler for this file", "Sorry, No handler has been found to open this file. Try to find and install an addon to manage this file.");
+            dialogs.alert("Can't open this file", "Sorry, No handler has been found to open this file. Try to find and install an addon to manage this file.");
             return Q.reject(new Error("No handler for this file"));
         }
 

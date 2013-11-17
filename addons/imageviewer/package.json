@@ -1,8 +1,8 @@
 {
-    "name": "explorer",
-    "version": "0.1.1",
-    "title": "Files Explorer",
-    "description": "Files explorer for Codebox.",
+    "name": "imageviewer",
+    "version": "0.0.1",
+    "title": "Image Viewer",
+    "description": "Images files viewer.",
     "homepage": "https://github.com/FriendCode/codebox",
     "license": "Apache",
     "author": {
