@@ -1,8 +1,8 @@
 {
-    "name": "editor",
+    "name": "aceeditor",
     "version": "0.1.1",
-    "title": "Code Editor",
-    "description": "Code Editor with files explorer.",
+    "title": "ACE Code Editor",
+    "description": "Code Editor with ACE.",
     "homepage": "https://github.com/FriendCode/codebox",
     "license": "Apache",
     "author": {

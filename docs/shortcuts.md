@@ -27,6 +27,7 @@
 
 | PC (Windows/Linux)             | Mac                            | action                         |
 |-------------------------------|-------------------------------|-------------------------------|
+| Ctrl-S | Command-S | Save the file |
 | Ctrl-, | Command-, | Show the settings menu |
 | Ctrl-Space | Ctrl-Space | Show autocomplete popup |
 | Ctrl-Alt-Up | Ctrl-Option-Up | add multi-cursor above |

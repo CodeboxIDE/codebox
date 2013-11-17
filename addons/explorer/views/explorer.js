@@ -1,17 +1,17 @@
 define([
-    "views/base",
-    "less!stylesheets/directory.less"
-], function(FilesBaseView) {
+    "less!stylesheets/explorer.less"
+], function() {
     var _ = codebox.require("underscore");
     var $ = codebox.require("jQuery");
     var hr = codebox.require("hr/hr");
     var Uploader = codebox.require("utils/uploader");
     var Dialogs = codebox.require("utils/dialogs");
+    var FilesBaseView = codebox.require("views/files/base");
 
-    var FilesDirectoryView = FilesBaseView.extend({
-        className: "editor-files-directory",
-        templateLoader: "addon.editor.templates",
-        template: "directory.html",
+    var ExplorerView = FilesBaseView.extend({
+        className: "addon-files-explorer",
+        templateLoader: "addon.explorer.templates",
+        template: "explorer.html",
         defaults: _.extend({}, FilesBaseView.prototype.defaults, {
             'navigate': true,
             'hiddenFiles': true
@@ -36,7 +36,7 @@ define([
 
         // Constructor
         initialize: function(options) {
-            FilesDirectoryView.__super__.initialize.apply(this, arguments);
+            ExplorerView.__super__.initialize.apply(this, arguments);
             this.files = null;
 
             // Refresh list
@@ -85,7 +85,7 @@ define([
             if (this.files == null) {
                 return this;
             }
-            return FilesDirectoryView.__super__.render.apply(this, arguments);
+            return ExplorerView.__super__.render.apply(this, arguments);
         },
 
         // Finish rendering
@@ -95,7 +95,7 @@ define([
             /*this.$(".collaborators a").tooltip({
                 placement: "bottom"
             });*/
-            return FilesDirectoryView.__super__.finish.apply(this, arguments);
+            return ExplorerView.__super__.finish.apply(this, arguments);
         },
 
         // Return array of files selected
@@ -275,5 +275,5 @@ define([
         },
     });
 
-    return FilesDirectoryView;
+    return ExplorerView;
 });

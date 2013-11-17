@@ -1,5 +1,4 @@
 define([
-    "views/base",
     "views/editor",
     "less!stylesheets/file.less"
 ], function(FilesBaseView, EditorView) {
@@ -7,14 +6,13 @@ define([
     var $ = codebox.require("jQuery");
     var hr = codebox.require("hr/hr");
     var Dialogs = codebox.require("utils/dialogs");
+    var FilesBaseView = codebox.require("views/files/base");
 
     var FileEditorView = FilesBaseView.extend({
-        className: "editor-files-editor",
-        templateLoader: "addon.editor.templates",
+        className: "addon-files-aceeditor",
+        templateLoader: "addon.aceeditor.templates",
         template: "file.html",
-        events: {
-            
-        },
+        events: {},
 
         // Constructor
         initialize: function() {

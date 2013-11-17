@@ -1,22 +1,19 @@
 define([
-    "views/tab",
+    "views/file",
     "ace/ace",
     "ace/ext/modelist",
     "ace/ext/themelist"
-], function(EditorTab, ace, aceModes, aceThemes) {
+], function(FileEditorView, ace, aceModes, aceThemes) {
     var $ = codebox.require("jQuery");
     var commands = codebox.require("core/commands");
     var tabs = codebox.require("utils/tabs");
     var settings = codebox.require("utils/settings");
+    var files = codebox.require("utils/files");
     var config = codebox.require("config");
 
     // Configure ace
-    // ace version used is the content of https://github.com/ajaxorg/ace/tree/master/lib/ace
     var aceconfig = ace.require("ace/config");
     aceconfig.set("basePath", "static/addons/editor/ace");
-
-    console.log(aceModes);
-    console.log(aceThemes);
 
     // Build themes map
     var themesMap = {};
@@ -26,8 +23,8 @@ define([
 
     // Add settings
     settings.add({
-        'namespace': "editor",
-        'title': "Editor",
+        'namespace': "aceeditor",
+        'title': "Code Editor",
         'defaults': {
             'theme': "github",
             'fontsize': "12",
@@ -89,40 +86,14 @@ define([
         }
     });
 
-    // Tabs manager
-    var manager = tabs.manager();
-
-    // Add opening command
-    commands.register("files.open", {
-        title: "Files",
-        icon: "folder-o"
-    }, function(args) {
-        args = _.defaults({}, args || {}, {
-            'path': "/"
-        });
-
-        var tab = manager.getActiveTabByType("directory");
-        if (tab != null && ! manager.checkTabExists(args.path)) {
-            // Change current tab to open the file
-            tab.view.load(args.path);
-        } else {
-            // Add new tab
-            tabs.open(EditorTab, {
-                "path": args.path
-            }, {
-                "uniqueId": args.path,
-                "type": "file",
-            });
+    // Add files handler
+    files.addHandler("ace", {
+        name: "ACE Code Editor",
+        View: FileEditorView,
+        valid: function(file) {
+            return !file.isDirectory();
         }
     });
-
-    // Add as default tabs
-    manager.on("tabs:default", function() {
-        commands.run("files.open");
-    });
-
-    // Open base tabs
-    commands.run("files.open");
 
     // Return globals
     return {

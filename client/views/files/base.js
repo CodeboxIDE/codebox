@@ -1,10 +1,11 @@
-define([], function() {
-    var _ = codebox.require("underscore");
-    var $ = codebox.require("jQuery");
-    var hr = codebox.require("hr/hr");
-    var Tab = codebox.require("views/tabs/base");
-    var File = codebox.require("models/file");
-    var box = codebox.require("core/box");
+define([
+    'underscore',
+    'jQuery',
+    'hr/hr',
+    'views/tabs/base',
+    'models/file',
+    'core/box'
+], function(_, $, hr, Tab, File, box) {
 
     var FilesBaseView = hr.View.extend({
         defaults: {

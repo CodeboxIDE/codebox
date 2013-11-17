@@ -9,7 +9,8 @@ define([
     "core/globals",
     "utils/themes",
     "utils/tabs",
-    "utils/settings"
+    "utils/settings",
+    "utils/files"
 ], function(Q, _, $, hr, api) {
     var logging = hr.Logger.addNamespace("addon");
 
@@ -72,6 +73,8 @@ define([
             var register = function(err, globals) {
                 if (err) {
                     that.set("state", "error");
+                    logging.error("Error loading ", that.get("name"));
+                    logging.error(err);
                     d.reject(err);
                     return;
                 }

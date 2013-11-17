@@ -20,11 +20,8 @@ define([
             // Settings
             this.settings = settings.add({
                 'namespace': "search",
-                'section': "main",
                 'title': "Search",
-                'fields': {
-                    
-                }
+                'fields': {}
             });
 
             return this;
