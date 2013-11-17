@@ -19,6 +19,10 @@ define([
             "dblclick":     "createSection",
             "dragstart":    "dragStart"
         },
+        states: {
+            'warning': "fa-exclamation",
+            'offline': "fa-flash"
+        },
 
         // Constructor
         initialize: function() {
@@ -36,10 +40,18 @@ define([
         render: function() {
             this.$el.empty();
 
+            var tab = this.tabs.tabs[this.tabid];
+
             var inner = $("<div>", {
                 "class": "inner",
-                "html": this.tabs.tabs[this.tabid].title
+                "html": tab.title
             }).appendTo(this.$el);
+
+            if (tab.state && this.states[tab.state]) {
+                $("<i>", {
+                    "class": "state fa "+this.states[tab.state]
+                }).prependTo(inner);
+            }
 
             if (this.options.close) {
                 $("<a>", {
@@ -140,6 +152,16 @@ define([
         // Set tab title
         setTabTitle: function(t) {
             this.tabs.tabs[this.tabid].title = t;
+            this.tabs.tabs[this.tabid].tab.render();
+            return this;
+        },
+
+        // Set tab state
+        setTabState: function(state, value) {
+            if (value === false && state != this.tabs.tabs[this.tabid].state) {
+                return this;
+            }
+            this.tabs.tabs[this.tabid].state = (value == null || value) ? state : null;
             this.tabs.tabs[this.tabid].tab.render();
             return this;
         },
@@ -275,6 +297,7 @@ define([
                 tabinfos = {
                     "tabid": tabid,
                     "title": options.title,
+                    "state": null,
                     "uniqueId": options.uniqueId,
                     "type": this.options.type,
                     "view": null,
@@ -392,12 +415,12 @@ define([
 
         // Close a tab by tabid
         close: function(tabid, force) {
-            //if (_.size(this.tabs) <= 1) return this; 
             if (this.tabs[tabid] == null) return this;
 
             // Triger in tab
             this.tabs[tabid].view.trigger("tab:close");
-
+            this.tabs[tabid].view.off();
+            
             delete this.tabs[tabid].view;
             delete this.tabs[tabid];
 

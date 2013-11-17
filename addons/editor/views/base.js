@@ -18,10 +18,15 @@ define([], function() {
         // Constructor
         initialize: function(options) {
             FilesBaseView.__super__.initialize.apply(this, arguments);
-            if (this.model == null) this.model = new File({
-                "codebox": box
-            });
+
+            // Related tab
+            this.tab = this.parent;
+
+            // Create base model
+            if (this.model == null) this.model = new File({"codebox": box});
             this.model.on("set", this.render, this);
+
+            // Load base file
             if (this.options.path != null) this.load(this.options.path);
             return this;
         },

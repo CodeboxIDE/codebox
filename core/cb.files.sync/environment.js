@@ -16,6 +16,7 @@ function Environment(path, creator, service) {
     this.users = {};
     this.path = path;
     this.locked = false;
+    this.modified = false;
     this.service = service;
 
     this.doc = new Document(this.path, creator.userId, this.service);
@@ -80,6 +81,14 @@ Environment.prototype.removeUser = function(user) {
 
 Environment.prototype.getUser = function(user) {
     return this.users[user.key()];
+};
+
+Environment.prototype.modifiedState = function(state) {
+    if (this.modified == state) return;
+    this.modified = state;
+    this.notifyAll("modified", {
+        'state': this.modified
+    });
 };
 
 Environment.prototype.usersInfo = function() {
@@ -148,7 +157,8 @@ Environment.prototype.notify = function(users, action, data) {
 Environment.prototype.getSyncData = function() {
     return {
         content: this.doc.getContent(),
-        participants: this.usersInfo()
+        participants: this.usersInfo(),
+        state: this.modified
     };
 };
 
@@ -180,6 +190,12 @@ Environment.prototype.sync = function(user, payload) {
     return this.notify(user, 'sync',
         this.getSyncData()
     );
+};
+
+Environment.prototype.save = function(user, payload) {
+    // Synchronize content
+    this.doc.save();
+    return this.modifiedState(false);
 };
 
 Environment.prototype.ping = function(user, payload) {
@@ -222,6 +238,8 @@ Environment.prototype.patch = function(user, payload) {
     if(!patched) {
         return this.syncAll();
     }
+
+    this.modifiedState(true);
 
     return this.notifyOthers(user, null, payload);
 };

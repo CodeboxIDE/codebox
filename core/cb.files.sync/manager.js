@@ -9,6 +9,7 @@ var createEnvironment = require('./environment').createEnvironment;
 
 var actions = {
     "sync": "sync",
+    "save": "save",
     "ping": "ping",
     "close": "close",
     "patch": "patch",

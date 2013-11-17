@@ -55,6 +55,7 @@ define([
             this.ping = false;  // ping
             this.participants = []; // participants list
             this.syncState = false; // sync connexion state
+            this.modified = false;
 
             // Add timer for ping
             this.timer = setInterval(_.bind(this._intervalPing, this), 15*1000);
@@ -222,7 +223,7 @@ define([
                         logging.log("socket connecting ...");
                     });
                     socket.on('message', function(data) {
-                        logging.log("socket editor packet ", data);
+                        logging.log("socket receive packet ", data);
                         self.ping = true;
                         if (data.action == null || data.path == null || self.file.path() != data.path) {
                             return;
@@ -252,10 +253,18 @@ define([
                                 if (data.participants != null) {
                                     self.setParticipants(data.participants)
                                 }
+                                if (data.state != null) {
+                                    self.modifiedState(data.state);
+                                }
                                 break;
                             case "patch":
                                 if (data.patch != null) {
                                     self.patchContent(data);
+                                }
+                                break;
+                            case "modified":
+                                if (data.state != null) {
+                                    self.modifiedState(data.state);
                                 }
                                 break;
                         }
@@ -265,6 +274,15 @@ define([
                     self.sendSync();
                 });
             }
+        },
+
+        /*
+         *  Set modified (and not saved) state
+         */
+        modifiedState: function(state) {
+            if (this.modified == state) return;
+            this.modified = state;
+            this.trigger("sync:modified", this.modified);
         },
 
         /*
@@ -290,8 +308,14 @@ define([
 
         /* Socket for the connexion */
         socket: function() {
+            var that = this;
+
+            if (this._socket) return Q(this._socket);
             if (this.file != null) {
-                return this.file.codebox.socket("filesync");
+                return this.file.codebox.socket("filesync", true).then(function(s) {
+                    that._socket = s;
+                    return that._socket;
+                })
             } else {
                 throw new Error("need 'file' to create sync socket");
             }
@@ -486,7 +510,7 @@ define([
             this.participants = _.compact(_.map(parts, function(participant, i) {
                 participant.user = collaborators.getById(participant.userId);
                 if (!participant.user) {
-                    logger.error("participant non user:", participant.userId);
+                    logging.error("participant non user:", participant.userId);
                     return null;
                 }
                 participant.color = this.options.colors[i % this.options.colors.length];
@@ -522,6 +546,7 @@ define([
                     'path': this.file.path()
                 });
 
+                logging.log("send packet", data);
                 this.socket().then(function(socket) {
                     socket.json.send(data);
                 })
@@ -603,10 +628,18 @@ define([
         },
 
         /*
+         *  Save the file
+         */
+        save: function() {
+            return this.send("save");
+        },
+
+        /*
          *  Close the connexion
          */
         close: function() {
-            return this.send("close");
+            this.send("close");
+            this.off();
         },
     });
 

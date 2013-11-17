@@ -35,9 +35,6 @@ Document.prototype.patch = function(patchText, preHash, postHash) {
     // Update buffer
     this.buffer = diff.patch_apply(patch, this.buffer)[0];
 
-    // Update remote version
-    this.update();
-
     return true;
 };
 
@@ -49,9 +46,9 @@ Document.prototype.write = function(content) {
     return Q.nfbind(this.service.invoke)('write', this.path, content, this.creatorId);
 };
 
-Document.prototype.update = _.debounce(function() {
+Document.prototype.save = function() {
     return this.write(this.buffer);
-}, 1000);
+};
 
 Document.prototype.load = function() {
     var that = this;

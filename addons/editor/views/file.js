@@ -23,24 +23,32 @@ define([
             // Build editor
             this.editor = new EditorView();
 
+            // Parent tab
+            this.tab.on("tab:state", function(state) {
+                if (state) this.editor.focus();
+            }, this);
+            this.tab.on("tab:close", function() {
+                this.editor.sync.close();
+                this.editor.off();
+            }, this);
+
             // Bind editor sync state changements
-            this.editor.on("sync:state", function(state) {
-                this.$(".action-editor-state").toggleClass("btn-danger", !state);
-                this.$(".action-editor-state").toggleClass("btn-success", state);
+            this.editor.sync.on("sync:state", function(state) {
+                if (!state) {
+                    this.tab.setTabState("offline", true);
+                } else {
+                    this.tab.setTabState("offline", false);
+                }
+            }, this);
+
+            this.editor.sync.on("sync:modified", function(state) {
+                this.tab.setTabState("warning", state);
             }, this);
 
             // Define file for code editor
             this.editor.sync.setFile(this.model, {
                 'sync': this.options.edition
             });
-
-            // Parent tab
-            this.parent.on("tab:state", function(state) {
-                if (state) this.editor.focus();
-            }, this);
-            this.parent.on("tab:close", function() {
-                this.editor.sync.close();
-            }, this);
             this.editor.focus();
         },
 
@@ -48,8 +56,6 @@ define([
         finish: function() {
             // Add editor to content
             this.editor.$el.appendTo(this.$(".editor-inner"));
-            this.modeChanged();
-            this.updateParticipants();
 
             return FileEditorView.__super__.finish.apply(this, arguments);
         }

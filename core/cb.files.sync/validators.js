@@ -21,6 +21,7 @@ function isHash(hash) {
 
 // Dummy validators
 var ping = truth;
+var save = truth;
 var sync = truth;
 var close = truth;
 
@@ -56,6 +57,7 @@ function patch(data) {
 exports.base = base;
 exports.ping = ping;
 exports.sync = sync;
+exports.save = save;
 exports.close = close;
 exports.patch = patch;
 exports.moveCursor = moveCursor;
