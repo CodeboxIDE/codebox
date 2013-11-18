@@ -34,6 +34,8 @@ define([
             throw "Invalid files handler format";
         }
 
+        handler.id = handlerId;
+
         if (handler.View) {
             handler.open = function(file) {
                 var path = file.path();
@@ -85,15 +87,24 @@ define([
             });
         }
 
-        var handlers = getHandlers(file);
-        if (_.size(handlers) == 0) {
+        var possibleHandlers = getHandlers(file);
+        if (_.size(possibleHandlers) == 0) {
             dialogs.alert("Can't open this file", "Sorry, No handler has been found to open this file. Try to find and install an addon to manage this file.");
             return Q.reject(new Error("No handler for this file"));
         }
 
-        // todo: dialog to choose the handler
-        var handler = _.first(handlers);
-        return Q(handler.open(file));
+        if (_.size(possibleHandlers) == 1) {
+            return Q(_.first(possibleHandlers).open(file));
+        }
+
+        var choices = {};
+        _.each(possibleHandlers, function(handler) {
+            choices[handler.id] = handler.name;
+        })
+        return dialogs.select("Open with...", "Select the handler to open this file", choices).then(function(value) {
+            var handler = handlers[value];
+            return Q(handler.open(file));
+        });
     };
 
     return {

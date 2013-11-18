@@ -43,6 +43,21 @@ define([
         },
 
         /*
+         *  Open a select dialog window
+         */
+        select: function(title, message, choices, defaultChoice) {
+            return Dialogs.open(null, {
+                "title": title,
+                "message": message,
+                "dialog": "select",
+                "default": defaultChoice,
+                "choices": choices,
+                "autoFocus": true,
+                "valueSelector": "selectorPrompt"
+            });
+        },
+
+        /*
          *  Open a confirmation dialog windows
          *  @message : message to print
          */
