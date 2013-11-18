@@ -33,13 +33,16 @@ RUN adduser --shell /bin/bash --gecos 'codebox workspace user' --disabled-passwo
 # Add codebox's source code to the container
 # "./buildstack.sh base" will generate a local source folder for this
 # That is clean of temporary folders and node_moudles
-ADD ./src /opt/codebox
+#ADD ./src /opt/codebox
 
 # Install node modules
-RUN cd /opt/codebox; npm install
+#RUN cd /opt/codebox; npm install
 
 # Build client
-RUN cd /opt/codebox; node_modules/.bin/hr.js -d client build
+#RUN cd /opt/codebox; node_modules/.bin/hr.js -d client build
 
 # Default init command
 CMD su codebox /opt/codebox/init.sh
+
+# Needed Volumes
+VOLUME ["/opt/codebox"]
