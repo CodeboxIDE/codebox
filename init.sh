@@ -113,9 +113,12 @@ function setup_env () {
 }
 
 function setup_python () {
-    if [ -e "${PYTHON_ACTIVATE}" ]; then
+    echo "Callling setup_python ..."
+    if [ -f ${PYTHON_ACTIVATE} ]; then
         source "${PYTHON_ACTIVATE}"
+        return
     fi;
+    echo "Skipped setup_python ..."
 }
 
 function start_server () {
