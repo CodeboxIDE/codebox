@@ -7,7 +7,7 @@ set -e
 ###
 # Constants
 ###
-BASE_REPO="codebox"
+BASE_REPO="codebox/codebox"
 BASE_STACK="null"
 SRC_DIR=$(readlink -f ..)
 TMP_SRC="/tmp/codebox_src"
