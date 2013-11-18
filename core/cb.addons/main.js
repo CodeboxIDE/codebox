@@ -79,7 +79,22 @@ function setup(options, imports, register, app) {
 
         return first.then(runAddonsOperation(function(addon) {
             logger.log("Adding default addon", addon.infos.name);
-            return Q.nfcall(fs.unlink, path.resolve(configAddonsPath, addon.infos.name)).then(function() {
+
+            // Path to addon
+            var addonPath = path.resolve(configAddonsPath, addon.infos.name);
+
+            var d = Q.defer();
+            fs.exists(addonPath, d.resolve);
+
+            return d.promise
+            .then(function(exists) {
+                if(!exists) return false;
+
+                // Unlink only if exists
+                return Q.nfcall(fs.unlink, addonPath);
+            })
+            .then(function() {
+                // Relink it
                 return addon.symlink(configAddonsPath);
             });
         }));
@@ -90,7 +105,7 @@ function setup(options, imports, register, app) {
         var addon, tempDir;
 
         options = _.defaults({}, options || {}, {
-            
+
         });
 
         logger.log("Install add-on", git);
