@@ -18,3 +18,5 @@ client/build
 .addons
 
 /.env
+
+/stacks/base/src/
