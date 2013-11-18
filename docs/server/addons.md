@@ -12,18 +12,3 @@ WORKSPACE_ADDONS_DEFAULTS_DIR will be access in read-only mode but WORKSPACE_ADD
 
 By default, Codebox will store the new addons into **.addons**.
 Caution: If the directory doesn't exists, Codebox will recursively create it.
-
-
-### Publish an addon
-
-You can publish an addon for the addon manager by using the command line tool: https://github.com/FriendCode/codebox-client
-
-```
-$ codenow-io publish ./path/to/the/repository
-```
-
-And also unpublish the addon:
-
-```
-$ codenow-io unpublish ./path/to/the/repository
-```

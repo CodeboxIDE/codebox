@@ -1,4 +1,4 @@
-## Keyboard Shortcuts
+# Keyboard Shortcuts
 
 ### Commands
 

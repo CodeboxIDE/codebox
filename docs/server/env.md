@@ -1,4 +1,4 @@
-## Environment variables
+# Environment variables
 
 Codebox use environment variables for defining its conffiguration, here is a list of all possibles configurations:
 

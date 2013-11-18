@@ -1,4 +1,4 @@
-## Tabs
+# Tabs
 
 ### Panels
 

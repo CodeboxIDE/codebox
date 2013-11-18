@@ -4,12 +4,18 @@ This documentation contains everything you need to know for using Codebox or run
 
 ### Codebox IDE
 
-* [Keyboard shortcuts](shortcuts.md)
-* [Tabs](tabs.md)
+* [Keyboard shortcuts](client/shortcuts.md)
+* [Tabs](client/tabs.md)
+
+---------------------------------------
+
+### Add-on development
+
+* [Publish add-ons](addons/publish.md)
 
 ---------------------------------------
 
 ### Server side
 
-* [Configuration with environment variables](env.md)
-* [Managing addons](addons.md)
+* [Configuration with environment variables](server/env.md)
+* [Managing addons](server/addons.md)

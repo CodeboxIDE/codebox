@@ -99,7 +99,7 @@ define([
 
     // Add files handler
     files.addHandler("ace", {
-        name: "ACE Code Editor",
+        name: "Code Editor",
         View: FileEditorView,
         valid: function(file) {
             return (!file.isDirectory() && _.contains(textExts, file.extension()));

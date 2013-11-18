@@ -82,7 +82,7 @@ define([
         _.each(handlers, function(handler) {
             choices[handler.id] = handler.name;
         });
-        return dialogs.select("Can't open this file", "Sorry, No handler has been found to open this file. Try to find and install an addon to manage this file or select one of these handlers:", choices).then(function(value) {
+        return dialogs.select("Can't open this file", "Sorry, No handler has been found to open this file. Try to find and install an add-on to manage this file or select one of the following handlers:", choices).then(function(value) {
             var handler = handlers[value];
             return Q(handler.open(file));
         });
@@ -112,7 +112,7 @@ define([
         _.each(possibleHandlers, function(handler) {
             choices[handler.id] = handler.name;
         })
-        return dialogs.select("Open with...", "Select the handler to open this file", choices).then(function(value) {
+        return dialogs.select("Open with...", "Select one of the following handlers to open this file:", choices).then(function(value) {
             var handler = handlers[value];
             return Q(handler.open(file));
         });
