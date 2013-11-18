@@ -1,0 +1,2 @@
+FROM codebox.base:latest
+
