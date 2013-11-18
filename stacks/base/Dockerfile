@@ -1,10 +1,14 @@
 FROM ubuntu:12.10
 
+# Speedup apt-get
+RUN echo 'force-unsafe-io' | tee /etc/dpkg/dpkg.cfg.d/02apt-speedup
+
+# Reduce image size
+RUN echo 'DPkg::Post-Invoke {"/bin/rm -f /var/cache/apt/archives/*.deb || true";};' | tee /etc/apt/apt.conf.d/no-cache
+
 # Install utilities
 RUN apt-get -y update
-RUN apt-get -y install git
-RUN apt-get -y install curl wget
-RUN apt-get -y install build-essential
+RUN apt-get -y install git-core curl wget build-essential make
 
 # Command line extras
 RUN apt-get -y install vim nano
