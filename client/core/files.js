@@ -51,7 +51,7 @@ define([
                         "model": file,
                         "handler": handler
                     }, {
-                        "uniqueId": path,
+                        "uniqueId": handler.id+":"+path,
                         "type": "file",
                     });
                 }
