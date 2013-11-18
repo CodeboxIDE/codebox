@@ -28,9 +28,6 @@ var exec = function(command, options) {
     });
 
     childProcess = child_process.exec.apply(child_process, args);
-    setImmediate(function() {
-        deferred.notify(childProcess);
-    });
 
     return deferred.promise;
 }
