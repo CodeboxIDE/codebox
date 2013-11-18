@@ -55,15 +55,6 @@ define([
             return this.getFromIndex(options, _.identity);
         },
 
-        // Return themes
-        allThemes: function(options) {
-            return this.getFromIndex(options, function(index) {
-                return _.filter(index, function(addon) {
-                    return addon.name.indexOf("theme-") === 0;
-                });
-            });
-        },
-
         // Search in index
         searchIndex: function(query, options) {
             query = query.toLowerCase();

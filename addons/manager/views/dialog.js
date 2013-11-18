@@ -59,7 +59,6 @@ define([
             var filter = $(e.currentTarget).data("addons");
             var filters = {
                 'all': "allIndex",
-                'themes': "allThemes",
                 'installed': "allInstalled",
                 'available': "allAvailable"
             };
