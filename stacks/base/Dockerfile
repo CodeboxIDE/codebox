@@ -35,5 +35,11 @@ RUN adduser --shell /bin/bash --gecos 'codebox workspace user' --disabled-passwo
 # That is clean of temporary folders and node_moudles
 ADD ./src /opt/codebox
 
+# Install node modules
+RUN cd /opt/codebox; npm install
+
+# Build client
+RUN cd /opt/codebox; node_modules/.bin/hr.js -d client build
+
 # Default init command
 CMD su codebox /opt/codebox/init.sh
