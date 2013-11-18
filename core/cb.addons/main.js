@@ -79,7 +79,9 @@ function setup(options, imports, register, app) {
 
         return first.then(runAddonsOperation(function(addon) {
             logger.log("Adding default addon", addon.infos.name);
-            return addon.transfer(configAddonsPath);
+            return Q.nfcall(fs.unlink, path.resolve(configAddonsPath, addon.infos.name)).then(function() {
+                return addon.symlink(configAddonsPath);
+            });
         }));
     };
 

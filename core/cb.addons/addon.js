@@ -166,6 +166,15 @@ var Addon = function(logger, _rootPath) {
         });
     };
 
+    // Symlink this addons
+    this.symlink = function(newRoot) {
+        var addonPath = path.join(newRoot, this.infos.name);
+        return Q.nfcall(fs.symlink, this.root, addonPath, 'dir').then(function() {
+            var addon = new Addon(logger, addonPath);
+            return addon.load();
+        });
+    };
+
     // Start the node process
     this.start = function(app) {
         var that = this;
