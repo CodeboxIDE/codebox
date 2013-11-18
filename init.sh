@@ -4,6 +4,7 @@
 WORKSPACE="${HOME}/workspace/"
 SSH_DIR="${HOME}/.ssh/"
 SERVER_SCRIPT="/opt/codebox/bin/codebox.js"
+PYTHON_ACTIVATE="/opt/virtualenv/bin/activate"
 
 ## Variables provided by environment
 # RSA_PRIVATE, RSA_PUBLIC
@@ -111,6 +112,12 @@ function setup_env () {
     unset GIT_PASSWD
 }
 
+function setup_python () {
+    if [ -e "${PYTHON_ACTIVATE}" ]; then
+        source "${PYTHON_ACTIVATE}"
+    fi;
+}
+
 function start_server () {
     echo "Calling start_server ..."
 
@@ -125,4 +132,5 @@ setup_netrc
 setup_git
 setup_perm
 setup_env
+setup_python
 start_server
