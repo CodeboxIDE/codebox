@@ -76,6 +76,18 @@ define([
         });
     };
 
+    // Select to open a file with any handler
+    var openFileWith = function(file) {
+        var choices = {};
+        _.each(handlers, function(handler) {
+            choices[handler.id] = handler.name;
+        });
+        return dialogs.select("Can't open this file", "Sorry, No handler has been found to open this file. Try to find and install an addon to manage this file or select one of these handlers:", choices).then(function(value) {
+            var handler = handlers[value];
+            return Q(handler.open(file));
+        });
+    };
+
     // Open a file
     var openFile = function(file) {
         if (_.isString(file)) {
@@ -89,8 +101,7 @@ define([
 
         var possibleHandlers = getHandlers(file);
         if (_.size(possibleHandlers) == 0) {
-            dialogs.alert("Can't open this file", "Sorry, No handler has been found to open this file. Try to find and install an addon to manage this file.");
-            return Q.reject(new Error("No handler for this file"));
+            return openFileWith(file);
         }
 
         if (_.size(possibleHandlers) == 1) {
