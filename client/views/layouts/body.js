@@ -4,8 +4,9 @@ define([
     "hr/hr",
     "core/box",
     "core/commands",
+    "core/files",
     "views/components/tabs"
-], function(_, $, hr, box, commands, TabsView) {
+], function(_, $, hr, box, commands, files, TabsView) {
 
     var BodyView = hr.View.extend({
         className: "layout-body",
@@ -18,6 +19,9 @@ define([
             var that = this;
 
             this.tabs = new TabsView();
+            this.tabs.on("tabs:default", function() {
+                files.open("/");
+            }, this);
 
             return this;
         },
