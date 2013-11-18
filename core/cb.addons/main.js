@@ -154,7 +154,7 @@ function setup(options, imports, register, app) {
     server.app.use('/static/addons', express.static(configAddonsPath));
 
     // Prepare defaults addons
-    copyDefaultsAddons().then(function() {
+    return copyDefaultsAddons().then(function() {
         // Load collection of addons
         return loadAddonsInfos();
     }).then(runAddonsOperation(function(addon) {
@@ -168,15 +168,13 @@ function setup(options, imports, register, app) {
         return addon.start(app);
     })).then(function() {
         logger.log("Addons are ready");
-        register(null, {
+        return {
             'addons': {
                 'list': loadAddonsInfos,
                 'install': installAddon,
                 'uninstall': uninstallAddon
             }
-        });
-    }, function(err) {
-        logger.exception(err);
+        };
     });
 };
 

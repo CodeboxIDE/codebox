@@ -167,6 +167,8 @@ var start = function(config) {
     });
     return app.load(plugins).then(function() {
         return Q(app);
+    }, function(err) {
+        process.exit(1);
     });
 };
 
