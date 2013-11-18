@@ -8,6 +8,7 @@ set -e
 # Constants
 ###
 BASE_REPO="codebox"
+BASE_STACK="base"
 SRC_DIR=$(readlink -f ..)
 TMP_SRC="/tmp/codebox_src"
 STACK_SRC="${SRC_DIR}/stacks/base/src"
@@ -87,7 +88,7 @@ REPO="${BASE_REPO}.${STACK}"
 TAG=$VERSION
 
 # We need codebox's source for the base image
-if [[ ${STACK} == "base" ]]; then
+if [[ ${STACK} == ${BASE_STACK} ]]; then
     clean_src
     mv ${TMP_SRC} ${STACK_SRC}
 fi;
@@ -104,7 +105,7 @@ if [ ! $BUILD_ERROR == 0 ]; then
 fi;
 
 # Cleanup tmp src folder
-if [[ ${STACK} == "base" ]]; then
+if [[ ${STACK} == ${BASE_STACK} ]]; then
     rm -rf "${TMP_SRC}"
     rm -rf "${STACK_SRC}"
 fi;
