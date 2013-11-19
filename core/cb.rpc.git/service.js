@@ -54,6 +54,10 @@ GitRPCService.prototype.commits = function(args) {
     return this.repo.commits(args.ref, args.limit, args.skip);
 };
 
+GitRPCService.prototype.branches = function(args) {
+    return this.repo.branches();
+};
+
 GitRPCService.prototype.commits_pending = function() {
     return this.repo.commits_pending();
 };
