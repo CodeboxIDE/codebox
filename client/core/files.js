@@ -40,9 +40,10 @@ define([
             handler.open = function(file) {
                 var path = file.path();
                 var manager = tabs.manager();
+                var uniqueId = handler.id+":"+path;
 
                 var tab = manager.getActiveTabByType("directory");
-                if (tab != null && !manager.checkTabExists(path)) {
+                if (tab != null && !manager.checkTabExists(uniqueId)) {
                     // Change current tab to open the file
                     tab.view.load(path, handler);
                 } else {
@@ -51,7 +52,7 @@ define([
                         "model": file,
                         "handler": handler
                     }, {
-                        "uniqueId": handler.id+":"+path,
+                        "uniqueId": uniqueId,
                         "type": "file",
                     });
                 }
