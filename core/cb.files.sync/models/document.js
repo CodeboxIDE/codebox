@@ -58,7 +58,6 @@ Document.prototype.save = function() {
 
 Document.prototype.setPath = function(path) {
     this.path = path;
-    return this.load();
 };
 
 Document.prototype.load = function() {

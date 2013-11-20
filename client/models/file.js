@@ -272,7 +272,8 @@ define([
                     "size": 0,
                     "mtime": 0,
                     "mime": "inode/directory",
-                    "href": "/vfs/"
+                    "href": "/vfs/",
+                    "exists": true
                 };
                 this.set(fileData);
                 return Q(fileData);
@@ -285,6 +286,7 @@ define([
                     return file.name == filename;
                 });
                 if (fileData != null) {
+                    fileData.exists = true;
                     that.set(fileData);
                     return Q(fileData);
                 } else {

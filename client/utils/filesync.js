@@ -220,8 +220,15 @@ define([
                 socket.on('message', function(data) {
                     logging.log("socket receive packet ", data);
                     self.ping = true;
+
+                    // Calid data
                     if (data.action == null || data.environment == null || self.envId != data.environment) {
                         return;
+                    }
+
+                    // Changement file
+                    if (data.path && (!self.file || data.path != self.file.path())) {
+                        self.trigger("file:path", data.path);
                     }
 
                     switch (data.action) {
@@ -291,7 +298,8 @@ define([
             options = _.defaults({}, options || {}, {
                 sync: true,
                 readonly: false,
-                cache: true
+                cache: true,
+                autoload: true
             });
             options.readonly = this.sync ? options.readonly : true;
 
@@ -308,6 +316,12 @@ define([
             if (this.file != null) {
                 this.file.on("set", _.partial(this.setFile, this.file, options), this);
                 this.trigger("mode", this.file.mode());
+                if (options.autoload) {
+                    this.on("file:path", function(path) {
+                        console.log("update file with path ", path);
+                        this.file.getByPath(path);
+                    }, this);
+                }
 
                 this.updateEnv(this.file.syncEnvId(), options);
             }

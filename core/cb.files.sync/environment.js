@@ -190,9 +190,14 @@ Environment.prototype.sync = function(user, payload) {
 Environment.prototype.save = function(user, payload) {
     var that = this;
 
+    if (payload.path) {
+        this.doc.setPath(payload.path);
+    }
+
     // Synchronize content
     this.doc.save().then(function() {
         that.modifiedState(false);
+        that.syncAll();
     });
 };
 
@@ -208,7 +213,8 @@ Environment.prototype.load = function(user, payload) {
             throw new Error("User was not allowed to open file");
         }
 
-        return that.doc.setPath(payload.path)
+        that.doc.setPath(payload.path);
+        return that.doc.load();
     }).then(function() {
         that.syncAll();
     });
