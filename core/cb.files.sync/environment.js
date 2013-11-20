@@ -55,10 +55,18 @@ Environment.prototype.userExit = function(user) {
     // Remove user from environment
     this.removeUser(user);
 
-    // Close the file
-    // then notify other users of departure
-    return Q(this.pingOthers(user));
+    var base = Q();
+    if (this.doc.path != null) {
+        // Close the file
+        base = user.close(this.doc.path)
+    }
 
+    var that = this;
+
+    // then notify other users of departure
+    return base.then(function() {
+        return that.pingOthers(user);
+    });
 };
 
 Environment.prototype.removeUser = function(user) {
@@ -144,7 +152,8 @@ Environment.prototype.getSyncData = function() {
     return {
         content: this.doc.getContent(),
         participants: this.usersInfo(),
-        state: this.modified
+        state: this.modified,
+        path: this.doc.path
     };
 };
 
