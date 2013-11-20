@@ -19,7 +19,9 @@ define([
             var that = this;
 
             this.tabs = new TabsView();
-            this.tabs.on("tabs:default", function() {
+
+            // Default tab and dbl click to open new
+            this.tabs.on("tabs:default tabs:opennew", function() {
                 files.openNew();
             }, this);
 

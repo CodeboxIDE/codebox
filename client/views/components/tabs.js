@@ -76,7 +76,8 @@ define([
         },
 
         // Create section
-        createSection: function(section) {
+        createSection: function(e) {
+            if (e) e.stopPropagation();
             this.setSection(_.uniqueId("section"));
         },
 
@@ -198,6 +199,9 @@ define([
     // Complete tabs system
     var TabsView = hr.View.extend({
         className: "component-tabs",
+        events: {
+            "dblclick .tabs-header": "openDefaultNew"
+        },  
 
         // Constructor
         initialize: function(options) {
@@ -431,6 +435,11 @@ define([
             this.render();
             return this;
         },
+
+        // Open default new tab
+        openDefaultNew: function() {
+            this.trigger("tabs:opennew");
+        }
     }, {
         Panel: TabPanelView
     });
