@@ -3,6 +3,9 @@ FROM codebox/codebox.base:latest
 # Install pip/virtualenv
 RUN apt-get -y install python-virtualenv python-pip
 
+# Install python dev headers
+RUN apt-get -y install python-dev
+
 # Create new virtualenv
 RUN virtualenv /opt/virtualenv; chown -R codebox:codebox /opt/virtualenv
 
