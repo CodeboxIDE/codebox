@@ -60,7 +60,7 @@ STACK=$(dirname $1/x)
 # Path to dockerfile
 DOCKERFILE="${PWD}/${STACK}/Dockerfile"
 # Use latest git tag as version
-VERSION=$(git tag -l | sort -V | head -n 1)
+VERSION=$(git tag -l | sort -V -r | head -n 1)
 
 echo $STACK
 echo $DOCKERFILE
