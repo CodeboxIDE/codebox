@@ -43,7 +43,7 @@ define([
                 var uniqueId = handler.id+":"+path;
 
                 var tab = manager.getActiveTabByType("directory");
-                if (tab != null && !manager.checkTabExists(uniqueId)) {
+                if (tab != null && !manager.checkTabExists(uniqueId) && !file.isNewfile()) {
                     // Change current tab to open the file
                     tab.view.load(path, handler);
                 } else {
@@ -119,9 +119,27 @@ define([
         });
     };
 
+    // Open a new file
+    var openNew = function(name) {
+        name = name || "untitled";
+        var f = new File({
+            'codebox': box
+        }, {
+            'name': name,
+            'size': 0,
+            'mtime': 0,
+            'mime': "text/plain",
+            'href': location.protocol+"//"+location.host+"/vfs/"+name,
+            'exists': false
+        });
+        console.log(f, f.filename(), f.path());
+        return openFile(f);
+    };
+
     return {
         'addHandler': addHandler,
         'getHandlers': getHandlers,
-        'open': openFile
+        'open': openFile,
+        'openNew': openNew
     };
 });

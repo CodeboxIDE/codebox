@@ -10,6 +10,7 @@ var createEnvironment = require('./environment').createEnvironment;
 var actions = {
     "sync": "sync",
     "save": "save",
+    "load": "load",
     "ping": "ping",
     "close": "close",
     "patch": "patch",
@@ -68,23 +69,23 @@ Manager.prototype.hasEnvironment = function(path) {
     return path in this.environments;
 };
 
-Manager.prototype.createEnvironment = function(path, user) {
+Manager.prototype.createEnvironment = function(environmentId, user) {
     var that = this;
-    return createEnvironment(path, user, this.service).then(function(env) {
-        that.environments[path] = env;
+    return createEnvironment(environmentId, user, this.service).then(function(env) {
+        that.environments[environmentId] = env;
         return env;
     });
 };
 
-Manager.prototype._getEnvironment = function(path) {
-    return Q(this.environments[path]);
+Manager.prototype._getEnvironment = function(environmentId) {
+    return Q(this.environments[environmentId]);
 };
 
-Manager.prototype.getEnvironment = function(path, user) {
-    if(!this.hasEnvironment(path)) {
-        return this.createEnvironment(path, user);
+Manager.prototype.getEnvironment = function(environmentId, user) {
+    if(!this.hasEnvironment(environmentId)) {
+        return this.createEnvironment(environmentId, user);
     }
-    return this._getEnvironment(path);
+    return this._getEnvironment(environmentId);
 };
 
 Manager.prototype.handle = function(socket, data) {
@@ -92,7 +93,7 @@ Manager.prototype.handle = function(socket, data) {
     if(!v.base(data)) return;
 
     // Extract info
-    var path = data.path;
+    var environmentId = data.environment;
     var token = data.token;
     var userId = data.from;
 
@@ -101,15 +102,7 @@ Manager.prototype.handle = function(socket, data) {
     // Authentication and then load payload
     this.getUser(socket, userId, token)
     .then(function(user) {
-        return user.open(path)
-        .then(function(authorized) {
-            // Get environment
-            if(!authorized) {
-                throw new Error('Unauthorized access to : ' + path);
-            }
-
-            return that.getEnvironment(path, user);
-        })
+        return that.getEnvironment(environmentId, user)
         .then(function(env) {
             // Do action
             return env.addUser(user).then(function() {

@@ -32,8 +32,9 @@ define([
          *  @message : message to print
          *  @defaultmsg : default value
          */
-        prompt: function(message, defaultmsg) {
+        prompt: function(title, message, defaultmsg) {
             return Dialogs.open(null, {
+                "title": title,
                 "message": message,
                 "dialog": "prompt",
                 "default": defaultmsg,

@@ -66,7 +66,7 @@ define([
                     });
 
                     // Open root files
-                    files.open(box.root);
+                    files.openNew();
                 });
             }
             return Application.__super__.finish.apply(this, arguments);

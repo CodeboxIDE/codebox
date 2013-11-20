@@ -1,10 +1,12 @@
 define([
+    "q",
     "hr/hr",
     "vendors/diff_match_patch",
     "vendors/crypto",
     "core/user",
-    "core/collaborators"
-], function(hr, diff_match_patch, CryptoJS, user, collaborators) {
+    "core/collaborators",
+    "utils/dialogs"
+], function(Q, hr, diff_match_patch, CryptoJS, user, collaborators, dialogs) {
 
     /*
     FileSync let you easily sync text content in files and access 
@@ -51,6 +53,7 @@ define([
             this.cursors = {};
             this.synced = false;
             this.file = null;
+            this.envId = null;
             this.sync = false;  // sync is enabled or disabled
             this.ping = false;  // ping
             this.participants = []; // participants list
@@ -99,7 +102,7 @@ define([
 
             // send patch
             this.sendPatch(patch_text, this.hash_value_t0, this.hash_value_t1);
-            this.file.setCache(this.content_value_t1);
+            if (this.file) this.file.setCache(this.content_value_t1);
         },
 
 
@@ -119,7 +122,7 @@ define([
          *  Return true if syncronization is on
          */
         isSync: function() {
-            return (this.file != null && this.sync == true);
+            return (this.envId != null && this.sync == true);
         },
 
         /*
@@ -187,93 +190,89 @@ define([
         /*
          *  Update current file
          */
-        updateFile: function(options) {
+        updateEnv: function(envId, options) {
             var self = this;
 
             options = _.defaults({}, options || {}, {
-                cache: true
+                
             });
 
-            // Set mode
-            this.trigger("mode", this.file.mode());
+            this.envId = envId;
 
-            // Read file
-            this.file.download({
-                cache: options.cache
-            }).then(_.bind(function(content) {
-                this.setContent(content);
-            }, this));
+            logging.log("update env with", this.envId);
 
-            // Connect to file
-            if (this.sync) {
-                this.setSyncState(false);
-                this.socket().then(function(socket) {
-                    logging.log("creating socket");
-                    socket.on('connect', function() {
-                        logging.log("socket connect");
-                    });
-                    socket.on('connect_failed', function() {
-                        logging.warn("socket connect failed");
-                    });
-                    socket.on('disconnect', function() {
-                        logging.log("socket disconnect");
-                        self.setSyncState(false);
-                    });
-                    socket.on('connecting', function() {
-                        logging.log("socket connecting ...");
-                    });
-                    socket.on('message', function(data) {
-                        logging.log("socket receive packet ", data);
-                        self.ping = true;
-                        if (data.action == null || data.path == null || self.file.path() != data.path) {
-                            return;
-                        }
-
-                        switch (data.action) {
-                            case "cursor":
-                                if (data.from != user.get("userId")) {
-                                    self.cursorMove(data.from, data.cursor.x, data.cursor.y);
-                                }
-                                break;
-                            case "select":
-                                if (data.from != user.get("userId")) {
-                                    self.selectionMove(data.from, data.start.x, data.start.y, data.end.x, data.end.y);
-                                }
-                                break;
-                            case "participants":
-                                if (data.participants != null) {
-                                    self.setParticipants(data.participants)
-                                }
-                                break;
-                            case "sync":
-                                if (data.content != null) {
-                                    self.synced = true;
-                                    self.setContent(data.content);
-                                }
-                                if (data.participants != null) {
-                                    self.setParticipants(data.participants)
-                                }
-                                if (data.state != null) {
-                                    self.modifiedState(data.state);
-                                }
-                                break;
-                            case "patch":
-                                if (data.patch != null) {
-                                    self.patchContent(data);
-                                }
-                                break;
-                            case "modified":
-                                if (data.state != null) {
-                                    self.modifiedState(data.state);
-                                }
-                                break;
-                        }
-                        self.setSyncState(true);
-                    });
-
-                    self.sendSync();
+            this.setSyncState(false);
+            this.socket().then(function(socket) {
+                logging.log("creating socket");
+                socket.on('connect', function() {
+                    logging.log("socket connect");
                 });
-            }
+                socket.on('connect_failed', function() {
+                    logging.warn("socket connect failed");
+                });
+                socket.on('disconnect', function() {
+                    logging.log("socket disconnect");
+                    self.setSyncState(false);
+                });
+                socket.on('connecting', function() {
+                    logging.log("socket connecting ...");
+                });
+                socket.on('message', function(data) {
+                    logging.log("socket receive packet ", data);
+                    self.ping = true;
+                    if (data.action == null || data.environment == null || self.envId != data.environment) {
+                        return;
+                    }
+
+                    switch (data.action) {
+                        case "cursor":
+                            if (data.from != user.get("userId")) {
+                                self.cursorMove(data.from, data.cursor.x, data.cursor.y);
+                            }
+                            break;
+                        case "select":
+                            if (data.from != user.get("userId")) {
+                                self.selectionMove(data.from, data.start.x, data.start.y, data.end.x, data.end.y);
+                            }
+                            break;
+                        case "participants":
+                            if (data.participants != null) {
+                                self.setParticipants(data.participants)
+                            }
+                            break;
+                        case "sync":
+                            if (data.content != null) {
+                                self.synced = true;
+                                self.setContent(data.content);
+                            }
+                            if (data.participants != null) {
+                                self.setParticipants(data.participants)
+                            }
+                            if (data.state != null) {
+                                self.modifiedState(data.state);
+                            }
+                            break;
+                        case "patch":
+                            if (data.patch != null) {
+                                self.patchContent(data);
+                            }
+                            break;
+                        case "modified":
+                            if (data.state != null) {
+                                self.modifiedState(data.state);
+                            }
+                            break;
+                    }
+                    self.setSyncState(true);
+                });
+
+                if (self.file != null && !self.file.isNewfile()) {
+                    self.sendLoad(self.file.path());
+                } else {
+                    self.sendSync();
+                }
+                
+            });
         },
 
         /*
@@ -294,15 +293,23 @@ define([
                 readonly: false,
                 cache: true
             });
-            if (!file.isValid()) return;
+            options.readonly = this.sync ? options.readonly : true;
+
+            if (!file.isValid()) {
+                logging.error("invalid file for sync ", file);
+                return;
+            }
 
             logging.log("init file with options ", options);
             this.sync = options.sync;
-            options.readonly = this.sync ? options.readonly : true;
+            
             this.file = file;
+
             if (this.file != null) {
-                this.file.on("set", _.partial(this.updateFile, options), this);
-                this.updateFile(options);
+                this.file.on("set", _.partial(this.setFile, this.file, options), this);
+                this.trigger("mode", this.file.mode());
+
+                this.updateEnv(this.file.syncEnvId(), options);
             }
         },
 
@@ -310,14 +317,16 @@ define([
         socket: function() {
             var that = this;
 
+            var box = require("core/box");
+
             if (this._socket) return Q(this._socket);
-            if (this.file != null) {
-                return this.file.codebox.socket("filesync", true).then(function(s) {
+            if (this.envId != null) {
+                return box.socket("filesync", true).then(function(s) {
                     that._socket = s;
                     return that._socket;
                 })
             } else {
-                throw new Error("need 'file' to create sync socket");
+                throw new Error("need 'envId' to create sync socket");
             }
         },
 
@@ -538,12 +547,12 @@ define([
          *  @data : data for this action
          */
         send: function(action, data) {
-            if (this.file != null && action != null) {
+            if (this.envId != null && action != null) {
                 data = _.extend({}, data || {}, {
                     'action': action,
                     'from': user.get("userId"),
                     'token': user.get("token"),
-                    'path': this.file.path()
+                    'environment': this.envId
                 });
 
                 logging.log("send packet", data);
@@ -620,6 +629,15 @@ define([
         },
 
         /*
+         *  Send laod to the server to laod a file
+         */
+        sendLoad: function(path) {
+            return this.send("load", {
+                'path': path
+            });
+        },
+
+        /*
          *  Send request to absolute sync to the server
          */
         sendSync: function() {
@@ -631,7 +649,20 @@ define([
          *  Save the file
          */
         save: function() {
-            return this.send("save");
+            var doSave = _.bind(function(args) {
+                this.send("save", args);
+                return Q();
+            }, this);
+
+            if (this.file.isNewfile()) {
+                return dialogs.prompt("Save as", "", this.file.filename()).then(function(name) {
+                    return doSave({
+                        'path': name
+                    })
+                });
+            } else {
+                return doSave();
+            }
         },
 
         /*

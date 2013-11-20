@@ -125,6 +125,7 @@ define([
             // Commands
             this.editor.commands.addCommand({
                 name: 'save',
+                readOnly: true,
                 bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
                 exec: _.bind(function(editor) {
                     this.sync.save();

@@ -33,7 +33,7 @@ define([
         // Install from url
         installFromUrl: function(e) {
             if (e) e.preventDefault();
-            dialogs.prompt("GIT url for the addon:", "").then(function(url) {
+            dialogs.prompt("Install a new addon", "GIT url for the addon:", "").then(function(url) {
                 addons.install(url).then(function() {
                     dialogs.alert("Installation", "Add-on installed with success!");
                 }, function() {

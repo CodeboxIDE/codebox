@@ -23,7 +23,8 @@ define([
             "mtime": 0,
             "mime": "",
             "href": "",
-            "collaborators": []
+            "collaborators": [],
+            "exists": true
         },
 
         /*
@@ -163,6 +164,13 @@ define([
         },
 
         /*
+         *  Return true if it is a new fiel (not yet on disk)
+         */
+        isNewfile: function() {
+            return !this.get("exists");
+        },
+
+        /*
          *  Return true if it's root directory
          */
         isRoot: function() {
@@ -203,6 +211,16 @@ define([
          */
         extension: function() {
             return "."+this.get("name").split('.').pop();
+        },
+
+        /*
+         *  Return file sync environment id
+         */
+        syncEnvId: function() {
+            if (this.isNewfile()) {
+                return "temporary://"+Date.now()+_.uniqueId("file");
+            }
+            return "file://"+this.path();
         },
 
         /*

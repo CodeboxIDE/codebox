@@ -50,6 +50,16 @@ define([
                 });
             });
 
+            commands.register("files.new", {
+                title: "New file",
+                icon: "file-o",
+                shortcuts: [
+                    "mod+N"
+                ]
+            }, function(args) {
+                files.openNew()
+            });
+
             return this;
         },
 

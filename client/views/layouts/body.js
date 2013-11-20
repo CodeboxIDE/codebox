@@ -20,7 +20,7 @@ define([
 
             this.tabs = new TabsView();
             this.tabs.on("tabs:default", function() {
-                files.open("/");
+                files.openNew();
             }, this);
 
             return this;

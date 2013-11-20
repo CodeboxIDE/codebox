@@ -39,15 +39,26 @@ Document.prototype.patch = function(patchText, preHash, postHash) {
 };
 
 Document.prototype.read = function() {
+    if (!this.path) {
+        return Q("");
+    }
     return Q.nfbind(this.service.invoke)('read', this.path, this.creatorId);
 };
 
 Document.prototype.write = function(content) {
+    if (!this.path) {
+        return Q(null);
+    }
     return Q.nfbind(this.service.invoke)('write', this.path, content, this.creatorId);
 };
 
 Document.prototype.save = function() {
     return this.write(this.buffer);
+};
+
+Document.prototype.setPath = function(path) {
+    this.path = path;
+    return this.load();
 };
 
 Document.prototype.load = function() {

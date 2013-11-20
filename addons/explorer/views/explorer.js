@@ -134,7 +134,7 @@ define([
         actionCreate: function(e) {
             var self = this;
             e.preventDefault();
-            Dialogs.prompt("Create a new file", "newfile.txt").done(function(name) {
+            Dialogs.prompt("Create a new file", "", "newfile.txt").done(function(name) {
                 if (name.length > 0) self.model.createFile(name);
             });
         },
@@ -143,7 +143,7 @@ define([
         actionMkdir: function(e) {
             var self = this;
             e.preventDefault();
-            Dialogs.prompt("Create a new directory", "newdirectory").done(function(name) {
+            Dialogs.prompt("Create a new directory", "", "newdirectory").done(function(name) {
                 if (name.length > 0) self.model.mkdir(name);
             });
         },

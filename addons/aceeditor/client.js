@@ -97,12 +97,18 @@ define([
         '.txt'
     ]);
 
+    // List of mime type
+    var mimeTypes = [
+        "text/plain"
+    ];
+
     // Add files handler
     files.addHandler("ace", {
         name: "Code Editor",
         View: FileEditorView,
         valid: function(file) {
-            return (!file.isDirectory() && _.contains(textExts, file.extension()));
+            return (!file.isDirectory()
+            && (_.contains(textExts, file.extension()) || _.contains(mimeTypes, file.get("mime"))));
         }
     });
 

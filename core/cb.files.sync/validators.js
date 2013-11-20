@@ -32,7 +32,7 @@ function base(data) {
             'token',
             'from',
             'action',
-            'path'
+            'environment'
         ]
     );
 }
@@ -53,11 +53,18 @@ function patch(data) {
     ) && isHash(data.hashs);
 }
 
+function load(data) {
+    return has(data,
+        ['path']
+    );
+}
+
 // Exports
 exports.base = base;
 exports.ping = ping;
 exports.sync = sync;
 exports.save = save;
+exports.load = load;
 exports.close = close;
 exports.patch = patch;
 exports.moveCursor = moveCursor;

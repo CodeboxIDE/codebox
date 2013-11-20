@@ -9,17 +9,17 @@ var Document = require('./models/document').Document;
  * between multiple users
  */
 
-function Environment(path, creator, service) {
+function Environment(envId, creator, service) {
     _.bindAll(this);
 
     // Represents a synchronized file
     this.users = {};
-    this.path = path;
+    this.envId = envId;
     this.locked = false;
     this.modified = false;
     this.service = service;
 
-    this.doc = new Document(this.path, creator.userId, this.service);
+    this.doc = new Document(null, creator.userId, this.service);
 }
 
 Environment.prototype.setup = function() {
@@ -38,22 +38,13 @@ Environment.prototype.addUser = function(user) {
         return Q(true);
     }
 
-    var that = this;
-    return user.open(this.path)
-    .then(function(authorized) {
-        if(!authorized) {
-            throw new Error("User was not allowed to open file");
-        }
+    // Set member (prototypal inheritance)
+    function member() {}
+    member.prototype = user;
+    this.users[user.key()] = new member();
 
-        // Set member (prototypal inheritance)
-        function member() {}
-        member.prototype = user;
-        that.users[user.key()] = new member();
-
-        user.on('exit', that.userExit);
-
-        return authorized;
-    });
+    user.on('exit', this.userExit);
+    return Q(true);
 };
 
 Environment.prototype.userExit = function(user) {
@@ -61,17 +52,12 @@ Environment.prototype.userExit = function(user) {
         return Q(true);
     }
 
-    var that = this;
-
     // Remove user from environment
     this.removeUser(user);
 
     // Close the file
     // then notify other users of departure
-    return user.close(this.path)
-    .then(function() {
-        return that.pingOthers(user);
-    });
+    return Q(this.pingOthers(user));
 
 };
 
@@ -86,7 +72,7 @@ Environment.prototype.getUser = function(user) {
 Environment.prototype.modifiedState = function(state) {
     if (this.modified == state) return;
     this.modified = state;
-    this.notifyAll("modified", {
+    return this.notifyAll("modified", {
         'state': this.modified
     });
 };
@@ -109,7 +95,7 @@ Environment.prototype.loadCache = function() {
 
 Environment.prototype._notifyUser = function(user, action, data) {
     var metaInfo = {
-        'path':  this.path
+        'environment':  this.envId
     };
 
     // Optionnal action
@@ -193,9 +179,30 @@ Environment.prototype.sync = function(user, payload) {
 };
 
 Environment.prototype.save = function(user, payload) {
+    var that = this;
+
     // Synchronize content
-    this.doc.save();
-    return this.modifiedState(false);
+    this.doc.save().then(function() {
+        that.modifiedState(false);
+    });
+};
+
+Environment.prototype.load = function(user, payload) {
+    var that = this;
+
+    if (this.doc.path == payload.path) {
+        return this.sync(user, payload);
+    } 
+
+    user.open(payload.path).then(function(authorized) {
+        if(!authorized) {
+            throw new Error("User was not allowed to open file");
+        }
+
+        return that.doc.setPath(payload.path)
+    }).then(function() {
+        that.syncAll();
+    });
 };
 
 Environment.prototype.ping = function(user, payload) {
