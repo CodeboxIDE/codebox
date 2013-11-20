@@ -45,9 +45,7 @@ define([
                 args = _.defaults({}, args || {}, {
                     'path': "/"
                 });
-                files.open(args.path).fail(function(err) {
-                    console.error(err);
-                });
+                files.open(args.path);
             });
 
             commands.register("files.new", {
@@ -82,9 +80,9 @@ define([
 
         // (action) Toggle search
         toggleSearch: function(st, query) {
-            this.$el.toggleClass("mode-search", st);
+            $("#codebox").toggleClass("mode-search", st);
 
-            st = this.$el.hasClass("mode-search");
+            st = $("#codebox").hasClass("mode-search");
             if (!st) {
                 query = "";
                 this.components.search.clearResults();
@@ -92,6 +90,12 @@ define([
                 this.components.search.focus();
             }
             if (query != null) this.$(".search-query").val(query);
+        },
+
+        // (action) Toggle lateral bar
+        toggleBar: function(st) {
+            if (st != null) st = !st;
+            $("#codebox").toggleClass("mode-body-fullpage", st);
         }
     });
 

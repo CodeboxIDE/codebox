@@ -1,8 +1,17 @@
-#codebox .layout-body {
-	position: absolute;
-	top: 0px;
-	left: @codeboxLateralbarWidth+@codeboxMenubarWidth;
-	right: 0px;
-	bottom: 0px;
-    background: #ddd;
+#codebox {
+    .layout-body {
+    	position: absolute;
+    	top: 0px;
+    	left: @codeboxLateralbarWidth+@codeboxMenubarWidth;
+    	right: 0px;
+    	bottom: 0px;
+        background: #ddd;
+        .transition(left @lateralTransitionSpeed);
+    }
+
+    &.mode-body-fullpage:not(.mode-search) {
+        .layout-body {
+            left: @codeboxMenubarWidth;
+        }
+    }
 }

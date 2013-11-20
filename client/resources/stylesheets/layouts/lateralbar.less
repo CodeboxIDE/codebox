@@ -1,55 +1,58 @@
-#codebox .layout-lateralbar {
-	@transitionSpeed: 600ms;
+#codebox {
+	.layout-lateralbar {
+		@transitionSpeed: 600ms;
 
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	bottom: 0px;
-	overflow: hidden;
-	width: @codeboxMenubarWidth+@codeboxLateralbarWidth;
-	background: @codeboxLateralbarBackground;
-	box-shadow: inset -8px 0px 9px -9px #000000;
-	color: @codeboxLateralbarColor;
-	text-shadow: 0px 0px 2px rgba(0,0,0,0.6);
-
-	.lateral-menu {
 		position: absolute;
-		left: 0px;
-		width: @codeboxMenubarWidth;
 		top: 0px;
+		left: 0px;
 		bottom: 0px;
-		.transition(all @transitionSpeed);
+		overflow: hidden;
+		width: @codeboxMenubarWidth+@codeboxLateralbarWidth;
+		background: @codeboxLateralbarBackground;
+		box-shadow: inset -8px 0px 9px -9px #000000;
+		color: @codeboxLateralbarColor;
+		text-shadow: 0px 0px 2px rgba(0,0,0,0.6);
+		.transition(width @lateralTransitionSpeed);
 
-		.menu-section {
-			margin-bottom: 10px;
+		.lateral-menu {
+			position: absolute;
+			left: 0px;
+			width: @codeboxMenubarWidth;
+			top: 0px;
+			bottom: 0px;
+			.transition(all @transitionSpeed);
 
-			&.menu-bottom {
-				position: absolute;
-				bottom: 0px;
-				margin: 0px;
+			.menu-section {
+				margin-bottom: 10px;
+
+				&.menu-bottom {
+					position: absolute;
+					bottom: 0px;
+					margin: 0px;
+				}
 			}
 		}
-	}
 
-	.lateral-body {
-		position: absolute;
-		top: 0px;
-		left: @codeboxMenubarWidth;
-		bottom: 0px;
-		width: @codeboxLateralbarWidth;
-		overflow-y: auto;
-		overflow-x: hidden;
-		.transition(all @transitionSpeed);
+		.lateral-body {
+			position: absolute;
+			top: 0px;
+			left: @codeboxMenubarWidth;
+			bottom: 0px;
+			width: @codeboxLateralbarWidth;
+			overflow-y: auto;
+			overflow-x: hidden;
+			.transition(all @transitionSpeed);
 
-		>.files {
-			margin: 4px 0px;
-			font-size: 15px;
+			>.files {
+				margin: 4px 0px;
+				font-size: 15px;
+			}
 		}
-	}
 
-	.searchbar {
-		left: @codeboxMenubarWidth+@codeboxLateralbarWidth;
-		.transition(all @transitionSpeed);
+		.searchbar {
+			left: @codeboxMenubarWidth+@codeboxLateralbarWidth;
+			.transition(all @transitionSpeed);
+		}
 	}
 
 	&.mode-search {
@@ -63,4 +66,10 @@
 			left: -(@codeboxMenubarWidth+2*@codeboxLateralbarWidth);
 		}
 	}
+
+	&.mode-body-fullpage:not(.mode-search) {
+		.layout-lateralbar {
+        	width: @codeboxMenubarWidth;
+        }
+    }
 }

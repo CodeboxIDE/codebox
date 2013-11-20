@@ -40,7 +40,7 @@ define([
             handler.open = function(file) {
                 var path = file.path();
                 var manager = tabs.manager();
-                var uniqueId = handler.id+":"+path;
+                var uniqueId = handler.id+":"+file.syncEnvId();
 
                 var tab = manager.getActiveTabByType("directory");
                 if (tab != null && !manager.checkTabExists(uniqueId) && !file.isNewfile()) {
@@ -122,6 +122,8 @@ define([
     // Open a new file
     var openNew = function(name) {
         name = name || "untitled";
+
+        // Create a temporary file
         var f = new File({
             'codebox': box
         }, {
@@ -132,7 +134,6 @@ define([
             'href': location.protocol+"//"+location.host+"/vfs/"+name,
             'exists': false
         });
-        console.log(f, f.filename(), f.path());
         return openFile(f);
     };
 

@@ -59,7 +59,7 @@ define([
         adaptFile: function() {
             this.setTabTitle(this.model.get("name", "loading..."));
             this.setTabType(this.model.isDirectory() ? "directory" : "file");
-            this.setTabId(this.model.path());
+            this.setTabId(this.fileHandler.id+":"+this.model.syncEnvId());
             return this;
         }
     });

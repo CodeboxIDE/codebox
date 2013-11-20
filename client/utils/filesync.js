@@ -318,7 +318,6 @@ define([
                 this.trigger("mode", this.file.mode());
                 if (options.autoload) {
                     this.on("file:path", function(path) {
-                        console.log("update file with path ", path);
                         this.file.getByPath(path);
                     }, this);
                 }
