@@ -71,9 +71,16 @@ define([
                 }
             });
 
+            // Search bar
             this.components.search.on("close", function() {
                 this.toggleSearch(false);
             }, this);
+
+            // Files (count .git files)
+            this.components.files.on("count", function() {
+                this.toggleBar(this.components.files.countFiles > 0);
+            }, this);
+            this.toggleBar(this.components.files.countFiles > 0);
 
             return LateralBarView.__super__.finish.apply(this, arguments);
         },

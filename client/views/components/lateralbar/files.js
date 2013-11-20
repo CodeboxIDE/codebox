@@ -120,6 +120,13 @@ define([
         tagName: "ul",
         className: "files-tree",
 
+        // Constructor
+        initialize: function(options) {
+            FilesTreeView.__super__.initialize.apply(this, arguments);
+            this.countFiles = 0;
+            return this;
+        },
+
         // Render the files tree
         render: function() {
             var that = this;
@@ -127,6 +134,8 @@ define([
 
             this.model.listdir().done(function(files) {
                 that.empty();
+                that.countFiles = 0;
+
                 _.each(files, function(file) {
                     if (file.isHidden()) return;
 
@@ -136,7 +145,9 @@ define([
                     });
                     v.render();
                     v.$el.appendTo(that.$el);
+                    that.countFiles = that.countFiles + 1;
                 });
+                that.trigger("count", that.countFiles);
             });
             
             return this.ready();
