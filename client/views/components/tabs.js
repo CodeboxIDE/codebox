@@ -437,7 +437,7 @@ define([
         },
 
         // Open default new tab
-        openDefaultNew: function() {
+        openDefaultNew: function(e) {
             this.trigger("tabs:opennew");
         }
     }, {
