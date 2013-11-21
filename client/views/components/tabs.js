@@ -67,6 +67,35 @@ define([
                     'action': function() {
                         that.split();
                     }
+                },
+                { 'type': "divider" },
+                {
+                    'type': "action",
+                    'text': "Auto Grid",
+                    'action': function() {
+                        that.tabs.setLayout();
+                    }
+                },
+                {
+                    'type': "action",
+                    'text': "Columns: 2",
+                    'action': function() {
+                        that.tabs.setLayout(2);
+                    }
+                },
+                {
+                    'type': "action",
+                    'text': "Columns: 3",
+                    'action': function() {
+                        that.tabs.setLayout(3);
+                    }
+                },
+                {
+                    'type': "action",
+                    'text': "Columns: 4",
+                    'action': function() {
+                        that.tabs.setLayout(4);
+                    }
                 }
             ]);
 
@@ -248,6 +277,9 @@ define([
         // Constructor
         initialize: function(options) {
             TabsView.__super__.initialize.apply(this, arguments);
+
+            this.layout = null; // null: mode auto
+
             this.tabs = {};
             this.activeTab = null;
             return this;
@@ -264,17 +296,30 @@ define([
             // Calcul number of sections
             var sections = this.getSections();
             var sections_n = _.max([1, _.size(sections)]);
-            var section_width = Math.floor(100/sections_n);
 
+
+            var layout = this.layout || Math.floor(Math.sqrt(sections_n)); // Number of columns
+
+            var nColumns = Math.min(layout, sections_n);
+            var nLines = Math.ceil(sections_n/layout);
+
+            var sectionWidth = Math.floor(100/nColumns);
+            var sectionHeight = Math.floor(100/nLines);
+
+            var sectionLeft = 0;
+            var sectionTop = 0;
 
             // Add different section
             _.each(sections, function(section, sectionIndex) {
                 var section_el, section_tabs, section_tabs_content, css;
+
                 section_el = $("<div>", {
                     "class": "section",
                     "css": {
-                        "width": section_width+"%",
-                        "left": (sectionIndex*section_width)+"%"
+                        "width": sectionWidth+"%",
+                        "height": sectionHeight+"%",
+                        "top": sectionTop+"%",
+                        "left": sectionLeft+"%"
                     },
                 }).appendTo(this.$el);
                 section_el.on('dragleave', function(e) {
@@ -310,6 +355,13 @@ define([
                     tab.tab.$el.appendTo(section_tabs);
                     tab.view.$el.appendTo(section_tabs_content);
                 }, this);
+
+                // Calcul next position
+                sectionLeft = sectionLeft + sectionWidth;
+                if (Math.ceil(sectionLeft/sectionWidth) >= nColumns) {
+                    sectionLeft = 0;
+                    sectionTop = sectionTop + sectionHeight;
+                }
             }, this);
             this.delegateEvents();
 
@@ -491,6 +543,12 @@ define([
         // Open default new tab
         openDefaultNew: function(e) {
             this.trigger("tabs:opennew");
+        },
+
+        // Define tabs layout
+        setLayout: function(l) {
+            this.layout = l;
+            this.render();
         }
     }, {
         Panel: TabPanelView
