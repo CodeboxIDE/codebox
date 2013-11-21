@@ -57,6 +57,8 @@ define([
                         }
                     });
                     $a.appendTo($li);
+                } else if (item.type == "divider") {
+                    $li.addClass("divider");
                 }
 
                 $li.appendTo($subMenu);

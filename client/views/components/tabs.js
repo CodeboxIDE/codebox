@@ -3,8 +3,9 @@ define([
     "jQuery",
     "hr/hr",
     "utils/dragdrop",
-    "utils/keyboard"
-], function(_, $, hr, DragDrop, Keyboard) {
+    "utils/keyboard",
+    "utils/contextmenu"
+], function(_, $, hr, DragDrop, Keyboard, ContextMenu) {
     // Tab header
     var TabView = hr.View.extend({
         className: "component-tab",
@@ -16,7 +17,7 @@ define([
         events: {
             "click":        "open",
             "click .close": "close",
-            "dblclick":     "createSection",
+            "dblclick":     "split",
             "dragstart":    "dragStart"
         },
         states: {
@@ -28,10 +29,46 @@ define([
         initialize: function() {
             TabView.__super__.initialize.apply(this, arguments);
 
+            var that = this;
+
             this.$el.attr("draggable", true);
             this.tabid = this.options.tabid;
             this.tabs = this.parent;
             this.section = this.options.section || 0;
+
+            // Context menu
+            ContextMenu.add(this.$el, [
+                {
+                    'type': "action",
+                    'text': "New Tab",
+                    'action': function() {
+                        that.tabs.openDefaultNew();
+                    }
+                },
+                { 'type': "divider" },
+                {
+                    'type': "action",
+                    'text': "Close",
+                    'action': function() {
+                        that.close();
+                    }
+                },
+                {
+                    'type': "action",
+                    'text': "Close Other Tabs",
+                    'action': function() {
+                        that.closeOthers();
+                    }
+                },
+                { 'type': "divider" },
+                {
+                    'type': "action",
+                    'text': "New Group",
+                    'action': function() {
+                        that.split();
+                    }
+                }
+            ]);
 
             return this;
         },
@@ -76,7 +113,7 @@ define([
         },
 
         // Create section
-        createSection: function(e) {
+        split: function(e) {
             if (e) e.stopPropagation();
             this.setSection(_.uniqueId("section"));
         },
@@ -100,6 +137,11 @@ define([
                 e.stopPropagation();
             }
             this.tabs.close(this.tabid, force);
+        },
+
+        // (event) close others tabs
+        closeOthers: function(e) {
+            this.tabs.closeOthers(this.tabid);
         }
     });
 
@@ -433,6 +475,16 @@ define([
             this.trigger("tabs:close", tabid);
             if (_.size(this.tabs) == 0) this.trigger("tabs:default");
             this.render();
+            return this;
+        },
+
+        // Close others tabs
+        closeOthers: function(tabid) {
+            _.each(this.tabs, function(tab, oTabId) {
+                if (oTabId == tabid) return;
+                this.close(oTabId);
+            }, this);
+
             return this;
         },
 
