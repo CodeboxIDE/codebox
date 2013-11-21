@@ -5,8 +5,9 @@ define([
     "core/box",
     "core/commands",
     "core/files",
-    "utils/dialogs"
-], function(_, $, hr, box, commands, files, Dialogs) {
+    "utils/dialogs",
+    "utils/contextmenu"
+], function(_, $, hr, box, commands, files, Dialogs, ContextMenu) {
 
     var LateralBarView = hr.View.extend({
         className: "layout-lateralbar",
