@@ -17,7 +17,8 @@ define([
             "description": "Cloud IDE on a box."
         },
         links: {
-            "icon": hr.Urls.static("images/favicon.png")
+            "icon": hr.Urls.static("images/icons/32.png"),
+            "apple-touch-icon": hr.Urls.static("images/icons/ios.png")
         },
         events: {
             "submit .login-box form": "actionLoginBox"
