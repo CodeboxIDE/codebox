@@ -7,6 +7,9 @@ define([
     var hr = codebox.require("hr/hr");
     var Tab = codebox.require("views/tabs/base")
     var box = codebox.require("core/box");
+    var user = codebox.require("core/user");
+
+    var settings = user.settings("terminal");
 
     var TerminalTab = Tab.extend({
         className: Tab.prototype.className+ " addon-terminal-tab",
@@ -106,6 +109,9 @@ define([
         // Render
         render: function() {
             this.resize();
+            this.$el.css({
+                "font-family": settings.get("font", "monospace")
+            })
             return this.ready();
         },
 
