@@ -44,7 +44,7 @@ define([
         // Render the file view
         render: function() {
             if (this.model.path() == null) {
-                return this;
+                return;
             }
             return FilesBaseView.__super__.render.apply(this, arguments);
         },

@@ -138,7 +138,7 @@ define([
         setSection: function(section) {
             this.section = section;
             this.open();
-            this.tabs.render();
+            this.tabs.update();
         },
 
         // Create section
@@ -224,7 +224,7 @@ define([
         // Set tab title
         setTabTitle: function(t) {
             this.tabs.tabs[this.tabid].title = t;
-            this.tabs.tabs[this.tabid].tab.render();
+            this.tabs.tabs[this.tabid].tab.update();
             return this;
         },
 
@@ -234,7 +234,7 @@ define([
                 return this;
             }
             this.tabs.tabs[this.tabid].state = (value == null || value) ? state : null;
-            this.tabs.tabs[this.tabid].tab.render();
+            this.tabs.tabs[this.tabid].tab.update();
             return this;
         },
 
@@ -419,13 +419,13 @@ define([
 
                 this.tabs[tabid].view.trigger("tab:ready");
 
-                this.tabs[tabid].tab.render();
-                this.tabs[tabid].view.render();
+                this.tabs[tabid].tab.update();
+                this.tabs[tabid].view.update();
 
                 this.addComponent("tabs_tabs", this.tabs[tabid].tab);
                 this.addComponent("tabs_content", this.tabs[tabid].view);
 
-                if (options.render) this.render();
+                if (options.render) this.update();
             }
             if (this.activeTab == null || options.open) this.open(tabid);
             return this.tabs[tabid].view;
@@ -526,7 +526,7 @@ define([
             this.trigger("tab:"+tabid+":close");
             this.trigger("tabs:close", tabid);
             if (_.size(this.tabs) == 0) this.trigger("tabs:default");
-            this.render();
+            this.update();
             return this;
         },
 
@@ -548,7 +548,7 @@ define([
         // Define tabs layout
         setLayout: function(l) {
             this.layout = l;
-            this.render();
+            this.update();
         }
     }, {
         Panel: TabPanelView

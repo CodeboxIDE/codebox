@@ -22,7 +22,7 @@ define([
 
         render: function() {
             if (this.interval != null) clearInterval(this.interval);
-            this.interval = setInterval(_.bind(this.render, this), this.options.update); 
+            this.interval = setInterval(_.bind(this.update, this), this.options.update); 
             this.options.update = this.options.update*this.options.updateD;
             this.$el.html(moment(this.options.time*1000).fromNow());
             return this.ready();

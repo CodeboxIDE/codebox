@@ -18,7 +18,7 @@ define([
             }
 
             // Bind file events
-            this.model.on("set", this.render, this);
+            this.model.on("set", this.update, this);
             this.model.on("destroy", function() {
                 this.closeTab();
             }, this);
@@ -37,7 +37,7 @@ define([
             var f = new this.fileHandler.View({
                 model: this.model
             }, this);
-            f.render();
+            f.update();
             f.$el.appendTo(this.$el);
             this.adaptFile();
             return this.ready();

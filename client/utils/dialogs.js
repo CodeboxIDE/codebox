@@ -22,7 +22,7 @@ define([
                     d.reject(result);
                 }
             });
-            diag.render();
+            diag.update();
 
             return d.promise;
         },

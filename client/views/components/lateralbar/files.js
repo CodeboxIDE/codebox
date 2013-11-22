@@ -21,7 +21,7 @@ define([
             if (this.model == null) this.model = new File({
                 "codebox": box
             });
-            this.model.on("set", this.render, this);
+            this.model.on("set", this.update, this);
             if (this.options.path != null) this.load(this.options.path);
             return this;
         },
@@ -38,7 +38,7 @@ define([
         // Render the file view
         render: function() {
             if (this.model.path() == null) {
-                return this;
+                return;
             }
             return FilesBaseView.__super__.render.apply(this, arguments);
         },
@@ -96,7 +96,7 @@ define([
                         "model": this.model
                     });
                     this.subfiles.$el.appendTo(this.$(".files"));
-                    this.subfiles.render();
+                    this.subfiles.update();
                 }
                 this.$el.toggleClass("open");
             } else {
@@ -132,7 +132,7 @@ define([
             var that = this;
             this.$el.empty();
 
-            this.model.listdir().done(function(files) {
+            this.model.listdir().then(function(files) {
                 that.empty();
                 that.countFiles = 0;
 
@@ -143,14 +143,14 @@ define([
                         "codebox": that.codebox,
                         "model": file
                     });
-                    v.render();
+                    v.update();
                     v.$el.appendTo(that.$el);
                     that.countFiles = that.countFiles + 1;
                 });
                 that.trigger("count", that.countFiles);
             });
-            
-            return this.ready();
+
+            return that.ready();
         },
     });
 
