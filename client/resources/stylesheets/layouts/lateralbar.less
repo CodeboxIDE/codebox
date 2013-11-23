@@ -16,12 +16,14 @@
 		.user-select(none);
 
 		.lateral-menu {
-			position: absolute;
+			position: fixed;
 			left: 0px;
 			width: @codeboxMenubarWidth;
 			top: 0px;
 			bottom: 0px;
-			.transition(all @transitionSpeed);
+			border-right: 1px solid #000;
+			background: #191a1f;
+			z-index: 2;
 
 			.menu-section {
 				margin-bottom: 10px;
@@ -43,6 +45,7 @@
 			overflow-y: auto;
 			overflow-x: hidden;
 			.transition(all @transitionSpeed);
+			z-index: 1;
 
 			>.files {
 				margin: 4px 0px;
@@ -52,19 +55,18 @@
 
 		.searchbar {
 			left: @codeboxMenubarWidth+@codeboxLateralbarWidth;
+			width: @codeboxLateralbarWidth;
 			.transition(all @transitionSpeed);
+			z-index: 1;
 		}
 	}
 
 	&.mode-search {
 		.searchbar {
-			left: 0px;
+			left: 42px;
 		}
 		.lateral-body {
 			left: -(@codeboxMenubarWidth+@codeboxLateralbarWidth);
-		}
-		.lateral-menu {
-			left: -(@codeboxMenubarWidth+2*@codeboxLateralbarWidth);
 		}
 	}
 

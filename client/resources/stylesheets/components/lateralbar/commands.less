@@ -5,26 +5,22 @@
 
     .menu-item {
         a {
-            margin: 4px;
+            margin: 4px 0px;
             font-size: 18px;
             line-height: 34px;
-            width: 34px;
-            height: 34px;
+            width: 42px;
+            height: 36px;
             display: inline-block;
             text-align: center;
             color: inherit;
-            border-radius: 3px;
             cursor: default;
+            border-left: 3px solid transparent;
 
             &:hover {
                 background: rgba(0, 0, 0, 0.15);
                 text-decoration: none;
-            }
-        }
-
-        &.active {
-            a {
-                background: @codeboxActiveColor;
+                border-left-color: @codeboxActiveColor;
+                color: @codeboxActiveColor;
             }
         }
 

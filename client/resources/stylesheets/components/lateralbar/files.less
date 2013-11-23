@@ -2,7 +2,6 @@
     margin: 0px;
     padding: 0px;
     list-style: none;
-    margin-left: 10px;
     
 
     .file-item {
@@ -11,17 +10,10 @@
 
         >.files {
             display: none;
-            margin-left: 8px;
         }
 
-        &.active::before {
-            content:'';
-            position: absolute;
-            right: 0px;
-            left: 0px;
-            height: 26px;
-            border-right: 4px solid @codeboxActiveColor;
-            background: rgba(0,0,0,0.1);
+        &.active {
+            background: @codeboxActiveColor;
         }
 
         >.name {

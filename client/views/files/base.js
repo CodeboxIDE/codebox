@@ -4,8 +4,10 @@ define([
     'hr/hr',
     'views/tabs/base',
     'models/file',
-    'core/box'
-], function(_, $, hr, Tab, File, box) {
+    'core/box',
+    'utils/dialogs',
+    'utils/uploader'
+], function(_, $, hr, Tab, File, box, Dialogs, Uploader) {
 
     var FilesBaseView = hr.View.extend({
         defaults: {
@@ -62,6 +64,62 @@ define([
             }, function() {
                 that.trigger("file:error");
             })
+        },
+
+
+        // (action) Refresh files list
+        fileActionRefresh: function(e) {
+            e.preventDefault();
+            this.load(this.model.path());  
+        },
+
+        // (action) Create a new file
+        fileActionCreate: function(e) {
+            var that = this;
+            if (e) e.preventDefault();
+            Dialogs.prompt("Create a new file", "", "newfile.txt").done(function(name) {
+                if (name.length > 0) that.model.createFile(name);
+            });
+        },
+
+        // (action) Create a new directory
+        fileActionMkdir: function(e) {
+            var that = this;
+            if (e) e.preventDefault();
+            Dialogs.prompt("Create a new directory", "", "newdirectory").done(function(name) {
+                if (name.length > 0) that.model.mkdir(name);
+            });
+        },
+
+        // (action) Rename a file
+        fileActionRename: function(e) {
+            var that = this;
+            if (e) e.preventDefault();
+
+            Dialogs.prompt("Rename", selection[0].get("name")).done(function(name) {
+                if (name.length > 0) that.model.rename(name);
+            });
+        },
+
+        // (action) Delete files
+        fileActionDelete: function(e) {
+            var that = this;
+            if (e) e.preventDefault();
+
+            Dialogs.confirm("Do your really want to remove these files?").done(function(st) {
+                if (st != true) return;
+                that.model.remove();
+            });
+        },
+
+        // (action) Download a file
+        fileActionDownload: function(e) {
+            var that = this;
+            if (e) e.preventDefault();
+
+            that.model.download({
+                redirect: true
+            });
         },
     });
 

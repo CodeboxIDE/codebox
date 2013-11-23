@@ -24,6 +24,7 @@ define([
 
             // View for subfiles
             this.subFiles = null;
+            this.paddingLeft = this.options.paddingLeft || 0;
 
             // Context menu
             ContextMenu.add(this.$el, function() {
@@ -32,7 +33,7 @@ define([
                 // File or directory
                 menu.push({
                     'type': "action",
-                    'text': "Rename",
+                    'text': "Rename...",
                     'action': function() {}
                 });
                 menu.push({
@@ -47,12 +48,23 @@ define([
                     menu.push({
                         'type': "action",
                         'text': "New file",
-                        'action': function() {}
+                        'action': function() {
+                            that.fileActionCreate();
+                        }
                     });
                     menu.push({
                         'type': "action",
                         'text': "New folder",
-                        'action': function() {}
+                        'action': function() {
+                            that.fileActionMkdir();
+                        }
+                    });
+                    menu.push({
+                        'type': "action",
+                        'text': "Refresh",
+                        'action': function() {
+                            that.fileActionRefresh();
+                        }
                     });
                     menu.push({
                         'type': "menu",
@@ -86,6 +98,7 @@ define([
 
         // Finish rendering
         finish: function() {
+            this.$(">.name").css("padding-left", this.paddingLeft);
             this.$el.toggleClass("type-directory", this.model.isDirectory());
             return FilesTreeViewItem.__super__.finish.apply(this, arguments);
         },
@@ -101,7 +114,8 @@ define([
                 if (this.subFiles == null) {
                     this.subFiles = new FilesTreeView({
                         "codebox": this.codebox,
-                        "model": this.model
+                        "model": this.model,
+                        "paddingLeft": this.paddingLeft+20
                     });
                     this.subFiles.$el.appendTo(this.$(".files"));
                     this.subFiles.update();
@@ -119,7 +133,11 @@ define([
                 e.stopPropagation();
             }
 
-            this.model.open();
+            if (!this.model.isDirectory()) {
+                this.model.open();
+            } else {
+                this.select();
+            }
         }
     });
 
@@ -132,6 +150,7 @@ define([
         initialize: function(options) {
             FilesTreeView.__super__.initialize.apply(this, arguments);
             this.countFiles = 0;
+            this.paddingLeft = this.options.paddingLeft || 10;
             return this;
         },
 
@@ -149,7 +168,8 @@ define([
 
                     var v = new FilesTreeViewItem({
                         "codebox": that.codebox,
-                        "model": file
+                        "model": file,
+                        "paddingLeft": that.paddingLeft
                     });
                     v.update();
                     v.$el.appendTo(that.$el);
