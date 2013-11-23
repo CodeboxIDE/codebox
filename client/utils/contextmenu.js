@@ -30,6 +30,9 @@ define([
         open: function(menuItems, pos) {
             ContextMenu.clear();
 
+            // Handle dynamic menu
+            if (_.isFunction(menuItems)) menuItems = menuItems();
+
             var $menu = $("<ul>", {
                 'id': "ui-context-menu",
                 'class': "dropdown-menu",
@@ -89,6 +92,7 @@ define([
                     return;
                 }
 
+                $el.trigger("ui.contextmenu");
 
                 ContextMenu.open(menu, {
                     left: e.pageX,

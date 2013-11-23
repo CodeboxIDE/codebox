@@ -3,62 +3,10 @@ define([
     "jQuery",
     "hr/hr",
     "models/file",
-    "core/box"
-], function(_, $, hr, File, box) {
-    // Base view for a file element
-     var FilesBaseView = hr.View.extend({
-        defaults: {
-            'path': null,
-            'base': "/",
-            'edition': true,
-            'notifications': true
-        },
-        events: {},
-
-        // Constructor
-        initialize: function(options) {
-            FilesBaseView.__super__.initialize.apply(this, arguments);
-            if (this.model == null) this.model = new File({
-                "codebox": box
-            });
-            this.model.on("set", this.update, this);
-            if (this.options.path != null) this.load(this.options.path);
-            return this;
-        },
-
-        // Template rendering context
-        templateContext: function() {
-            return {
-                'options': this.options,
-                'file': this.model,
-                'view': this
-            };
-        },
-
-        // Render the file view
-        render: function() {
-            if (this.model.path() == null) {
-                return;
-            }
-            return FilesBaseView.__super__.render.apply(this, arguments);
-        },
-
-        // Finish rendering
-        finish: function() {
-            return FilesBaseView.__super__.finish.apply(this, arguments);
-        },
-
-        // Change the file by loading an other file
-        load: function(path) {
-            var that = this;
-            this.model.getByPath(path).then(function() {
-                that.trigger("file:load");
-            }, function() {
-                that.trigger("file:error");
-            })
-        },
-    });
-    
+    "core/box",
+    "utils/contextmenu",
+    "views/files/base"
+], function(_, $, hr, File, box, ContextMenu, FilesBaseView) {
     // File item in the tree
     var FilesTreeViewItem = FilesBaseView.extend({
         tagName: "li",
@@ -72,7 +20,31 @@ define([
         // Constructor
         initialize: function(options) {
             FilesTreeViewItem.__super__.initialize.apply(this, arguments);
-            this.subfiles = null;
+
+            // View for subfiles
+            this.subFiles = null;
+
+            // Context menu
+            /*ContextMenu.add(this.$el, function() {
+                var menu = [];
+
+                // Remove file or diretcory
+                menu.push({
+                    'type': "action",
+                    'text': "Remove",
+                    'action': function() {}
+                });
+
+                // Remove file or diretcory
+                menu.push({
+                    'type': "action",
+                    'text': "Remove",
+                    'action': function() {}
+                });
+
+                return menu;
+            });*/
+
             return this;
         },
 
@@ -90,13 +62,13 @@ define([
             }
 
             if (this.model.isDirectory()) {
-                if (this.subfiles == null) {
-                    this.subfiles = new FilesTreeView({
+                if (this.subFiles == null) {
+                    this.subFiles = new FilesTreeView({
                         "codebox": this.codebox,
                         "model": this.model
                     });
-                    this.subfiles.$el.appendTo(this.$(".files"));
-                    this.subfiles.update();
+                    this.subFiles.$el.appendTo(this.$(".files"));
+                    this.subFiles.update();
                 }
                 this.$el.toggleClass("open");
             } else {
