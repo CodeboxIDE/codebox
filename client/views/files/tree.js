@@ -20,30 +20,66 @@ define([
         // Constructor
         initialize: function(options) {
             FilesTreeViewItem.__super__.initialize.apply(this, arguments);
+            var that = this;
 
             // View for subfiles
             this.subFiles = null;
 
             // Context menu
-            /*ContextMenu.add(this.$el, function() {
+            ContextMenu.add(this.$el, function() {
                 var menu = [];
 
-                // Remove file or diretcory
+                // File or directory
+                menu.push({
+                    'type': "action",
+                    'text': "Rename",
+                    'action': function() {}
+                });
                 menu.push({
                     'type': "action",
                     'text': "Remove",
                     'action': function() {}
                 });
 
-                // Remove file or diretcory
-                menu.push({
-                    'type': "action",
-                    'text': "Remove",
-                    'action': function() {}
-                });
+                if (that.model.isDirectory()) {
+                    // Directory
+                    menu.push({ 'type': "divider" });
+                    menu.push({
+                        'type': "action",
+                        'text': "New file",
+                        'action': function() {}
+                    });
+                    menu.push({
+                        'type': "action",
+                        'text': "New folder",
+                        'action': function() {}
+                    });
+                    menu.push({
+                        'type': "menu",
+                        'text': "Upload",
+                        'items': [
+                            {
+                                'type': "action",
+                                'text': "Files",
+                                'action': function() {}
+                            },
+                            {
+                                'type': "action",
+                                'text': "Directory",
+                                'action': function() {}
+                            }
+                        ]
+                    });
+                } else {
+                    menu.push({
+                        'type': "action",
+                        'text': "Download",
+                        'action': function() {}
+                    });
+                }
 
                 return menu;
-            });*/
+            });
 
             return this;
         },

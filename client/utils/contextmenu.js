@@ -25,21 +25,14 @@ define([
         },
 
         /*
-         *  Create a new context menu
+         *  Generate menu
          */
-        open: function(menuItems, pos) {
-            ContextMenu.clear();
-
+        generateMenu: function(menuItems) {
             // Handle dynamic menu
             if (_.isFunction(menuItems)) menuItems = menuItems();
 
             var $menu = $("<ul>", {
-                'id': "ui-context-menu",
-                'class': "dropdown-menu",
-                'css': _.extend({
-                    'position': "fixed",
-                    'z-index': 100
-                }, pos)
+                'class': "dropdown-menu"
             }).appendTo($("body"));
 
             var addItems = function($subMenu, items) {
@@ -62,12 +55,37 @@ define([
                     $a.appendTo($li);
                 } else if (item.type == "divider") {
                     $li.addClass("divider");
+                } else if (item.type == "menu") {
+                    $li.addClass("dropdown-submenu");
+                    var $a = $("<a>", {
+                        'text': item.text,
+                        'href': "#",
+                        'tabindex': -1
+                    });
+                    $a.appendTo($li);
+                    var $submenu = ContextMenu.generateMenu(item.items);
+                    $submenu.appendTo($li);
                 }
 
                 $li.appendTo($subMenu);
             };
 
             addItems($menu, menuItems);
+            return $menu;
+        },
+
+        /*
+         *  Create a new context menu
+         */
+        open: function(menuItems, pos) {
+            ContextMenu.clear();
+
+            var $menu = ContextMenu.generateMenu(menuItems);
+            $menu.css(_.extend({
+                'position': "fixed",
+                'z-index': 100
+            }, pos));
+            $menu.attr("id", "ui-context-menu");
             $menu.show();
         },
 

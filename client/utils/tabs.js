@@ -16,7 +16,7 @@ define([
          *
          *  Tab: view for the tab
          *  constructor: contructor options
-         * options: options for adding the tab
+         *  options: options for adding the tab
          */
         open: function(Tab, constructor, options) {
             return this.manager().add(Tab, constructor, options);

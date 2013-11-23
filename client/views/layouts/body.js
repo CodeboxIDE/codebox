@@ -5,7 +5,7 @@ define([
     "core/box",
     "core/commands",
     "core/files",
-    "views/components/tabs"
+    "views/tabs/manager"
 ], function(_, $, hr, box, commands, files, TabsView) {
 
     var BodyView = hr.View.extend({

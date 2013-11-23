@@ -133,6 +133,8 @@ var normal = 0
 function Terminal(options) {
   var self = this;
 
+  console.log("build term with ", options);
+
   if (!(this instanceof Terminal)) {
     return new Terminal(arguments[0], arguments[1], arguments[2]);
   }
@@ -2934,7 +2936,7 @@ Terminal.prototype.reverseIndex = function() {
 
 // ESC c Full Reset (RIS).
 Terminal.prototype.reset = function() {
-  Terminal.call(this, this.options);
+  //Terminal.call(this, this.options);
   this.refresh(0, this.rows - 1);
 };
 

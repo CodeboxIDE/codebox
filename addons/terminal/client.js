@@ -35,6 +35,8 @@ define([
             "t"
         ]
     }, function() {
-        tabs.open(TerminalTab);
+        tabs.open(TerminalTab, {}, {
+            'section': "terminals"
+        });
     });
 });

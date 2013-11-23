@@ -34,7 +34,8 @@ define([
                 rows: this.term_h,
                 screenKeys: true,
                 useStyle: false,
-                scrollback: 0
+                scrollback: 0,
+                parent: this.term_el
             });
             this.term.open(this.term_el);
 
@@ -82,7 +83,7 @@ define([
                     that.write(chunk.toString());
                 });
 
-                this.render();
+                //this.render();
             }, this);
 
             // Connect term and stream
@@ -108,10 +109,10 @@ define([
 
         // Render
         render: function() {
-            this.resize();
             this.$el.css({
                 "font-family": settings.get("font", "monospace")
-            })
+            });
+            this.resize();
             return this.ready();
         },
 
