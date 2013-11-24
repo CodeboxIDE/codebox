@@ -12,7 +12,7 @@ var exec = require('child_process').exec;
 var Addon = require("./addon");
 
 function setup(options, imports, register, app) {
-    var logger = imports.logger.namespace("addons", true);
+    var logger = imports.logger.namespace("addons", false);
     var server = imports.server;
     var events = imports.events;
     var hooks = imports.hooks;
@@ -38,8 +38,15 @@ function setup(options, imports, register, app) {
     };
 
     // Load addons list from a directory return as a map name -> addon
-    var loadAddonsInfos = function(addonsRoot) {
+    var loadAddonsInfos = function(addonsRoot, options) {
+        // Diretcory to explore
         addonsRoot = addonsRoot || configAddonsPath;
+
+        // Options
+        options = _.defaults({}, options || {}, {
+            ignoreError: false
+        });
+
         return Q.nfcall(fs.readdir, addonsRoot).then(function(dirs) {
             return _.reduce(dirs, function(previous, dir) {
                 return previous.then(function(addons) {
@@ -51,6 +58,25 @@ function setup(options, imports, register, app) {
                         addon.infos.default = isDefaultAddon(addon);
                         addons[addon.infos.name] = addon;
                         return Q(addons);
+                    }, function(err) {
+                        logger.error("error", err);
+                        if (options.ignoreError) {
+                            //  When ignoring error
+                            //  it will check that the addon is not a symlink
+                            //  and unlink invalid ones
+                            logger.error("ignore invalid addon", addonPath);
+                            return addon.isSymlink().then(function(symlink) {
+                                if (symlink) {
+                                    logger.error("unlink invalid addon:", addon.root);
+                                    return addon.unlink();
+                                }
+                            }).then(function() {
+                                return Q(addons);
+                            }, function() {
+                                return Q(addons);
+                            });
+                        }
+                        return Q.reject(err);
                     });
                 });
             }, Q({}));
@@ -171,7 +197,9 @@ function setup(options, imports, register, app) {
     // Prepare defaults addons
     return copyDefaultsAddons().then(function() {
         // Load collection of addons
-        return loadAddonsInfos();
+        return loadAddonsInfos(null, {
+            ignoreError: true
+        });
     }).then(runAddonsOperation(function(addon) {
         // Install node dependencies
         return addon.installDependencies();

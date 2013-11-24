@@ -43,11 +43,11 @@ var Addon = function(logger, _rootPath) {
         // Check addon
         var packageJsonFile = path.join(addonDir, "package.json");
         if (!fs.existsSync(packageJsonFile)) {
-            throw new Error("No 'package.json' in this repository");
+            throw new Error("No 'package.json' in this repository: "+addonDir);
         }
         this.infos = JSON.parse(fs.readFileSync(packageJsonFile, 'utf8'));
         if (!this.isValid()) {
-            throw new Error("Invalid 'package.json' file");
+            throw new Error("Invalid 'package.json' file: "+packageJsonFile);
         }
 
         return this;
@@ -57,6 +57,13 @@ var Addon = function(logger, _rootPath) {
     this.isValid = function() {
         return !(!this.infos.name || !this.infos.version
             || (!this.infos.main && !this.infos.client && !this.infos.client.main));
+    };
+
+    // Test is symlink
+    this.isSymlink = function() {
+        return Q.nfcall(fs.lstat, this.root).then(function(stats) {
+            return stats.isSymbolicLink();
+        });
     };
 
     // Check if an addon is client side
@@ -173,6 +180,11 @@ var Addon = function(logger, _rootPath) {
             var addon = new Addon(logger, addonPath);
             return addon.load();
         });
+    };
+
+    // Unlink this addon
+    this.unlink = function() {
+        return Q.nfcall(fs.unlink, this.root);
     };
 
     // Start the node process
