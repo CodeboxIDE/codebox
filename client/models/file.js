@@ -526,6 +526,44 @@ define([
             });
         },
 
+        // (action) Upload file
+        actionUpload: function(options) {
+            var that = this;
+
+            options = _.defaults({}, options || {}, {
+                'directory': false
+            });
+
+            // Uploader
+            var uploader = new Uploader({
+                "directory": this
+            });
+
+            // Create file element for selection
+            var $f = $("<input>", {
+                "type": "file",
+                "multiple": true,
+                "change": function(e) {
+                    e.preventDefault();
+                    console.log("start upload", e.currentTarget.files);
+                    uploader.upload(e.currentTarget.files).progress(function(p) {
+                        console.log("progress", p);
+                        that.trigger("uploadProgress", p);
+                    }).fin(function() {
+                        $f.remove();
+                    });
+                }
+            }).hide();
+
+            if (options.directory) {
+                $f.attr("webkitdirectory", true);
+                $f.attr("directory", true);
+            }
+
+            $f.appendTo($("body"));
+            $f.trigger('click');
+        },
+
         // Return context menu
         contextMenu: function() {
             var that = this;
@@ -581,12 +619,18 @@ define([
                             {
                                 'type': "action",
                                 'text': "Files",
-                                'action': function() {}
+                                'action': function() {
+                                    that.actionUpload();
+                                }
                             },
                             {
                                 'type': "action",
                                 'text': "Directory",
-                                'action': function() {}
+                                'action': function() {
+                                    that.actionUpload({
+                                        'directory': true
+                                    });
+                                }
                             }
                         ]
                     });
