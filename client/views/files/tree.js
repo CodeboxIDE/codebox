@@ -36,6 +36,10 @@ define([
         finish: function() {
             this.$(">.name").css("padding-left", this.paddingLeft);
             this.$el.toggleClass("type-directory", this.model.isDirectory());
+
+            if (this.subFiles) {
+                this.subFiles.$el.appendTo(this.$(".files"));
+            }
             return FilesTreeViewItem.__super__.finish.apply(this, arguments);
         },
 
@@ -90,7 +94,7 @@ define([
 
             // Context menu
             ContextMenu.add(this.$el, this.model.contextMenu());
-            
+
             return this;
         },
 
@@ -98,15 +102,15 @@ define([
         render: function() {
             var that = this;
             this.$el.empty();
-            this.$el.toggleClass("root", this.model.isRoot())
+            this.$el.toggleClass("root", this.model.isRoot());
 
             this.model.listdir().then(function(files) {
                 that.empty();
                 that.countFiles = 0;
 
                 _.each(files, function(file) {
-                    if (file.isHidden()) return;
-
+                    if (file.isGit()) return;
+                    
                     var v = new FilesTreeViewItem({
                         "codebox": that.codebox,
                         "model": file,

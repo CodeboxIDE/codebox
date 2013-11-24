@@ -178,6 +178,13 @@ define([
             return this.path() == "/";
         },
 
+        /*
+         *  Return true if it's git root
+         */
+        isGit: function() {
+            return this.path() == "/.git";
+        },
+
         /* 
          *  Test if a path is a direct child
          *
