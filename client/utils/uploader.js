@@ -90,7 +90,7 @@ define([
             var filename = file.webkitRelativePath || file.name;
 
             var error = function(err) {
-                logger.error(err);
+                logging.error("error uploading", filename, ":", err);
                 that.trigger("error", err);
                 that.lock = false;
                 d.reject(err);
@@ -111,6 +111,10 @@ define([
                 that.lock = false;
                 d.resolve(text);
             };
+
+            if (file.name == "." ||  file.name == "..") {
+                return Q();
+            }
 
             if (file.name == null || file.size == null || file.size >= that.maxFileSize) {
                 return Q.reject(new Error("Invalid file or file too big"));

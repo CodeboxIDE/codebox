@@ -464,7 +464,7 @@ define([
 
         // (action) Refresh files list
         actionRefresh: function(e) {
-            e.preventDefault();
+            if (e) e.preventDefault();
             return this.getByPath(this.path());  
         },
 
@@ -531,7 +531,8 @@ define([
             var that = this;
 
             options = _.defaults({}, options || {}, {
-                'directory': false
+                'directory': false,
+                'multiple': true
             });
 
             // Uploader
@@ -539,28 +540,33 @@ define([
                 "directory": this
             });
 
-            // Create file element for selection
-            var $f = $("<input>", {
-                "type": "file",
-                "multiple": true,
-                "change": function(e) {
-                    e.preventDefault();
-                    console.log("start upload", e.currentTarget.files);
-                    uploader.upload(e.currentTarget.files).progress(function(p) {
-                        console.log("progress", p);
-                        that.trigger("uploadProgress", p);
-                    }).fin(function() {
-                        $f.remove();
-                    });
-                }
-            }).hide();
-
-            if (options.directory) {
-                $f.attr("webkitdirectory", true);
-                $f.attr("directory", true);
+            var $f = $("input.cb-file-uploader");
+            if ($f.length == 0) {
+                var $f = $("<input>", {
+                    "type": "file",
+                    "class": "cb-file-uploader"
+                });
+                $f.appendTo($("body"));
             }
 
-            $f.appendTo($("body"));
+            $f.hide();
+
+            $f.prop("webkitdirectory", options.directory);
+            $f.prop("directory", options.directory);
+            $f.prop("multiple", options.multiple);
+
+            // Create file element for selection
+            $f.change(function(e) {
+                console.log("file change ", e);
+                e.preventDefault();
+                console.log("start upload", e.currentTarget.files);
+                uploader.upload(e.currentTarget.files).progress(function(p) {
+                    console.log("progress", p);
+                    that.trigger("uploadProgress", p);
+                }).fin(function() {
+                    $f.remove();
+                });
+            });
             $f.trigger('click');
         },
 
