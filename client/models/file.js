@@ -6,8 +6,9 @@ define([
     "utils/url",
     "utils/languages",
     "utils/filesync",
+    "utils/dialogs",
     "utils/uploader"
-], function(Q, _, hr, api, Url, Languages, FileSync, Uploader) {
+], function(Q, _, hr, api, Url, Languages, FileSync, Dialogs, Uploader) {
     var logging = hr.Logger.addNamespace("files");
 
     if (typeof String.prototype.endsWith !== 'function') {
@@ -452,6 +453,148 @@ define([
             return api.request("post", this.vfsUrl(newPath), JSON.stringify({
                 "renameFrom": this.path()
             }));
+        },
+
+        // (action) Refresh files list
+        actionRefresh: function(e) {
+            e.preventDefault();
+            return this.getByPath(this.path());  
+        },
+
+        // (action) Create a new file
+        actionCreate: function(e) {
+            var that = this;
+            if (e) e.preventDefault();
+            return Dialogs.prompt("Create a new file", "", "newfile.txt").then(function(name) {
+                if (name.length > 0) {
+                    return that.createFile(name);
+                }
+                return Q.reject(new Error("Name is too short"));
+            });
+        },
+
+        // (action) Create a new directory
+        actionMkdir: function(e) {
+            var that = this;
+            if (e) e.preventDefault();
+            Dialogs.prompt("Create a new directory", "", "newdirectory").then(function(name) {
+                if (name.length > 0) {
+                    return that.mkdir(name);
+                }
+                return Q.reject(new Error("Name is too short"));
+            });
+        },
+
+        // (action) Rename a file
+        actionRename: function(e) {
+            var that = this;
+            if (e) e.preventDefault();
+
+            return Dialogs.prompt("Rename", "", this.get("name")).then(function(name) {
+                if (name.length > 0) {
+                    return that.rename(name);
+                }
+                return Q.reject(new Error("Name is too short"));
+            });
+        },
+
+        // (action) Delete files
+        actionRemove: function(e) {
+            var that = this;
+            if (e) e.preventDefault();
+
+            return Dialogs.confirm("Do your really want to remove '"+_.escape(this.get("name"))+"'?").then(function(st) {
+                if (st != true) return Q.reject(new Error("No confirmation"));
+                return that.remove();
+            });
+        },
+
+        // (action) Download a file
+        actionDownload: function(e) {
+            var that = this;
+            if (e) e.preventDefault();
+
+            return that.download({
+                redirect: true
+            });
+        },
+
+        // Return context menu
+        contextMenu: function() {
+            var that = this;
+            return function() {
+                var menu = [];
+
+                // File or directory
+                if (!that.isRoot()) {
+                    menu.push({
+                        'type': "action",
+                        'text': "Rename...",
+                        'action': function() {
+                            that.actionRename();
+                        }
+                    });
+                    menu.push({
+                        'type': "action",
+                        'text': "Remove",
+                        'action': function() {
+                            that.actionRemove();
+                        }
+                    });
+                    menu.push({ 'type': "divider" });
+                }
+
+                if (that.isDirectory()) {
+                    // Directory
+                    menu.push({
+                        'type': "action",
+                        'text': "New file",
+                        'action': function() {
+                            that.actionCreate();
+                        }
+                    });
+                    menu.push({
+                        'type': "action",
+                        'text': "New folder",
+                        'action': function() {
+                            that.actionMkdir();
+                        }
+                    });
+                    menu.push({
+                        'type': "action",
+                        'text': "Refresh",
+                        'action': function() {
+                            that.actionRefresh();
+                        }
+                    });
+                    menu.push({
+                        'type': "menu",
+                        'text': "Upload",
+                        'items': [
+                            {
+                                'type': "action",
+                                'text': "Files",
+                                'action': function() {}
+                            },
+                            {
+                                'type': "action",
+                                'text': "Directory",
+                                'action': function() {}
+                            }
+                        ]
+                    });
+                } else {
+                    menu.push({
+                        'type': "action",
+                        'text': "Download",
+                        'action': function() {
+                            that.actionDownload();
+                        }
+                    });
+                }
+
+                return menu;
+            };
         }
     });
 

@@ -27,71 +27,7 @@ define([
             this.paddingLeft = this.options.paddingLeft || 0;
 
             // Context menu
-            ContextMenu.add(this.$el, function() {
-                var menu = [];
-
-                // File or directory
-                menu.push({
-                    'type': "action",
-                    'text': "Rename...",
-                    'action': function() {}
-                });
-                menu.push({
-                    'type': "action",
-                    'text': "Remove",
-                    'action': function() {}
-                });
-
-                if (that.model.isDirectory()) {
-                    // Directory
-                    menu.push({ 'type': "divider" });
-                    menu.push({
-                        'type': "action",
-                        'text': "New file",
-                        'action': function() {
-                            that.fileActionCreate();
-                        }
-                    });
-                    menu.push({
-                        'type': "action",
-                        'text': "New folder",
-                        'action': function() {
-                            that.fileActionMkdir();
-                        }
-                    });
-                    menu.push({
-                        'type': "action",
-                        'text': "Refresh",
-                        'action': function() {
-                            that.fileActionRefresh();
-                        }
-                    });
-                    menu.push({
-                        'type': "menu",
-                        'text': "Upload",
-                        'items': [
-                            {
-                                'type': "action",
-                                'text': "Files",
-                                'action': function() {}
-                            },
-                            {
-                                'type': "action",
-                                'text': "Directory",
-                                'action': function() {}
-                            }
-                        ]
-                    });
-                } else {
-                    menu.push({
-                        'type': "action",
-                        'text': "Download",
-                        'action': function() {}
-                    });
-                }
-
-                return menu;
-            });
+            ContextMenu.add(this.$el, this.model.contextMenu());
 
             return this;
         },
@@ -151,6 +87,10 @@ define([
             FilesTreeView.__super__.initialize.apply(this, arguments);
             this.countFiles = 0;
             this.paddingLeft = this.options.paddingLeft || 10;
+
+            // Context menu
+            ContextMenu.add(this.$el, this.model.contextMenu());
+            
             return this;
         },
 
@@ -158,6 +98,7 @@ define([
         render: function() {
             var that = this;
             this.$el.empty();
+            this.$el.toggleClass("root", this.model.isRoot())
 
             this.model.listdir().then(function(files) {
                 that.empty();

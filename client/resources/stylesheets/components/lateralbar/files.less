@@ -2,6 +2,14 @@
     margin: 0px;
     padding: 0px;
     list-style: none;
+
+    &.root {
+        position: absolute;
+        top: 0px;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
+    }
     
 
     .file-item {
@@ -14,6 +22,12 @@
 
         &.active {
             background: @codeboxActiveColor;
+        }
+
+        &:hover, &.ui-context-menu {
+            >.name {
+                background: rgba(0, 0, 0, 0.1);
+            }
         }
 
         >.name {

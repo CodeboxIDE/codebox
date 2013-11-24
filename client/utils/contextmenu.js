@@ -21,6 +21,7 @@ define([
          * Clear context menus
          */
         clear: function() {
+            $(".ui-context-menu").removeClass("ui-context-menu");
             $("#ui-context-menu").remove();
         },
 
@@ -110,12 +111,12 @@ define([
                     return;
                 }
 
-                $el.trigger("ui.contextmenu");
-
                 ContextMenu.open(menu, {
                     left: e.pageX,
                     top: e.pageY 
                 });
+
+                $el.addClass("ui-context-menu");
                 return false;
             }
 
