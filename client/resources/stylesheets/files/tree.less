@@ -14,14 +14,18 @@
 
     .file-item {
         cursor: default;
-        line-height: 26px;
+        line-height: 24px;
+        font-size: 14px;
 
         >.files {
             display: none;
         }
 
-        &.active {
-            background: @codeboxActiveColor;
+        &.active, &.active:hover {
+            >.name {
+                #gradient > .vertical(#6eaeff, #5e9ef3) !important;
+                background-color: @codeboxActiveColor;
+            }
         }
 
         &.ui-context-menu {

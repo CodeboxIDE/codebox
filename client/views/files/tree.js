@@ -55,7 +55,7 @@ define([
                     this.subFiles = new FilesTreeView({
                         "codebox": this.codebox,
                         "model": this.model,
-                        "paddingLeft": this.paddingLeft+20
+                        "paddingLeft": this.paddingLeft+15
                     });
                     this.subFiles.$el.appendTo(this.$(".files"));
                     this.subFiles.update();
