@@ -1,4 +1,4 @@
-.layout-lateralbar .files-tree {
+.cb-files-tree {
     margin: 0px;
     padding: 0px;
     list-style: none;
@@ -24,7 +24,7 @@
             background: @codeboxActiveColor;
         }
 
-        &:hover, &.ui-context-menu {
+        &.ui-context-menu {
             >.name {
                 background: rgba(0, 0, 0, 0.15);
             }
@@ -36,6 +36,10 @@
             display: block;
             z-index: 1;
             position: relative;
+
+            &:hover {
+                background: rgba(0, 0, 0, 0.15);
+            }
 
             >i {
                 width: 11px;

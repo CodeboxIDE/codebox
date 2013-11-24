@@ -11,7 +11,7 @@ define([
     var FilesTreeViewItem = FilesBaseView.extend({
         tagName: "li",
         className: "file-item",
-        template: "lateralbar/file.html",
+        template: "files/tree/item.html",
         events: {
             "click .name": "select",
             "dblclick .name": "open"
@@ -84,7 +84,7 @@ define([
     // Complete files tree
     var FilesTreeView = FilesBaseView.extend({
         tagName: "ul",
-        className: "files-tree",
+        className: "cb-files-tree",
 
         // Constructor
         initialize: function(options) {

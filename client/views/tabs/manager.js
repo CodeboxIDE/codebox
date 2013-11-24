@@ -10,7 +10,7 @@ define([
 ], function(_, $, hr, DragDrop, Keyboard, ContextMenu, TabView, TabPanelView) {
     // Complete tabs system
     var TabsView = hr.View.extend({
-        className: "component-tabs",
+        className: "cb-tabs",
         events: {
             "dblclick .tabs-header": "openDefaultNew"
         },  

@@ -4,27 +4,20 @@
 @import "variables.less";
 @import "fonts.less";
 
-@import "loading.less";
+@import "files/tree.less";
+@import "searchbar.less";
+@import "commands.less";
 
-@import "components/lateralbar/files.less";
-@import "components/lateralbar/searchbar.less";
-@import "components/lateralbar/commands.less";
-@import "components/tabs.less";
+@import "tabs/tab.less";
+@import "tabs/base.less";
+@import "tabs/manager.less";
 
 @import "ui/contextmenu.less";
+@import "ui/loading.less";
 
 @import "layouts/lateralbar.less";
 @import "layouts/body.less";
 @import "layouts/login.less";
-
-.codebox-layout-fullscreen () {
-    position: fixed;
-    top: 0px;
-    bottom: 0px;
-    right: 0px;
-    left: 0px;
-    z-index: 10000;
-}
 
 * {
     -webkit-overflow-scrolling: touch;
@@ -59,7 +52,7 @@ body {
 	right: 0px;
 	bottom: 0px;
 
-    .codebox-connexion-alert, .codebox-loading-alert {
+    .cb-connexion-alert, .cb-loading-alert {
         position: fixed;
         top: 0px;
         left: 0px;
@@ -68,7 +61,7 @@ body {
         z-index: 1000;
         background: rgba(0,0,0, 0.6);
 
-        .codebox-loadings-spinner {
+        .cb-loadings-spinner {
             position: absolute;
             margin-left: -30px;
             margin-top: -30px;

@@ -6,7 +6,7 @@ define([
     // List Item View
     var CommandItem = hr.List.Item.extend({
         className: "menu-item",
-        template: "lateralbar/command.html",
+        template: "command.html",
         events: {
             "click a": "run"
         },
@@ -27,28 +27,17 @@ define([
 
         // Finish rendering
         finish: function() {
-            // Open popover if needed
-            var tooltip = true;
-            var popover = this.model.get("popover");
-            if (popover) {
-                popover = _.defaults({}, popover, {
-                    'html': true,
-                    'trigger': 'click'
-                });
-                this.$("a").popover(popover);
-                if (popover.trigger == "hover") tooltip = false;
-            }
-
+            // Flags
+            this.$el.attr("class", this.className+" "+this.model.get("flags"));
+            
             // Tooltip
-            if (tooltip) {
-                this.$("a").tooltip({
-                    'placement': 'right',
-                    'delay': {
-                        'show': 600,
-                        'hide': 0
-                    }
-                });
-            }
+            this.$("a").tooltip({
+                'placement': 'right',
+                'delay': {
+                    'show': 600,
+                    'hide': 0
+                }
+            });
 
             // Hide
             if (!this.model.get("visible")) {
@@ -69,7 +58,7 @@ define([
 
     // Commands list
     var CommandsList = hr.List.extend({
-        className: "menu-commands",
+        className: "cb-menu-commands",
         Collection: Commands,
         Item: CommandItem,
         defaults: _.defaults({

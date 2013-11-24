@@ -1,4 +1,4 @@
-.layout-lateralbar .menu-commands {
+.cb-menu-commands {
     list-style: none;
     margin: 0px;
     padding: 0px;
@@ -15,17 +15,15 @@
             color: inherit;
             cursor: default;
             border-left: 3px solid transparent;
+        }
 
-            &:hover {
+        &:hover, &.active {
+            a {
                 background: rgba(0, 0, 0, 0.15);
                 text-decoration: none;
                 border-left-color: @codeboxActiveColor;
                 color: @codeboxActiveColor;
             }
-        }
-
-        .popover {
-            color: #444;
         }
     }
 }

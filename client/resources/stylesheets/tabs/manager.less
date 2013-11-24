@@ -1,0 +1,41 @@
+.cb-tabs {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+    .section {
+        position: absolute;
+        top: 0px;
+        bottom: 0px;
+        left: 0px;
+        border-bottom: 1px solid @tabSeparationColor;
+        border-right: 1px solid @tabSeparationColor;
+
+        &.dragover {
+            .opacity(60);
+        }
+
+        .tabs-header {
+            position: absolute;
+            top: 0px;
+            height: @tabHeight+@tabMarginTop;
+            right: 0px;
+            left: 0px;
+            background: @tabBackground;
+            padding-left: 12px;
+            overflow: hidden;
+            box-shadow: inset 0px -8px 9px -10px #000000;
+        }
+
+        .tabs-content {
+            position: absolute;
+            top: @tabHeight+@tabMarginTop - 1px;
+            bottom: 0px;
+            right: 0px;
+            left: 0px;
+            z-index: 1;
+            background: @tabActiveColor;
+            border-top: 1px solid @tabActiveBorder;
+        }
+    }
+}

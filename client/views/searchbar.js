@@ -6,8 +6,8 @@ define([
 ], function(_, $, hr, search) {
 
     var SearchBarView = hr.View.extend({
-        className: "searchbar",
-        template: "lateralbar/searchbar.html",
+        className: "cb-searchbar",
+        template: "searchbar.html",
         defaults: {
             
         },

@@ -13,7 +13,7 @@ define([
 
     var LateralBarView = hr.View.extend({
         className: "layout-lateralbar",
-        template: "lateralbar/main.html",
+        template: "lateralbar.html",
         defaults: {},
         events: {
             "click .menu-action-search": "toggleSearch",
@@ -32,9 +32,10 @@ define([
                 icon: "search",
                 shortcuts: [
                     "s", "/"
-                ]
+                ],
+                flags: "cb-active-mode-search"
             }, function() {
-                that.toggleSearch(true);
+                that.toggleSearch();
             });
 
             // Files command
@@ -43,12 +44,14 @@ define([
                 icon: "folder-o",
                 shortcuts: [
                     "f"
-                ]
+                ],
+                flags: "cb-inactive-mode-body-fullpage"
             }, function(args) {
-                args = _.defaults({}, args || {}, {
+                /*args = _.defaults({}, args || {}, {
                     'path': "/"
                 });
-                files.open(args.path);
+                files.open(args.path);*/
+                that.toggleBar();
             });
 
             commands.register("files.new", {
@@ -90,9 +93,9 @@ define([
 
         // (action) Toggle search
         toggleSearch: function(st, query) {
-            $("#codebox").toggleClass("mode-search", st);
+            this.parent.toggleMode("search", st);
 
-            st = $("#codebox").hasClass("mode-search");
+            st = this.parent.hasMode("search");
             if (!st) {
                 query = "";
                 this.components.search.clearResults();
@@ -105,7 +108,7 @@ define([
         // (action) Toggle lateral bar
         toggleBar: function(st) {
             if (st != null) st = !st;
-            $("#codebox").toggleClass("mode-body-fullpage", st);
+            this.parent.toggleMode("body-fullpage", st);
         }
     });
 

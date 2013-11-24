@@ -29,7 +29,7 @@ define([
             Application.__super__.initialize.apply(this, arguments);
 
             box.on("status", function(state) {
-                this.$(".codebox-connexion-alert").toggle(!state);
+                this.$(".cb-connexion-alert").toggle(!state);
             }, this);
             box.on("change:name", function() {
                 this.title(box.get("name"));
@@ -59,7 +59,7 @@ define([
                 addons.loadAll().fail(function(err) {
                     dialogs.alert("Warning!", "Error when initializing addons, it's possible that one of the addons is not correctly loaded. Please check addons states using the addons manager.");
                 }).fin(function() {
-                    that.$(".codebox-loading-alert").remove();
+                    that.$(".cb-loading-alert").remove();
                     
                     // Load new addons
                     addons.on("add", function(addon) {
@@ -108,6 +108,17 @@ define([
                 that.$(".login-box .form-group").addClass("has-error");
                 dialogs.alert("Error at login", err.message);
             });
+        },
+
+        // Toggle mode
+        toggleMode: function(mode, st) {
+            $("#codebox").toggleClass("mode-"+mode, st);
+            st = this.hasMode(mode);
+            $(".cb-active-mode-"+mode).toggleClass("active", st);
+            $(".cb-inactive-mode-"+mode).toggleClass("active", !st);
+        },
+        hasMode: function(mode, st) {
+            return $("#codebox").hasClass("mode-"+mode);
         }
     });
 

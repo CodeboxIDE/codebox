@@ -23,7 +23,7 @@
 			bottom: 0px;
 			border-right: 1px solid #000;
 			background: #191a1f;
-			z-index: 2;
+			z-index: 100;
 
 			.menu-section {
 				margin-bottom: 10px;
@@ -53,7 +53,7 @@
 			}
 		}
 
-		.searchbar {
+		.cb-searchbar {
 			left: @codeboxMenubarWidth+@codeboxLateralbarWidth;
 			width: @codeboxLateralbarWidth;
 			.transition(all @transitionSpeed);
@@ -62,7 +62,7 @@
 	}
 
 	&.mode-search {
-		.searchbar {
+		.cb-searchbar {
 			left: 42px;
 		}
 		.lateral-body {

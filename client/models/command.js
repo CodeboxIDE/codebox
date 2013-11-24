@@ -14,7 +14,8 @@ define([
             // Options
             'shortcuts': [],
             'visible': true,   // Visible in lateral bar
-            'search': true,    // Visible in search
+            'search': true,    // Visible in search,
+            'flags': ""        // Command class flag
         },
 
         // Run the command
