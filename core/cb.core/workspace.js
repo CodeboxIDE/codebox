@@ -36,7 +36,6 @@ function Workspace(options, events) {
     // Mapping of users
     this._users = {};
     this.maxUsers = options.maxUsers;
-    console.log("limit users", this.maxUsers);
 
     // Last modification
     this.mtime = null;
