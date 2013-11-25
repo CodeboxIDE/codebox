@@ -2,7 +2,7 @@
 
 Codebox is a complete and extensible Cloud IDE. It cans runs on any unix machines (Linux, Mac OS X). It is an open source component of [Codebox.io](https://www.codebox.io) (Cloud IDE as a Service).
 
-![Image](../master/docs/assets/base.png?raw=true)
+[Image](https://github.com/FriendCode/codebox/raw/master/docs/assets/base.png?raw=true)
 
 ## Why is CodeBox great?
 
