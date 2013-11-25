@@ -1,5 +1,5 @@
 var path = require("path");
-var pkg = require("../package.json");
+var pkg = require("../../package.json");
 
 exports.config = {
     // Base directory for the application

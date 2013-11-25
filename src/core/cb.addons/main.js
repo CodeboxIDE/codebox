@@ -109,18 +109,23 @@ function setup(options, imports, register, app) {
             // Path to addon
             var addonPath = path.resolve(configAddonsPath, addon.infos.name);
 
-            var d = Q.defer();
-            fs.exists(addonPath, d.resolve);
-
-            return d.promise
-            .then(function(exists) {
-                if(!exists) return false;
+            return Q.nfcall(fs.lstat, addonPath)
+            .then(function(stats) {
+                if (!stats.isSymbolicLink()) {
+                    logger.error("Remove and replace ", addonPath);
+                    return wrench.rmdirRecursive(addonPath);
+                }
 
                 // Unlink only if exists
                 return Q.nfcall(fs.unlink, addonPath);
+            }, function(err) {
+                if (err.code != 'ENOENT') {
+                    return Q.reject(err);
+                }
             })
             .then(function() {
                 // Relink it
+                //logger.log("link ", addon.root, configAddonsPath)
                 return addon.symlink(configAddonsPath);
             });
         }));
