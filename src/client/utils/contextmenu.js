@@ -2,19 +2,6 @@ define([
     'jQuery',
     'underscore'
 ], function ($, _) {
-    /*
-        Adding a contextmenu to a view
-
-            ContextMenu.add(this.$el, [
-                {
-                    'type': "action",
-                    'text': "Test 1",
-                    'action': function() {
-                        alert("test")
-                    }
-                }
-            ]);
-     */
 
     var ContextMenu = {
         /*
@@ -124,13 +111,17 @@ define([
         }
     };
 
+    // Click on the page: clse context menu
     $(document).click(function () {
         ContextMenu.clear();
     });
+
+    // Open new contextmenu: close other context menu
     $(document).on("contextmenu", function() {
         ContextMenu.clear();
     });
 
+    // jQuery plugin
     $.fn.contextmenu = function (menu) {
         var $this = this;
         return (function () {

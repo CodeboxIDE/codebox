@@ -1,0 +1,78 @@
+#codebox {
+    .cb-lateralbar {
+        @transitionSpeed: 600ms;
+
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        bottom: 0px;
+        overflow: hidden;
+        width: @codeboxMenubarWidth+@codeboxLateralbarWidth;
+        background: @codeboxLateralbarBackground;
+        box-shadow: inset -8px 0px 9px -6px #000000;
+        color: @codeboxLateralbarColor;
+        text-shadow: 0px 0px 2px rgba(0,0,0,0.6);
+        .transition(width @lateralTransitionSpeed);
+        .user-select(none);
+
+        .lateral-menu {
+            position: fixed;
+            left: 0px;
+            width: @codeboxMenubarWidth;
+            top: 0px;
+            bottom: 0px;
+            border-right: 1px solid #000;
+            background: #191a1f;
+            z-index: 100;
+
+            .menu-section {
+                margin-bottom: 10px;
+
+                &.menu-bottom {
+                    position: absolute;
+                    bottom: 0px;
+                    margin: 0px;
+                }
+            }
+        }
+
+        .lateral-body {
+            position: absolute;
+            top: 0px;
+            left: @codeboxMenubarWidth;
+            bottom: 0px;
+            width: @codeboxLateralbarWidth;
+            overflow-y: auto;
+            overflow-x: hidden;
+            .transition(all @transitionSpeed);
+            z-index: 1;
+
+            >.files {
+                margin: 4px 0px;
+                font-size: 15px;
+            }
+        }
+
+        .cb-searchbar {
+            left: @codeboxMenubarWidth+@codeboxLateralbarWidth;
+            width: @codeboxLateralbarWidth;
+            .transition(all @transitionSpeed);
+            z-index: 1;
+        }
+    }
+
+    &.mode-search {
+        .cb-searchbar {
+            left: 42px;
+        }
+        .lateral-body {
+            left: -(@codeboxMenubarWidth+@codeboxLateralbarWidth);
+        }
+    }
+
+    &.mode-body-fullpage:not(.mode-search) {
+        .cb-lateralbar {
+            width: @codeboxMenubarWidth;
+        }
+    }
+}

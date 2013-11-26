@@ -4,20 +4,12 @@ require([
     "hr/args",
     "core/app",
     "core/session",
-    "config",
-    'views/views',
     'resources/resources',
-], function(_, hr, args, app, session, config) {
+], function(_, hr, args, app, session) {
     // Configure hr
     hr.configure(args);
-
-    // Extend template context
-    hr.Template.extendContext({
-        'app': {
-            'config': config,
-        }
-    });
     
+    // Start the application
     session.prepare().then(function() {
         app.run();
     });

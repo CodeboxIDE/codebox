@@ -1,18 +1,18 @@
 define([
     'underscore',
     'hr/hr',
-    'collections/commands',
+    'views/commands/manager',
     'core/search'
-], function (_, hr, Commands, search) {
+], function (_, hr, CommandsView, search) {
     // Collection for all current commands
-    var commands = new Commands();
+    var commands = new CommandsView();
 
     // Add commands to search
     search.handler({
         'id': "commands",
         'title': "Commands"
     }, function(query) {
-        return _.map(commands.filter(function(command) {
+        return _.map(commands.collection.filter(function(command) {
             return (
                 command.get("title").toLowerCase().indexOf(query) != -1
                 && command.get("search")

@@ -1,0 +1,16 @@
+{
+    "name": "cb.panel.files",
+    "version": "0.1.0",
+    "title": "Add-ons",
+    "description": "Files Tree Panel",
+    "homepage": "https://github.com/FriendCode/codebox",
+    "license": "Apache",
+    "author": {
+        "name": "Samy Pessé",
+        "email": "samypesse@gmaiL.com",
+        "url": "http://samypesse.fr"
+    },
+    "client": {
+        "main": "client"
+    }
+}

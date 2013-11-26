@@ -33,7 +33,7 @@ exports.config = {
         'moment': 'vendors/moment'
     },
     "shim": {
-        'views/views': {
+        'resources/resources': {
             deps: [
                 'vendors/bootstrap/carousel',
                 'vendors/bootstrap/dropdown',

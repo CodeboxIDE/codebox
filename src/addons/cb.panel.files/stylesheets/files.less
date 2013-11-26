@@ -1,0 +1,96 @@
+.cb-files-tree {
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+
+    .vertical(@start-color: #555; @end-color: #333; @start-percent: 0%; @end-percent: 100%) {
+        background-image: -webkit-gradient(linear, left @start-percent, left @end-percent, from(@start-color), to(@end-color)); // Safari 4+, Chrome 2+
+        background-image: -webkit-linear-gradient(top, @start-color, @start-percent, @end-color, @end-percent); // Safari 5.1+, Chrome 10+
+        background-image:  -moz-linear-gradient(top, @start-color @start-percent, @end-color @end-percent); // FF 3.6+
+        background-image: linear-gradient(to bottom, @start-color @start-percent, @end-color @end-percent); // Standard, IE10
+        background-repeat: repeat-x;
+      }
+
+    &.root {
+        position: absolute;
+        top: 0px;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
+    }
+    
+
+    .file-item {
+        cursor: default;
+        line-height: 24px;
+        font-size: 14px;
+
+        >.files {
+            display: none;
+        }
+
+        &.active, &.active:hover {
+            >.name {
+                .vertical(#6eaeff, #5e9ef3) !important;
+                background-color: #5E9EF3;
+            }
+        }
+
+        &.ui-context-menu {
+            >.name {
+                background: rgba(0, 0, 0, 0.15);
+            }
+        }
+
+        >.name {
+            color: inherit;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            display: block;
+            z-index: 1;
+            position: relative;
+
+            &:hover {
+                background: rgba(0, 0, 0, 0.15);
+            }
+
+            >i {
+                width: 11px;
+                color: inherit;
+                text-align: center;
+
+                &.fa-file {
+                    color: transparent;
+                    text-shadow: none;
+                }
+            }
+            >.fa-caret-right {
+                display: inline-block;
+            }
+            >.fa-caret-down {
+                display: none;
+            }
+        }
+
+        &.type-directory {
+            >.name {
+                color: inherit;
+            }
+        }
+
+        &.open {
+            >.files {
+                display: block;
+            }
+            >.name {
+                >.fa-caret-right {
+                    display: none;
+                }
+                >.fa-caret-down {
+                    display: inline-block;
+                } 
+            }
+        }
+    }
+}

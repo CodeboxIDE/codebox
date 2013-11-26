@@ -5,12 +5,13 @@ define([
     'models/file',
     'core/user',
     'core/box',
+    'core/tabs',
     'core/settings',
+    'core/search',
     'utils/dialogs',
-    'utils/tabs',
     'views/tabs/file',
     'views/files/base'
-], function(Q, _, hr, File, user, box, settings, dialogs, tabs, FileTab) {
+], function(Q, _, hr, File, user, box, tabs, settings, search, dialogs, FileTab) {
     var logging = hr.Logger.addNamespace("files");
 
     // Settings for files manager
@@ -39,16 +40,15 @@ define([
         if (handler.View) {
             handler.open = function(file) {
                 var path = file.path();
-                var manager = tabs.manager();
                 var uniqueId = handler.id+":"+file.syncEnvId();
 
-                var tab = manager.getActiveTabByType("directory");
-                if (tab != null && !manager.checkTabExists(uniqueId) && !file.isNewfile()) {
+                var tab = tabs.getActiveTabByType("directory");
+                if (tab != null && !tabs.checkTabExists(uniqueId) && !file.isNewfile()) {
                     // Change current tab to open the file
                     tab.view.load(path, handler);
                 } else {
                     // Add new tab
-                    tabs.open(FileTab, {
+                    tabs.add(FileTab, {
                         "model": file,
                         "handler": handler
                     }, {
@@ -90,7 +90,11 @@ define([
     };
 
     // Open a file
-    var openFile = function(file) {
+    var openFile = function(file, options) {
+        options = _.defaults({}, options || {}, {
+            'userChoice': null
+        });
+
         if (_.isString(file)) {
             var nfile = new File({
                 'codebox': box
@@ -105,7 +109,7 @@ define([
             return openFileWith(file);
         }
 
-        if (_.size(possibleHandlers) == 1) {
+        if (_.size(possibleHandlers) == 1 && (options.userChoice != true)) {
             return Q(_.first(possibleHandlers).open(file));
         }
 
@@ -136,6 +140,25 @@ define([
         });
         return openFile(f);
     };
+
+    // Search for files
+    search.handler({
+        'id': "files",
+        'title': "Files"
+    }, function(query) {
+        return box.searchFiles(query).then(function(data) {
+            return Q(_.map(data.files, _.bind(function(path) {
+                var filename = _.last(path.split("/"));
+                if (filename.length == 0) filename = path;
+                return {
+                    "text": filename,
+                    "callback": _.bind(function() {
+                        openFile(path);
+                    }, this)
+                };
+            }, this)));
+        });
+    });
 
     return {
         'addHandler': addHandler,

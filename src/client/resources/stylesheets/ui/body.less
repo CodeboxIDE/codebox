@@ -1,0 +1,18 @@
+#codebox {
+    .cb-body {
+        position: absolute;
+        top: 0px;
+        left: @codeboxLateralbarWidth+@codeboxMenubarWidth;
+        right: 0px;
+        bottom: 0px;
+        z-index: 10;
+        background: #ddd;
+        .transition(left @lateralTransitionSpeed);
+    }
+
+    &.mode-body-fullpage:not(.mode-search) {
+        .cb-body {
+            left: @codeboxMenubarWidth;
+        }
+    }
+}

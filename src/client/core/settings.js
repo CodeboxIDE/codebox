@@ -5,7 +5,7 @@ define([
 ], function (hr, user, SettingsPageView) {
 
     /*
-     *  This module define a unify way for addons
+     *  This module define a unify way
      *  to manage user settings.
      */
 

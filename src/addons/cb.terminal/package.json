@@ -1,0 +1,16 @@
+{
+    "name": "cb.terminal",
+    "version": "0.0.4",
+    "title": "Terminal",
+    "description": "Terminal tab integration into your workspace.",
+    "homepage": "https://github.com/FriendCode/codebox",
+    "license": "Apache",
+    "author": {
+        "name": "Samy Pessé",
+        "email": "samypesse@gmaiL.com",
+        "url": "http://samypesse.fr"
+    },
+    "client": {
+        "main": "client"
+    }
+}

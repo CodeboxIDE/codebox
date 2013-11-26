@@ -1,0 +1,16 @@
+{
+    "name": "cb.help",
+    "version": "0.0.1",
+    "title": "Help",
+    "description": "Documentation for Codebox.",
+    "homepage": "https://github.com/FriendCode/codebox",
+    "license": "Apache",
+    "author": {
+        "name": "Samy Pessé",
+        "email": "samypesse@gmail.com",
+        "url": "http://samypesse.fr"
+    },
+    "client": {
+        "main": "client"
+    }
+}

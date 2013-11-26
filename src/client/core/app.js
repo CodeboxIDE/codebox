@@ -6,8 +6,12 @@ define([
     'core/session',
     'core/addons',
     'core/box',
-    'core/files'
-], function (hr, url, dialogs, box, session, addons, box, files) {
+    'core/files',
+    'core/commands',
+    'core/tabs',
+    'core/panels',
+], function (hr, url, dialogs, 
+box, session, addons, box, files, commands, tabs, panels) {
 
     // Define base application
     var Application = hr.Application.extend({
@@ -21,19 +25,36 @@ define([
             "apple-touch-icon": hr.Urls.static("images/icons/ios.png")
         },
         events: {
-            "submit .login-box form": "actionLoginBox"
+            "submit .cb-login .login-box form": "actionLoginBox"
         },
 
         // Constructor
         initialize: function() {
             Application.__super__.initialize.apply(this, arguments);
 
+            // Tabs
+            tabs.on("tabs:default tabs:opennew", function() {
+                files.openNew();
+            }, this);
+
+            // Panels
+            panels.on("open", function() {
+                this.toggleMode("body-fullpage", false);
+            }, this);
+            panels.on("close", function() {
+                this.toggleMode("body-fullpage", true);
+            }, this);
+
+            // Connexion status
             box.on("status", function(state) {
                 this.$(".cb-connexion-alert").toggle(!state);
             }, this);
+
+            // Title changed
             box.on("change:name", function() {
                 this.title(box.get("name"));
             }, this);
+
             return this;
         },
 
@@ -56,9 +77,23 @@ define([
             if (email && password) {
                 this.doLogin(email, password, true);
             } else if (box.isAuth()) {
+                // Add commands
+                commands.$el.appendTo(this.$(".cb-commands"));
+                commands.render();
+
+                // Add tabs
+                tabs.$el.appendTo(this.$(".cb-body"));
+                tabs.render();
+
+                // Add panels
+                panels.$el.appendTo(this.$(".cb-panels"));
+                panels.render();
+
+                // Load addons
                 addons.loadAll().fail(function(err) {
                     dialogs.alert("Warning!", "Error when initializing addons, it's possible that one of the addons is not correctly loaded. Please check addons states using the addons manager.");
                 }).fin(function() {
+                    // Remove loading state
                     that.$(".cb-loading-alert").remove();
                     
                     // Load new addons

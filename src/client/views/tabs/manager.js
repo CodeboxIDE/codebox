@@ -130,7 +130,6 @@ define([
                 parentId: null          // Parent tabid
             });
             tabid = options.uniqueId != null ? this.checkTabExists(options.uniqueId) : null;
-            
             if (tabid == null) {
                 tabid = _.uniqueId("tab");
                 tabinfos = {

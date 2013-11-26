@@ -24398,6 +24398,9 @@ define('hr/model',[
         // Joints with others models
         joints: {},
 
+        // Model unique identifier
+        idAttribute: 'id',
+
         /*
          *  Initialize the model
          */
@@ -24496,6 +24499,15 @@ define('hr/model',[
             // Calcul new attributes
             this.attributes = this.attributes || {};
             newattributes = _.clone(_.deepExtend(this.toJSON(), attrs));
+
+            // New unique id
+            var oldId = this.id;
+            if (this.idAttribute in newattributes) {
+                this.id = newattributes[this.idAttribute];
+            } else {
+                this.id = this.cid;
+            }
+            if (oldId != this.id) this.trigger("id", this.id, oldId);
 
             // Calcul diffs
             diffs = this.diff(newattributes);
@@ -24748,7 +24760,7 @@ define('hr/collection',[
             } else {
                 this.models.sort(boundComparator);
             }
-            if (!options.silent) this.trigger('reset', this, options);
+            if (!options.silent) this.trigger('sort', this, options);
             return this;
         },
 
@@ -24805,7 +24817,7 @@ define('hr/collection',[
             index = options.at;
             this.models.splice(index, 0, model);
 
-            if (this.comparator) this.sort({silent: true});
+            if (this.comparator) this.sort({silent: options.silent});
             if (options.silent) return this;
             options.index = index;
             this.trigger('add', model, this, options);
@@ -25044,7 +25056,7 @@ define('hr/list',[
             } else {
                 this.collection = new this.Collection(this.options.collection);
             }
-            this.collection.on("reset", function() {
+            this.collection.on("reset sort", function() {
                 this.resetModels();
             }, this);
             this.collection.on("add", function(elementmodel, collection, options) {
@@ -25080,14 +25092,24 @@ define('hr/list',[
                 render: true,
                 at: _.size(this.items),
             });
+
+            if (this.items[model.id] != null) {
+                this.removeModel(model);
+            }
+
             item = new this.Item({
                 "model": model,
                 "list": this,
                 "collection": this.collection
             });
+            item.$el.attr("model", model.id);
             model.on("change", function() {
                 item.update();
             });
+            model.on("id", function(newId, oldId) {
+                this.items[newId] = this.items[oldId];
+                delete this.items[oldId];
+            })
             item.update();
             tag = this.Item.prototype.tagName+"."+this.Item.prototype.className.split(" ")[0];
 
@@ -25096,7 +25118,7 @@ define('hr/list',[
             } else {
                 this.$el.prepend(item.$el);
             }
-            this.items[model.cid] = item;
+            this.items[model.id] = item;
 
             if (!options.silent) this.trigger("change:add", model);
             if (options.render) this.update();
@@ -25115,11 +25137,11 @@ define('hr/list',[
                 silent: false,
                 render: true
             });
-            if (this.items[model.cid] == null) return this;
+            if (this.items[model.id] == null) return this;
 
-            this.items[model.cid].remove();
-            this.items[model.cid] = null;
-            delete this.items[model.cid];
+            this.items[model.id].remove();
+            this.items[model.id] = null;
+            delete this.items[model.id];
 
             if (!options.silent) this.trigger("change:remove", model);
             if (options.render) this.update();
@@ -25144,6 +25166,7 @@ define('hr/list',[
                 });
             }, this);
             this.items = {};
+            this.$el.empty();
 
             // add new models
             this.collection.forEach(function(model) {
@@ -25431,7 +25454,7 @@ Logger, Requests, Urls, Storage, Cache, Template, Resources, Queue, I18n, views)
     
     return hr;
 });}());
-define('hr/args',[],function() { return {"version":"0.2.30","revision":1385382610650,"baseUrl":"/"}; });
+define('hr/args',[],function() { return {"version":"0.2.30","revision":1385502672513,"baseUrl":"/"}; });
 define('utils/url',[
     'hr/hr'
 ], function (hr) {
@@ -32617,7 +32640,10 @@ define('utils/gravatar',[
                 'defaultImage': 'mm'
             });
 
-            return "https://secure.gravatar.com/avatar/" + String(CryptoJS.MD5(email.toLowerCase().trim())) + "?size=" + options.size + "&default=" + encodeURIComponent(options.defaultImage);
+            return "https://secure.gravatar.com/avatar/"
+             + String(CryptoJS.MD5(email.toLowerCase().trim()))
+             + "?size=" + options.size
+             + "&default=" + encodeURIComponent(options.defaultImage);
         }
     };
 });
@@ -33669,9 +33695,14 @@ define('models/file',[
         /*
          *  Open the tab for this file
          */
-        open: function(path) {
+        open: function(path, options) {
             var files = require("core/files");
-            return files.open(path ? path : this);
+            if (_.isObject(path)) {
+                options = path;
+                path = this;
+            }
+
+            return files.open(path, options);
         },
 
         /*
@@ -34172,6 +34203,20 @@ define('models/file',[
             var that = this;
             return function() {
                 var menu = [];
+
+                // Open with
+                if (!that.isDirectory()) {
+                    menu.push({
+                        'type': "action",
+                        'text': "Open with...",
+                        'action': function() {
+                            that.open({
+                                'userChoice': true
+                            });
+                        }
+                    });
+                    menu.push({ 'type': "divider" });
+                }
 
                 // File or directory
                 if (!that.isRoot()) {
@@ -34711,7 +34756,7 @@ define('core/settings',[
 ], function (hr, user, SettingsPageView) {
 
     /*
-     *  This module define a unify way for addons
+     *  This module define a unify way
      *  to manage user settings.
      */
 
@@ -34855,7 +34900,15 @@ define('models/command',[
     "underscore",
     "hr/hr"
 ], function(_, hr) {
-    var logging = hr.Logger.addNamespace("command");
+    Array.prototype.remove = function(val) {
+        for (var i = 0; i < this.length; i++) {
+            if (this[i] === val) {
+                this.splice(i, 1);
+                i--;
+            }
+        }
+        return this;
+    };
 
     var Command = hr.Model.extend({
         defaults: {
@@ -34865,6 +34918,7 @@ define('models/command',[
             'handler': function() {},
 
             // Options
+            'position': 2,
             'shortcuts': [],
             'visible': true,   // Visible in lateral bar
             'search': true,    // Visible in search,
@@ -34874,10 +34928,39 @@ define('models/command',[
         // Run the command
         run: function(args) {
             return this.get("handler").apply(this, [args]);
+        },
+
+        // Toggle flag
+        toggleFlag: function(flag, state) {
+            var flags = this.get("flags", "").split(" ");
+
+            if (state == null)  state = !_.contains(flags, flag);
+            if (state) {
+                flags.push(flag);
+            } else {
+                flags.remove(flag);
+            }
+            this.set("flags", _.uniq(flags).join(" "));
         }
     });
 
     return Command;
+});
+define('collections/commands',[
+    "underscore",
+    "hr/hr",
+    "models/command"
+], function(_, hr, Command) {
+    var Commands = hr.Collection.extend({
+        model: Command,
+
+        // Sort comparator
+        comparator: function(command) {
+            return command.get("position", 2);
+        }
+    });
+
+    return Commands;
 });
 /*global define:false */
 /**
@@ -35878,16 +35961,77 @@ define('utils/keyboard',[
     }));
     return Keyboard;
 });
-define('collections/commands',[
-    "underscore",
-    "hr/hr",
-    "models/command",
-    "utils/keyboard"
-], function(_, hr, Command, Keyboard) {
-    var logging = hr.Logger.addNamespace("command");
+define('views/commands/item',[
+    "hr/hr"
+], function(hr) {
 
-    var Commands = hr.Collection.extend({
-        model: Command,
+    // List Item View
+    var CommandItem = hr.List.Item.extend({
+        className: "menu-item",
+        template: "command.html",
+        events: {
+            "click a": "run"
+        },
+
+        // Constructor
+        initialize: function() {
+            CommandItem.__super__.initialize.apply(this, arguments);
+            return this;
+        },
+
+        // template arguments
+        templateContext: function() {
+            return {
+                'command': this.model
+            };
+        },
+
+        // Finish rendering
+        finish: function() {
+            // Flags
+            this.$el.attr("class", this.className+" "+this.model.get("flags"));
+            
+            // Tooltip
+            this.$("a").tooltip({
+                'placement': 'right',
+                'delay': {
+                    'show': 600,
+                    'hide': 0
+                }
+            });
+
+            // Hide
+            if (!this.model.get("visible")) {
+                this.$el.hide();
+            }
+
+            return CommandItem.__super__.finish.apply(this, arguments);
+        },
+
+        // Run command
+        run: function(e) {
+            if (e) e.preventDefault();
+
+            // Run command
+            this.model.run();
+        }
+    });
+
+    return CommandItem;
+});
+define('views/commands/manager',[
+    "hr/hr",
+    "collections/commands",
+    "utils/keyboard",
+    "views/commands/item"
+], function(hr, Commands, Keyboard, CommandItem) {
+    var logging = hr.Logger.addNamespace("commands");
+
+    // Commands list
+    var CommandsView = hr.List.extend({
+        className: "cb-menu-commands",
+        Collection: Commands,
+        Item: CommandItem,
 
         /*
          *  Register a new command
@@ -35904,8 +36048,8 @@ define('collections/commands',[
                 'handler': handler
             });
 
-            var command = new this.model({}, properties);
-            this.add(command);
+            var command = new this.collection.model({}, properties);
+            this.collection.add(command);
 
             // Bind keyboard shortcuts
             _.each(command.get("shortcuts", []), function(shortcut) {
@@ -35924,7 +36068,7 @@ define('collections/commands',[
          *  commandId: unique id of the command to run
          */
         run: function(commandId) {
-            var command = this.find(function(command) {
+            var command = this.collection.find(function(command) {
                 return command.get("id") == commandId;
             });
             if (!command) return false;
@@ -35932,23 +36076,23 @@ define('collections/commands',[
         }
     });
 
-    return Commands;
+    return CommandsView;
 });
 define('core/commands',[
     'underscore',
     'hr/hr',
-    'collections/commands',
+    'views/commands/manager',
     'core/search'
-], function (_, hr, Commands, search) {
+], function (_, hr, CommandsView, search) {
     // Collection for all current commands
-    var commands = new Commands();
+    var commands = new CommandsView();
 
     // Add commands to search
     search.handler({
         'id': "commands",
         'title': "Commands"
     }, function(query) {
-        return _.map(commands.filter(function(command) {
+        return _.map(commands.collection.filter(function(command) {
             return (
                 command.get("title").toLowerCase().indexOf(query) != -1
                 && command.get("search")
@@ -35982,27 +36126,6 @@ define('core/box',[
     });
     box.on("box:users:remove", function(e) {
         collaborators.remove(collaborators.getById(e.data.userId));
-    });
-
-    // Search for files
-    search.handler({
-        'id': "files",
-        'title': "Files"
-    }, function(query) {
-        return box.searchFiles(query).then(function(data) {
-            return Q(_.map(data.files, _.bind(function(path) {
-                var filename = _.last(path.split("/"));
-                if (filename.length == 0) filename = path;
-                return {
-                    "text": filename,
-                    "callback": _.bind(function() {
-                        commands.run("files.open", {
-                            'path': path
-                        });
-                    }, this)
-                };
-            }, this)));
-        });
     });
 
     return box;
@@ -36334,33 +36457,6 @@ define('core/session',[
         }
     };
 });
-define('utils/tabs',[
-    'hr/hr'
-], function (hr) {
-
-    var tabs = {
-        /*
-         *  Return manager view
-         */
-        manager: function() {
-            var app = require('core/app');
-            return app.components.body.tabs;
-        },
-
-        /*
-         *  Open a new tab from TabBase view
-         *
-         *  Tab: view for the tab
-         *  constructor: contructor options
-         *  options: options for adding the tab
-         */
-        open: function(Tab, constructor, options) {
-            return this.manager().add(Tab, constructor, options);
-        }
-    };
-
-    return tabs;
-});
 define('utils/dragdrop',[
     'jQuery'
 ], function ($) {
@@ -36464,19 +36560,6 @@ define('utils/contextmenu',[
     'jQuery',
     'underscore'
 ], function ($, _) {
-    /*
-        Adding a contextmenu to a view
-
-            ContextMenu.add(this.$el, [
-                {
-                    'type': "action",
-                    'text': "Test 1",
-                    'action': function() {
-                        alert("test")
-                    }
-                }
-            ]);
-     */
 
     var ContextMenu = {
         /*
@@ -36586,13 +36669,17 @@ define('utils/contextmenu',[
         }
     };
 
+    // Click on the page: clse context menu
     $(document).click(function () {
         ContextMenu.clear();
     });
+
+    // Open new contextmenu: close other context menu
     $(document).on("contextmenu", function() {
         ContextMenu.clear();
     });
 
+    // jQuery plugin
     $.fn.contextmenu = function (menu) {
         var $this = this;
         return (function () {
@@ -36600,6 +36687,184 @@ define('utils/contextmenu',[
         })();
     };
     return ContextMenu;
+});
+define('views/tabs/tab',[
+    "underscore",
+    "jQuery",
+    "hr/hr",
+    "utils/dragdrop",
+    "utils/keyboard",
+    "utils/contextmenu"
+], function(_, $, hr, DragDrop, Keyboard, ContextMenu) {
+    // Tab header
+    var TabView = hr.View.extend({
+        className: "component-tab",
+        defaults: {
+            title: "",
+            tabid: "",
+            close: true
+        },
+        events: {
+            "click":        "open",
+            "click .close": "close",
+            "dblclick":     "split",
+            "dragstart":    "dragStart"
+        },
+        states: {
+            'warning': "fa-exclamation",
+            'offline': "fa-flash"
+        },
+
+        // Constructor
+        initialize: function() {
+            TabView.__super__.initialize.apply(this, arguments);
+
+            var that = this;
+
+            this.$el.attr("draggable", true);
+            this.tabid = this.options.tabid;
+            this.tabs = this.parent;
+            this.section = this.options.section || 0;
+
+            // Context menu
+            ContextMenu.add(this.$el, [
+                {
+                    'type': "action",
+                    'text': "New Tab",
+                    'action': function() {
+                        that.tabs.openDefaultNew();
+                    }
+                },
+                { 'type': "divider" },
+                {
+                    'type': "action",
+                    'text': "Close",
+                    'action': function() {
+                        that.close();
+                    }
+                },
+                {
+                    'type': "action",
+                    'text': "Close Other Tabs",
+                    'action': function() {
+                        that.closeOthers();
+                    }
+                },
+                { 'type': "divider" },
+                {
+                    'type': "action",
+                    'text': "New Group",
+                    'action': function() {
+                        that.split();
+                    }
+                },
+                { 'type': "divider" },
+                {
+                    'type': "action",
+                    'text': "Auto Grid",
+                    'action': function() {
+                        that.tabs.setLayout();
+                    }
+                },
+                {
+                    'type': "action",
+                    'text': "Columns: 2",
+                    'action': function() {
+                        that.tabs.setLayout(2);
+                    }
+                },
+                {
+                    'type': "action",
+                    'text': "Columns: 3",
+                    'action': function() {
+                        that.tabs.setLayout(3);
+                    }
+                },
+                {
+                    'type': "action",
+                    'text': "Columns: 4",
+                    'action': function() {
+                        that.tabs.setLayout(4);
+                    }
+                }
+            ]);
+
+            return this;
+        },
+
+        // Render the tab
+        render: function() {
+            this.$el.empty();
+
+            var tab = this.tabs.tabs[this.tabid];
+
+            var inner = $("<div>", {
+                "class": "inner",
+                "html": tab.title
+            }).appendTo(this.$el);
+
+            if (tab.state && this.states[tab.state]) {
+                $("<i>", {
+                    "class": "state fa "+this.states[tab.state]
+                }).prependTo(inner);
+            }
+
+            if (this.options.close) {
+                $("<a>", {
+                    "class": "close",
+                    "href": "#",
+                    "html": "&times;"
+                }).prependTo(inner);
+            }
+            return this.ready();
+        },
+
+        // Return true if is active
+        isActive: function() {
+            return this.$el.hasClass("active");
+        },
+
+        // Set section
+        setSection: function(section) {
+            this.section = section;
+            this.open();
+            this.tabs.update();
+        },
+
+        // Create section
+        split: function(e) {
+            if (e) e.stopPropagation();
+            this.setSection(_.uniqueId("section"));
+        },
+
+        // (event) open
+        open: function(e) {
+            if (e != null) e.preventDefault();
+            this.tabs.open(this.tabid);
+        },
+
+        // (event) Drag start
+        dragStart: function(e) {
+            DragDrop.drag(e, "move");
+            DragDrop.setData(e, "tab", this.tabid);
+        },
+
+        // (event) close
+        close: function(e, force) {
+            if (e != null) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            this.tabs.close(this.tabid, force);
+        },
+
+        // (event) close others tabs
+        closeOthers: function(e) {
+            this.tabs.closeOthers(this.tabid);
+        }
+    });
+
+    return TabView;
 });
 define('views/tabs/base',[
     "underscore",
@@ -36703,6 +36968,313 @@ define('views/tabs/base',[
     });
 
     return TabPanelView;
+});
+define('views/tabs/manager',[
+    "underscore",
+    "jQuery",
+    "hr/hr",
+    "utils/dragdrop",
+    "utils/keyboard",
+    "utils/contextmenu",
+    "views/tabs/tab",
+    "views/tabs/base"
+], function(_, $, hr, DragDrop, Keyboard, ContextMenu, TabView, TabPanelView) {
+    // Complete tabs system
+    var TabsView = hr.View.extend({
+        className: "cb-tabs",
+        events: {
+            "dblclick .tabs-header": "openDefaultNew"
+        },  
+
+        // Constructor
+        initialize: function(options) {
+            TabsView.__super__.initialize.apply(this, arguments);
+
+            this.layout = null; // null: mode auto
+
+            this.tabs = {};
+            this.activeTab = null;
+            return this;
+        },
+
+        // Render all tabs
+        render: function() {
+            // Empty view
+            this.empty();
+
+            // Check tabs
+            this.checkTabs();
+
+            // Calcul number of sections
+            var sections = this.getSections();
+            var sections_n = _.max([1, _.size(sections)]);
+
+
+            var layout = this.layout || Math.floor(Math.sqrt(sections_n)); // Number of columns
+
+            var nColumns = Math.min(layout, sections_n);
+            var nLines = Math.ceil(sections_n/layout);
+
+            var sectionWidth = Math.floor(100/nColumns);
+            var sectionHeight = Math.floor(100/nLines);
+
+            var sectionLeft = 0;
+            var sectionTop = 0;
+
+            // Add different section
+            _.each(sections, function(section, sectionIndex) {
+                var section_el, section_tabs, section_tabs_content, css;
+
+                section_el = $("<div>", {
+                    "class": "section",
+                    "css": {
+                        "width": sectionWidth+"%",
+                        "height": sectionHeight+"%",
+                        "top": sectionTop+"%",
+                        "left": sectionLeft+"%"
+                    },
+                }).appendTo(this.$el);
+                section_el.on('dragleave', function(e) {
+                    if (DragDrop.checkDrop(e, "tab")) {
+                        section_el.removeClass("dragover");
+                    }
+                });
+                section_el.on('dragover', function(e) {
+                    if (DragDrop.checkDrop(e, "tab")) {
+                        DragDrop.dragover(e, 'move');
+                        section_el.addClass("dragover");
+                    }
+                });
+                section_el.on('drop', _.bind(function(e) {
+                    if (DragDrop.checkDrop(e, "tab")) {
+                        section_el.removeClass("dragover");
+                        DragDrop.drop(e);
+                        this.tabs[DragDrop.getData(e, "tab")].tab.setSection(section);
+                    }
+                }, this));
+
+                section_tabs = $("<div>", {
+                    "class": "tabs-header"
+                }).appendTo(section_el);
+
+                section_tabs_content = $("<div>", {
+                    "class": "tabs-content"
+                }).appendTo(section_el);
+
+                _.each(this.tabs, function(tab) {
+                    if (tab.tab.section != section) return;
+
+                    tab.tab.$el.appendTo(section_tabs);
+                    tab.view.$el.appendTo(section_tabs_content);
+                }, this);
+
+                // Calcul next position
+                sectionLeft = sectionLeft + sectionWidth;
+                if (Math.ceil(sectionLeft/sectionWidth) >= nColumns) {
+                    sectionLeft = 0;
+                    sectionTop = sectionTop + sectionHeight;
+                }
+            }, this);
+            this.delegateEvents();
+
+            return this.ready();
+        },
+
+        /*
+         *  Add a tab
+         *  @V : view class
+         *  @constructor : contructor options
+         *  @options : options
+         */
+        add: function(V, construct, options) {
+            var tabid, tabinfos;
+            options = _.defaults(options || {}, {
+                silent: false,
+                render: true,
+
+                title: "untitled",      // Base title for the tab
+                type: "default",
+                uniqueId: null,         // Unique id for unicity of the tab
+                close: true,            // Enable/disable close button
+                open: true,             // Open after creation
+                section: 0,             // Section to open in
+                parentId: null          // Parent tabid
+            });
+            tabid = options.uniqueId != null ? this.checkTabExists(options.uniqueId) : null;
+            if (tabid == null) {
+                tabid = _.uniqueId("tab");
+                tabinfos = {
+                    "tabid": tabid,
+                    "title": options.title,
+                    "state": null,
+                    "uniqueId": options.uniqueId,
+                    "type": this.options.type,
+                    "view": null,
+                    "tab": null
+                };
+                this.tabs[tabid] = tabinfos;
+                
+                this.tabs[tabid].tab = new TabView({
+                    "tabid": tabid,
+                    "close": options.close,
+                    "section": options.section
+                }, this);
+
+                this.tabs[tabid].view = new V(_.extend(construct || {}, {
+                    "tabid": tabid,
+                }), this);
+
+                if (options.parentId != null) {
+                    this.on("tab:"+options.parentId+":close", _.partial(this.tabs[tabid].tab.close, null, true), this.tabs[tabid].tab);
+                }
+
+                this.tabs[tabid].view.trigger("tab:ready");
+
+                this.tabs[tabid].tab.update();
+                this.tabs[tabid].view.update();
+
+                this.addComponent("tabs_tabs", this.tabs[tabid].tab);
+                this.addComponent("tabs_content", this.tabs[tabid].view);
+
+                if (options.render) this.update();
+            }
+            if (this.activeTab == null || options.open) this.open(tabid);
+            return this.tabs[tabid].view;
+        },
+
+        // Return list of differents sections names
+        getSections: function() {
+            return _.uniq(_.map(this.tabs, function(tab) {
+                return tab.tab.section;
+            }));
+        },
+
+        // Return list of tabs for a section
+        getSectionTabs: function(section) {
+            return _.filter(this.tabs, function(tab) {
+                return tab.tab.section == section;
+            });
+        },
+
+        // Return active tab for a section
+        getActiveTab: function(section) {
+            section = section || 0;
+            return _.reduce(this.tabs, function(state, tab) {
+                if (tab.tab.section != section) return state;
+                if (tab.tab.isActive()) return tab;
+                return state;
+            }, null);
+        },
+
+        // Return current (last) active tab
+        getCurrentTab: function() {
+            if (this.activeTab == null || this.tabs[this.activeTab] == null) return null;
+            return this.tabs[this.activeTab];
+        },
+
+        // Return active tab by type
+        getActiveTabByType: function(type) {
+            return _.reduce(this.tabs, function(state, tab) {
+                if (tab.type != type) return state;
+                if (tab.tab.isActive()) return tab;
+                return state;
+            }, null);
+        },
+
+        // Check if a tab with a uniqueid exists
+        checkTabExists: function(uniqueId) {
+            return _.reduce(this.tabs, function(state, tab) {
+                return state || (uniqueId == tab.uniqueId ? tab.tabid : null);
+            }, null)
+        },
+
+        // Check all tabs
+        checkTabs: function() {
+            var sections = this.getSections();
+            _.each(sections, function(section) {
+                var active = this.getActiveTab(section);
+                if (active != null) return;
+                this.getSectionTabs(section)[0].tab.open();
+            }, this);
+        },
+
+        // Open a tab by tabid
+        open: function(tabid) {
+            var active ,section;
+            this.activeTab = tabid;
+
+            section = _.reduce(this.tabs, function(s, tab) {
+                if (tab.tabid == tabid) {
+                    return tab.tab.section;
+                }
+                return s;
+            }, 0);
+
+            _.each(this.tabs, function(tab) {
+                if (tab.tab.section != section) return;
+                active = (tab.tabid == this.activeTab);
+                tab.tab.$el.toggleClass("active", active);
+                tab.view.$el.toggleClass("active", active);
+                tab.view.trigger("tab:state", active);
+            }, this);
+
+            this.checkTabs();
+            return this;
+        },
+
+        // Close a tab by tabid
+        close: function(tabid, force) {
+            if (this.tabs[tabid] == null) return this;
+
+            // Triger in tab
+            this.tabs[tabid].view.trigger("tab:close");
+            this.tabs[tabid].view.off();
+            
+            delete this.tabs[tabid].view;
+            delete this.tabs[tabid];
+
+            // Trigger global
+            this.trigger("tab:"+tabid+":close");
+            this.trigger("tabs:close", tabid);
+            if (_.size(this.tabs) == 0) this.trigger("tabs:default");
+            this.update();
+            return this;
+        },
+
+        // Close others tabs
+        closeOthers: function(tabid) {
+            _.each(this.tabs, function(tab, oTabId) {
+                if (oTabId == tabid) return;
+                this.close(oTabId);
+            }, this);
+
+            return this;
+        },
+
+        // Open default new tab
+        openDefaultNew: function(e) {
+            this.trigger("tabs:opennew");
+        },
+
+        // Define tabs layout
+        setLayout: function(l) {
+            this.layout = l;
+            this.update();
+        }
+    }, {
+        Panel: TabPanelView
+    });
+
+    // Register as a template component
+    hr.View.Template.registerComponent("component.tabs", TabsView);
+
+    return TabsView;
+});
+define('core/tabs',[
+    'views/tabs/manager'
+], function (TabsView) {
+    var tabs = new TabsView();
+    return tabs;
 });
 define('views/tabs/file',[
     'underscore',
@@ -36848,12 +37420,13 @@ define('core/files',[
     'models/file',
     'core/user',
     'core/box',
+    'core/tabs',
     'core/settings',
+    'core/search',
     'utils/dialogs',
-    'utils/tabs',
     'views/tabs/file',
     'views/files/base'
-], function(Q, _, hr, File, user, box, settings, dialogs, tabs, FileTab) {
+], function(Q, _, hr, File, user, box, tabs, settings, search, dialogs, FileTab) {
     var logging = hr.Logger.addNamespace("files");
 
     // Settings for files manager
@@ -36882,16 +37455,15 @@ define('core/files',[
         if (handler.View) {
             handler.open = function(file) {
                 var path = file.path();
-                var manager = tabs.manager();
                 var uniqueId = handler.id+":"+file.syncEnvId();
 
-                var tab = manager.getActiveTabByType("directory");
-                if (tab != null && !manager.checkTabExists(uniqueId) && !file.isNewfile()) {
+                var tab = tabs.getActiveTabByType("directory");
+                if (tab != null && !tabs.checkTabExists(uniqueId) && !file.isNewfile()) {
                     // Change current tab to open the file
                     tab.view.load(path, handler);
                 } else {
                     // Add new tab
-                    tabs.open(FileTab, {
+                    tabs.add(FileTab, {
                         "model": file,
                         "handler": handler
                     }, {
@@ -36933,7 +37505,11 @@ define('core/files',[
     };
 
     // Open a file
-    var openFile = function(file) {
+    var openFile = function(file, options) {
+        options = _.defaults({}, options || {}, {
+            'userChoice': null
+        });
+
         if (_.isString(file)) {
             var nfile = new File({
                 'codebox': box
@@ -36948,7 +37524,7 @@ define('core/files',[
             return openFileWith(file);
         }
 
-        if (_.size(possibleHandlers) == 1) {
+        if (_.size(possibleHandlers) == 1 && (options.userChoice != true)) {
             return Q(_.first(possibleHandlers).open(file));
         }
 
@@ -36980,12 +37556,193 @@ define('core/files',[
         return openFile(f);
     };
 
+    // Search for files
+    search.handler({
+        'id': "files",
+        'title': "Files"
+    }, function(query) {
+        return box.searchFiles(query).then(function(data) {
+            return Q(_.map(data.files, _.bind(function(path) {
+                var filename = _.last(path.split("/"));
+                if (filename.length == 0) filename = path;
+                return {
+                    "text": filename,
+                    "callback": _.bind(function() {
+                        openFile(path);
+                    }, this)
+                };
+            }, this)));
+        });
+    });
+
     return {
         'addHandler': addHandler,
         'getHandlers': getHandlers,
         'open': openFile,
         'openNew': openNew
     };
+});
+define('views/panels/base',[
+    'underscore',
+    'jQuery',
+    'hr/hr'
+], function(_, $, hr) {
+    var PanelBaseView = hr.View.extend({
+        defaults: {},
+        events: {},
+
+        // Constructor
+        initialize: function(options) {
+            PanelBaseView.__super__.initialize.apply(this, arguments);
+
+            this.panelId = this.options.panel;
+            this.manager = this.parent;
+
+            return this;
+        },
+
+        // Open this panel
+        open: function() {
+            this.manager.open(this.panelId);
+            return this;
+        },
+
+        // Close this panel
+        close: function() {
+            this.manager.close();
+            return this;
+        },
+
+        // Toggle the panel
+        toggle: function() {
+            if (this.isActive()) {
+                this.close();
+            } else {
+                this.open();
+            }
+            return this;
+        },
+
+        // Check the visibility of this panel
+        isActive: function() {
+            return this.manager.isActive(this.panelId);
+        },
+
+        // Return an associated command to open/close this panel
+        connectCommand: function(command) {
+            var that = this;
+            command.set("handler", function() {
+                that.toggle();
+            });
+            this.on("panel:open", function() {
+                command.toggleFlag("active", true);
+            });
+            this.on("panel:close", function() {
+                command.toggleFlag("active", false);
+            });
+        }
+    });
+
+    return PanelBaseView;
+});
+define('views/panels/manager',[
+    'underscore',
+    'jQuery',
+    'hr/hr',
+    'views/panels/base'
+], function(_, $, hr, PanelBaseView) {
+    var PanelsView = hr.View.extend({
+        className: "cb-panels-list",
+        defaults: {},
+        events: {},
+
+        // Constructor
+        initialize: function(options) {
+            PanelsView.__super__.initialize.apply(this, arguments);
+
+            // Active panel
+            this.activePanel = null;
+
+            // Panels map
+            this.panels = {};
+
+            return this;
+        },
+
+        // Register a new panel
+        register: function(panelId, panelView, constructor, options) {
+            constructor = _.extend(constructor || {}, {
+                'panel': panelId
+            });
+
+            this.panels[panelId] = new panelView(constructor, this);
+
+            this.panels[panelId].$el.appendTo(this.$el);
+            this.panels[panelId].$el.hide();
+            this.panels[panelId].render();
+
+            return this.panels[panelId];
+        },
+
+        // Render
+        render: function() {
+            this.$el.empty();
+            _.each(this.panels, function(panel, panelId) {
+                panel.$el.appendTo(this.$el);
+                panel.render();
+            }, this);
+
+            return this.ready();
+        },
+
+        // Open a panel
+        open: function(pId) {
+            var opened = false;
+            _.each(this.panels, function(panel, panelId) {
+                opened = opened || (panelId == pId);
+
+                // Change visibility of the panel
+                panel.$el.toggle(panelId == pId);
+
+                // Trigger panel event
+                if (panelId != pId && panelId == this.activePanel) {
+                    panel.trigger("panel:close");
+                } else if (panelId == pId) {
+                    panel.trigger("panel:open");
+                }
+            }, this);
+
+            // Change active panel
+            this.activePanel = pId;
+
+            // Trigger global event
+            if (opened) {
+                this.trigger("open", pId);
+            } else {
+                this.trigger("close");
+            }
+
+            return this;
+        },
+
+        // Close panel
+        close: function() {
+            return this.open(null);
+        },
+
+        // Is active
+        isActive: function(pId) {
+            return this.activePanel == pId;
+        }
+    });
+
+    return PanelsView;
+});
+define('core/panels',[
+    'views/panels/manager'
+], function (PanelsView) {
+    var panels = new PanelsView();
+    return panels;
 });
 define('core/app',[
     'hr/hr',
@@ -36995,8 +37752,12 @@ define('core/app',[
     'core/session',
     'core/addons',
     'core/box',
-    'core/files'
-], function (hr, url, dialogs, box, session, addons, box, files) {
+    'core/files',
+    'core/commands',
+    'core/tabs',
+    'core/panels',
+], function (hr, url, dialogs, 
+box, session, addons, box, files, commands, tabs, panels) {
 
     // Define base application
     var Application = hr.Application.extend({
@@ -37010,19 +37771,36 @@ define('core/app',[
             "apple-touch-icon": hr.Urls.static("images/icons/ios.png")
         },
         events: {
-            "submit .login-box form": "actionLoginBox"
+            "submit .cb-login .login-box form": "actionLoginBox"
         },
 
         // Constructor
         initialize: function() {
             Application.__super__.initialize.apply(this, arguments);
 
+            // Tabs
+            tabs.on("tabs:default tabs:opennew", function() {
+                files.openNew();
+            }, this);
+
+            // Panels
+            panels.on("open", function() {
+                this.toggleMode("body-fullpage", false);
+            }, this);
+            panels.on("close", function() {
+                this.toggleMode("body-fullpage", true);
+            }, this);
+
+            // Connexion status
             box.on("status", function(state) {
                 this.$(".cb-connexion-alert").toggle(!state);
             }, this);
+
+            // Title changed
             box.on("change:name", function() {
                 this.title(box.get("name"));
             }, this);
+
             return this;
         },
 
@@ -37045,9 +37823,23 @@ define('core/app',[
             if (email && password) {
                 this.doLogin(email, password, true);
             } else if (box.isAuth()) {
+                // Add commands
+                commands.$el.appendTo(this.$(".cb-commands"));
+                commands.render();
+
+                // Add tabs
+                tabs.$el.appendTo(this.$(".cb-body"));
+                tabs.render();
+
+                // Add panels
+                panels.$el.appendTo(this.$(".cb-panels"));
+                panels.render();
+
+                // Load addons
                 addons.loadAll().fail(function(err) {
                     dialogs.alert("Warning!", "Error when initializing addons, it's possible that one of the addons is not correctly loaded. Please check addons states using the addons manager.");
                 }).fin(function() {
+                    // Remove loading state
                     that.$(".cb-loading-alert").remove();
                     
                     // Load new addons
@@ -37115,13 +37907,6 @@ define('core/app',[
     return app;
 });
 
-define('config',[], function() {
-    var configs = {
-        
-    };
-    
-    return configs;
-});
 /* ========================================================================
  * Bootstrap: carousel.js v3.0.0
  * http://twbs.github.com/bootstrap/javascript.html#carousel
@@ -39139,1090 +39924,6 @@ define("vendors/bootstrap/tab", function(){});
 
 define("vendors/bootstrap/transition", function(){});
 
-define('views/searchbar',[
-    "underscore",
-    "jQuery",
-    "hr/hr",
-    "core/search"
-], function(_, $, hr, search) {
-
-    var SearchBarView = hr.View.extend({
-        className: "cb-searchbar",
-        template: "searchbar.html",
-        defaults: {
-            
-        },
-        events: {
-            "click input": "focus",
-            "blur input": "inputBlur",
-            "focus input": "inputFocus",
-            "keydown input": "keydown",
-            "keyup input": "keyup",
-            "click .result": "openResult"
-        },
-
-        initialize: function(options) {
-            SearchBarView.__super__.initialize.apply(this, arguments);
-            this.handlers = {};
-            this.openCallback = {};
-            this.nResults = 0;
-            this.selected = 0;
-            this.query = "";
-            return this;
-        },
-
-        /* (event) Key input in search */
-        keydown: function(e) {
-            var key = e.which || e.keyCode;
-            var q = $(e.currentTarget).val();
-
-            if (key == 38 || key == 40 || key == 13) {
-                e.preventDefault();
-            }
-
-            if (q.length == 0 && key == 8) {
-                e.preventDefault();
-                this.blur();
-                this.clearResults();
-                this.trigger("close");
-            }
-        },
-
-        /* (event) Key input in search */
-        keyup: function(e) {
-            var key = e.which || e.keyCode;
-            var q = $(e.currentTarget).val();
-
-            if (key == 27) {
-                /* ESC */
-                e.preventDefault();
-                this.blur();
-                this.clearResults();
-                this.trigger("close");
-                return;
-            } else if (key == 38) {
-                /* UP */
-                this.selected = this.selected - 1;
-            } else if (key == 40) {
-                /* DOWN */
-                this.selected = this.selected + 1;
-            } else if (key == 13) {
-                /* ENTER */
-                e.preventDefault();
-                this.openResult(this.selected);
-            }
-            this.doSearch(q);
-            
-            this.selectResult(this.selected);    
-        },
-
-        /* (event) Focus on search */
-        focus: function(e) {
-            if (e != null) e.preventDefault();
-            this.$("input").focus();
-            this.$("input").select();
-        },
-
-        /* (event) Blur search */
-        blur: function(e) {
-            if (e != null) e.preventDefault();
-            this.$("input").blur();
-        },
-
-        /* Do search */
-        doSearch: function(query) {
-            query = query.toLowerCase();
-            var $results = this.$(".results");
-            
-            if (query == this.query) return this;
-
-            this.query = query;
-            this.nResults = 0;
-            this.clearResults();
-
-            if (this.query.length == 0) return this;
-
-            search.query(this.query, function(category, results, query) {
-                if (this.query != query) return;
-
-                var n = 0;
-                var $cat = $("<ul>", {
-                    "class": "category"
-                }).hide().appendTo($results);
-                $("<li>", {
-                    "text": category.title,
-                    "class": "header"
-                }).appendTo($cat);
-
-                _.each(results, function(result) {
-                    var li, i;
-                    i = this.nResults;
-                    this.nResults = this.nResults + 1;
-                    n = n + 1;
-                    li = $("<li>", {
-                        "class": "result",
-                        "data-result": i,
-                        "text": result.text
-                    }).appendTo($cat);
-
-                    if (result.image != null) {
-                        $("<img>", {
-                            "src": result.image
-                        }).prependTo(li)
-                    }
-                    $cat.show();
-
-                    // Callback for click
-                    if (result.callback != null) {
-                        this.openCallback[i] = result.callback;
-                    }
-
-                    // Reselect result
-                    this.selectResult(this.selected);
-                }, this);
-            }, this);
-            return this;
-        },
-
-        /* Select a result */
-        selectResult: function(i) {
-            this.selected = i;
-            if (this.selected < -1) this.selected = 0;
-            if (this.selected >= this.nResults) this.selected = this.nResults - 1;
-            this.$(".result").removeClass("selected");
-            this.$(".result[data-result='"+this.selected+"']").addClass("selected");
-            return this;
-        },
-
-        /* Clear results */
-        clearResults: function() {
-            this.$(".results").empty();
-            this.openCallback = {};
-            return this;
-        },
-
-        /* Open a result */
-        openResult: function(i) {
-            if (!_.isNumber(i)) {
-                i = $(i.currentTarget).data("result");
-            }
-            if (i == -1) return this;
-            if (this.openCallback[i] != null) this.openCallback[i]();
-            return this;
-        },
-
-        /* Blur the input */
-        inputBlur: function() {
-            this.$el.toggleClass("mode-results", false);
-        },
-
-        /* Focus the input */
-        focusBlur: function() {
-            this.$el.toggleClass("mode-results", this.query.length > 0);
-        }
-    });
-    hr.View.Template.registerComponent("component.lateralbar.searchbar", SearchBarView);
-
-    return SearchBarView;
-});
-define('views/commands',[
-    "hr/hr",
-    "collections/commands"
-], function(hr, Commands) {
-
-    // List Item View
-    var CommandItem = hr.List.Item.extend({
-        className: "menu-item",
-        template: "command.html",
-        events: {
-            "click a": "run"
-        },
-
-        // Constructor
-        initialize: function() {
-            CommandItem.__super__.initialize.apply(this, arguments);
-            this.model.menuItem = this;
-            return this;
-        },
-
-        // template arguments
-        templateContext: function() {
-            return {
-                'command': this.model
-            };
-        },
-
-        // Finish rendering
-        finish: function() {
-            // Flags
-            this.$el.attr("class", this.className+" "+this.model.get("flags"));
-            
-            // Tooltip
-            this.$("a").tooltip({
-                'placement': 'right',
-                'delay': {
-                    'show': 600,
-                    'hide': 0
-                }
-            });
-
-            // Hide
-            if (!this.model.get("visible")) {
-                this.$el.hide();
-            }
-
-            return CommandItem.__super__.finish.apply(this, arguments);
-        },
-
-        // Run command
-        run: function(e) {
-            if (e) e.preventDefault();
-
-            // Run command
-            this.model.run();
-        }
-    });
-
-    // Commands list
-    var CommandsList = hr.List.extend({
-        className: "cb-menu-commands",
-        Collection: Commands,
-        Item: CommandItem,
-        defaults: _.defaults({
-            
-        }, hr.List.prototype.defaults)
-    });
-
-    hr.View.Template.registerComponent("component.lateralbar.commands", CommandsList);
-
-    return CommandsList;
-});
-define('views/files/tree',[
-    "underscore",
-    "jQuery",
-    "hr/hr",
-    "models/file",
-    "core/box",
-    "utils/contextmenu",
-    "views/files/base"
-], function(_, $, hr, File, box, ContextMenu, FilesBaseView) {
-    // File item in the tree
-    var FilesTreeViewItem = FilesBaseView.extend({
-        tagName: "li",
-        className: "file-item",
-        template: "files/tree/item.html",
-        events: {
-            "click .name": "select",
-            "dblclick .name": "open"
-        },
-
-        // Constructor
-        initialize: function(options) {
-            FilesTreeViewItem.__super__.initialize.apply(this, arguments);
-            var that = this;
-
-            // View for subfiles
-            this.subFiles = null;
-            this.paddingLeft = this.options.paddingLeft || 0;
-
-            // Context menu
-            ContextMenu.add(this.$el, this.model.contextMenu());
-
-            return this;
-        },
-
-        // Finish rendering
-        finish: function() {
-            this.$(">.name").css("padding-left", this.paddingLeft);
-            this.$el.toggleClass("type-directory", this.model.isDirectory());
-
-            if (this.subFiles) {
-                this.subFiles.$el.appendTo(this.$(".files"));
-            }
-            return FilesTreeViewItem.__super__.finish.apply(this, arguments);
-        },
-
-        // (event) select the file : extend tree
-        select: function(e) {
-            if (e != null) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-
-            if (this.model.isDirectory()) {
-                if (this.subFiles == null) {
-                    this.subFiles = new FilesTreeView({
-                        "codebox": this.codebox,
-                        "model": this.model,
-                        "paddingLeft": this.paddingLeft+15
-                    });
-                    this.subFiles.$el.appendTo(this.$(".files"));
-                    this.subFiles.update();
-                }
-                this.$el.toggleClass("open");
-            } else {
-                this.open();
-            }
-        },
-
-        // (event) open the file or directory
-        open: function(e) {
-            if (e != null) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-
-            if (!this.model.isDirectory()) {
-                this.model.open();
-            } else {
-                this.select();
-            }
-        }
-    });
-
-    // Complete files tree
-    var FilesTreeView = FilesBaseView.extend({
-        tagName: "ul",
-        className: "cb-files-tree",
-
-        // Constructor
-        initialize: function(options) {
-            FilesTreeView.__super__.initialize.apply(this, arguments);
-            this.countFiles = 0;
-            this.paddingLeft = this.options.paddingLeft || 10;
-
-            // Context menu
-            ContextMenu.add(this.$el, this.model.contextMenu());
-
-            return this;
-        },
-
-        // Render the files tree
-        render: function() {
-            var that = this;
-            this.$el.empty();
-            this.$el.toggleClass("root", this.model.isRoot());
-
-            this.model.listdir().then(function(files) {
-                that.empty();
-                that.countFiles = 0;
-
-                _.each(files, function(file) {
-                    if (file.isGit()) return;
-                    
-                    var v = new FilesTreeViewItem({
-                        "codebox": that.codebox,
-                        "model": file,
-                        "paddingLeft": that.paddingLeft
-                    });
-                    v.update();
-                    v.$el.appendTo(that.$el);
-                    that.countFiles = that.countFiles + 1;
-                });
-                that.trigger("count", that.countFiles);
-            });
-
-            return that.ready();
-        },
-    });
-
-    // Register as template component
-    hr.View.Template.registerComponent("component.lateralbar.files", FilesTreeView);
-
-    return FilesTreeView;
-});
-define('views/layouts/lateralbar',[
-    "underscore",
-    "jQuery",
-    "hr/hr",
-    "core/box",
-    "core/commands",
-    "core/files",
-    "utils/dialogs",
-    "views/searchbar",
-    "views/commands",
-    "views/files/tree",
-], function(_, $, hr, box, commands, files, Dialogs) {
-
-    var LateralBarView = hr.View.extend({
-        className: "layout-lateralbar",
-        template: "lateralbar.html",
-        defaults: {},
-        events: {
-            "click .menu-action-search": "toggleSearch",
-            "click .menu-action-open-root": "actionOpenRoot",
-            "click .menu-action-open-terminal": "actionOpenTerminal"
-        },
-
-        // Constructor
-        initialize: function(options) {
-            LateralBarView.__super__.initialize.apply(this, arguments);
-            var that = this;
-            
-            // Search command
-            commands.register("search", {
-                title: "Search",
-                icon: "search",
-                shortcuts: [
-                    "s", "/"
-                ],
-                flags: "cb-active-mode-search"
-            }, function() {
-                that.toggleSearch();
-            });
-
-            // Files command
-            commands.register("files.open", {
-                title: "Files",
-                icon: "folder-o",
-                shortcuts: [
-                    "f"
-                ],
-                flags: "cb-inactive-mode-body-fullpage"
-            }, function(args) {
-                /*args = _.defaults({}, args || {}, {
-                    'path': "/"
-                });
-                files.open(args.path);*/
-                that.toggleBar();
-            });
-
-            commands.register("files.new", {
-                title: "New file",
-                icon: "file-o",
-                shortcuts: [
-                    "mod+N"
-                ]
-            }, function(args) {
-                files.openNew()
-            });
-
-            return this;
-        },
-
-        // Finish rendering
-        finish: function() {
-            this.$(".menu-bottom .menu-item a").tooltip({
-                'placement': 'right',
-                'delay': {
-                    'show': 600,
-                    'hide': 0
-                }
-            });
-
-            // Search bar
-            this.components.search.on("close", function() {
-                this.toggleSearch(false);
-            }, this);
-
-            // Files (count .git files)
-            this.components.files.on("count", function() {
-                this.toggleBar(this.components.files.countFiles > 0);
-            }, this);
-            this.toggleBar(this.components.files.countFiles > 0);
-
-            return LateralBarView.__super__.finish.apply(this, arguments);
-        },
-
-        // (action) Toggle search
-        toggleSearch: function(st, query) {
-            this.parent.toggleMode("search", st);
-
-            st = this.parent.hasMode("search");
-            if (!st) {
-                query = "";
-                this.components.search.clearResults();
-            } else {
-                this.components.search.focus();
-            }
-            if (query != null) this.$(".search-query").val(query);
-        },
-
-        // (action) Toggle lateral bar
-        toggleBar: function(st) {
-            if (st != null) st = !st;
-            this.parent.toggleMode("body-fullpage", st);
-        }
-    });
-
-    // Register as template component
-    hr.View.Template.registerComponent("layout.lateralbar", LateralBarView);
-
-    return LateralBarView;
-});
-define('views/tabs/tab',[
-    "underscore",
-    "jQuery",
-    "hr/hr",
-    "utils/dragdrop",
-    "utils/keyboard",
-    "utils/contextmenu"
-], function(_, $, hr, DragDrop, Keyboard, ContextMenu) {
-    // Tab header
-    var TabView = hr.View.extend({
-        className: "component-tab",
-        defaults: {
-            title: "",
-            tabid: "",
-            close: true
-        },
-        events: {
-            "click":        "open",
-            "click .close": "close",
-            "dblclick":     "split",
-            "dragstart":    "dragStart"
-        },
-        states: {
-            'warning': "fa-exclamation",
-            'offline': "fa-flash"
-        },
-
-        // Constructor
-        initialize: function() {
-            TabView.__super__.initialize.apply(this, arguments);
-
-            var that = this;
-
-            this.$el.attr("draggable", true);
-            this.tabid = this.options.tabid;
-            this.tabs = this.parent;
-            this.section = this.options.section || 0;
-
-            // Context menu
-            ContextMenu.add(this.$el, [
-                {
-                    'type': "action",
-                    'text': "New Tab",
-                    'action': function() {
-                        that.tabs.openDefaultNew();
-                    }
-                },
-                { 'type': "divider" },
-                {
-                    'type': "action",
-                    'text': "Close",
-                    'action': function() {
-                        that.close();
-                    }
-                },
-                {
-                    'type': "action",
-                    'text': "Close Other Tabs",
-                    'action': function() {
-                        that.closeOthers();
-                    }
-                },
-                { 'type': "divider" },
-                {
-                    'type': "action",
-                    'text': "New Group",
-                    'action': function() {
-                        that.split();
-                    }
-                },
-                { 'type': "divider" },
-                {
-                    'type': "action",
-                    'text': "Auto Grid",
-                    'action': function() {
-                        that.tabs.setLayout();
-                    }
-                },
-                {
-                    'type': "action",
-                    'text': "Columns: 2",
-                    'action': function() {
-                        that.tabs.setLayout(2);
-                    }
-                },
-                {
-                    'type': "action",
-                    'text': "Columns: 3",
-                    'action': function() {
-                        that.tabs.setLayout(3);
-                    }
-                },
-                {
-                    'type': "action",
-                    'text': "Columns: 4",
-                    'action': function() {
-                        that.tabs.setLayout(4);
-                    }
-                }
-            ]);
-
-            return this;
-        },
-
-        // Render the tab
-        render: function() {
-            this.$el.empty();
-
-            var tab = this.tabs.tabs[this.tabid];
-
-            var inner = $("<div>", {
-                "class": "inner",
-                "html": tab.title
-            }).appendTo(this.$el);
-
-            if (tab.state && this.states[tab.state]) {
-                $("<i>", {
-                    "class": "state fa "+this.states[tab.state]
-                }).prependTo(inner);
-            }
-
-            if (this.options.close) {
-                $("<a>", {
-                    "class": "close",
-                    "href": "#",
-                    "html": "&times;"
-                }).prependTo(inner);
-            }
-            return this.ready();
-        },
-
-        // Return true if is active
-        isActive: function() {
-            return this.$el.hasClass("active");
-        },
-
-        // Set section
-        setSection: function(section) {
-            this.section = section;
-            this.open();
-            this.tabs.update();
-        },
-
-        // Create section
-        split: function(e) {
-            if (e) e.stopPropagation();
-            this.setSection(_.uniqueId("section"));
-        },
-
-        // (event) open
-        open: function(e) {
-            if (e != null) e.preventDefault();
-            this.tabs.open(this.tabid);
-        },
-
-        // (event) Drag start
-        dragStart: function(e) {
-            DragDrop.drag(e, "move");
-            DragDrop.setData(e, "tab", this.tabid);
-        },
-
-        // (event) close
-        close: function(e, force) {
-            if (e != null) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-            this.tabs.close(this.tabid, force);
-        },
-
-        // (event) close others tabs
-        closeOthers: function(e) {
-            this.tabs.closeOthers(this.tabid);
-        }
-    });
-
-    return TabView;
-});
-define('views/tabs/manager',[
-    "underscore",
-    "jQuery",
-    "hr/hr",
-    "utils/dragdrop",
-    "utils/keyboard",
-    "utils/contextmenu",
-    "views/tabs/tab",
-    "views/tabs/base"
-], function(_, $, hr, DragDrop, Keyboard, ContextMenu, TabView, TabPanelView) {
-    // Complete tabs system
-    var TabsView = hr.View.extend({
-        className: "cb-tabs",
-        events: {
-            "dblclick .tabs-header": "openDefaultNew"
-        },  
-
-        // Constructor
-        initialize: function(options) {
-            TabsView.__super__.initialize.apply(this, arguments);
-
-            this.layout = null; // null: mode auto
-
-            this.tabs = {};
-            this.activeTab = null;
-            return this;
-        },
-
-        // Render all tabs
-        render: function() {
-            // Empty view
-            this.empty();
-
-            // Check tabs
-            this.checkTabs();
-
-            // Calcul number of sections
-            var sections = this.getSections();
-            var sections_n = _.max([1, _.size(sections)]);
-
-
-            var layout = this.layout || Math.floor(Math.sqrt(sections_n)); // Number of columns
-
-            var nColumns = Math.min(layout, sections_n);
-            var nLines = Math.ceil(sections_n/layout);
-
-            var sectionWidth = Math.floor(100/nColumns);
-            var sectionHeight = Math.floor(100/nLines);
-
-            var sectionLeft = 0;
-            var sectionTop = 0;
-
-            // Add different section
-            _.each(sections, function(section, sectionIndex) {
-                var section_el, section_tabs, section_tabs_content, css;
-
-                section_el = $("<div>", {
-                    "class": "section",
-                    "css": {
-                        "width": sectionWidth+"%",
-                        "height": sectionHeight+"%",
-                        "top": sectionTop+"%",
-                        "left": sectionLeft+"%"
-                    },
-                }).appendTo(this.$el);
-                section_el.on('dragleave', function(e) {
-                    if (DragDrop.checkDrop(e, "tab")) {
-                        section_el.removeClass("dragover");
-                    }
-                });
-                section_el.on('dragover', function(e) {
-                    if (DragDrop.checkDrop(e, "tab")) {
-                        DragDrop.dragover(e, 'move');
-                        section_el.addClass("dragover");
-                    }
-                });
-                section_el.on('drop', _.bind(function(e) {
-                    if (DragDrop.checkDrop(e, "tab")) {
-                        section_el.removeClass("dragover");
-                        DragDrop.drop(e);
-                        this.tabs[DragDrop.getData(e, "tab")].tab.setSection(section);
-                    }
-                }, this));
-
-                section_tabs = $("<div>", {
-                    "class": "tabs-header"
-                }).appendTo(section_el);
-
-                section_tabs_content = $("<div>", {
-                    "class": "tabs-content"
-                }).appendTo(section_el);
-
-                _.each(this.tabs, function(tab) {
-                    if (tab.tab.section != section) return;
-
-                    tab.tab.$el.appendTo(section_tabs);
-                    tab.view.$el.appendTo(section_tabs_content);
-                }, this);
-
-                // Calcul next position
-                sectionLeft = sectionLeft + sectionWidth;
-                if (Math.ceil(sectionLeft/sectionWidth) >= nColumns) {
-                    sectionLeft = 0;
-                    sectionTop = sectionTop + sectionHeight;
-                }
-            }, this);
-            this.delegateEvents();
-
-            return this.ready();
-        },
-
-        /*
-         *  Add a tab
-         *  @V : view class
-         *  @constructor : contructor options
-         *  @options : options
-         */
-        add: function(V, construct, options) {
-            var tabid, tabinfos;
-            options = _.defaults(options || {}, {
-                silent: false,
-                render: true,
-
-                title: "untitled",      // Base title for the tab
-                type: "default",
-                uniqueId: null,         // Unique id for unicity of the tab
-                close: true,            // Enable/disable close button
-                open: true,             // Open after creation
-                section: 0,             // Section to open in
-                parentId: null          // Parent tabid
-            });
-            tabid = options.uniqueId != null ? this.checkTabExists(options.uniqueId) : null;
-            
-            if (tabid == null) {
-                tabid = _.uniqueId("tab");
-                tabinfos = {
-                    "tabid": tabid,
-                    "title": options.title,
-                    "state": null,
-                    "uniqueId": options.uniqueId,
-                    "type": this.options.type,
-                    "view": null,
-                    "tab": null
-                };
-                this.tabs[tabid] = tabinfos;
-                
-                this.tabs[tabid].tab = new TabView({
-                    "tabid": tabid,
-                    "close": options.close,
-                    "section": options.section
-                }, this);
-
-                this.tabs[tabid].view = new V(_.extend(construct || {}, {
-                    "tabid": tabid,
-                }), this);
-
-                if (options.parentId != null) {
-                    this.on("tab:"+options.parentId+":close", _.partial(this.tabs[tabid].tab.close, null, true), this.tabs[tabid].tab);
-                }
-
-                this.tabs[tabid].view.trigger("tab:ready");
-
-                this.tabs[tabid].tab.update();
-                this.tabs[tabid].view.update();
-
-                this.addComponent("tabs_tabs", this.tabs[tabid].tab);
-                this.addComponent("tabs_content", this.tabs[tabid].view);
-
-                if (options.render) this.update();
-            }
-            if (this.activeTab == null || options.open) this.open(tabid);
-            return this.tabs[tabid].view;
-        },
-
-        // Return list of differents sections names
-        getSections: function() {
-            return _.uniq(_.map(this.tabs, function(tab) {
-                return tab.tab.section;
-            }));
-        },
-
-        // Return list of tabs for a section
-        getSectionTabs: function(section) {
-            return _.filter(this.tabs, function(tab) {
-                return tab.tab.section == section;
-            });
-        },
-
-        // Return active tab for a section
-        getActiveTab: function(section) {
-            section = section || 0;
-            return _.reduce(this.tabs, function(state, tab) {
-                if (tab.tab.section != section) return state;
-                if (tab.tab.isActive()) return tab;
-                return state;
-            }, null);
-        },
-
-        // Return current (last) active tab
-        getCurrentTab: function() {
-            if (this.activeTab == null || this.tabs[this.activeTab] == null) return null;
-            return this.tabs[this.activeTab];
-        },
-
-        // Return active tab by type
-        getActiveTabByType: function(type) {
-            return _.reduce(this.tabs, function(state, tab) {
-                if (tab.type != type) return state;
-                if (tab.tab.isActive()) return tab;
-                return state;
-            }, null);
-        },
-
-        // Check if a tab with a uniqueid exists
-        checkTabExists: function(uniqueId) {
-            return _.reduce(this.tabs, function(state, tab) {
-                return state || (uniqueId == tab.uniqueId ? tab.tabid : null);
-            }, null)
-        },
-
-        // Check all tabs
-        checkTabs: function() {
-            var sections = this.getSections();
-            _.each(sections, function(section) {
-                var active = this.getActiveTab(section);
-                if (active != null) return;
-                this.getSectionTabs(section)[0].tab.open();
-            }, this);
-        },
-
-        // Open a tab by tabid
-        open: function(tabid) {
-            var active ,section;
-            this.activeTab = tabid;
-
-            section = _.reduce(this.tabs, function(s, tab) {
-                if (tab.tabid == tabid) {
-                    return tab.tab.section;
-                }
-                return s;
-            }, 0);
-
-            _.each(this.tabs, function(tab) {
-                if (tab.tab.section != section) return;
-                active = (tab.tabid == this.activeTab);
-                tab.tab.$el.toggleClass("active", active);
-                tab.view.$el.toggleClass("active", active);
-                tab.view.trigger("tab:state", active);
-            }, this);
-
-            this.checkTabs();
-            return this;
-        },
-
-        // Close a tab by tabid
-        close: function(tabid, force) {
-            if (this.tabs[tabid] == null) return this;
-
-            // Triger in tab
-            this.tabs[tabid].view.trigger("tab:close");
-            this.tabs[tabid].view.off();
-            
-            delete this.tabs[tabid].view;
-            delete this.tabs[tabid];
-
-            // Trigger global
-            this.trigger("tab:"+tabid+":close");
-            this.trigger("tabs:close", tabid);
-            if (_.size(this.tabs) == 0) this.trigger("tabs:default");
-            this.update();
-            return this;
-        },
-
-        // Close others tabs
-        closeOthers: function(tabid) {
-            _.each(this.tabs, function(tab, oTabId) {
-                if (oTabId == tabid) return;
-                this.close(oTabId);
-            }, this);
-
-            return this;
-        },
-
-        // Open default new tab
-        openDefaultNew: function(e) {
-            this.trigger("tabs:opennew");
-        },
-
-        // Define tabs layout
-        setLayout: function(l) {
-            this.layout = l;
-            this.update();
-        }
-    }, {
-        Panel: TabPanelView
-    });
-
-    // Register as a template component
-    hr.View.Template.registerComponent("component.tabs", TabsView);
-
-    return TabsView;
-});
-define('views/layouts/body',[
-    "underscore",
-    "jQuery",
-    "hr/hr",
-    "core/box",
-    "core/commands",
-    "core/files",
-    "views/tabs/manager"
-], function(_, $, hr, box, commands, files, TabsView) {
-
-    var BodyView = hr.View.extend({
-        className: "layout-body",
-        defaults: {},
-        events: {},
-
-        // Constructor
-        initialize: function() {
-            BodyView.__super__.initialize.apply(this, arguments);
-            var that = this;
-
-            this.tabs = new TabsView();
-
-            // Default tab and dbl click to open new
-            this.tabs.on("tabs:default tabs:opennew", function() {
-                files.openNew();
-            }, this);
-
-            return this;
-        },
-
-        // Finish rendering
-        render: function() {
-            this.tabs.$el.appendTo(this.$el);
-            return this.ready();
-        },
-    });
-
-    // Register as template component
-    hr.View.Template.registerComponent("layout.body", BodyView);
-
-    return BodyView;
-});
-//! moment.js
-//! version : 2.4.0
-//! authors : Tim Wood, Iskren Chernev, Moment.js contributors
-//! license : MIT
-//! momentjs.com
-(function(a){function b(a,b){return function(c){return i(a.call(this,c),b)}}function c(a,b){return function(c){return this.lang().ordinal(a.call(this,c),b)}}function d(){}function e(a){u(a),g(this,a)}function f(a){var b=o(a),c=b.year||0,d=b.month||0,e=b.week||0,f=b.day||0,g=b.hour||0,h=b.minute||0,i=b.second||0,j=b.millisecond||0;this._input=a,this._milliseconds=+j+1e3*i+6e4*h+36e5*g,this._days=+f+7*e,this._months=+d+12*c,this._data={},this._bubble()}function g(a,b){for(var c in b)b.hasOwnProperty(c)&&(a[c]=b[c]);return b.hasOwnProperty("toString")&&(a.toString=b.toString),b.hasOwnProperty("valueOf")&&(a.valueOf=b.valueOf),a}function h(a){return 0>a?Math.ceil(a):Math.floor(a)}function i(a,b){for(var c=a+"";c.length<b;)c="0"+c;return c}function j(a,b,c,d){var e,f,g=b._milliseconds,h=b._days,i=b._months;g&&a._d.setTime(+a._d+g*c),(h||i)&&(e=a.minute(),f=a.hour()),h&&a.date(a.date()+h*c),i&&a.month(a.month()+i*c),g&&!d&&bb.updateOffset(a),(h||i)&&(a.minute(e),a.hour(f))}function k(a){return"[object Array]"===Object.prototype.toString.call(a)}function l(a){return"[object Date]"===Object.prototype.toString.call(a)||a instanceof Date}function m(a,b,c){var d,e=Math.min(a.length,b.length),f=Math.abs(a.length-b.length),g=0;for(d=0;e>d;d++)(c&&a[d]!==b[d]||!c&&q(a[d])!==q(b[d]))&&g++;return g+f}function n(a){if(a){var b=a.toLowerCase().replace(/(.)s$/,"$1");a=Kb[a]||Lb[b]||b}return a}function o(a){var b,c,d={};for(c in a)a.hasOwnProperty(c)&&(b=n(c),b&&(d[b]=a[c]));return d}function p(b){var c,d;if(0===b.indexOf("week"))c=7,d="day";else{if(0!==b.indexOf("month"))return;c=12,d="month"}bb[b]=function(e,f){var g,h,i=bb.fn._lang[b],j=[];if("number"==typeof e&&(f=e,e=a),h=function(a){var b=bb().utc().set(d,a);return i.call(bb.fn._lang,b,e||"")},null!=f)return h(f);for(g=0;c>g;g++)j.push(h(g));return j}}function q(a){var b=+a,c=0;return 0!==b&&isFinite(b)&&(c=b>=0?Math.floor(b):Math.ceil(b)),c}function r(a,b){return new Date(Date.UTC(a,b+1,0)).getUTCDate()}function s(a){return t(a)?366:365}function t(a){return 0===a%4&&0!==a%100||0===a%400}function u(a){var b;a._a&&-2===a._pf.overflow&&(b=a._a[gb]<0||a._a[gb]>11?gb:a._a[hb]<1||a._a[hb]>r(a._a[fb],a._a[gb])?hb:a._a[ib]<0||a._a[ib]>23?ib:a._a[jb]<0||a._a[jb]>59?jb:a._a[kb]<0||a._a[kb]>59?kb:a._a[lb]<0||a._a[lb]>999?lb:-1,a._pf._overflowDayOfYear&&(fb>b||b>hb)&&(b=hb),a._pf.overflow=b)}function v(a){a._pf={empty:!1,unusedTokens:[],unusedInput:[],overflow:-2,charsLeftOver:0,nullInput:!1,invalidMonth:null,invalidFormat:!1,userInvalidated:!1,iso:!1}}function w(a){return null==a._isValid&&(a._isValid=!isNaN(a._d.getTime())&&a._pf.overflow<0&&!a._pf.empty&&!a._pf.invalidMonth&&!a._pf.nullInput&&!a._pf.invalidFormat&&!a._pf.userInvalidated,a._strict&&(a._isValid=a._isValid&&0===a._pf.charsLeftOver&&0===a._pf.unusedTokens.length)),a._isValid}function x(a){return a?a.toLowerCase().replace("_","-"):a}function y(a,b){return b.abbr=a,mb[a]||(mb[a]=new d),mb[a].set(b),mb[a]}function z(a){delete mb[a]}function A(a){var b,c,d,e,f=0,g=function(a){if(!mb[a]&&nb)try{require("./lang/"+a)}catch(b){}return mb[a]};if(!a)return bb.fn._lang;if(!k(a)){if(c=g(a))return c;a=[a]}for(;f<a.length;){for(e=x(a[f]).split("-"),b=e.length,d=x(a[f+1]),d=d?d.split("-"):null;b>0;){if(c=g(e.slice(0,b).join("-")))return c;if(d&&d.length>=b&&m(e,d,!0)>=b-1)break;b--}f++}return bb.fn._lang}function B(a){return a.match(/\[[\s\S]/)?a.replace(/^\[|\]$/g,""):a.replace(/\\/g,"")}function C(a){var b,c,d=a.match(rb);for(b=0,c=d.length;c>b;b++)d[b]=Pb[d[b]]?Pb[d[b]]:B(d[b]);return function(e){var f="";for(b=0;c>b;b++)f+=d[b]instanceof Function?d[b].call(e,a):d[b];return f}}function D(a,b){return a.isValid()?(b=E(b,a.lang()),Mb[b]||(Mb[b]=C(b)),Mb[b](a)):a.lang().invalidDate()}function E(a,b){function c(a){return b.longDateFormat(a)||a}var d=5;for(sb.lastIndex=0;d>=0&&sb.test(a);)a=a.replace(sb,c),sb.lastIndex=0,d-=1;return a}function F(a,b){var c;switch(a){case"DDDD":return vb;case"YYYY":case"GGGG":case"gggg":return wb;case"YYYYY":case"GGGGG":case"ggggg":return xb;case"S":case"SS":case"SSS":case"DDD":return ub;case"MMM":case"MMMM":case"dd":case"ddd":case"dddd":return zb;case"a":case"A":return A(b._l)._meridiemParse;case"X":return Cb;case"Z":case"ZZ":return Ab;case"T":return Bb;case"SSSS":return yb;case"MM":case"DD":case"YY":case"GG":case"gg":case"HH":case"hh":case"mm":case"ss":case"M":case"D":case"d":case"H":case"h":case"m":case"s":case"w":case"ww":case"W":case"WW":case"e":case"E":return tb;default:return c=new RegExp(N(M(a.replace("\\","")),"i"))}}function G(a){var b=(Ab.exec(a)||[])[0],c=(b+"").match(Hb)||["-",0,0],d=+(60*c[1])+q(c[2]);return"+"===c[0]?-d:d}function H(a,b,c){var d,e=c._a;switch(a){case"M":case"MM":null!=b&&(e[gb]=q(b)-1);break;case"MMM":case"MMMM":d=A(c._l).monthsParse(b),null!=d?e[gb]=d:c._pf.invalidMonth=b;break;case"D":case"DD":null!=b&&(e[hb]=q(b));break;case"DDD":case"DDDD":null!=b&&(c._dayOfYear=q(b));break;case"YY":e[fb]=q(b)+(q(b)>68?1900:2e3);break;case"YYYY":case"YYYYY":e[fb]=q(b);break;case"a":case"A":c._isPm=A(c._l).isPM(b);break;case"H":case"HH":case"h":case"hh":e[ib]=q(b);break;case"m":case"mm":e[jb]=q(b);break;case"s":case"ss":e[kb]=q(b);break;case"S":case"SS":case"SSS":case"SSSS":e[lb]=q(1e3*("0."+b));break;case"X":c._d=new Date(1e3*parseFloat(b));break;case"Z":case"ZZ":c._useUTC=!0,c._tzm=G(b);break;case"w":case"ww":case"W":case"WW":case"d":case"dd":case"ddd":case"dddd":case"e":case"E":a=a.substr(0,1);case"gg":case"gggg":case"GG":case"GGGG":case"GGGGG":a=a.substr(0,2),b&&(c._w=c._w||{},c._w[a]=b)}}function I(a){var b,c,d,e,f,g,h,i,j,k,l=[];if(!a._d){for(d=K(a),a._w&&null==a._a[hb]&&null==a._a[gb]&&(f=function(b){return b?b.length<3?parseInt(b,10)>68?"19"+b:"20"+b:b:null==a._a[fb]?bb().weekYear():a._a[fb]},g=a._w,null!=g.GG||null!=g.W||null!=g.E?h=X(f(g.GG),g.W||1,g.E,4,1):(i=A(a._l),j=null!=g.d?T(g.d,i):null!=g.e?parseInt(g.e,10)+i._week.dow:0,k=parseInt(g.w,10)||1,null!=g.d&&j<i._week.dow&&k++,h=X(f(g.gg),k,j,i._week.doy,i._week.dow)),a._a[fb]=h.year,a._dayOfYear=h.dayOfYear),a._dayOfYear&&(e=null==a._a[fb]?d[fb]:a._a[fb],a._dayOfYear>s(e)&&(a._pf._overflowDayOfYear=!0),c=S(e,0,a._dayOfYear),a._a[gb]=c.getUTCMonth(),a._a[hb]=c.getUTCDate()),b=0;3>b&&null==a._a[b];++b)a._a[b]=l[b]=d[b];for(;7>b;b++)a._a[b]=l[b]=null==a._a[b]?2===b?1:0:a._a[b];l[ib]+=q((a._tzm||0)/60),l[jb]+=q((a._tzm||0)%60),a._d=(a._useUTC?S:R).apply(null,l)}}function J(a){var b;a._d||(b=o(a._i),a._a=[b.year,b.month,b.day,b.hour,b.minute,b.second,b.millisecond],I(a))}function K(a){var b=new Date;return a._useUTC?[b.getUTCFullYear(),b.getUTCMonth(),b.getUTCDate()]:[b.getFullYear(),b.getMonth(),b.getDate()]}function L(a){a._a=[],a._pf.empty=!0;var b,c,d,e,f,g=A(a._l),h=""+a._i,i=h.length,j=0;for(d=E(a._f,g).match(rb)||[],b=0;b<d.length;b++)e=d[b],c=(F(e,a).exec(h)||[])[0],c&&(f=h.substr(0,h.indexOf(c)),f.length>0&&a._pf.unusedInput.push(f),h=h.slice(h.indexOf(c)+c.length),j+=c.length),Pb[e]?(c?a._pf.empty=!1:a._pf.unusedTokens.push(e),H(e,c,a)):a._strict&&!c&&a._pf.unusedTokens.push(e);a._pf.charsLeftOver=i-j,h.length>0&&a._pf.unusedInput.push(h),a._isPm&&a._a[ib]<12&&(a._a[ib]+=12),a._isPm===!1&&12===a._a[ib]&&(a._a[ib]=0),I(a),u(a)}function M(a){return a.replace(/\\(\[)|\\(\])|\[([^\]\[]*)\]|\\(.)/g,function(a,b,c,d,e){return b||c||d||e})}function N(a){return a.replace(/[-\/\\^$*+?.()|[\]{}]/g,"\\$&")}function O(a){var b,c,d,e,f;if(0===a._f.length)return a._pf.invalidFormat=!0,a._d=new Date(0/0),void 0;for(e=0;e<a._f.length;e++)f=0,b=g({},a),v(b),b._f=a._f[e],L(b),w(b)&&(f+=b._pf.charsLeftOver,f+=10*b._pf.unusedTokens.length,b._pf.score=f,(null==d||d>f)&&(d=f,c=b));g(a,c||b)}function P(a){var b,c=a._i,d=Db.exec(c);if(d){for(a._pf.iso=!0,b=4;b>0;b--)if(d[b]){a._f=Fb[b-1]+(d[6]||" ");break}for(b=0;4>b;b++)if(Gb[b][1].exec(c)){a._f+=Gb[b][0];break}Ab.exec(c)&&(a._f+="Z"),L(a)}else a._d=new Date(c)}function Q(b){var c=b._i,d=ob.exec(c);c===a?b._d=new Date:d?b._d=new Date(+d[1]):"string"==typeof c?P(b):k(c)?(b._a=c.slice(0),I(b)):l(c)?b._d=new Date(+c):"object"==typeof c?J(b):b._d=new Date(c)}function R(a,b,c,d,e,f,g){var h=new Date(a,b,c,d,e,f,g);return 1970>a&&h.setFullYear(a),h}function S(a){var b=new Date(Date.UTC.apply(null,arguments));return 1970>a&&b.setUTCFullYear(a),b}function T(a,b){if("string"==typeof a)if(isNaN(a)){if(a=b.weekdaysParse(a),"number"!=typeof a)return null}else a=parseInt(a,10);return a}function U(a,b,c,d,e){return e.relativeTime(b||1,!!c,a,d)}function V(a,b,c){var d=eb(Math.abs(a)/1e3),e=eb(d/60),f=eb(e/60),g=eb(f/24),h=eb(g/365),i=45>d&&["s",d]||1===e&&["m"]||45>e&&["mm",e]||1===f&&["h"]||22>f&&["hh",f]||1===g&&["d"]||25>=g&&["dd",g]||45>=g&&["M"]||345>g&&["MM",eb(g/30)]||1===h&&["y"]||["yy",h];return i[2]=b,i[3]=a>0,i[4]=c,U.apply({},i)}function W(a,b,c){var d,e=c-b,f=c-a.day();return f>e&&(f-=7),e-7>f&&(f+=7),d=bb(a).add("d",f),{week:Math.ceil(d.dayOfYear()/7),year:d.year()}}function X(a,b,c,d,e){var f,g,h=new Date(Date.UTC(a,0)).getUTCDay();return c=null!=c?c:e,f=e-h+(h>d?7:0),g=7*(b-1)+(c-e)+f+1,{year:g>0?a:a-1,dayOfYear:g>0?g:s(a-1)+g}}function Y(a){var b=a._i,c=a._f;return"undefined"==typeof a._pf&&v(a),null===b?bb.invalid({nullInput:!0}):("string"==typeof b&&(a._i=b=A().preparse(b)),bb.isMoment(b)?(a=g({},b),a._d=new Date(+b._d)):c?k(c)?O(a):L(a):Q(a),new e(a))}function Z(a,b){bb.fn[a]=bb.fn[a+"s"]=function(a){var c=this._isUTC?"UTC":"";return null!=a?(this._d["set"+c+b](a),bb.updateOffset(this),this):this._d["get"+c+b]()}}function $(a){bb.duration.fn[a]=function(){return this._data[a]}}function _(a,b){bb.duration.fn["as"+a]=function(){return+this/b}}function ab(a){var b=!1,c=bb;"undefined"==typeof ender&&(this.moment=a?function(){return!b&&console&&console.warn&&(b=!0,console.warn("Accessing Moment through the global scope is deprecated, and will be removed in an upcoming release.")),c.apply(null,arguments)}:bb)}for(var bb,cb,db="2.4.0",eb=Math.round,fb=0,gb=1,hb=2,ib=3,jb=4,kb=5,lb=6,mb={},nb="undefined"!=typeof module&&module.exports,ob=/^\/?Date\((\-?\d+)/i,pb=/(\-)?(?:(\d*)\.)?(\d+)\:(\d+)(?:\:(\d+)\.?(\d{3})?)?/,qb=/^(-)?P(?:(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?|([0-9,.]*)W)$/,rb=/(\[[^\[]*\])|(\\)?(Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|YYYYY|YYYY|YY|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|mm?|ss?|S{1,4}|X|zz?|ZZ?|.)/g,sb=/(\[[^\[]*\])|(\\)?(LT|LL?L?L?|l{1,4})/g,tb=/\d\d?/,ub=/\d{1,3}/,vb=/\d{3}/,wb=/\d{1,4}/,xb=/[+\-]?\d{1,6}/,yb=/\d+/,zb=/[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF\/]+(\s*?[\u0600-\u06FF]+){1,2}/i,Ab=/Z|[\+\-]\d\d:?\d\d/i,Bb=/T/i,Cb=/[\+\-]?\d+(\.\d{1,3})?/,Db=/^\s*\d{4}-(?:(\d\d-\d\d)|(W\d\d$)|(W\d\d-\d)|(\d\d\d))((T| )(\d\d(:\d\d(:\d\d(\.\d+)?)?)?)?([\+\-]\d\d:?\d\d|Z)?)?$/,Eb="YYYY-MM-DDTHH:mm:ssZ",Fb=["YYYY-MM-DD","GGGG-[W]WW","GGGG-[W]WW-E","YYYY-DDD"],Gb=[["HH:mm:ss.SSSS",/(T| )\d\d:\d\d:\d\d\.\d{1,3}/],["HH:mm:ss",/(T| )\d\d:\d\d:\d\d/],["HH:mm",/(T| )\d\d:\d\d/],["HH",/(T| )\d\d/]],Hb=/([\+\-]|\d\d)/gi,Ib="Date|Hours|Minutes|Seconds|Milliseconds".split("|"),Jb={Milliseconds:1,Seconds:1e3,Minutes:6e4,Hours:36e5,Days:864e5,Months:2592e6,Years:31536e6},Kb={ms:"millisecond",s:"second",m:"minute",h:"hour",d:"day",D:"date",w:"week",W:"isoWeek",M:"month",y:"year",DDD:"dayOfYear",e:"weekday",E:"isoWeekday",gg:"weekYear",GG:"isoWeekYear"},Lb={dayofyear:"dayOfYear",isoweekday:"isoWeekday",isoweek:"isoWeek",weekyear:"weekYear",isoweekyear:"isoWeekYear"},Mb={},Nb="DDD w W M D d".split(" "),Ob="M D H h m s w W".split(" "),Pb={M:function(){return this.month()+1},MMM:function(a){return this.lang().monthsShort(this,a)},MMMM:function(a){return this.lang().months(this,a)},D:function(){return this.date()},DDD:function(){return this.dayOfYear()},d:function(){return this.day()},dd:function(a){return this.lang().weekdaysMin(this,a)},ddd:function(a){return this.lang().weekdaysShort(this,a)},dddd:function(a){return this.lang().weekdays(this,a)},w:function(){return this.week()},W:function(){return this.isoWeek()},YY:function(){return i(this.year()%100,2)},YYYY:function(){return i(this.year(),4)},YYYYY:function(){return i(this.year(),5)},gg:function(){return i(this.weekYear()%100,2)},gggg:function(){return this.weekYear()},ggggg:function(){return i(this.weekYear(),5)},GG:function(){return i(this.isoWeekYear()%100,2)},GGGG:function(){return this.isoWeekYear()},GGGGG:function(){return i(this.isoWeekYear(),5)},e:function(){return this.weekday()},E:function(){return this.isoWeekday()},a:function(){return this.lang().meridiem(this.hours(),this.minutes(),!0)},A:function(){return this.lang().meridiem(this.hours(),this.minutes(),!1)},H:function(){return this.hours()},h:function(){return this.hours()%12||12},m:function(){return this.minutes()},s:function(){return this.seconds()},S:function(){return q(this.milliseconds()/100)},SS:function(){return i(q(this.milliseconds()/10),2)},SSS:function(){return i(this.milliseconds(),3)},SSSS:function(){return i(this.milliseconds(),3)},Z:function(){var a=-this.zone(),b="+";return 0>a&&(a=-a,b="-"),b+i(q(a/60),2)+":"+i(q(a)%60,2)},ZZ:function(){var a=-this.zone(),b="+";return 0>a&&(a=-a,b="-"),b+i(q(10*a/6),4)},z:function(){return this.zoneAbbr()},zz:function(){return this.zoneName()},X:function(){return this.unix()}},Qb=["months","monthsShort","weekdays","weekdaysShort","weekdaysMin"];Nb.length;)cb=Nb.pop(),Pb[cb+"o"]=c(Pb[cb],cb);for(;Ob.length;)cb=Ob.pop(),Pb[cb+cb]=b(Pb[cb],2);for(Pb.DDDD=b(Pb.DDD,3),g(d.prototype,{set:function(a){var b,c;for(c in a)b=a[c],"function"==typeof b?this[c]=b:this["_"+c]=b},_months:"January_February_March_April_May_June_July_August_September_October_November_December".split("_"),months:function(a){return this._months[a.month()]},_monthsShort:"Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec".split("_"),monthsShort:function(a){return this._monthsShort[a.month()]},monthsParse:function(a){var b,c,d;for(this._monthsParse||(this._monthsParse=[]),b=0;12>b;b++)if(this._monthsParse[b]||(c=bb.utc([2e3,b]),d="^"+this.months(c,"")+"|^"+this.monthsShort(c,""),this._monthsParse[b]=new RegExp(d.replace(".",""),"i")),this._monthsParse[b].test(a))return b},_weekdays:"Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday".split("_"),weekdays:function(a){return this._weekdays[a.day()]},_weekdaysShort:"Sun_Mon_Tue_Wed_Thu_Fri_Sat".split("_"),weekdaysShort:function(a){return this._weekdaysShort[a.day()]},_weekdaysMin:"Su_Mo_Tu_We_Th_Fr_Sa".split("_"),weekdaysMin:function(a){return this._weekdaysMin[a.day()]},weekdaysParse:function(a){var b,c,d;for(this._weekdaysParse||(this._weekdaysParse=[]),b=0;7>b;b++)if(this._weekdaysParse[b]||(c=bb([2e3,1]).day(b),d="^"+this.weekdays(c,"")+"|^"+this.weekdaysShort(c,"")+"|^"+this.weekdaysMin(c,""),this._weekdaysParse[b]=new RegExp(d.replace(".",""),"i")),this._weekdaysParse[b].test(a))return b},_longDateFormat:{LT:"h:mm A",L:"MM/DD/YYYY",LL:"MMMM D YYYY",LLL:"MMMM D YYYY LT",LLLL:"dddd, MMMM D YYYY LT"},longDateFormat:function(a){var b=this._longDateFormat[a];return!b&&this._longDateFormat[a.toUpperCase()]&&(b=this._longDateFormat[a.toUpperCase()].replace(/MMMM|MM|DD|dddd/g,function(a){return a.slice(1)}),this._longDateFormat[a]=b),b},isPM:function(a){return"p"===(a+"").toLowerCase().charAt(0)},_meridiemParse:/[ap]\.?m?\.?/i,meridiem:function(a,b,c){return a>11?c?"pm":"PM":c?"am":"AM"},_calendar:{sameDay:"[Today at] LT",nextDay:"[Tomorrow at] LT",nextWeek:"dddd [at] LT",lastDay:"[Yesterday at] LT",lastWeek:"[Last] dddd [at] LT",sameElse:"L"},calendar:function(a,b){var c=this._calendar[a];return"function"==typeof c?c.apply(b):c},_relativeTime:{future:"in %s",past:"%s ago",s:"a few seconds",m:"a minute",mm:"%d minutes",h:"an hour",hh:"%d hours",d:"a day",dd:"%d days",M:"a month",MM:"%d months",y:"a year",yy:"%d years"},relativeTime:function(a,b,c,d){var e=this._relativeTime[c];return"function"==typeof e?e(a,b,c,d):e.replace(/%d/i,a)},pastFuture:function(a,b){var c=this._relativeTime[a>0?"future":"past"];return"function"==typeof c?c(b):c.replace(/%s/i,b)},ordinal:function(a){return this._ordinal.replace("%d",a)},_ordinal:"%d",preparse:function(a){return a},postformat:function(a){return a},week:function(a){return W(a,this._week.dow,this._week.doy).week},_week:{dow:0,doy:6},_invalidDate:"Invalid date",invalidDate:function(){return this._invalidDate}}),bb=function(b,c,d,e){return"boolean"==typeof d&&(e=d,d=a),Y({_i:b,_f:c,_l:d,_strict:e,_isUTC:!1})},bb.utc=function(b,c,d,e){var f;return"boolean"==typeof d&&(e=d,d=a),f=Y({_useUTC:!0,_isUTC:!0,_l:d,_i:b,_f:c,_strict:e}).utc()},bb.unix=function(a){return bb(1e3*a)},bb.duration=function(a,b){var c,d,e,g=bb.isDuration(a),h="number"==typeof a,i=g?a._input:h?{}:a,j=null;return h?b?i[b]=a:i.milliseconds=a:(j=pb.exec(a))?(c="-"===j[1]?-1:1,i={y:0,d:q(j[hb])*c,h:q(j[ib])*c,m:q(j[jb])*c,s:q(j[kb])*c,ms:q(j[lb])*c}):(j=qb.exec(a))&&(c="-"===j[1]?-1:1,e=function(a){var b=a&&parseFloat(a.replace(",","."));return(isNaN(b)?0:b)*c},i={y:e(j[2]),M:e(j[3]),d:e(j[4]),h:e(j[5]),m:e(j[6]),s:e(j[7]),w:e(j[8])}),d=new f(i),g&&a.hasOwnProperty("_lang")&&(d._lang=a._lang),d},bb.version=db,bb.defaultFormat=Eb,bb.updateOffset=function(){},bb.lang=function(a,b){var c;return a?(b?y(x(a),b):null===b?(z(a),a="en"):mb[a]||A(a),c=bb.duration.fn._lang=bb.fn._lang=A(a),c._abbr):bb.fn._lang._abbr},bb.langData=function(a){return a&&a._lang&&a._lang._abbr&&(a=a._lang._abbr),A(a)},bb.isMoment=function(a){return a instanceof e},bb.isDuration=function(a){return a instanceof f},cb=Qb.length-1;cb>=0;--cb)p(Qb[cb]);for(bb.normalizeUnits=function(a){return n(a)},bb.invalid=function(a){var b=bb.utc(0/0);return null!=a?g(b._pf,a):b._pf.userInvalidated=!0,b},bb.parseZone=function(a){return bb(a).parseZone()},g(bb.fn=e.prototype,{clone:function(){return bb(this)},valueOf:function(){return+this._d+6e4*(this._offset||0)},unix:function(){return Math.floor(+this/1e3)},toString:function(){return this.clone().lang("en").format("ddd MMM DD YYYY HH:mm:ss [GMT]ZZ")},toDate:function(){return this._offset?new Date(+this):this._d},toISOString:function(){return D(bb(this).utc(),"YYYY-MM-DD[T]HH:mm:ss.SSS[Z]")},toArray:function(){var a=this;return[a.year(),a.month(),a.date(),a.hours(),a.minutes(),a.seconds(),a.milliseconds()]},isValid:function(){return w(this)},isDSTShifted:function(){return this._a?this.isValid()&&m(this._a,(this._isUTC?bb.utc(this._a):bb(this._a)).toArray())>0:!1},parsingFlags:function(){return g({},this._pf)},invalidAt:function(){return this._pf.overflow},utc:function(){return this.zone(0)},local:function(){return this.zone(0),this._isUTC=!1,this},format:function(a){var b=D(this,a||bb.defaultFormat);return this.lang().postformat(b)},add:function(a,b){var c;return c="string"==typeof a?bb.duration(+b,a):bb.duration(a,b),j(this,c,1),this},subtract:function(a,b){var c;return c="string"==typeof a?bb.duration(+b,a):bb.duration(a,b),j(this,c,-1),this},diff:function(a,b,c){var d,e,f=this._isUTC?bb(a).zone(this._offset||0):bb(a).local(),g=6e4*(this.zone()-f.zone());return b=n(b),"year"===b||"month"===b?(d=432e5*(this.daysInMonth()+f.daysInMonth()),e=12*(this.year()-f.year())+(this.month()-f.month()),e+=(this-bb(this).startOf("month")-(f-bb(f).startOf("month")))/d,e-=6e4*(this.zone()-bb(this).startOf("month").zone()-(f.zone()-bb(f).startOf("month").zone()))/d,"year"===b&&(e/=12)):(d=this-f,e="second"===b?d/1e3:"minute"===b?d/6e4:"hour"===b?d/36e5:"day"===b?(d-g)/864e5:"week"===b?(d-g)/6048e5:d),c?e:h(e)},from:function(a,b){return bb.duration(this.diff(a)).lang(this.lang()._abbr).humanize(!b)},fromNow:function(a){return this.from(bb(),a)},calendar:function(){var a=this.diff(bb().zone(this.zone()).startOf("day"),"days",!0),b=-6>a?"sameElse":-1>a?"lastWeek":0>a?"lastDay":1>a?"sameDay":2>a?"nextDay":7>a?"nextWeek":"sameElse";return this.format(this.lang().calendar(b,this))},isLeapYear:function(){return t(this.year())},isDST:function(){return this.zone()<this.clone().month(0).zone()||this.zone()<this.clone().month(5).zone()},day:function(a){var b=this._isUTC?this._d.getUTCDay():this._d.getDay();return null!=a?(a=T(a,this.lang()),this.add({d:a-b})):b},month:function(a){var b,c=this._isUTC?"UTC":"";return null!=a?"string"==typeof a&&(a=this.lang().monthsParse(a),"number"!=typeof a)?this:(b=this.date(),this.date(1),this._d["set"+c+"Month"](a),this.date(Math.min(b,this.daysInMonth())),bb.updateOffset(this),this):this._d["get"+c+"Month"]()},startOf:function(a){switch(a=n(a)){case"year":this.month(0);case"month":this.date(1);case"week":case"isoWeek":case"day":this.hours(0);case"hour":this.minutes(0);case"minute":this.seconds(0);case"second":this.milliseconds(0)}return"week"===a?this.weekday(0):"isoWeek"===a&&this.isoWeekday(1),this},endOf:function(a){return a=n(a),this.startOf(a).add("isoWeek"===a?"week":a,1).subtract("ms",1)},isAfter:function(a,b){return b="undefined"!=typeof b?b:"millisecond",+this.clone().startOf(b)>+bb(a).startOf(b)},isBefore:function(a,b){return b="undefined"!=typeof b?b:"millisecond",+this.clone().startOf(b)<+bb(a).startOf(b)},isSame:function(a,b){return b="undefined"!=typeof b?b:"millisecond",+this.clone().startOf(b)===+bb(a).startOf(b)},min:function(a){return a=bb.apply(null,arguments),this>a?this:a},max:function(a){return a=bb.apply(null,arguments),a>this?this:a},zone:function(a){var b=this._offset||0;return null==a?this._isUTC?b:this._d.getTimezoneOffset():("string"==typeof a&&(a=G(a)),Math.abs(a)<16&&(a=60*a),this._offset=a,this._isUTC=!0,b!==a&&j(this,bb.duration(b-a,"m"),1,!0),this)},zoneAbbr:function(){return this._isUTC?"UTC":""},zoneName:function(){return this._isUTC?"Coordinated Universal Time":""},parseZone:function(){return"string"==typeof this._i&&this.zone(this._i),this},hasAlignedHourOffset:function(a){return a=a?bb(a).zone():0,0===(this.zone()-a)%60},daysInMonth:function(){return r(this.year(),this.month())},dayOfYear:function(a){var b=eb((bb(this).startOf("day")-bb(this).startOf("year"))/864e5)+1;return null==a?b:this.add("d",a-b)},weekYear:function(a){var b=W(this,this.lang()._week.dow,this.lang()._week.doy).year;return null==a?b:this.add("y",a-b)},isoWeekYear:function(a){var b=W(this,1,4).year;return null==a?b:this.add("y",a-b)},week:function(a){var b=this.lang().week(this);return null==a?b:this.add("d",7*(a-b))},isoWeek:function(a){var b=W(this,1,4).week;return null==a?b:this.add("d",7*(a-b))},weekday:function(a){var b=(this.day()+7-this.lang()._week.dow)%7;return null==a?b:this.add("d",a-b)},isoWeekday:function(a){return null==a?this.day()||7:this.day(this.day()%7?a:a-7)},get:function(a){return a=n(a),this[a]()},set:function(a,b){return a=n(a),"function"==typeof this[a]&&this[a](b),this},lang:function(b){return b===a?this._lang:(this._lang=A(b),this)}}),cb=0;cb<Ib.length;cb++)Z(Ib[cb].toLowerCase().replace(/s$/,""),Ib[cb]);Z("year","FullYear"),bb.fn.days=bb.fn.day,bb.fn.months=bb.fn.month,bb.fn.weeks=bb.fn.week,bb.fn.isoWeeks=bb.fn.isoWeek,bb.fn.toJSON=bb.fn.toISOString,g(bb.duration.fn=f.prototype,{_bubble:function(){var a,b,c,d,e=this._milliseconds,f=this._days,g=this._months,i=this._data;i.milliseconds=e%1e3,a=h(e/1e3),i.seconds=a%60,b=h(a/60),i.minutes=b%60,c=h(b/60),i.hours=c%24,f+=h(c/24),i.days=f%30,g+=h(f/30),i.months=g%12,d=h(g/12),i.years=d},weeks:function(){return h(this.days()/7)},valueOf:function(){return this._milliseconds+864e5*this._days+2592e6*(this._months%12)+31536e6*q(this._months/12)},humanize:function(a){var b=+this,c=V(b,!a,this.lang());return a&&(c=this.lang().pastFuture(b,c)),this.lang().postformat(c)},add:function(a,b){var c=bb.duration(a,b);return this._milliseconds+=c._milliseconds,this._days+=c._days,this._months+=c._months,this._bubble(),this},subtract:function(a,b){var c=bb.duration(a,b);return this._milliseconds-=c._milliseconds,this._days-=c._days,this._months-=c._months,this._bubble(),this},get:function(a){return a=n(a),this[a.toLowerCase()+"s"]()},as:function(a){return a=n(a),this["as"+a.charAt(0).toUpperCase()+a.slice(1)+"s"]()},lang:bb.fn.lang,toIsoString:function(){var a=Math.abs(this.years()),b=Math.abs(this.months()),c=Math.abs(this.days()),d=Math.abs(this.hours()),e=Math.abs(this.minutes()),f=Math.abs(this.seconds()+this.milliseconds()/1e3);return this.asSeconds()?(this.asSeconds()<0?"-":"")+"P"+(a?a+"Y":"")+(b?b+"M":"")+(c?c+"D":"")+(d||e||f?"T":"")+(d?d+"H":"")+(e?e+"M":"")+(f?f+"S":""):"P0D"}});for(cb in Jb)Jb.hasOwnProperty(cb)&&(_(cb,Jb[cb]),$(cb.toLowerCase()));_("Weeks",6048e5),bb.duration.fn.asMonths=function(){return(+this-31536e6*this.years())/2592e6+12*this.years()},bb.lang("en",{ordinal:function(a){var b=a%10,c=1===q(a%100/10)?"th":1===b?"st":2===b?"nd":3===b?"rd":"th";return a+c}}),nb?(module.exports=bb,ab(!0)):"function"==typeof define&&define.amd?define("moment",['require','exports','module'],function(b,c,d){return d.config().noGlobal!==!0&&ab(d.config().noGlobal===a),bb}):ab()}).call(this);
-define('views/utils/date',[
-    "underscore",
-    "hr/hr",
-    "moment"
-], function(_, hr, moment) {
-    
-    var DateView = hr.View.extend({
-        tagName: "span",
-        className: "component-date",
-        defaults: {
-            time: 0,
-            update: 1000*60,
-            updateD: 1.01,
-            className: ""
-        },
-
-        initialize: function(options) {
-            DateView.__super__.initialize.apply(this, arguments);
-            this.$el.addClass(this.options.className);
-            return this;
-        },
-
-        render: function() {
-            if (this.interval != null) clearInterval(this.interval);
-            this.interval = setInterval(_.bind(this.update, this), this.options.update); 
-            this.options.update = this.options.update*this.options.updateD;
-            this.$el.html(moment(this.options.time*1000).fromNow());
-            return this.ready();
-        },
-    });
-    hr.Template.registerComponent("components.date", DateView);
-
-    return DateView;
-});
-define('views/views',[
-	"views/layouts/lateralbar",
-	"views/layouts/body",
-    
-    "views/utils/date",
-
-    "views/tabs/base",
-    "views/dialogs/base"
-], function() {
-	return arguments;
-});
 define('resources/resources',[
     "hr/hr"
 ], function(hr) {
@@ -40240,20 +39941,12 @@ require([
     "hr/args",
     "core/app",
     "core/session",
-    "config",
-    'views/views',
     'resources/resources',
-], function(_, hr, args, app, session, config) {
+], function(_, hr, args, app, session) {
     // Configure hr
     hr.configure(args);
-
-    // Extend template context
-    hr.Template.extendContext({
-        'app': {
-            'config': config,
-        }
-    });
     
+    // Start the application
     session.prepare().then(function() {
         app.run();
     });

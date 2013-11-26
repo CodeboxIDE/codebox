@@ -1,0 +1,19 @@
+{
+    "name": "cb.files.editor",
+    "version": "0.1.1",
+    "title": "ACE Code Editor",
+    "description": "Code Editor with ACE.",
+    "homepage": "https://github.com/FriendCode/codebox",
+    "license": "Apache",
+    "author": {
+        "name": "Samy Pessé",
+        "email": "samypesse@gmaiL.com",
+        "url": "http://samypesse.fr"
+    },
+    "client": {
+        "main": "client",
+        "provides": [
+            "ace"
+        ]
+    }
+}

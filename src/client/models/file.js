@@ -72,9 +72,14 @@ define([
         /*
          *  Open the tab for this file
          */
-        open: function(path) {
+        open: function(path, options) {
             var files = require("core/files");
-            return files.open(path ? path : this);
+            if (_.isObject(path)) {
+                options = path;
+                path = this;
+            }
+
+            return files.open(path, options);
         },
 
         /*
@@ -575,6 +580,20 @@ define([
             var that = this;
             return function() {
                 var menu = [];
+
+                // Open with
+                if (!that.isDirectory()) {
+                    menu.push({
+                        'type': "action",
+                        'text': "Open with...",
+                        'action': function() {
+                            that.open({
+                                'userChoice': true
+                            });
+                        }
+                    });
+                    menu.push({ 'type': "divider" });
+                }
 
                 // File or directory
                 if (!that.isRoot()) {

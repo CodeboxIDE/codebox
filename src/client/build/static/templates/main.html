@@ -1,10 +1,26 @@
 <% if (session.box.isAuth()) { %>
 <div id="codebox" class="mode-body-fullpage">
 	<!-- Lateral bar -->
-	<%= view.component("layout.lateralbar", {}, "lateralbar") %>
+	<div class="cb-lateralbar">
+		<div class="lateral-menu">
+		    <div class="menu-section cb-commands"></div>
+		    <div class="menu-section menu-bottom">
+		        <ul class="cb-menu-commands">
+		            <li class="menu-item">
+		                <a href="https://www.codebox.io" target="_blank" title="Version <%- hr.configs.args.version %>">
+		                    <i class="fa fa-cloud"></i>
+		                </a>
+		            </li>
+		        </ul>
+		    </div>
+		</div>
+		<div class="lateral-body">
+			<div class="cb-panels"></div>
+		</div>
+	</div>
 
 	<!-- Body -->
-	<%= view.component("layout.body", {}, "body") %>
+	<div class="cb-body"></div>
 
 	<div class="cb-connexion-alert" style="display: none;">
 		<div class="modal fade in" style="display: block;">
@@ -25,7 +41,7 @@
 </div>
 <% } else { %>
 <div id="codebox">
-	<div class="layout-login">
+	<div class="cb-login">
 		<div class="login-box">
 			<div class="header">
 				<span class="fa-stack">
