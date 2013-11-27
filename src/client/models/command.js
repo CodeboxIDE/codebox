@@ -20,7 +20,7 @@ define([
             'handler': function() {},
 
             // Options
-            'position': 2,
+            'position': 10,
             'shortcuts': [],
             'visible': true,   // Visible in lateral bar
             'search': true,    // Visible in search,

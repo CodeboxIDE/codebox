@@ -12,7 +12,10 @@ define([
     var command = commands.register("search.open", {
         title: "Search",
         icon: "search",
-        position: 0
+        position: 0,
+        shortcuts: [
+            "s", "/"
+        ]
     });
     panel.connectCommand(command);
 });
