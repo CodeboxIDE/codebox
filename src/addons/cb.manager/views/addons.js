@@ -5,6 +5,10 @@ define([
     var hr = codebox.require("hr/hr");
     var _ = codebox.require("underscore");
 
+    // Collections of addons
+    var addons = new Addons();
+    addons.getIndex();
+
     var AddonItem = hr.List.Item.extend({
         className: "addon-item",
         templateLoader: "addon.cb.manager.templates",
@@ -37,7 +41,7 @@ define([
         Collection: Addons,
         Item: AddonItem,
         defaults: _.defaults({
-            
+            'collection': addons
         }, hr.List.prototype.defaults)
     });
 

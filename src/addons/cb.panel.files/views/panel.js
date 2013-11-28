@@ -18,7 +18,6 @@ define([
             });
 
             this.tree.on("count", function(count) {
-                console.log("count ", count);
                 this.toggle(count > 0);
             }, this);
         },
