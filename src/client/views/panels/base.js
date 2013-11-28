@@ -30,8 +30,10 @@ define([
         },
 
         // Toggle the panel
-        toggle: function() {
-            if (this.isActive()) {
+        toggle: function(st) {
+            if (st == null) st = !this.isActive();
+
+            if (!st) {
                 this.close();
             } else {
                 this.open();

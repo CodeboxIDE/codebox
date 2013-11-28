@@ -15,7 +15,12 @@ define([
             PanelFilesView.__super__.initialize.apply(this, arguments);
             this.tree = new FilesTreeView({
                 path: "/"
-            })
+            });
+
+            this.tree.on("count", function(count) {
+                console.log("count ", count);
+                this.toggle(count > 0);
+            }, this);
         },
 
 
@@ -24,7 +29,12 @@ define([
             this.tree.$el.appendTo(this.$el);
             this.tree.render();
             return this.ready();
-        }
+        },
+
+        finish: function() {
+            this.toggle(this.tree.countFiles > 0);
+            return PanelFilesView.__super__.finish.apply(this, arguments);
+        },
     });
 
     return PanelFilesView;
