@@ -1,7 +1,5 @@
 #codebox {
     .cb-lateralbar {
-        @transitionSpeed: 600ms;
-
         position: absolute;
         top: 0px;
         left: 0px;
@@ -44,7 +42,7 @@
             width: @codeboxLateralbarWidth;
             overflow-y: auto;
             overflow-x: hidden;
-            .transition(all @transitionSpeed);
+            .transition(all @lateralTransitionSpeed);
             z-index: 1;
 
             >.files {
@@ -56,7 +54,7 @@
         .cb-searchbar {
             left: @codeboxMenubarWidth+@codeboxLateralbarWidth;
             width: @codeboxLateralbarWidth;
-            .transition(all @transitionSpeed);
+            .transition(all @lateralTransitionSpeed);
             z-index: 1;
         }
     }
