@@ -13,6 +13,7 @@ define([
             "email": null,
             'settings': {}
         },
+        idAttribute: "userId",
 
         // Constructor
         initialize: function() {

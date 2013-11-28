@@ -115,7 +115,7 @@ define([
 
                 var n = 0;
                 var $cat = $("<ul>", {
-                    "class": "category"
+                    "class": "cb-panel-list category"
                 }).hide().appendTo($results);
                 $("<li>", {
                     "text": category.title,
