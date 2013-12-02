@@ -1,6 +1,9 @@
 // Requires
 var Q = require('q');
+var _ = require('underscore');
+
 var exec = require('../utils').exec;
+
 
 var REGEX = /\S+/gi;
 function split(str) {
@@ -89,10 +92,15 @@ function list() {
 
     return method()
     .then(function(addrs) {
-        return addrs
+        var results = addrs
         .map(normalize)
         .filter(reachable)
         .filter(looksHttp);
+
+        // Remove duplicates
+        return _.unique(results, false, function(x) {
+            return x.join(':');
+        });
     });
 }
 
