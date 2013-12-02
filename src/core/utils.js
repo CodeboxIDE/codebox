@@ -88,7 +88,7 @@ function methodObj(obj) {
 function wireFriendly(obj) {
     if(_.isArray(obj)) {
         return _.map(obj, wireFriendly);
-    } else if(_.isString(obj)) {
+    } else if(_.isString(obj) || _.isNumber(obj)) {
         return obj;
     }
 
