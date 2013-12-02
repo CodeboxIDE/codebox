@@ -144,6 +144,9 @@ var start = function(config) {
         // Watch (file modifications)
         "./cb.watch",
 
+        // Manages processes
+        "./cb.proc",
+
         // APIs
         "./cb.rpc",
         "./cb.rpc.users",
@@ -153,6 +156,7 @@ var start = function(config) {
         "./cb.rpc.auth",
         "./cb.rpc.search",
         "./cb.rpc.addons",
+        "./cb.rpc.proc",
 
         // Now start the damn server
         "./cb.main",
