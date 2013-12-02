@@ -15,8 +15,6 @@ function osx() {
     return exec('lsof -i -P | grep -i "listen"')
     .then(function(out) {
         return lines(out.stdout).map(function(line) {
-            console.log(line);
-
             var parts = split(line);
 
             // *:XXXX or localhost:XXXX
@@ -30,7 +28,6 @@ function osx() {
 function linux() {
     return exec('netstat -nat | grep -i "listen"')
     .then(function(out) {
-        console.log(out.stdout);
         return out.stdout.split('\n').filter(Boolean)
         .map(function(line) {
             var parts = split(line);
