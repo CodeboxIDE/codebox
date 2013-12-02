@@ -2,7 +2,7 @@
 var Q = require('q');
 var _ = require('underscore');
 
-function ProcRPCService(search) {
+function ProcRPCService(proc) {
     this.proc = proc;
 
     _.bindAll(this);
