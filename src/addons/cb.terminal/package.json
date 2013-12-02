@@ -1,6 +1,6 @@
 {
     "name": "cb.terminal",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "title": "Terminal",
     "description": "Terminal tab integration into your workspace.",
     "homepage": "https://github.com/FriendCode/codebox",
