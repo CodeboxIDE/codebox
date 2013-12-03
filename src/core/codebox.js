@@ -151,7 +151,7 @@ var start = function(config) {
             urlPattern: (
                 process.env.CODEBOX_WEB_URL_PATTERN ||
                 process.env.CODEBOXIO_BOXID ?
-                    'http://web-%d' + process.env.CODEBOXIO_BOXID + '.vm1.dynobox.io' :
+                    'http://web-%d.' + process.env.CODEBOXIO_BOXID + '.vm1.dynobox.io' :
                     'http://localhost:%d'
             )
         },
