@@ -1,4 +1,6 @@
-define([], function() {
+define([
+  "less!stylesheets/panel.less"
+], function() {
     var _ = codebox.require("underscore");
     var $ = codebox.require("jQuery");
     var hr = codebox.require("hr/hr");
