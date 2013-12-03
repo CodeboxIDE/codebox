@@ -179,6 +179,7 @@ define([
                                     '.h++',
                                     '.hh',
                                     '.hxx',
+                                    '.hpp',
                                     '.tcc'],
                      'primary_extension': '.cpp',
                      'search_term': 'cpp',
@@ -804,7 +805,7 @@ define([
                                   'search_term': 'rst',
                                   'type': 'markup',
                                   'wrap': true}
-            } 
+            }
 
     };
 
