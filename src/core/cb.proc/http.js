@@ -10,18 +10,32 @@ function split(str) {
     return str.match(REGEX).slice(1);
 }
 
+function rsplit(str, sep) {
+    var parts = str.split(sep);
+    var right = parts.pop();
+    var left = parts.join(sep);
+
+    return [
+        left,
+        right
+    ];
+}
+
 function lines(str) {
     return str.split('\n').filter(Boolean);
 }
 
 function osx() {
-    return exec('lsof -i -P | grep -i "listen"')
+    return exec('netstat -nat | grep -i listen')
     .then(function(out) {
         return lines(out.stdout).map(function(line) {
             var parts = split(line);
 
+            var ip = parts[2];
+
             // *:XXXX or localhost:XXXX
-            return parts[parts.length - 2];
+            // Because of strange formatting of netstat on OS X
+            return rsplit(ip, '.').join(':');
         });
 
     })
@@ -52,9 +66,8 @@ var ADDR_MAP = {
 
 // Split into bind address and port
 function normalize(addr) {
-    var parts = addr.split(':');
-    var port = parseInt(parts.pop(), 10);
-    var bind = parts.join(':');
+    var parts = rsplit(addr, ':');
+    var bind = parts[0], port = parts[1];
 
     return [
         // The address the process is bound to
