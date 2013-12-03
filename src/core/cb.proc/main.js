@@ -1,10 +1,15 @@
 // Requires
+var _ = require('underscore');
+
 var http = require('./http').list;
 
 function setup(options, imports, register) {
+
+
     register(null, {
         'proc': {
-            'http': http
+            // List using the given urlPattern
+            'http': _.partial(http, options.urlPattern)
         }
     });
 }

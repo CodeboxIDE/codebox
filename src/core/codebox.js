@@ -145,7 +145,16 @@ var start = function(config) {
         "./cb.watch",
 
         // Manages processes
-        "./cb.proc",
+        {
+            packagePath: "./cb.proc",
+
+            urlPattern: (
+                process.env.CODEBOX_WEB_URL_PATTERN ||
+                process.env.CODEBOXIO_BOXID ?
+                    'http://web-%d' + process.env.CODEBOXIO_BOXID + '.vm1.dynobox.io' :
+                    'http://localhost:%d'
+            )
+        },
 
         // APIs
         "./cb.rpc",

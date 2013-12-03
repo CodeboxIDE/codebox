@@ -69,24 +69,25 @@ function normalize(addr) {
     var parts = rsplit(addr, ':');
     var bind = parts[0], port = parts[1];
 
-    return [
+    return {
         // The address the process is bound to
-        ADDR_MAP[bind] || bind,
+        bind: ADDR_MAP[bind] || bind,
 
         // The port it's listening on
-        port
-    ];
+        port: port,
+
+        url: 'http://localhost:' + port
+    };
 }
 
 // Is a pair reachable
-function reachable(pair) {
-    var bind = pair[0], port = pair[1];
-    return bind === '*';
+function reachable(serv) {
+    return serv.bind === '*';
 }
 
 // looks like http
-function looksHttp(pair) {
-    var bind = pair[0], port = pair[1];
+function looksHttp(serv) {
+    var port = serv.port;
     return (
         port == 80 ||
         port > 1024 && port < 10000
@@ -99,20 +100,35 @@ var METHODS = {
 };
 
 
+// Mixin 'url' attribute
+function urlify(pattern, result) {
+    result.url = pattern.replace('%d', result.port);
+    return result;
+}
+
 // Get list of bind addr & ports
-function list() {
+function list(pattern) {
+    pattern = pattern || 'http://localhost:%d';
+
+    // OS specific method to call
     var method = METHODS[process.platform];
+
 
     return method()
     .then(function(addrs) {
         var results = addrs
         .map(normalize)
-        .filter(reachable)
-        .filter(looksHttp);
+        .filter(function(result) {
+            // Is this server reachable
+            result.reachable = reachable(result);
+            return result;
+        })
+        .filter(looksHttp)
+        .map(_.partial(urlify, pattern));
 
         // Remove duplicates
-        return _.unique(results, false, function(x) {
-            return x.join(':');
+        return _.unique(results, false, function(serv) {
+            return [serv.bind, serv.port].join(':');
         });
     });
 }
