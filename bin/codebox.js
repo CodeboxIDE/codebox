@@ -21,7 +21,7 @@ cli.command('run')
     };
 
     // Use Codebox
-    if (this.box) {
+    if (this.box && this.codeboxio && this.key) {
         _.extend(config, {
             'hooks': {
                 'auth': this.codeboxio+"/api/box/"+this.box+"/auth",
@@ -33,7 +33,7 @@ cli.command('run')
             }
         });
     }
-    
+
     // Start Codebox
     codebox.start(config).fail(function(err) {
 
