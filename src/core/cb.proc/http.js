@@ -116,7 +116,7 @@ function list(pattern) {
 
     return method()
     .then(function(addrs) {
-        var results = addrs
+        var results = _.chain(addrs)
         .map(normalize)
         .filter(function(result) {
             // Is this server reachable
@@ -124,7 +124,11 @@ function list(pattern) {
             return result;
         })
         .filter(looksHttp)
-        .map(_.partial(urlify, pattern));
+        .map(_.partial(urlify, pattern))
+        .sortBy(function(result) {
+            return result.port * (result.reachable ? 1 : 10000);
+        })
+        .value();
 
         // Remove duplicates
         return _.unique(results, false, function(serv) {
