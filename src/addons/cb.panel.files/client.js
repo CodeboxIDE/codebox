@@ -13,7 +13,7 @@ define([
     var command = commands.register("files.tree.open", {
         title: "Files",
         icon: "folder-o",
-        position: 1,
+        position: 2,
         shortcuts: [
             "f"
         ]

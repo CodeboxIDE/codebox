@@ -204,7 +204,14 @@ define([
          */
         proxyUrl: function(url) {
             return this.baseUrl+"/proxy/"+encodeURIComponent(url);
-        }
+        },
+
+        /*
+         *  Return running http process
+         */
+        procHttp: function() {
+            return api.rpc("/proc/http");
+        },
     });
     
 
