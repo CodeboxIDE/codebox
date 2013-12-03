@@ -13,7 +13,7 @@ define([], function() {
         events: {
             "click .cb-action-run": "runApp",
             "click .cb-action-ports-refresh": "refreshPorts",
-            "click li[data-run-port]": "openPortApp"
+            "click .cb-port-unreachable": "openUnreachablePort"
         },
 
         initialize: function() {
@@ -45,10 +45,9 @@ define([], function() {
         },
 
         // Open the port url
-        openPortApp: function(e) {
-            if (!e) return;
-            var port = $(e.currentTarget).data("run-port");
-            alert(port);
+        openUnreachablePort: function(e) {
+            if (e) e.preventDefault();
+            dialogs.alert("Your server is not accessible ", "Your server is not accessible externally because it is bound to 'localhost', please bind it to '0.0.0.0' instead");
         }
     });
 

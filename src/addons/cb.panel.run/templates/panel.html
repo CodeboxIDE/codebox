@@ -2,7 +2,7 @@
     <li class="cb-action-run">Run the application</li>
     <li class="header">Running ports</li>
     <li class="cb-action-ports-refresh">Refresh listing</li>
-    <% _.each(ports, function(runPort) { %>
-        <li data-run-port="<%- runPort[1] %>"><%- runPort[1] %></li>
+    <% _.each(ports, function(proc) { %>
+        <li class="link"><a href="<%- proc.url %>" <% if (!proc.reachable) { %>class="cb-port-unreachable"<% } %> target="_blank"><%- proc.port %></a></li>
     <% }); %>
 </ul>
