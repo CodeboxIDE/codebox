@@ -106,6 +106,9 @@ function setup_env () {
     export WORKSPACE_DIR=${WORKSPACE}
     export WORKSPACE_ADDONS_DIR="${HOME}/.codebox-addons/"
 
+    # Set command prompt
+    export PS1="\[$(tput setaf 1)\]\u\[$(tput setaf 3)\] \W \[$(tput setaf 2)\]# \[$(tput sgr0)\]"
+
     # Unset sensitive stuff
     unset RSA_PRIVATE
     unset RSA_PUBLIC
