@@ -1,10 +1,10 @@
 function setup(options, imports, register) {
     // Import
     var server = imports.server.http;
+    var port = imports.server.port;
     var watch = imports.watch;
     var workspace = imports.workspace;
     var logger = imports.logger.namespace("codebox");
-    var port = 8000;
 
     // Start server
     server.listen(port);

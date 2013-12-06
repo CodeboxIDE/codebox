@@ -23,7 +23,7 @@ function setup(options, imports, register) {
         res.send({
             'error': err.message
         }, 500);
-        
+
         logger.error(err.stack);
     });
 
@@ -91,7 +91,8 @@ function setup(options, imports, register) {
         "server": {
             "app": app,
             "http": server,
-            'disableAuth': disableAuth
+            'disableAuth': disableAuth,
+            'port': options.port,
         }
     });
 }

@@ -55,6 +55,9 @@ var start = function(config) {
                     'http://web-%d.' + process.env.CODEBOXIO_BOXID + '.vm1.dynobox.io' :
                     'http://localhost:%d'
             )
+        },
+        'server': {
+            'port': parseInt(process.env.PORT || 8000, 10)
         }
     });
 
@@ -120,7 +123,11 @@ var start = function(config) {
         },
 
         // Express server
-        "./cb.server",
+        {
+            packagePath: "./cb.server",
+
+            port: config.server.port
+        },
 
         // VFS
         "./cb.vfs",
