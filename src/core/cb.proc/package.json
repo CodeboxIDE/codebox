@@ -6,6 +6,9 @@
     "private": true,
 
     "plugin": {
+        "consumes": [
+            "server"
+        ],
         "provides": [
             "proc"
         ]
