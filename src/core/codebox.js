@@ -47,6 +47,14 @@ var start = function(config) {
         'users': {
             // Max number of collaborators
             'max': parseInt(process.env.WORKSPACE_USERS_MAX || 100)
+        },
+        'proc': {
+            'urlPattern': (
+                process.env.CODEBOX_WEB_URL_PATTERN ||
+                process.env.CODEBOXIO_BOXID ?
+                    'http://web-%d.' + process.env.CODEBOXIO_BOXID + '.vm1.dynobox.io' :
+                    'http://localhost:%d'
+            )
         }
     });
 
@@ -148,12 +156,7 @@ var start = function(config) {
         {
             packagePath: "./cb.proc",
 
-            urlPattern: (
-                process.env.CODEBOX_WEB_URL_PATTERN ||
-                process.env.CODEBOXIO_BOXID ?
-                    'http://web-%d.' + process.env.CODEBOXIO_BOXID + '.vm1.dynobox.io' :
-                    'http://localhost:%d'
-            )
+            urlPattern: config.proc.urlPattern
         },
 
         // APIs
