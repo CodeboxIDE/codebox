@@ -135,8 +135,13 @@ define([
             $(this.term_el).css({
                 'background': this.theme.background,
                 'border-color': this.theme.background
-            })
-            this.resize();
+            });
+
+            // Resize term
+            // Wait till browser has rendered terminal first
+            // only then can we resize
+            setTimeout(this.resize.bind(this), 0);
+
             return this.ready();
         },
 
@@ -159,7 +164,7 @@ define([
             this.term_h = h;
             this.term.resize(this.term_w, this.term_h);
 
-            this.trigger("resize", this.term_w, this.term_h)
+            this.trigger("resize", this.term_w, this.term_h);
 
             return this;
         },
