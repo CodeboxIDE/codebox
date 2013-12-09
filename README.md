@@ -13,6 +13,12 @@ Codebox is a complete and extensible Cloud IDE. It cans runs on any unix machine
 
 ## How to use it?
 
+#### Mac Application
+
+Coming soon
+
+#### Command Line
+
 First of all install codebox on your machine using npm:
 
 ```
