@@ -28,6 +28,8 @@ define([
 
         // Render all tabs
         render: function() {
+            var that = this;
+
             // Empty view
             this.empty();
 
@@ -63,6 +65,40 @@ define([
                         "left": sectionLeft+"%"
                     },
                 }).appendTo(this.$el);
+
+                // Context menu
+                ContextMenu.add(section_el, [
+                    {
+                        'type': "action",
+                        'text': "Auto Grid",
+                        'action': function() {
+                            that.setLayout();
+                        }
+                    },
+                    {
+                        'type': "action",
+                        'text': "Columns: 2",
+                        'action': function() {
+                            that.setLayout(2);
+                        }
+                    },
+                    {
+                        'type': "action",
+                        'text': "Columns: 3",
+                        'action': function() {
+                            that.setLayout(3);
+                        }
+                    },
+                    {
+                        'type': "action",
+                        'text': "Columns: 4",
+                        'action': function() {
+                            that.setLayout(4);
+                        }
+                    }
+                ]);
+
+                // Drag and drop tabs
                 section_el.on('dragleave', function(e) {
                     if (DragDrop.checkDrop(e, "tab")) {
                         section_el.removeClass("dragover");
