@@ -8,10 +8,11 @@ define([
     'core/box',
     'core/files',
     'core/commands',
+    'core/menu',
     'core/tabs',
     'core/panels',
 ], function (hr, url, dialogs, 
-box, session, addons, box, files, commands, tabs, panels) {
+box, session, addons, box, files, commands, menu, tabs, panels) {
 
     // Define base application
     var Application = hr.Application.extend({
@@ -77,6 +78,10 @@ box, session, addons, box, files, commands, tabs, panels) {
             if (email && password) {
                 this.doLogin(email, password, true);
             } else if (box.isAuth()) {
+                // Add menu
+                menu.$el.appendTo(this.$(".cb-menubar"));
+                menu.render();
+                
                 // Add commands
                 commands.$el.appendTo(this.$(".cb-commands"));
                 commands.render();

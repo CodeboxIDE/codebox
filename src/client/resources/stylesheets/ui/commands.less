@@ -5,24 +5,32 @@
 
     .menu-item {
         a {
-            margin: 4px 0px;
-            font-size: 18px;
-            line-height: 34px;
+            margin: 0px;
+            font-size: 15px;
+            line-height: @codeboxToolbarHeight;
             width: 42px;
-            height: 36px;
+            height: @codeboxToolbarHeight;
             display: inline-block;
             text-align: center;
             color: inherit;
             cursor: default;
-            border-left: 3px solid transparent;
+            border-left: 1px solid transparent;
+            border-right: 1px solid transparent;
+            float: left;
+            color: #444;
         }
 
-        &:hover, &.active {
+        &.active, &:hover {
             a {
-                background: rgba(0, 0, 0, 0.15);
+                color: inherit;
+            }
+        }
+
+        &.active {
+            a {
+                background: #fff;
                 text-decoration: none;
-                border-left-color: @codeboxActiveColor;
-                color: @codeboxActiveColor;
+                border-color: #ccc;
             }
         }
     }

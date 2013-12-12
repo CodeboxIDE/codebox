@@ -2,25 +2,13 @@
 <div id="codebox" class="mode-body-fullpage">
 	<!-- Menu bar -->
 	<div class="cb-menubar">
-		<a href="#" class="menu-item">File</a>
-		<a href="#" class="menu-item">Edit</a>
+		<span class="cb-user-email"><%- session.user.get("email") %></span>
 	</div>
 
 
 	<!-- Lateral bar -->
 	<div class="cb-lateralbar">
-		<div class="lateral-menu">
-		    <div class="menu-section cb-commands"></div>
-		    <div class="menu-section menu-bottom">
-		        <ul class="cb-menu-commands">
-		            <li class="menu-item">
-		                <a href="https://www.codebox.io" target="_blank" title="Version <%- hr.configs.args.version %>">
-		                    <i class="fa fa-cloud"></i>
-		                </a>
-		            </li>
-		        </ul>
-		    </div>
-		</div>
+		<div class="lateral-commands cb-commands"></div>
 		<div class="lateral-body">
 			<div class="cb-panels"></div>
 		</div>

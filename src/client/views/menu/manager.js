@@ -1,13 +1,14 @@
 define([
     "hr/hr",
-    "collections/menu",
+    "collections/commands",
     "views/menu/item"
-], function(hr, Menu, MenuItem) {
+], function(hr, Commands, MenuItem) {
 
     // Menubar list
     var MenubarView = hr.List.extend({
-        className: "cb-menu-commands",
-        Collection: Menu,
+        tagName: "div",
+        className: "cb-menubar-commands",
+        Collection: Commands,
         Item: MenuItem,
 
         /*
@@ -17,24 +18,14 @@ define([
          *  properties: properties to define the command
          *  handler: command handler
          */
-        register: function(id, properties, handler) {
-            logging.log("register", id, properties);
-
+        register: function(id, properties, items) {
             properties = _.extend({}, properties, {
                 'id': id,
-                'handler': handler
+                'menu': items
             });
 
             var command = new this.collection.model({}, properties);
             this.collection.add(command);
-
-            // Bind keyboard shortcuts
-            _.each(command.get("shortcuts", []), function(shortcut) {
-                Keyboard.bind(shortcut, function(e) {
-                    e.preventDefault();
-                    command.run();
-                });
-            });
 
             return command;
         }

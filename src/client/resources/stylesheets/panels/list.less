@@ -2,7 +2,7 @@
     .cb-panel-list {
         list-style: none;
         margin: 0px;
-        padding: 0px;
+        padding: 6px;
 
         >li {
             padding: 4px 8px;
@@ -14,12 +14,16 @@
 
             &.header {
                 margin: 0px;
-                background: rgba(0,0,0, 0.25);
+                margin-bottom: 6px;
+                border-bottom: 2px solid @codeboxActiveColor;
+                color: @codeboxActiveColor;
                 text-transform: uppercase;
+                font-weight: 600;
             }
 
             &.selected {
-                background: #5E9EF3;
+                background: @codeboxActiveColor;
+                color: #fff;
             }
 
             &.link {
@@ -49,6 +53,7 @@
             >li:not(.header) {
                 &:hover {
                     background: #5E9EF3;
+                    color: #fff;
                 }
             }
         }

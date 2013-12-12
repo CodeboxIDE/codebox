@@ -28,6 +28,13 @@ define([
             'flags': ""        // Command class flag
         },
 
+        // Return menu items
+        menuItems: function() {
+            var menuItems = this.get("menu", []);
+            if (_.isFunction(menuItems)) menuItems = menuItems();
+            return menuItems;
+        },
+
         // Run the command
         run: function(args) {
             return this.get("handler").apply(this, [args]);

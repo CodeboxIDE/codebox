@@ -43,7 +43,7 @@ define([
                 'z-index': 100
             }, pos));
             menu.$el.attr("id", "ui-context-menu");
-            menu.$el.show();
+            menu.open();
         },
 
         /*

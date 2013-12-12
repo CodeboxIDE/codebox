@@ -5,6 +5,30 @@ define([
     var app = codebox.require("core/app");
     var panels = codebox.require("core/panels");
     var files = codebox.require("core/files");
+    var menu = codebox.require("core/menu");
+    var box = codebox.require("core/box");
+
+    // Add menu
+    menu.register("files", {
+        title: "File",
+        position: 0
+    }, [
+        {
+            'type': "action",
+            'text': "New file",
+            'action': function() {
+                files.openNew()
+            }
+        },
+        {
+            'type': "action",
+            'text': "New folder",
+            'action': function() {
+                box.root.actionMkdir();
+            }
+        },
+        { 'type': "divider" }
+    ]);
 
     // Add search panel
     var panel = panels.register("files", PanelFilesView);
@@ -19,16 +43,4 @@ define([
         ]
     });
     panel.connectCommand(command);
-
-    // Command new file
-    commands.register("files.new", {
-        title: "New file",
-        icon: "file-o",
-        shortcuts: [
-            "mod+N"
-        ],
-        position: 2
-    }, function(args) {
-        files.openNew()
-    });
 });

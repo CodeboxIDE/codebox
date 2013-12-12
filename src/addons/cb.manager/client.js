@@ -22,7 +22,8 @@ define(["views/dialog"], function(InstallerDialog) {
     // Add opening command
     commands.register("addons.manager.open", {
         title: "Add-ons",
-        icon: "puzzle-piece"
+        icon: "puzzle-piece",
+        visible: false
     }, function() {
         dialogs.open(InstallerDialog);
     });

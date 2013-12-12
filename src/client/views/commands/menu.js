@@ -13,7 +13,6 @@ define([
             var that = this;
             var itemType = this.model.get("type");
             var itemText = this.model.get("text");
-            var itemAction = this.model.get("action");
 
             var $li = this.$el;
 
@@ -24,7 +23,7 @@ define([
                     'click': function(e) {
                         e.preventDefault();
                         that.list.trigger("action", that.model);
-                        itemAction(this.model);
+                        that.model.run(this.model);
                     }
                 });
                 $a.appendTo($li);
@@ -55,6 +54,11 @@ define([
         className: "dropdown-menu",
         Collection: Menu,
         Item: MenuItem,
+
+        // Open the dropdown
+        open: function() {
+            this.$el.show();
+        }
     });
 
     return MenuView;

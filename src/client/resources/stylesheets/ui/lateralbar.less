@@ -1,76 +1,56 @@
 #codebox {
     .cb-lateralbar {
         position: absolute;
-        top: @codeboxToolbarHeight;
+        top: @codeboxMenubarHeight;
         left: 0px;
         bottom: 0px;
         overflow: hidden;
-        width: @codeboxMenubarWidth+@codeboxLateralbarWidth;
-        background: @codeboxLateralbarBackground;
-        box-shadow: inset -8px 0px 9px -6px #000000;
-        color: @codeboxLateralbarColor;
-        text-shadow: 0px 0px 2px rgba(0,0,0,0.6);
+        width: @codeboxLateralbarWidth;
         .transition(width @lateralTransitionSpeed);
         .user-select(none);
 
-        .lateral-menu {
-            position: fixed;
+        .lateral-commands {
+            position: absolute;
             left: 0px;
-            width: @codeboxMenubarWidth;
-            top: @codeboxToolbarHeight;
-            bottom: 0px;
-            border-right: 1px solid #000;
-            background: #191a1f;
-            z-index: 100;
-
-            .menu-section {
-                margin-bottom: 10px;
-
-                &.menu-bottom {
-                    position: absolute;
-                    bottom: 0px;
-                    margin: 0px;
-                }
-            }
+            right: 0px;
+            width: 100%;
+            top: 0px;
+            height: @codeboxToolbarHeight;
+            border-bottom: 1px solid #ccc;
+            z-index: 1;
+            overflow: hidden;
+            .cb-panel-background();
         }
 
         .lateral-body {
             position: absolute;
-            top: 0px;
-            left: @codeboxMenubarWidth;
+            top: @codeboxToolbarHeight;
+            left: 0px;
             bottom: 0px;
-            width: @codeboxLateralbarWidth;
+            width: 100%;
             overflow-y: auto;
             overflow-x: hidden;
             .transition(all @lateralTransitionSpeed);
             z-index: 1;
+            border-right: 1px solid #ccc;
+            color: #000;
+            text-shadow: none;
+            background: none;
+            border-color: #d9d9d9;
+            -webkit-box-shadow: inset 0 1px 0 0 #fff;
+            -moz-box-shadow: inset 0 1px 0 0 #fff;
+            box-shadow: inset 0 1px 0 0 #fff;
+            background-color: #f5f5f5;
+            background-image: -webkit-linear-gradient(top,#f5f5f5,#eee);
+            background-image: -moz-linear-gradient(top,#f5f5f5,#eee);
+            background-image: -ms-linear-gradient(top,#f5f5f5,#eee);
+            background-image: -o-linear-gradient(top,#f5f5f5,#eee);
+            background-image: linear-gradient(top,#f5f5f5,#eee);
 
             >.files {
                 margin: 4px 0px;
                 font-size: 15px;
             }
-        }
-
-        .cb-searchbar {
-            left: @codeboxMenubarWidth+@codeboxLateralbarWidth;
-            width: @codeboxLateralbarWidth;
-            .transition(all @lateralTransitionSpeed);
-            z-index: 1;
-        }
-    }
-
-    &.mode-search {
-        .cb-searchbar {
-            left: 42px;
-        }
-        .lateral-body {
-            left: -(@codeboxMenubarWidth+@codeboxLateralbarWidth);
-        }
-    }
-
-    &.mode-body-fullpage:not(.mode-search) {
-        .cb-lateralbar {
-            width: @codeboxMenubarWidth;
         }
     }
 }

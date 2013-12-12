@@ -19,7 +19,7 @@ define([
 
         initialize: function(options) {
             MonitorTab.__super__.initialize.apply(this, arguments);
-            this.setTabTitle("Monitor");
+            this.setTabTitle("Logging Output");
 
             this.logs = new LogsList();
             this.logs.on("change:add", function() {

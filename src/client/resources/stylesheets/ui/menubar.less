@@ -3,21 +3,54 @@
     top: 0px;
     right: 0px;
     left: 0px;
-    height: @codeboxToolbarHeight;
+    height: @codeboxMenubarHeight;
     border-bottom: 1px solid #ccc;
-    padding: 2px;
+    z-index: 1000;
 
-    .menu-item {
-        color: inherit;
-        padding: 3px 5px;
-        margin: 0px 3px;
+    .cb-menubar-commands {
         float: left;
-        display: block;
-        cursor: default;
+        margin: 0px;
+        padding: 2px;
 
-        &:hover {
-            background: #e5e5e5;
-            text-decoration: none;
+        .menu-command-item {
+            color: inherit;
+            margin: 0px 4px;
+            cursor: default;
+            position: relative;
+            height: 26px;
+
+            & > .btn {
+                border: 1px solid transparent;
+                border-radius: 0px;
+                background: transparent;
+                margin: 0px;
+                padding: 2px 8px;
+                cursor: default;
+            }
+
+            &:hover {
+                & > .btn {
+                    background: #e8e8e8;
+                    text-decoration: none;
+                }
+            }
+
+            &.open {
+                & > .btn {
+                    background: #fff;
+                    z-index: 1001;
+                    border-color: #ddd;
+                    border-bottom-color: #fff;
+                    box-shadow: none;
+                }
+            }
         }
+    }
+
+    .cb-user-email {
+        float: right;
+        line-height: @codeboxMenubarHeight;
+        color: #888;
+        padding: 0px 10px;
     }
 }
