@@ -1,7 +1,9 @@
 define([
     'jQuery',
-    'underscore'
-], function ($, _) {
+    'underscore',
+    'collections/menu',
+    'views/commands/menu'
+], function ($, _, Menu, MenuView) {
 
     var ContextMenu = {
         /*
@@ -19,47 +21,14 @@ define([
             // Handle dynamic menu
             if (_.isFunction(menuItems)) menuItems = menuItems();
 
-            var $menu = $("<ul>", {
-                'class': "dropdown-menu"
-            }).appendTo($("body"));
-
-            var addItems = function($subMenu, items) {
-                _.each(items, _.partial(addItem, $subMenu));
-            };
-
-            var addItem = function($subMenu, item) {
-                var $li = $("<li>");
-
-                if (item.type == "action") {
-                    var $a = $("<a>", {
-                        'text': item.text,
-                        'href': "#",
-                        'click': function(e) {
-                            e.preventDefault();
-                            ContextMenu.clear();
-                            item.action(item);
-                        }
-                    });
-                    $a.appendTo($li);
-                } else if (item.type == "divider") {
-                    $li.addClass("divider");
-                } else if (item.type == "menu") {
-                    $li.addClass("dropdown-submenu");
-                    var $a = $("<a>", {
-                        'text': item.text,
-                        'href': "#",
-                        'tabindex': -1
-                    });
-                    $a.appendTo($li);
-                    var $submenu = ContextMenu.generateMenu(item.items);
-                    $submenu.appendTo($li);
-                }
-
-                $li.appendTo($subMenu);
-            };
-
-            addItems($menu, menuItems);
-            return $menu;
+            var menu = new MenuView();
+            menu.collection.add(menuItems);
+            menu.$el.appendTo($("body"));
+            menu.on("action", function() {
+                ContextMenu.clear();
+            })
+            menu.render();
+            return menu;
         },
 
         /*
@@ -68,13 +37,13 @@ define([
         open: function(menuItems, pos) {
             ContextMenu.clear();
 
-            var $menu = ContextMenu.generateMenu(menuItems);
-            $menu.css(_.extend({
+            var menu = ContextMenu.generateMenu(menuItems);
+            menu.$el.css(_.extend({
                 'position': "fixed",
                 'z-index': 100
             }, pos));
-            $menu.attr("id", "ui-context-menu");
-            $menu.show();
+            menu.$el.attr("id", "ui-context-menu");
+            menu.$el.show();
         },
 
         /*

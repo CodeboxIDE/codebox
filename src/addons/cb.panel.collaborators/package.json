@@ -1,0 +1,16 @@
+{
+    "name": "cb.panel.collaborators",
+    "version": "0.1.1",
+    "title": "Collaborators Panel",
+    "description": "Collaborators list in a panel.",
+    "homepage": "https://github.com/FriendCode/codebox",
+    "license": "Apache",
+    "author": {
+        "name": "Samy Pessé",
+        "email": "samypesse@gmail.com",
+        "url": "http://samypesse.fr"
+    },
+    "client": {
+        "main": "client"
+    }
+}

@@ -17,6 +17,7 @@ define([
             'id': "",
             'title': "",
             'icon': "sign-blank",
+            'menu': [],
             'handler': function() {},
 
             // Options

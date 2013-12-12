@@ -70,6 +70,14 @@ define([
                 ContextMenu.add(section_el, [
                     {
                         'type': "action",
+                        'text': "New Tab",
+                        'action': function() {
+                            that.openDefaultNew();
+                        }
+                    },
+                    { 'type': "divider" },
+                    {
+                        'type': "action",
                         'text': "Auto Grid",
                         'action': function() {
                             that.setLayout();
