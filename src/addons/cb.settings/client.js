@@ -9,7 +9,8 @@ define(["views/dialog"], function(SettingsDialog) {
         icon: "cog",
         shortcuts: [
             "mod+,"
-        ]
+        ],
+        visible: false
     }, function() {
         dialogs.open(SettingsDialog);
     });
