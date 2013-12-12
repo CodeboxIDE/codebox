@@ -13,6 +13,7 @@ define([
         tabs.add(MonitorTab, {}, {
             "uniqueId": "monitor",
             "type": "monitor",
+            'section': "terminals"
         });
     });
 });

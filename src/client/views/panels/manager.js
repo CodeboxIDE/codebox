@@ -15,6 +15,7 @@ define([
 
             // Active panel
             this.activePanel = null;
+            this.previousPanel = null;
 
             // Panels map
             this.panels = {};
@@ -66,6 +67,7 @@ define([
             }, this);
 
             // Change active panel
+            this.previousPanel = this.activePanel || this.previousPanel;
             this.activePanel = pId;
 
             // Trigger global event
@@ -86,6 +88,11 @@ define([
         // Is active
         isActive: function(pId) {
             return this.activePanel == pId;
+        },
+
+        // Show panels
+        show: function() {
+            return this.open(this.activePanel || this.previousPanel || _.first(_.keys(this.panels)));
         }
     });
 
