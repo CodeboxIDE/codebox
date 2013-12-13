@@ -10,7 +10,7 @@ define([
 
     // Add project menu
     var menuItem = menu.register("project", {
-        title: "Untitled",
+        title: "Workspace",
         position: 0
     }, [
         {
@@ -27,9 +27,9 @@ define([
     ]);
 
     // Title changed
-    box.on("change:name", function() {
+    /*box.on("change:name", function() {
         menuItem.set("title", box.get("name"));
-    });
+    });*/
 
 
     // Add view menu
