@@ -12,14 +12,31 @@ define([
 
         // Constructor
         initialize: function(options) {
+            var that = this;
             PanelsView.__super__.initialize.apply(this, arguments);
 
             // Active panel
             this.activePanel = null;
             this.previousPanel = null;
 
-            // Command view menu
-            this.command = new Command({}, {
+            // Panels visibility
+            this.visibilityCommand = new Command({}, {
+                'type': "checkbox",
+                'title': "Show Side Bar",
+                'action': function(state) {
+                    if (state) {
+                        that.show();
+                    } else {
+                        that.close();
+                    }
+                }
+            });
+            this.on("state", function(state) {
+                that.visibilityCommand.toggleFlag("active", state);
+            });
+
+            // Menu of panels choice
+            this.panelsCommand = new Command({}, {
                 'type': "menu",
                 'title': "Panels"
             });
@@ -83,6 +100,7 @@ define([
             } else {
                 this.trigger("close");
             }
+            this.trigger("state", opened);
 
             return this;
         },

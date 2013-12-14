@@ -12,21 +12,8 @@ define([
         title: "View",
         position: 5
     }, [
-        {
-            'type': "action",
-            'title': "Show Side Bar",
-            'action': function() {
-                panels.show();
-            }
-        },
-        {
-            'type': "action",
-            'title': "Hide Side Bar",
-            'action': function() {
-                panels.close();
-            }
-        },
-        panels.command
+        panels.visibilityCommand,
+        panels.panelsCommand
     ]);
     menu.register("file", {
         title: "File",

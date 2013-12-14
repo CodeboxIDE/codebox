@@ -5,12 +5,13 @@
             margin-left: 22px;
             color: #999;
         }
-        &:hover, &:focus {
-            .menu-label {
-                color: inherit;
-            }
+    }
+    li.active >a, li >a:hover, li >a:focus {
+        > .menu-label {
+            color: inherit;
         }
     }
+
     .dropdown-submenu{
         position:relative;
     }
@@ -36,7 +37,7 @@
         margin-top:5px;
         margin-right:-10px;
     }
-    .dropdown-submenu>a:hover:after{
+    .dropdown-submenu.active>a:after, .dropdown-submenu>a:hover:after{
         border-left-color:#ffffff;
     }
     .dropdown-submenu.pull-left{

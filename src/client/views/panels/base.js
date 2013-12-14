@@ -58,7 +58,7 @@ define([
             this.on("panel:close", function() {
                 command.toggleFlag("active", false);
             });
-            this.parent.command.menu.add(command);
+            this.parent.panelsCommand.menu.add(command);
         }
     });
 

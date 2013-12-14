@@ -81,6 +81,12 @@ define([
             this.set("flags", _.uniq(flags).join(" "));
         },
 
+        // Has flag
+        hasFlag: function(flag) {
+            var flags = this.get("flags", "").split(" ");
+            return _.contains(flags, flag);
+        },
+
         // Shortcut visible text
         shortcutText: function() {
             var shortcuts = this.get("shortcuts");
