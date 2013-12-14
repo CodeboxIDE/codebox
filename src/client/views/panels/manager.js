@@ -21,7 +21,7 @@ define([
             // Command view menu
             this.command = new Command({}, {
                 'type': "menu",
-                'title': "Panel"
+                'title': "Panels"
             });
 
             // Panels map

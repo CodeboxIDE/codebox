@@ -38,10 +38,10 @@ define([
                 });
 
                 // Shortcut
-                if (this.model.shortcutText()) {
+                if (this.model.label()) {
                     $("<span>", {
-                        'html': this.model.shortcutText(),
-                        'class': "shortcut"
+                        'html': this.model.label(),
+                        'class': "menu-label"
                     }).appendTo($a);
                 }
 

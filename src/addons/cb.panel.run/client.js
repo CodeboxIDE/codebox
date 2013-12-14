@@ -15,14 +15,12 @@ define([
     }, [
         {
             'type': "action",
-            'text': "Run Application",
-            'command': "project.run"
+            'title': "Run Application"
         },
         { 'type': "divider" },
         {
             'type': "action",
-            'text': "Logging Output",
-            'command': "monitor.open"
+            'title': "Logging Output"
         }
     ]);
     

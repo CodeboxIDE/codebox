@@ -8,34 +8,30 @@ define([
     // Collection for all menu commands
     var menu = new MenubarView();
     
-    console.log(panels.command);
     menu.register("view", {
         title: "View",
         position: 5
     }, [
-        panels.command
-    ]);
-    menu.register("file", {
-        title: "File",
-        position: 0
-    });
-
-    /*, [
         {
             'type': "action",
-            'text': "Show Side Bar",
+            'title': "Show Side Bar",
             'action': function() {
                 panels.show();
             }
         },
         {
             'type': "action",
-            'text': "Hide Side Bar",
+            'title': "Hide Side Bar",
             'action': function() {
                 panels.close();
             }
-        }
-    ]);*/
+        },
+        panels.command
+    ]);
+    menu.register("file", {
+        title: "File",
+        position: 0
+    });
 
     return menu;
 });

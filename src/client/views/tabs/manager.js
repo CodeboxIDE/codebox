@@ -70,7 +70,7 @@ define([
                 ContextMenu.add(section_el, [
                     {
                         'type': "action",
-                        'text': "New Tab",
+                        'title': "New Tab",
                         'action': function() {
                             that.openDefaultNew();
                         }
@@ -78,28 +78,28 @@ define([
                     { 'type': "divider" },
                     {
                         'type': "action",
-                        'text': "Auto Grid",
+                        'title': "Auto Grid",
                         'action': function() {
                             that.setLayout();
                         }
                     },
                     {
                         'type': "action",
-                        'text': "Columns: 2",
+                        'title': "Columns: 2",
                         'action': function() {
                             that.setLayout(2);
                         }
                     },
                     {
                         'type': "action",
-                        'text': "Columns: 3",
+                        'title': "Columns: 3",
                         'action': function() {
                             that.setLayout(3);
                         }
                     },
                     {
                         'type': "action",
-                        'text': "Columns: 4",
+                        'title': "Columns: 4",
                         'action': function() {
                             that.setLayout(4);
                         }

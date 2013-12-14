@@ -25,6 +25,9 @@ define([
             // Command title
             'title': "",
 
+            // Command help label
+            'label': "",
+
             // Command icon
             'icon': "sign-blank",
 
@@ -82,6 +85,14 @@ define([
         shortcutText: function() {
             var shortcuts = this.get("shortcuts");
             return Keyboard.toText(shortcuts);
+        },
+
+        // Label text
+        label: function() {
+            if (this.get("label")) {
+                return this.get("label");
+            }
+            return this.shortcutText();
         }
     });
 
