@@ -1,4 +1,16 @@
-#ui-context-menu {
+.ui-menu {
+    li a {
+        .shortcut {
+            text-align: right;
+            margin-left: 22px;
+            color: #999;
+        }
+        &:hover, &:focus {
+            .shortcut {
+                color: inherit;
+            }
+        }
+    }
     .dropdown-submenu{
         position:relative;
     }
@@ -24,7 +36,7 @@
         margin-top:5px;
         margin-right:-10px;
     }
-    .dropdown-submenu:hover>a:after{
+    .dropdown-submenu>a:hover:after{
         border-left-color:#ffffff;
     }
     .dropdown-submenu.pull-left{

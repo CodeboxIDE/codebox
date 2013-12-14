@@ -9,8 +9,9 @@ define(["views/dialog"], function(GitDialog) {
         title: "Git"
     }, [
         {
-            'type': "action",
-            'text': "Commit",
+            'id': "git.commit",
+            'title': "Commit",
+            'shortcuts': ["mod+shift+C"],
             'action': function() {
                 dialogs.open(GitDialog);
             }

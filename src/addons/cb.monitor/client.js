@@ -3,9 +3,10 @@ define([
 ], function(MonitorTab) {
     var commands = codebox.require("core/commands");
     var tabs = codebox.require("core/tabs");
+    var menu = codebox.require("core/menu");
 
     // Add opening command
-    commands.register("monitor.open", {
+    var command = commands.register("monitor.open", {
         title: "Monitor",
         icon: "dashboard",
         visible: false
@@ -16,4 +17,5 @@ define([
             'section': "terminals"
         });
     });
+    menu.getById("file").menu.add(command);
 });

@@ -1,16 +1,13 @@
 define([
     "hr/hr",
     "collections/commands",
-    "utils/keyboard",
-    "views/commands/item"
-], function(hr, Commands, Keyboard, CommandItem) {
+    "utils/keyboard"
+], function(hr, Commands, Keyboard) {
     var logging = hr.Logger.addNamespace("commands");
 
     // Commands list
     var CommandsView = hr.List.extend({
-        className: "cb-menu-commands",
         Collection: Commands,
-        Item: CommandItem,
 
         /*
          *  Register a new command
@@ -19,12 +16,12 @@ define([
          *  properties: properties to define the command
          *  handler: command handler
          */
-        register: function(id, properties, handler) {
+        register: function(id, properties, actionHandler) {
             logging.log("register", id, properties);
 
             properties = _.extend({}, properties, {
                 'id': id,
-                'handler': handler
+                'action': actionHandler
             });
 
             var command = new this.collection.model({}, properties);
@@ -42,14 +39,21 @@ define([
         },
 
         /*
+         *  Return a command by its id
+         */
+        getById: function(commandId) {
+            return this.collection.find(function(command) {
+                return command.id == commandId;
+            });
+        },
+
+        /*
          *  Run a command
          *
          *  commandId: unique id of the command to run
          */
         run: function(commandId) {
-            var command = this.collection.find(function(command) {
-                return command.get("id") == commandId;
-            });
+            var command = this.getById(commandId);
             if (!command) return false;
             return command.run.apply(command, Array.prototype.slice.call(arguments, 1));
         }

@@ -49,7 +49,7 @@ define([
         // Return an associated command to open/close this panel
         connectCommand: function(command) {
             var that = this;
-            command.set("handler", function() {
+            command.set("action", function() {
                 that.toggle();
             });
             this.on("panel:open", function() {
@@ -58,6 +58,7 @@ define([
             this.on("panel:close", function() {
                 command.toggleFlag("active", false);
             });
+            this.parent.command.menu.add(command);
         }
     });
 

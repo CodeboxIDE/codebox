@@ -2,8 +2,9 @@ define([
     'underscore',
     'jQuery',
     'hr/hr',
+    'models/command',
     'views/panels/base'
-], function(_, $, hr, PanelBaseView) {
+], function(_, $, hr, Command, PanelBaseView) {
     var PanelsView = hr.View.extend({
         className: "cb-panels-list",
         defaults: {},
@@ -16,6 +17,12 @@ define([
             // Active panel
             this.activePanel = null;
             this.previousPanel = null;
+
+            // Command view menu
+            this.command = new Command({}, {
+                'type': "menu",
+                'title': "Panel"
+            });
 
             // Panels map
             this.panels = {};

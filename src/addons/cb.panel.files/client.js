@@ -8,39 +8,39 @@ define([
     var menu = codebox.require("core/menu");
     var box = codebox.require("core/box");
 
-    // Add menu
-    menu.register("files", {
-        title: "File",
-        position: 0
-    }, [
-        {
-            'type': "action",
-            'text': "New file",
-            'action': function() {
-                files.openNew()
-            }
-        },
-        {
-            'type': "action",
-            'text': "New folder",
-            'action': function() {
-                box.root.actionMkdir();
-            }
-        },
-        { 'type': "divider" }
-    ]);
-
-    // Add search panel
+    // Add files panels
     var panel = panels.register("files", PanelFilesView);
     
-    // Add opening command
-    var command = commands.register("files.tree.open", {
+    // Open files panel
+    panel.connectCommand(commands.register("files.tree.open", {
         title: "Files",
         icon: "folder-o",
         position: 2,
         shortcuts: [
             "f"
         ]
-    });
-    panel.connectCommand(command);
+    }));
+
+    // Command new file
+    menu.getById("file").menu.add([{
+        'id': "file.new",
+        'type': "action",
+        'title': "New File",
+        'shortcuts': ["ctrl+shift+N"],
+        'action': function() {
+            files.openNew()
+        },
+        'position': 0
+    }, {
+        'id': "folder.create",
+        'type': "action",
+        'title': "New Folder",
+        'shortcuts': ["ctrl+shift+F"],
+        'action': function() {
+            box.root.actionMkdir();
+        },
+        'position': 0
+    },
+    { 'type': "divider",
+      'position': 0 }]);
 });

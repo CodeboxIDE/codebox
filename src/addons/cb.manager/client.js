@@ -3,6 +3,7 @@ define(["views/dialog"], function(InstallerDialog) {
     var app = codebox.require("core/app");
     var dialogs = codebox.require("utils/dialogs");
     var settings = codebox.require("core/settings");
+    var menu = codebox.require("core/menu");
 
     // Add settings
     settings.add({
@@ -20,12 +21,13 @@ define(["views/dialog"], function(InstallerDialog) {
     });
 
     // Add opening command
-    commands.register("addons.manager.open", {
+    var command = commands.register("addons.manager.open", {
         title: "Add-ons",
         icon: "puzzle-piece",
         visible: false
     }, function() {
         dialogs.open(InstallerDialog);
     });
+    menu.getById("file").menu.add(command);
 });
 

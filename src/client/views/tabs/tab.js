@@ -39,60 +39,68 @@ define([
             // Context menu
             ContextMenu.add(this.$el, [
                 {
+                    'id': "tab.new",
                     'type': "action",
-                    'text': "New Tab",
+                    'title': "New Tab",
                     'action': function() {
                         that.tabs.openDefaultNew();
                     }
                 },
                 { 'type': "divider" },
                 {
+                    'id': "tab.close",
                     'type': "action",
-                    'text': "Close",
+                    'title': "Close",
                     'action': function() {
                         that.close();
                     }
                 },
                 {
+                    'id': "tab.close.others",
                     'type': "action",
-                    'text': "Close Other Tabs",
+                    'title': "Close Other Tabs",
                     'action': function() {
                         that.closeOthers();
                     }
                 },
                 { 'type': "divider" },
                 {
+                    'id': "tab.group.new",
                     'type': "action",
-                    'text': "New Group",
+                    'title': "New Group",
                     'action': function() {
                         that.split();
                     }
                 },
                 { 'type': "divider" },
                 {
+                    'id': "tab.groups.grid",
                     'type': "action",
-                    'text': "Auto Grid",
+                    'title': "Auto Grid",
                     'action': function() {
                         that.tabs.setLayout();
                     }
                 },
                 {
+                    'id': "tab.groups.c2",
                     'type': "action",
-                    'text': "Columns: 2",
+                    'title': "Columns: 2",
                     'action': function() {
                         that.tabs.setLayout(2);
                     }
                 },
                 {
+                    'id': "tab.groups.c3",
                     'type': "action",
-                    'text': "Columns: 3",
+                    'title': "Columns: 3",
                     'action': function() {
                         that.tabs.setLayout(3);
                     }
                 },
                 {
+                    'id': "tab.groups.c4",
                     'type': "action",
-                    'text': "Columns: 4",
+                    'title': "Columns: 4",
                     'action': function() {
                         that.tabs.setLayout(4);
                     }

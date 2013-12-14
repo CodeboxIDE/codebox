@@ -562,11 +562,8 @@ define([
 
             // Create file element for selection
             $f.change(function(e) {
-                console.log("file change ", e);
                 e.preventDefault();
-                console.log("start upload", e.currentTarget.files);
                 uploader.upload(e.currentTarget.files).progress(function(p) {
-                    console.log("progress", p);
                     that.trigger("uploadProgress", p);
                 }).fin(function() {
                     $f.remove();
@@ -584,8 +581,9 @@ define([
                 // Open with
                 if (!that.isDirectory()) {
                     menu.push({
+                        'id': "file.open.select",
                         'type': "action",
-                        'text': "Open with...",
+                        'title': "Open with...",
                         'action': function() {
                             that.open({
                                 'userChoice': true
@@ -598,15 +596,17 @@ define([
                 // File or directory
                 if (!that.isRoot()) {
                     menu.push({
+                        'id': "file.rename",
                         'type': "action",
-                        'text': "Rename...",
+                        'title': "Rename...",
                         'action': function() {
                             that.actionRename();
                         }
                     });
                     menu.push({
+                        'id': "file.remove",
                         'type': "action",
-                        'text': "Remove",
+                        'title': "Remove",
                         'action': function() {
                             that.actionRemove();
                         }
@@ -617,40 +617,46 @@ define([
                 if (that.isDirectory()) {
                     // Directory
                     menu.push({
+                        'id': "file.create",
                         'type': "action",
-                        'text': "New file",
+                        'title': "New file",
                         'action': function() {
                             that.actionCreate();
                         }
                     });
                     menu.push({
+                        'id': "file.mkdir",
                         'type': "action",
-                        'text': "New folder",
+                        'title': "New folder",
                         'action': function() {
                             that.actionMkdir();
                         }
                     });
                     menu.push({
+                        'id': "file.refresh",
                         'type': "action",
-                        'text': "Refresh",
+                        'title': "Refresh",
                         'action': function() {
                             that.actionRefresh();
                         }
                     });
                     menu.push({
+                        'id': "file.upload",
                         'type': "menu",
-                        'text': "Upload",
-                        'items': [
+                        'title': "Upload",
+                        'menu': [
                             {
+                                'id': "file.upload.files",
                                 'type': "action",
-                                'text': "Files",
+                                'title': "Files",
                                 'action': function() {
                                     that.actionUpload();
                                 }
                             },
                             {
+                                'id': "file.upload.directory",
                                 'type': "action",
-                                'text': "Directory",
+                                'title': "Directory",
                                 'action': function() {
                                     that.actionUpload({
                                         'directory': true
@@ -661,8 +667,9 @@ define([
                     });
                 } else {
                     menu.push({
+                        'id': "file.download",
                         'type': "action",
-                        'text': "Download",
+                        'title': "Download",
                         'action': function() {
                             that.actionDownload();
                         }

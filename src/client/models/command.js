@@ -1,7 +1,8 @@
 define([
     "underscore",
-    "hr/hr"
-], function(_, hr) {
+    "hr/hr",
+    "utils/keyboard",
+], function(_, hr, Keyboard) {
     Array.prototype.remove = function(val) {
         for (var i = 0; i < this.length; i++) {
             if (this[i] === val) {
@@ -14,30 +15,54 @@ define([
 
     var Command = hr.Model.extend({
         defaults: {
-            'id': "",
-            'title': "",
-            'icon': "sign-blank",
-            'menu': [],
-            'handler': function() {},
+            // Command type
+            // "divider", "action", "menu"
+            'type': "action",
 
-            // Options
+            // Command unique id
+            'id': "",
+
+            // Command title
+            'title': "",
+
+            // Command icon
+            'icon': "sign-blank",
+
+            // Command action handler
+            'action': function() {},
+
+            // Order position
             'position': 10,
+
+            // Keyboard shortcuts list
             'shortcuts': [],
-            'visible': true,   // Visible in lateral bar
-            'search': true,    // Visible in search,
-            'flags': ""        // Command class flag
+
+            // Visible in lateral bar
+            'visible': true,
+
+            // Visible in search
+            'search': true,
+
+            // Others flags
+            'flags': ""
         },
 
-        // Return menu items
-        menuItems: function() {
-            var menuItems = this.get("menu", []);
-            if (_.isFunction(menuItems)) menuItems = menuItems();
-            return menuItems;
+        // Constructor
+        initialize: function() {
+            Command.__super__.initialize.apply(this, arguments);
+
+            // Default unique id
+            if (!this.get("id")) this.set("id", _.uniqueId("command"));
+
+            // Submenu
+            var Commands = require("collections/commands");
+            this.menu = new Commands();
+            this.menu.reset(this.get("menu", []));
         },
 
         // Run the command
         run: function(args) {
-            return this.get("handler").apply(this, [args]);
+            return this.get("action").apply(this, [args]);
         },
 
         // Toggle flag
@@ -51,6 +76,12 @@ define([
                 flags.remove(flag);
             }
             this.set("flags", _.uniq(flags).join(" "));
+        },
+
+        // Shortcut visible text
+        shortcutText: function() {
+            var shortcuts = this.get("shortcuts");
+            return Keyboard.toText(shortcuts);
         }
     });
 

@@ -1,11 +1,11 @@
 define([
     'underscore',
     'hr/hr',
-    'views/commands/manager',
+    'views/commands/toolbar',
     'core/search'
-], function (_, hr, CommandsView, search) {
-    // Collection for all current commands
-    var commands = new CommandsView();
+], function (_, hr, CommandsToolbar, search) {
+    // Collection for all toolbar commands
+    var commands = new CommandsToolbar();
 
     // Add commands to search
     search.handler({

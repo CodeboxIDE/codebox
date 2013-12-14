@@ -5,6 +5,7 @@ define([
     var commands = codebox.require("core/commands");
     var tabs = codebox.require("core/tabs");
     var settings = codebox.require("core/settings");
+    var menu = codebox.require("core/menu");
 
     var themes_map = {};
     _.each(THEMES, function(color, name) {
@@ -40,15 +41,18 @@ define([
     });
 
     // Add opening command
-    commands.register("terminal.open", {
-        title: "Terminal",
+    var command = commands.register("terminal.open", {
+        title: "New Terminal",
         icon: "terminal",
         shortcuts: [
-            "t"
+            "ctrl+shift+T"
         ]
     }, function() {
         tabs.add(TerminalTab, {}, {
             'section': "terminals"
         });
     });
+
+    // Add the command to file menu
+    menu.getById("file").menu.add([command, { 'type': "divider"}]);
 });

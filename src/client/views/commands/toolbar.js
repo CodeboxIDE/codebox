@@ -1,6 +1,7 @@
 define([
-    "hr/hr"
-], function(hr) {
+    "hr/hr",
+    "views/commands/manager"
+], function(hr, CommandsView) {
 
     // List Item View
     var CommandItem = hr.List.Item.extend({
@@ -8,12 +9,6 @@ define([
         template: "commands/command.html",
         events: {
             "click a": "run"
-        },
-
-        // Constructor
-        initialize: function() {
-            CommandItem.__super__.initialize.apply(this, arguments);
-            return this;
         },
 
         // template arguments
@@ -54,5 +49,10 @@ define([
         }
     });
 
-    return CommandItem;
+    var CommandsToolbar = CommandsView.extend({
+        className: "cb-commands-toolbar",
+        Item: CommandItem,
+    });
+
+    return CommandsToolbar;
 });

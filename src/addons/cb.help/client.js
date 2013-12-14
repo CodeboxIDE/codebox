@@ -9,8 +9,8 @@ define(["views/dialog"], function(HelpDialog) {
         position: 100
     }, [
         {
-            'type': "action",
-            'text': "Documentation",
+            'id': "help",
+            'title': "Documentation",
             'shortcuts': ['?'],
             'action': function() {
                 dialogs.open(HelpDialog);
@@ -18,8 +18,8 @@ define(["views/dialog"], function(HelpDialog) {
         },
         { 'type': "divider" },
         {
-            'type': "action",
-            'text': "Submit feedback",
+            'id': "feedback",
+            'title': "Submit feedback",
             'action': function() {
                 window.open("https://github.com/FriendCode/codebox/issues");
             }

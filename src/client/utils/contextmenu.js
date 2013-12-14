@@ -1,9 +1,8 @@
 define([
     'jQuery',
     'underscore',
-    'collections/menu',
     'views/commands/menu'
-], function ($, _, Menu, MenuView) {
+], function ($, _, MenuView) {
 
     var ContextMenu = {
         /*

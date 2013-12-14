@@ -1,7 +1,8 @@
 define([
     'hr/hr',
+    'underscore',
     'vendors/mousetrap'
-], function (hr, Mousetrap) {
+], function (hr, _, Mousetrap) {
     var Keyboard = new (hr.Class.extend({
         /*
          *  Initialize the keyboard navigation
@@ -41,6 +42,16 @@ define([
             this.bindings[keys].on("action", callback, context);
             return;
         },
+
+        /*
+         *  Convert shortcut or list of shortcut to a string
+         */
+        toText: function(shortcut) {
+            if (_.isArray(shortcut)) shortcut = _.first(shortcut);
+            if (!shortcut) return null;
+            shortcut = shortcut.replace("mod", /Mac|iPod|iPhone|iPad/.test(navigator.platform) ? '&#8984;' : 'Ctrl');
+            return shortcut;
+        }
     }));
     return Keyboard;
 });
