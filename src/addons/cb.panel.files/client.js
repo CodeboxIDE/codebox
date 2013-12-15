@@ -27,6 +27,17 @@ define([
         'type': "menu",
         'title': "Open Recent"
     });
+    files.recent.on("add remove reset", function() {
+        recentFiles.menu.reset(files.recent.map(function(file) {
+            var path = file.path();
+            return {
+                'title': file.get("name"),
+                'action': function() {
+                    files.open(path);
+                }
+            };
+        }).reverse());
+    });
 
 
     // Command new file

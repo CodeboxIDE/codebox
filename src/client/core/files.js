@@ -3,6 +3,7 @@ define([
     'underscore',
     'hr/hr',
     'models/file',
+    'collections/files',
     'core/user',
     'core/box',
     'core/tabs',
@@ -11,7 +12,7 @@ define([
     'utils/dialogs',
     'views/tabs/file',
     'views/files/base'
-], function(Q, _, hr, File, user, box, tabs, settings, search, dialogs, FileTab) {
+], function(Q, _, hr, File, Files, user, box, tabs, settings, search, dialogs, FileTab) {
     var logging = hr.Logger.addNamespace("files");
 
     // Settings for files manager
@@ -21,6 +22,13 @@ define([
         'fields': {}
     });
     var userSettings = user.settings("files");
+
+    // Recent files
+    var recentFiles = new Files();
+    recentFiles.on("add", function() {
+        // Limit collection size
+        if (recentFiles.size() > 20) recentFiles.shift();
+    });
 
     // Files handlers map
     var handlers = {};
@@ -77,6 +85,15 @@ define([
         });
     };
 
+    // Open file with handler
+    var openFileHandler = function(handler, file) {
+        // Add to recent files
+        if (!file.isNewfile()) recentFiles.add(file);
+
+        // Open
+        return handler.open(file);
+    }
+
     // Select to open a file with any handler
     var openFileWith = function(file) {
         var choices = {};
@@ -85,7 +102,7 @@ define([
         });
         return dialogs.select("Can't open this file", "Sorry, No handler has been found to open this file. Try to find and install an add-on to manage this file or select one of the following handlers:", choices).then(function(value) {
             var handler = handlers[value];
-            return Q(handler.open(file));
+            return Q(openFileHandler(handler, file));
         });
     };
 
@@ -110,7 +127,7 @@ define([
         }
 
         if (_.size(possibleHandlers) == 1 && (options.userChoice != true)) {
-            return Q(_.first(possibleHandlers).open(file));
+            return Q(openFileHandler(_.first(possibleHandlers), file));
         }
 
         var choices = {};
@@ -119,7 +136,7 @@ define([
         })
         return dialogs.select("Open with...", "Select one of the following handlers to open this file:", choices).then(function(value) {
             var handler = handlers[value];
-            return Q(handler.open(file));
+            return Q(openFileHandler(handler, file));
         });
     };
 
@@ -164,6 +181,7 @@ define([
         'addHandler': addHandler,
         'getHandlers': getHandlers,
         'open': openFile,
-        'openNew': openNew
+        'openNew': openNew,
+        'recent': recentFiles
     };
 });

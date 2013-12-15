@@ -45,7 +45,6 @@ define([
                 });
                 this.layoutCommand.menu.add(command);
                 this.on("layout", function() {
-                    console.log(command);
                     command.toggleFlag("active", layout == that.layout);
                 });
             }, this);
