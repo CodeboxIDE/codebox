@@ -24,6 +24,8 @@ define([
 
         buildAction: function(action) {
             var that = this;
+            var itemIcon = this.model.get("iconMenu", "");
+
             var $a = $("<a>", {
                 'text': this.model.get("title"),
                 'href': "#",
@@ -48,8 +50,14 @@ define([
 
             // Active checkbox
             if (that.model.hasFlag("active")) {
-                $a.prepend("<i class='fa fa-check'></i> ")
+                itemIcon = "check";
             }
+
+            // Icon
+            var $icon = $("<i>", {
+                "class": "menu-icon fa fa-"+itemIcon
+            }).prependTo($a);
+
 
             return $a;
         },
@@ -76,11 +84,9 @@ define([
                 $li.addClass("divider");
             } else if (itemType == "menu") {
                 $li.addClass("dropdown-submenu");
-                var $a = $("<a>", {
-                    'text': itemText,
-                    'href': "#",
-                    'tabindex': -1
-                });
+                
+                var $a = this.buildAction(function() {});
+                $a.attr("tabindex", -1);
                 $a.appendTo($li);
 
                 var submenu = that.submenu();

@@ -30,6 +30,7 @@ define([
 
             // Command icon
             'icon': "sign-blank",
+            'iconMenu': "sign-blank",
 
             // Command action handler
             'action': function() {},

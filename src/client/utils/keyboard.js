@@ -49,8 +49,20 @@ define([
         toText: function(shortcut) {
             if (_.isArray(shortcut)) shortcut = _.first(shortcut);
             if (!shortcut) return null;
-            shortcut = shortcut.replace("mod", /Mac|iPod|iPhone|iPad/.test(navigator.platform) ? '&#8984;' : 'Ctrl');
-            return shortcut;
+
+            // Replace mod by equivalent for mac or windows
+            shortcut = shortcut.replace("mod", /Mac|iPod|iPhone|iPad/.test(navigator.platform) ? '&#8984;' : 'ctrl');
+
+            // Replace ctrl
+            shortcut = shortcut.replace("ctrl", "⌃");
+
+            // Replace shift
+            shortcut = shortcut.replace("shift", "⇧");
+
+            // Replace +
+            shortcut = shortcut.replace(/\+/g, " ");
+
+            return shortcut.toUpperCase();
         }
     }));
     return Keyboard;

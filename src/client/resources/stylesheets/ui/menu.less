@@ -1,9 +1,21 @@
 .ui-menu {
+    .menu-item a {
+        padding: 3px 80px 3px 0px;
+    }
+
+    .menu-icon {
+        font-size: 12px;
+        width: 26px;
+        text-align: center;
+    }
+
+
     li a {
         .menu-label {
             text-align: right;
-            margin-left: 22px;
             color: #999;
+            position: absolute;
+            right: 15px;
         }
     }
     li.active >a, li >a:hover, li >a:focus {
@@ -34,8 +46,9 @@
         border-style:solid;
         border-width:5px 0 5px 5px;
         border-left-color:#cccccc;
-        margin-top:5px;
-        margin-right:-10px;
+        position: absolute;
+        right: 10px;
+        top: 8px;
     }
     .dropdown-submenu.active>a:after, .dropdown-submenu>a:hover:after{
         border-left-color:#ffffff;
