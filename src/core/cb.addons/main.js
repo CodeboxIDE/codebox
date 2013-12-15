@@ -139,7 +139,14 @@ function setup(options, imports, register, app) {
 
         });
 
-        logger.log("Install add-on", git);
+        var gitRef = "master";
+        var gitParts = git.split("#");
+        if (gitParts.length == 2) {
+            git = gitParts[0];
+            gitRef = gitParts[1];
+        }
+
+        logger.log("Install add-on", git, "ref="+gitRef);
 
         tempDir = path.join(configTempPath, "t"+Date.now());
 
@@ -148,6 +155,9 @@ function setup(options, imports, register, app) {
             // Clone git repo
             return Q.nfcall(Gift.clone, git, tempDir);
         }).then(function(repo) {
+            // Checkout the addon ref
+            return Q.ninvoke(repo, "checkout", gitRef);
+        }).then(function() {
             // Load addon
             addon = new Addon(logger, tempDir);
             return addon.load();
