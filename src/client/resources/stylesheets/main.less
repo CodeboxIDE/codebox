@@ -36,7 +36,15 @@ body {
 
 .modal-content {
     border-radius: 1px;
-    .box-shadow(none);
+    box-shadow: 0 4px 16px rgba(0,0,0,.2);
+    -webkit-box-shadow: 0 4px 16px rgba(0,0,0,.2);
+}
+.modal-backdrop {
+    background: #fff;
+    
+    &.in {
+        opacity: 0.75;
+    }
 }
 
 .dropdown-menu {
