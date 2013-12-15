@@ -2,27 +2,60 @@ define([
     "underscore",
     "jQuery",
     "hr/hr",
+    "models/command",
     "utils/dragdrop",
     "utils/keyboard",
     "utils/contextmenu",
     "views/tabs/tab",
     "views/tabs/base"
-], function(_, $, hr, DragDrop, Keyboard, ContextMenu, TabView, TabPanelView) {
+], function(_, $, hr, Command, DragDrop, Keyboard, ContextMenu, TabView, TabPanelView) {
     // Complete tabs system
     var TabsView = hr.View.extend({
         className: "cb-tabs",
         events: {
             "dblclick .tabs-header": "openDefaultNew"
-        },  
+        },
+        layouts: {
+            "Auto Grid": null,
+            "Columns: 2": 2,
+            "Columns: 3": 3,
+            "Columns: 4": 4
+        },
 
         // Constructor
         initialize: function(options) {
+            var that = this;
             TabsView.__super__.initialize.apply(this, arguments);
 
+            // Current layout
             this.layout = null; // null: mode auto
 
+            // Commands
+            this.layoutCommand = new Command({}, {
+                'type': "menu",
+                'title': "Layout"
+            });
+            _.each(this.layouts, function(layout, layoutName) {
+                var command = new Command({}, {
+                    'type': "action",
+                    'title': layoutName,
+                    'action': function() {
+                        that.setLayout(layout);
+                    }
+                });
+                this.layoutCommand.menu.add(command);
+                this.on("layout", function() {
+                    console.log(command);
+                    command.toggleFlag("active", layout == that.layout);
+                });
+            }, this);
+
+            // Tabs map
             this.tabs = {};
             this.activeTab = null;
+
+            // Set base layout
+            this.setLayout(null);
             return this;
         },
 
@@ -76,34 +109,7 @@ define([
                         }
                     },
                     { 'type': "divider" },
-                    {
-                        'type': "action",
-                        'title': "Auto Grid",
-                        'action': function() {
-                            that.setLayout();
-                        }
-                    },
-                    {
-                        'type': "action",
-                        'title': "Columns: 2",
-                        'action': function() {
-                            that.setLayout(2);
-                        }
-                    },
-                    {
-                        'type': "action",
-                        'title': "Columns: 3",
-                        'action': function() {
-                            that.setLayout(3);
-                        }
-                    },
-                    {
-                        'type': "action",
-                        'title': "Columns: 4",
-                        'action': function() {
-                            that.setLayout(4);
-                        }
-                    }
+                    that.layoutCommand
                 ]);
 
                 // Drag and drop tabs
@@ -332,6 +338,7 @@ define([
         // Define tabs layout
         setLayout: function(l) {
             this.layout = l;
+            this.trigger("layout", this.layout);
             this.update();
         }
     }, {

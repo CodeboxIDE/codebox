@@ -73,38 +73,7 @@ define([
                     }
                 },
                 { 'type': "divider" },
-                {
-                    'id': "tab.groups.grid",
-                    'type': "action",
-                    'title': "Auto Grid",
-                    'action': function() {
-                        that.tabs.setLayout();
-                    }
-                },
-                {
-                    'id': "tab.groups.c2",
-                    'type': "action",
-                    'title': "Columns: 2",
-                    'action': function() {
-                        that.tabs.setLayout(2);
-                    }
-                },
-                {
-                    'id': "tab.groups.c3",
-                    'type': "action",
-                    'title': "Columns: 3",
-                    'action': function() {
-                        that.tabs.setLayout(3);
-                    }
-                },
-                {
-                    'id': "tab.groups.c4",
-                    'type': "action",
-                    'title': "Columns: 4",
-                    'action': function() {
-                        that.tabs.setLayout(4);
-                    }
-                }
+                that.tabs.layoutCommand
             ]);
 
             return this;

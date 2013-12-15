@@ -3,8 +3,9 @@ define([
     'hr/hr',
     'views/commands/menubar',
     'core/box',
-    'core/panels'
-], function (_, hr, MenubarView, box, panels) {
+    'core/panels',
+    'core/tabs'
+], function (_, hr, MenubarView, box, panels, tabs) {
     // Collection for all menu commands
     var menu = new MenubarView();
     
@@ -13,7 +14,9 @@ define([
         position: 5
     }, [
         panels.visibilityCommand,
-        panels.panelsCommand
+        panels.panelsCommand,
+        { type: "divider" },
+        tabs.layoutCommand
     ]);
     menu.register("file", {
         title: "File",
