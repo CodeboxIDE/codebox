@@ -34,7 +34,7 @@ define([], function() {
     };
 
     // Run command
-    var command = commands.register("run.workspace", {
+    var runCommand = commands.register("run.workspace", {
         title: "Run Application",
         icon: "play",
         position: 1,
@@ -49,10 +49,13 @@ define([], function() {
     menu.register("run", {
         title: "Run"
     }).menuSection([
-        command,
+        runCommand,
         {
             'type': "action",
-            'title': "Logging Output"
+            'title': "Logging Output",
+            'action': function() {
+                Command.run("monitor.open");
+            }
         }
     ]).menuSection([
         {

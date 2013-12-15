@@ -43,14 +43,13 @@ define([
          *  properties: properties to define the command
          *  handler: command handler
          */
-        register: function(id, properties, items) {
+        register: function(id, properties) {
             properties = _.extend({}, properties, {
                 'type': "menu",
                 'id': id
             });
 
             var command = MenubarView.__super__.register.call(this, id, properties);
-            if (_.isArray(items)) command.menu.reset(items);
 
             return command;
         }

@@ -7,18 +7,18 @@ define(["views/dialog"], function(HelpDialog) {
     menu.register("help", {
         title: "Help",
         position: 100
-    }, [
+    }).menuSection([
         {
-            'id': "help",
+            'id': "help.documentation",
             'title': "Documentation",
             'shortcuts': ['?'],
             'action': function() {
                 dialogs.open(HelpDialog);
             }
-        },
-        { 'type': "divider" },
+        }
+    ]).menuSection([
         {
-            'id': "feedback",
+            'id': "help.feedback",
             'title': "Submit feedback",
             'action': function() {
                 window.open("https://github.com/FriendCode/codebox/issues");

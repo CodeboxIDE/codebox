@@ -7,7 +7,7 @@ define(["views/dialog"], function(GitDialog) {
     // Add menu
     menu.register("git", {
         title: "Repository"
-    }, [
+    }).menuSection([
         {
             'id': "git.commit",
             'title': "Commit",

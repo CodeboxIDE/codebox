@@ -161,6 +161,12 @@ define([
                 return command;
             });
             return commands;
+        },
+
+        // Run a command
+        run: function(commandId) {
+            if (!Command.mapIds[commandId]) return false;
+            return Command.mapIds[commandId].run.apply(Command.mapIds[commandId], Array.prototype.slice.call(arguments, 1));
         }
     });
 
