@@ -186,7 +186,7 @@ define([
             }, this);
 
             this.sync.on("sync:modified", function(state) {
-                this.tab.setTabState("warning", state);
+                this.tab.setTabState("modified", state);
             }, this);
 
             // Define file for code editor

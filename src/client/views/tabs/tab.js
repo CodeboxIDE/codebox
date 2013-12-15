@@ -21,6 +21,7 @@ define([
             "dragstart":    "dragStart"
         },
         states: {
+            'modified': "fa-asterisk",
             'warning': "fa-exclamation",
             'offline': "fa-flash"
         },
@@ -92,7 +93,7 @@ define([
 
             if (tab.state && this.states[tab.state]) {
                 $("<i>", {
-                    "class": "state fa "+this.states[tab.state]
+                    "class": "state fa "+this.states[tab.state]+" state-"+tab.state
                 }).prependTo(inner);
             }
 
