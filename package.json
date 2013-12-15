@@ -32,7 +32,9 @@
         "wrench": "1.5.4",
         "requirejs": "2.1.0",
         "less": "1.5.0",
-        "csso": "1.3.9"
+        "csso": "1.3.9",
+        "fstream": "0.1.25",
+        "tar": "0.1.19"
     },
     "bin": {
         "codebox": "./bin/codebox.js"

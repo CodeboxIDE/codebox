@@ -150,6 +150,9 @@ var start = function(config) {
         // Git
         "./cb.git",
 
+        // Export
+        "./cb.export",
+
         // Search
         "./cb.search",
 

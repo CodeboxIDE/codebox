@@ -62,5 +62,14 @@ define([
         recentFiles
     ], {
         position: 0
-    });
+    }).menuSection([
+        {
+            'id': "workspace.save.zip",
+            'type': "action",
+            'title': "Save Project As ZIP",
+            'action': function() {
+                window.open("/export/zip");
+            }
+        }
+    ]);
 });
