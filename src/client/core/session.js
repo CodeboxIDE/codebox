@@ -38,6 +38,13 @@ define([
                 // Get collaborators
                 return collaborators.getCollaborators();
             });
+        },
+
+        // Logout
+        exit: function() {
+            hr.Storage.set("email", "");
+            hr.Storage.set("token", "");
+            location.reload();
         }
     };
 });

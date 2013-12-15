@@ -45,16 +45,15 @@
 				</span>
 			</div>
 			<div class="inner">
-				<form role="form">
 					<div class="form-group">
-						<input type="email" class="form-control" id="login-email" placeholder="Enter email" value="<%- email %>">
+						<input type="email" class="form-control input-lg" name="login-email" id="login-email" placeholder="Enter email" value="<%- email %>" autocomplete="off">
 						<% if (session.box.get("public")) { %>
 						<p class="help-block">This box is public, please enter an email to log in.</p>
 						<% } %>
 					</div>
 					<% if (!session.box.get("public")) { %>
 					<div class="form-group">
-						<input type="password" class="form-control" id="login-token" placeholder="Enter token" value="<%- token %>">
+						<input type="password" class="form-control input-lg" name="login-token" id="login-token" placeholder="Enter token" value="<%- token %>" autocomplete="off">
 					</div>
 					<% } %>
 					<div class="checkbox">
@@ -62,8 +61,7 @@
 							<input type="checkbox" id="login-save" checked> Remember me
 						</label>
 					</div>
-					<button type="submit" class="btn btn-lg btn-block btn-primary">Login</button>
-				</form>
+					<button id="login-submit" class="btn btn-lg btn-block btn-primary">Login</button>
 			</div>
 		</div>
 	</div>

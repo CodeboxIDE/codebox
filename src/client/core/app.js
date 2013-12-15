@@ -26,7 +26,7 @@ box, session, addons, box, files, commands, menu, tabs, panels) {
             "apple-touch-icon": hr.Urls.static("images/icons/ios.png")
         },
         events: {
-            "submit .cb-login .login-box form": "actionLoginBox"
+            "click .cb-login .login-box #login-submit": "actionLoginBox"
         },
 
         // Constructor
@@ -119,6 +119,7 @@ box, session, addons, box, files, commands, menu, tabs, panels) {
             if (e) {
                 e.preventDefault();
             }
+
             var email = this.$(".login-box #login-email").val();
             var password = this.$(".login-box #login-token").val();
             var tosave = this.$(".login-box #login-save").is(":checked");
@@ -130,9 +131,24 @@ box, session, addons, box, files, commands, menu, tabs, panels) {
         doLogin: function(email, password, tosave) {
             var that = this;
 
-            // If no password: generate a random one
-            if (!password) {
+            // If public: generate a random password
+            if (box.get("public")) {
                 password = Math.random().toString(36).substring(8);
+            }
+
+            // Clear errors
+            this.$(".login-box .form-group").removeClass("has-error");
+
+            // No email
+            if (!email) {
+                this.$(".login-box #login-email").parent(".form-group").addClass("has-error");
+                return Q.reject(new Error("No email"));
+            }
+
+            // No password
+            if (!password) {
+                this.$(".login-box #login-token").parent(".form-group").addClass("has-error");
+                return Q.reject(new Error("No password"));
             }
 
             return session.start(email, password).then(function() {
