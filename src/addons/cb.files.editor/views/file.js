@@ -1,9 +1,10 @@
 define([
     "ace/ace",
     "ace/range",
+    "ace/ext/modelist",
     "ace/ext/language_tools",
     "less!stylesheets/file.less"
-], function(ace, CRange) {
+], function(ace, CRange, aceModes) {
     var _ = codebox.require("underscore");
     var $ = codebox.require("jQuery");
     var hr = codebox.require("hr/hr");
@@ -11,9 +12,41 @@ define([
     var FilesBaseView = codebox.require("views/files/base");
     var FileSync = codebox.require("utils/filesync");
     var user = codebox.require("core/user");
+    var menu = codebox.require("core/menu");
+    var settings = codebox.require("core/settings");
+    var Command = codebox.require("models/command");
 
     var logging = hr.Logger.addNamespace("editor");
-    var settings = user.settings("aceeditor");
+    var userSettings = user.settings("aceeditor");
+
+    // Current file editor
+    var currentFileEditor = null;
+
+    // Syntax menu command
+    var syntaxMenu = Command.register("editor.syntax", {
+        'title': "Syntax",
+        'type': "menu"
+    });
+    syntaxMenu.menu.add(_.map(aceModes.modesByName, function(mode, name) {
+        return {
+            'title': mode.caption,
+            'action': function() {
+                if (!currentFileEditor) return;
+                currentFileEditor.setMode(name);
+            }
+        }
+    }))
+
+    // Add menu
+    menu.register("editor", {
+        title: "Editor"
+    }).menuSection([{
+        'type': "action",
+        'title': "Settings",
+        'action': function() {
+            settings.open("editor");
+        }
+    }]).menuSection([syntaxMenu]);
 
     var FileEditorView = FilesBaseView.extend({
         className: "addon-files-aceeditor",
@@ -47,7 +80,7 @@ define([
             });
 
             // Bind settings changement
-            settings.change(function() {
+            userSettings.change(function() {
                 var ops = _.extend({}, {
                     "mode": this.options.mode,
                     "readonly": this.options.readonly
@@ -56,6 +89,9 @@ define([
             }, this);
 
             // Bind editor changement
+            this.editor.on("focus", function() {
+                currentFileEditor = that;
+            });
             this.editor.getSession().selection.on('changeSelection', function(){
                 var selection = that.editor.getSelectionRange();
                 that.sync.updateUserSelection(selection.start.column, selection.start.row, selection.end.column, selection.end.row);
@@ -179,7 +215,7 @@ define([
          *  Set editor options: theme, fontsize, ...
          */
         setOptions: function(opts) {
-            this.options = _.defaults(opts || {}, settings.all({}), {
+            this.options = _.defaults(opts || {}, userSettings.all({}), {
                 mode: "text",
                 theme: "textmate",
                 fontsize: "12",

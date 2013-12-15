@@ -123,9 +123,19 @@ define([
 
             if (!Command.mapIds[commandId]) {
                 logging.log("Register command", commandId);
-                Command.mapIds[commandId] = new Command({}, _.extend(properties, {
+                var command = new Command({}, _.extend(properties, {
                     'id': commandId
                 }));
+
+                // Bind keyboard shortcuts
+                _.each(command.get("shortcuts", []), function(shortcut) {
+                    Keyboard.bind(shortcut, function(e) {
+                        e.preventDefault();
+                        command.run();
+                    });
+                });
+
+                Command.mapIds[commandId] = command;
             } else {
                 throw "Error command already registrated:"+commandId;
             }

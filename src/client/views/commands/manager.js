@@ -25,14 +25,6 @@ define([
             var command = Command.register(properties);
             this.collection.add(command);
 
-            // Bind keyboard shortcuts
-            /*_.each(command.get("shortcuts", []), function(shortcut) {
-                Keyboard.bind(shortcut, function(e) {
-                    e.preventDefault();
-                    command.run();
-                });
-            });*/
-
             return command;
         },
 
