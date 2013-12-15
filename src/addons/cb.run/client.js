@@ -34,7 +34,7 @@ define([], function() {
     };
 
     // Run command
-    var command = commands.register("run", {
+    var command = commands.register("run.workspace", {
         title: "Run Application",
         icon: "play",
         position: 1,
@@ -48,13 +48,13 @@ define([], function() {
     // Add menu
     menu.register("run", {
         title: "Run"
-    }, [
+    }).menuSection([
         command,
         {
             'type': "action",
             'title': "Logging Output"
-        },
-        { 'type': "divider" },
+        }
+    ]).menuSection([
         {
             'type': "action",
             'title': "Refresh Ports",

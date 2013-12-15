@@ -69,7 +69,7 @@ define([
 
             var $li = this.$el;
             $li.empty();
-            $li.attr("data-parent", this.list.cid);
+            $li.attr("data-cmdid", this.model.id+"-"+this.model.cid);
             $li.attr("class", this.className+" "+(this.flagsClasses[this.model.get("flags", "")] || ""));
 
             if (itemType == "action") {

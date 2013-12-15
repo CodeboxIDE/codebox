@@ -1,6 +1,7 @@
 define([
     "views/panel"
 ], function(PanelFilesView) {
+    var Command = codebox.require("models/command");
     var commands = codebox.require("core/commands");
     var app = codebox.require("core/app");
     var panels = codebox.require("core/panels");
@@ -21,26 +22,34 @@ define([
         ]
     }));
 
+    // Recents files
+    var recentFiles = Command.register("file.recents", {
+        'type': "menu",
+        'title': "Open Recent"
+    });
+
+
     // Command new file
-    menu.getById("file").menu.add([{
-        'id': "file.new",
-        'type': "action",
-        'title': "New File",
-        'shortcuts': ["ctrl+shift+N"],
-        'action': function() {
-            files.openNew()
+    menu.getById("file").menuSection([
+        {
+            'id': "file.new",
+            'type': "action",
+            'title': "New File",
+            'shortcuts': ["ctrl+shift+N"],
+            'action': function() {
+                files.openNew()
+            }
+        }, {
+            'id': "folder.create",
+            'type': "action",
+            'title': "New Folder",
+            'shortcuts': ["ctrl+shift+F"],
+            'action': function() {
+                box.root.actionMkdir();
+            }
         },
-        'position': 0
-    }, {
-        'id': "folder.create",
-        'type': "action",
-        'title': "New Folder",
-        'shortcuts': ["ctrl+shift+F"],
-        'action': function() {
-            box.root.actionMkdir();
-        },
-        'position': 0
-    },
-    { 'type': "divider",
-      'position': 0 }]);
+        recentFiles
+    ], {
+        position: 0
+    });
 });

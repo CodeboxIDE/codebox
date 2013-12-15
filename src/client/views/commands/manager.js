@@ -1,9 +1,9 @@
 define([
     "hr/hr",
+    "models/command",
     "collections/commands",
     "utils/keyboard"
-], function(hr, Commands, Keyboard) {
-    var logging = hr.Logger.addNamespace("commands");
+], function(hr, Command, Commands, Keyboard) {
 
     // Commands list
     var CommandsView = hr.List.extend({
@@ -17,23 +17,21 @@ define([
          *  handler: command handler
          */
         register: function(id, properties, actionHandler) {
-            logging.log("register", id, properties);
-
             properties = _.extend({}, properties, {
                 'id': id,
                 'action': actionHandler
             });
 
-            var command = new this.collection.model({}, properties);
+            var command = Command.register(properties);
             this.collection.add(command);
 
             // Bind keyboard shortcuts
-            _.each(command.get("shortcuts", []), function(shortcut) {
+            /*_.each(command.get("shortcuts", []), function(shortcut) {
                 Keyboard.bind(shortcut, function(e) {
                     e.preventDefault();
                     command.run();
                 });
-            });
+            });*/
 
             return command;
         },

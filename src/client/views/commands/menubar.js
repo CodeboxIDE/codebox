@@ -49,9 +49,8 @@ define([
                 'id': id
             });
 
-            var command = new this.collection.model({}, properties);
-            command.menu.reset(items);
-            this.collection.add(command);
+            var command = MenubarView.__super__.register.call(this, id, properties);
+            if (_.isArray(items)) command.menu.reset(items);
 
             return command;
         }

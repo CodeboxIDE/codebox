@@ -12,12 +12,13 @@ define([
     menu.register("view", {
         title: "View",
         position: 5
-    }, [
+    }).menuSection([
         panels.visibilityCommand,
-        panels.panelsCommand,
-        { type: "divider" },
+        panels.panelsCommand
+    ]).menuSection([
         tabs.layoutCommand
     ]);
+
     menu.register("file", {
         title: "File",
         position: 0
