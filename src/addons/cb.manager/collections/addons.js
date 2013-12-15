@@ -1,13 +1,14 @@
 define([
-    "models/addon"
-], function(Addon) {
+], function() {
     var Q = codebox.require("q");
     var hr = codebox.require("hr/hr");
     var _ = codebox.require("underscore");
     var user = codebox.require("core/user");
+    var Addon = codebox.require("models/addon");
     var addons = codebox.require("core/addons");
+    var Addons = codebox.require("collections/addons");
 
-    var Addons = hr.Collection.extend({
+    var Addons = Addons.extend({
         model: Addon,
         defaults: _.defaults({
             loader: "allIndex",
@@ -27,6 +28,12 @@ define([
 
             return hr.Requests.getJSON(user.settings("manager").get("registry")+"/api/addons?limit=1000&callback=?").then(function(index) {
                 that._index = index;
+                that._index.addons = _.map(that._index.addons, function(addon) {
+                    console.log(addon['package']);
+                    return _.extend(addon['package'], {
+                        'git': addon.git
+                    });
+                });
                 hr.Cache.set("addons", user.settings("manager").get("registry"), that._index, 60*60);
 
                 return Q(that._index);
@@ -79,6 +86,14 @@ define([
                     return addons.isInstalled(addon.name);
                 });
             });
+            this.reset(addons.models);
+        },
+
+        // Return defaults addons
+        allDefaults: function(options) {
+            this.reset(addons.filter(function(model) {
+                return addons.isDefault(model.get("name"));
+            }));
         },
 
         // Return non installed addons

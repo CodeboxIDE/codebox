@@ -1,8 +1,8 @@
 {
     "name": "cb.panel.files",
     "version": "0.1.0",
-    "title": "Add-ons",
-    "description": "Files Tree Panel",
+    "title": "Files Panel",
+    "description": "Files Tree Panel for exploring and managing the filesystem",
     "homepage": "https://github.com/FriendCode/codebox",
     "license": "Apache",
     "author": {

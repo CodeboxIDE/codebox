@@ -4,10 +4,11 @@ define([
 ], function(Addons) {
     var hr = codebox.require("hr/hr");
     var _ = codebox.require("underscore");
+    var addons = codebox.require("core/addons");
 
     // Collections of addons
-    var addons = new Addons();
-    addons.getIndex();
+    var managerAddons = new Addons();
+    managerAddons.getIndex();
 
     var AddonItem = hr.List.Item.extend({
         className: "addon-item",
@@ -18,22 +19,35 @@ define([
             'click .action-uninstall': 'uninstall'
         },
 
+        templateContext: function() {
+            return {
+                'model': this.model,
+                'isInstalled': addons.isInstalled(this.model.get("name")),
+                'isDefault': addons.isDefault(this.model.get("name")),
+                'isUpdated': addons.isUpdated(this.model)
+            }
+        },
+
         install: function(e) {
             if (e) e.preventDefault();
+            var that = this;
             var btn = this.$(".action-install");
             btn.button('loading');
-            this.model.install().then(_.bind(this.render, this)).fin(function() {
+            addons.install(this.model.get("git")).then(_.bind(this.render, this)).fin(function() {
                 btn.button('reset');
+                that.update();
             });
         },
         uninstall: function(e) {
             if (e) e.preventDefault();
+            var that = this;
             var btn = this.$(".action-install");
             btn.button('loading');
-            this.model.uninstall().then(_.bind(this.render, this)).fin(function() {
+            addons.uninstall(this.model.get("name")).then(_.bind(this.render, this)).fin(function() {
                 btn.button('reset');
+                that.update();
             });
-        } 
+        }
     });
 
     var AddonsList = hr.List.extend({
@@ -41,7 +55,7 @@ define([
         Collection: Addons,
         Item: AddonItem,
         defaults: _.defaults({
-            'collection': addons
+            'collection': managerAddons
         }, hr.List.prototype.defaults)
     });
 

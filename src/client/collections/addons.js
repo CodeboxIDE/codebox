@@ -52,6 +52,13 @@ define([
             return m.get("default");
         },
 
+        // Check is updated
+        isUpdated: function(addon) {
+            var m = this.getByName(addon.get("name"));
+            if (!m) return true;
+            return m.version() >= addon.version();
+        },
+
         // Get addon state
         getState: function(name) {
             var m = this.getByName(name);
@@ -66,7 +73,8 @@ define([
             return api.rpc("/addons/install", {
                 'git': git
             }).then(function(data) {
-                that.add(data);
+                that.reset([]);
+                return that.getInstalled();
             });
         },
         uninstall: function(name) {
@@ -76,7 +84,7 @@ define([
                 'name': name
             }).then(function() {
                 that.reset([]);
-                that.getInstalled();
+                return that.getInstalled();
             });
         },
 

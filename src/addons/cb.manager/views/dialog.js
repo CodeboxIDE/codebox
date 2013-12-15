@@ -60,6 +60,7 @@ define([
             var filters = {
                 'all': "allIndex",
                 'installed': "allInstalled",
+                'defaults': "allDefaults",
                 'available': "allAvailable"
             };
             this.list.collection.reset([]);

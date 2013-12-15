@@ -1,8 +1,8 @@
 {
     "name": "cb.run",
     "version": "0.1.0",
-    "title": "Add-ons",
-    "description": "Search panel",
+    "title": "Run",
+    "description": "Auto-run command and active ports listing",
     "homepage": "https://github.com/FriendCode/codebox",
     "license": "Apache",
     "author": {

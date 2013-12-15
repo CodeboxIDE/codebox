@@ -2,7 +2,7 @@
     "name": "cb.files.image",
     "version": "0.0.1",
     "title": "Image Viewer",
-    "description": "Images files viewer.",
+    "description": "Images files viewer (png, jpeg, gif).",
     "homepage": "https://github.com/FriendCode/codebox",
     "license": "Apache",
     "author": {

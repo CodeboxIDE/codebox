@@ -1,8 +1,8 @@
 {
     "name": "cb.panel.search",
     "version": "0.1.0",
-    "title": "Add-ons",
-    "description": "Search panel",
+    "title": "Search Panel",
+    "description": "Search panel for searching files or resources",
     "homepage": "https://github.com/FriendCode/codebox",
     "license": "Apache",
     "author": {

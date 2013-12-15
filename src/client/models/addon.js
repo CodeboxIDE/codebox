@@ -88,6 +88,11 @@ define([
             }, register);
 
             return d.promise;
+        },
+
+        // Return version as an int
+        version: function() {
+            return parseInt(this.get("version").replace(/\./g,""));
         }
     });
 

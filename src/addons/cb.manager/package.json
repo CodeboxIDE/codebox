@@ -2,7 +2,7 @@
     "name": "cb.manager",
     "version": "0.1.3",
     "title": "Add-ons",
-    "description": "Add-ons manager",
+    "description": "Add-ons manager: install or uninstall addons from the main repository",
     "homepage": "https://github.com/FriendCode/codebox",
     "license": "Apache",
     "author": {
