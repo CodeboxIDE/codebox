@@ -55,6 +55,14 @@ define([
                 data[tab.namespace] = tab.submit();
             });
             return user.saveSettings(data);
+        },
+
+        /*
+         *  Open a settings page
+         */
+        open: function(page) {
+            var commands = require("core/commands");
+            commands.run("settings", page);
         }
     };
 

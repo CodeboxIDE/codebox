@@ -5,7 +5,7 @@ define(["views/dialog"], function(SettingsDialog) {
     var menu = codebox.require("core/menu");
 
     // Add opening command
-    var command = commands.register("settings.open", {
+    var command = commands.register("settings", {
         title: "Settings",
         icon: "cog",
         shortcuts: [
@@ -13,8 +13,10 @@ define(["views/dialog"], function(SettingsDialog) {
         ],
         visible: false,
         position: 1000
-    }, function() {
-        dialogs.open(SettingsDialog);
+    }, function(page) {
+        dialogs.open(SettingsDialog, {
+            "page": page
+        });
     });
 
     menu.getById("file").menu.add(command);

@@ -30,7 +30,13 @@ define([
                 tab.render();
                 tab.$el.appendTo(this.$("#settings-tab-"+tab.namespace));
             }, this);
-            setTimeout(function() { that.$(".navbar .navbar-nav a:first").tab('show') }, 200);
+            setTimeout(function() { 
+                if (that.options.page) {
+                    that.$(".navbar .navbar-nav a[href='#settings-tab-"+that.options.page+"']").tab('show');
+                } else {
+                    that.$(".navbar .navbar-nav a:first").tab('show');
+                }
+            }, 200);
             return SettingsDialog.__super__.finish.apply(this, arguments);
         },
 
