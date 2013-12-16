@@ -152,10 +152,17 @@ define([
         },
 
         /*
-         *  Get git changes
+         *  Get git push
          */
-        changes: function() {
-            return api.rpc("/git/diff_working");
+        gitPush: function() {
+            return api.rpc("/git/push");
+        },
+
+        /*
+         *  Get git pull
+         */
+        gitPull: function() {
+            return api.rpc("/git/pull");
         },
 
         /*

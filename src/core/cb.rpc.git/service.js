@@ -26,6 +26,26 @@ GitRPCService.prototype.sync = function(args, meta) {
     });
 };
 
+GitRPCService.prototype.push = function(args, meta) {
+    var that = this;
+    return this.repo.push()
+    .then(function() {
+        that.events.emit('git.push', {
+            userId: meta.user.userId
+        });
+    });
+};
+
+GitRPCService.prototype.pull = function(args, meta) {
+    var that = this;
+    return this.repo.pull()
+    .then(function() {
+        that.events.emit('git.pull', {
+            userId: meta.user.userId
+        });
+    });
+};
+
 GitRPCService.prototype.commit = function(args, meta) {
     var msg = args.message;
     var files = args.files || [];
@@ -37,7 +57,7 @@ GitRPCService.prototype.commit = function(args, meta) {
     }
 
     var that = this;
-    return this.repo.commit(name, email, msg, files)
+    return this.repo.commitWith(name, email, msg, files)
     .then(function() {
         that.events.emit('git.commit', {
             userId: meta.user.userId,
@@ -55,7 +75,24 @@ GitRPCService.prototype.commits = function(args) {
 };
 
 GitRPCService.prototype.branches = function(args) {
-    return this.repo.branches();
+    return this.repo.branches().then(function(branches) {
+        console.log(branches);
+        return _.map(branches, function(branch) {
+            return {
+                'name': branch.name
+            }
+        });
+    })
+};
+
+GitRPCService.prototype.branch_create = function(args) {
+    if (!args.name) return qfail(new Error("Arguments are missing and/or invalid: name"));
+    return this.repo.create_branch(args.name);
+};
+
+GitRPCService.prototype.branch_delete = function(args) {
+    if (!args.name) return qfail(new Error("Arguments are missing and/or invalid: name"));
+    return this.repo.delete_branch(args.name);
 };
 
 GitRPCService.prototype.commits_pending = function() {
@@ -63,13 +100,11 @@ GitRPCService.prototype.commits_pending = function() {
 };
 
 GitRPCService.prototype.diff = function(args) {
-    return this.repo.diff(args.new, args.old);
-
-};
-
-GitRPCService.prototype.diff_working = function(args) {
-    return this.repo.diff_working();
-
+    return this.repo.diff(args.new, args.old).then(function(diffs) {
+        return _.map(diffs, function(diff) {
+            return diff.normalize();
+        })
+    });
 };
 
 // Exports

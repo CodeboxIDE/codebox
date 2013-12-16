@@ -4,7 +4,6 @@ var fs  =  require('fs');
 var path = require('path');
 var express = require('express');
 var Gittle = require('gittle');
-var Gift = require('gift');
 var wrench = require('wrench');
 var requirejs = require('requirejs');
 var exec = require('child_process').exec;
@@ -153,10 +152,10 @@ function setup(options, imports, register, app) {
         // Create temporary dir
         return Q.nfcall(fs.mkdir, tempDir).then(function() {
             // Clone git repo
-            return Q.nfcall(Gift.clone, git, tempDir);
+            return Gittle.clone(git, tempDir);
         }).then(function(repo) {
             // Checkout the addon ref
-            return Q.ninvoke(repo, "checkout", gitRef);
+            return repo.checkout(gitRef);
         }).then(function() {
             // Load addon
             addon = new Addon(logger, tempDir);

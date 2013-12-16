@@ -3,11 +3,21 @@ define(["views/dialog"], function(GitDialog) {
     var app = codebox.require("core/app");
     var dialogs = codebox.require("utils/dialogs");
     var menu = codebox.require("core/menu");
+    var box = codebox.require("core/box");
 
     // Add menu
     menu.register("git", {
         title: "Repository"
     }).menuSection([
+        {
+            'id': "git.sync",
+            'title': "Synchronize",
+            'shortcuts': ["mod+S"],
+            'action': function() {
+                box.sync();
+            }
+        }
+    ]).menuSection([
         {
             'id': "git.commit",
             'title': "Commit",
@@ -16,6 +26,23 @@ define(["views/dialog"], function(GitDialog) {
                 dialogs.open(GitDialog);
             }
         }
-    ]);
+    ]).menuSection([
+        {
+            'id': "git.push",
+            'title': "Push",
+            'shortcuts': ["mod+P"],
+            'action': function() {
+                box.push();
+            }
+        },
+        {
+            'id': "git.pull",
+            'title': "Pull",
+            'shortcuts': ["shift+mod+P"],
+            'action': function() {
+                box.pull();
+            }
+        }
+    ])
 });
 

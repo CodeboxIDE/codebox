@@ -10,8 +10,7 @@ define([
         templateLoader: "addon.cb.settings.templates",
         template: "dialog.html",
         events: _.extend({}, DialogView.prototype.events,{
-            "submit form": "submit",
-            "click .navbar-brand": "clickTitle"
+            "submit form": "submit"
         }),
 
         // Template settings
@@ -52,11 +51,6 @@ define([
             settings.save().fin(function() {
                 that.close();
             });
-        },
-
-        // Click title
-        clickTitle: function(e) {
-            e.preventDefault();
         }
     });
 
