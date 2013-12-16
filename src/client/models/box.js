@@ -4,8 +4,9 @@ define([
     'core/api',
     'models/file',
     'models/shell',
-    'models/user'
-], function (hr, io, api, File, Shell, User) {
+    'models/user',
+    'core/operations'
+], function (hr, io, api, File, Shell, User, operations) {
     var logging = hr.Logger.addNamespace("codebox");
 
     var Codebox = hr.Model.extend({
@@ -155,14 +156,22 @@ define([
          *  Get git push
          */
         gitPush: function() {
-            return api.rpc("/git/push");
+            return operations.start("git.push", function(op) {
+                return api.rpc("/git/push")
+            }, {
+                title: "Pushing"
+            });
         },
 
         /*
          *  Get git pull
          */
         gitPull: function() {
-            return api.rpc("/git/pull");
+            return operations.start("git.pull", function(op) {
+                return api.rpc("/git/pull")
+            }, {
+                title: "Pulling"
+            });
         },
 
         /*
@@ -186,15 +195,22 @@ define([
          */
         commit: function(args) {
             args = _.extend(args || {});
-            return api.rpc("/git/commit", args);
+            return operations.start("git.commit", function(op) {
+                return api.rpc("/git/commit", args)
+            }, {
+                title: "Commiting"
+            });
         },
 
         /*
          *  Sync (pull & push) the git workspace
          */
-        sync: function(args) {
-            args = _.extend(args || {}, {});
-            return api.rpc("/git/sync", args);
+        sync: function() {
+            return operations.start("git.sync", function(op) {
+                return api.rpc("/git/sync")
+            }, {
+                title: "Synchronization"
+            });
         },
 
         /*

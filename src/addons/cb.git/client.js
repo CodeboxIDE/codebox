@@ -32,7 +32,7 @@ define(["views/dialog"], function(GitDialog) {
             'title': "Push",
             'shortcuts': ["mod+P"],
             'action': function() {
-                box.push();
+                box.gitPush();
             }
         },
         {
@@ -40,7 +40,7 @@ define(["views/dialog"], function(GitDialog) {
             'title': "Pull",
             'shortcuts': ["shift+mod+P"],
             'action': function() {
-                box.pull();
+                box.gitPull();
             }
         }
     ])

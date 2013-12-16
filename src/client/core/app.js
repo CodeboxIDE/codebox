@@ -11,8 +11,9 @@ define([
     'core/menu',
     'core/tabs',
     'core/panels',
+    'core/operations'
 ], function (hr, url, dialogs, 
-box, session, addons, box, files, commands, menu, tabs, panels) {
+box, session, addons, box, files, commands, menu, tabs, panels, operations) {
 
     // Define base application
     var Application = hr.Application.extend({
@@ -93,6 +94,10 @@ box, session, addons, box, files, commands, menu, tabs, panels) {
                 // Add panels
                 panels.$el.appendTo(this.$(".cb-panels"));
                 panels.render();
+
+                // Add operations
+                operations.$el.appendTo(this.$(".lateral-operations"));
+                operations.render();
 
                 // Load addons
                 addons.loadAll().fail(function(err) {
