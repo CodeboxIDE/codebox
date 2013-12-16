@@ -7,8 +7,9 @@ define([
     "utils/languages",
     "utils/filesync",
     "utils/dialogs",
-    "utils/uploader"
-], function(Q, _, hr, api, Url, Languages, FileSync, Dialogs, Uploader) {
+    "utils/uploader",
+    "core/operations"
+], function(Q, _, hr, api, Url, Languages, FileSync, Dialogs, Uploader, operations) {
     var logging = hr.Logger.addNamespace("files");
 
     if (typeof String.prototype.endsWith !== 'function') {

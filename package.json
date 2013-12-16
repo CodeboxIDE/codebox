@@ -24,7 +24,7 @@
         "vfs-http-adapter": "git+https://github.com/AaronO/vfs-http-adapter.git#a85e9ff150d53b620d68ff8a5ab80728989a7069",
         "vfs-local": "0.3.13",
         "watchr": "2.4.3",
-        "gittle": "git+ssh://git@github.com:FriendCode/gittle.js.git#50ddc5467e261ea3be0c1157f135be93aa20a444",
+        "gittle": "0.1.0",
         "uuid": "1.4.1",
         "glob": "3.2.6",
         "temp": "0.6.0",
