@@ -564,10 +564,16 @@ define([
             // Create file element for selection
             $f.change(function(e) {
                 e.preventDefault();
-                uploader.upload(e.currentTarget.files).progress(function(p) {
-                    that.trigger("uploadProgress", p);
-                }).fin(function() {
-                    $f.remove();
+
+                operations.start("files.upload", function(op) {
+                    return uploader.upload(e.currentTarget.files).progress(function(p) {
+                        that.trigger("uploadProgress", p);
+                        op.progress(p);
+                    }).fin(function() {
+                        $f.remove();
+                    });
+                }, {
+                    title: "Uploading"
                 });
             });
             $f.trigger('click');

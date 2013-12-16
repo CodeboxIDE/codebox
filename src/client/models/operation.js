@@ -17,6 +17,12 @@ define([
 
             // Icon to show
             'icon': "fa-refresh fa-spin"
+        },
+
+        // Update progress
+        progress: function(p) {
+            this.set("progress", p);
+            return this;
         }
     });
 
