@@ -75,23 +75,36 @@ GitRPCService.prototype.commits = function(args) {
 };
 
 GitRPCService.prototype.branches = function(args) {
-    return this.repo.branches().then(function(branches) {
-        console.log(branches);
+    var activeBranch, that = this;
+
+    // Get current active branch
+    return this.repo.branch().then(function(branch) {
+        activeBranch = branch;
+
+        // Get all local branches
+        return that.repo.branches();
+    }).then(function(branches) {
         return _.map(branches, function(branch) {
             return {
-                'name': branch.name
+                'name': branch.name,
+                'active': branch.name == activeBranch.name
             }
         });
     })
 };
 
 GitRPCService.prototype.branch_create = function(args) {
-    if (!args.name) return qfail(new Error("Arguments are missing and/or invalid: name"));
+    if (!args.name) return qfail(new Error("Need a name to create a branch"));
     return this.repo.create_branch(args.name);
 };
 
+GitRPCService.prototype.checkout = function(args) {
+    if (!args.ref) return qfail(new Error("Need a referance (ref) to checkout"));
+    return this.repo.checkout(args.ref);
+};
+
 GitRPCService.prototype.branch_delete = function(args) {
-    if (!args.name) return qfail(new Error("Arguments are missing and/or invalid: name"));
+    if (!args.name) return qfail(new Error("Need a name to delete a branch"));
     return this.repo.delete_branch(args.name);
 };
 

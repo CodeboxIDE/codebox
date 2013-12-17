@@ -164,6 +164,52 @@ define([
         },
 
         /*
+         *  Checkout a referance
+         */
+        gitCheckout: function(ref) {
+            return operations.start("git.checkout", function(op) {
+                return api.rpc("/git/checkout", {
+                    'ref': ref
+                })
+            }, {
+                title: "Checkout '"+ref+"'"
+            });
+        },
+
+        /*
+         *  Create a branch
+         */
+        gitBranchCreate: function(name) {
+            return operations.start("git.branch.create", function(op) {
+                return api.rpc("/git/branch_create", {
+                    'name': name
+                })
+            }, {
+                title: "Creating branch '"+name+"'"
+            });
+        },
+
+        /*
+         *  Delete a branch
+         */
+        gitBranchDelete: function(name) {
+            return operations.start("git.branch.delete", function(op) {
+                return api.rpc("/git/branch_delete", {
+                    'name': name
+                })
+            }, {
+                title: "Deleting branch '"+name+"'"
+            });
+        },
+
+        /*
+         *  List branches
+         */
+        gitBranches: function(name) {
+            return api.rpc("/git/branches");
+        },
+
+        /*
          *  Get git pull
          */
         gitPull: function() {
