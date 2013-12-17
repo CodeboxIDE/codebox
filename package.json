@@ -50,5 +50,8 @@
             "name": "Samy Pesse",
             "email": "samy.pesse@friendco.de"
         }
-    ]
+    ],
+    "scripts": {
+        "start": "[ -f .env ] && source .env || echo 'Store your environment config in .env'; node_modules/.bin/hr.js -d src/client build; node bin/codebox.js run"
+    }
 }

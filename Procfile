@@ -1,1 +1,0 @@
-web: node_modules/.bin/hr.js -d src/client build; node bin/codebox.js run
