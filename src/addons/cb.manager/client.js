@@ -28,6 +28,9 @@ define(["views/dialog"], function(InstallerDialog) {
     }, function() {
         dialogs.open(InstallerDialog);
     });
+
+    // Add the command to file/tools menu
     menu.getById("file").menu.add(command);
+    menu.getById("tools").menu.add(command);
 });
 

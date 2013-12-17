@@ -11,7 +11,6 @@ define([
         templateLoader: "addon.cb.manager.templates",
         template: "dialog.html",
         events: _.extend({}, DialogView.prototype.events,{
-            "keyup .search-input": "search",
             "click .action-fromurl": "installFromUrl",
             "click a[data-addons]": "filterAddons"
         }),
@@ -40,17 +39,6 @@ define([
                     dialogs.alert("Installation", "Sorry, installation failed, please check that the url you entered is correct and the GIT repository a correct CodeBox add-on.");
                 });
             });
-        },
-
-        // Search addons
-        search: function(e) {
-            var q = $(e.currentTarget).val();
-            this.list.collection.reset([]);
-            if (q.length > 0) {
-                this.list.collection.searchIndex(q);
-            } else {
-                this.list.collection.allIndex();
-            }
         },
 
         // Filter addons

@@ -53,6 +53,7 @@ define([
         });
     });
 
-    // Add the command to file menu
-    menu.getById("file").menu.add([command, { 'type': "divider"}]);
+    // Add the command to file/tools menu
+    menu.getById("file").menuSection([command]);
+    menu.getById("tools").menu.add(command);
 });

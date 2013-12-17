@@ -1,16 +1,26 @@
 <div class="modal-dialog">
     <div class="modal-content">
-        <div class="modal-header">
-            <input type="text" class="search-input" placeholder="Search" />
-            <h4 class="modal-title">Add-ons</h4>
-        </div>
         <div class="modal-body">
-            <div class="btn-group btn-group-justified">
-                <a href="#" class="btn btn-default" data-addons="all">All</a>
-                <a href="#" class="btn btn-default" data-addons="installed">Installed</a>
-                <a href="#" class="btn btn-default" data-addons="available">Available</a>
-                <a href="#" class="btn btn-default" data-addons="defaults">Defaults</a>
-            </div>
+            <nav class="navbar navbar-default navbar-static-top" role="navigation">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-8">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <span class="navbar-brand">Add-ons</span>
+                    </div>
+
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-8">
+                        <ul class="nav navbar-nav">
+                            <li><a href="#" data-addons="all">All</a></li>
+                            <li><a href="#" data-addons="installed">Installed</a></li>
+                            <li><a href="#" data-addons="available">Available</a></li>
+                            <li><a href="#" data-addons="defaults">Defaults</a></li>
+                        </ul>
+                    </div>
+                </nav>
             <div class="list"></div>
         </div>
         <div class="modal-footer">
