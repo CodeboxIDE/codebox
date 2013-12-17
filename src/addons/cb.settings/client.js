@@ -12,7 +12,7 @@ define(["views/dialog"], function(SettingsDialog) {
             "mod+,"
         ],
         visible: false,
-        position: 1000
+        position: 100
     }, function(page) {
         dialogs.open(SettingsDialog, {
             "page": page
