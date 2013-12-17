@@ -2,8 +2,9 @@ define([
     "underscore",
     "hr/hr",
     "q",
-    "models/operation"
-], function(_, hr, Q, Operation) {
+    "models/operation",
+    "utils/dialogs"
+], function(_, hr, Q, Operation, dialogs) {
     var Operations = hr.Collection.extend({
         model: Operation,
 
@@ -38,6 +39,13 @@ define([
             this.add(op);
 
             d = startMethod(op);
+
+            // Error during the operation
+            d.fail(function(err) {
+                dialogs.alert("Error during an operation ("+_.escape(opId)+")", err.message || err);
+            });
+
+            // Destroy the operation
             d.fin(function() {
                 op.destroy();
             });

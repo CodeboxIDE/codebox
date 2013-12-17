@@ -33,6 +33,13 @@ define([
             return this.request("post", "rpc"+method, JSON.stringify(args), options).then(function(data) {
                 if (!data.ok) return Q.reject(new Error(data.error));
                 return Q(data.data);
+            }, function(err) {
+                try {
+                    var errContent = JSON.parse(err.httpRes);
+                    return Q.reject(new Error(errContent.error || err.message));
+                } catch(e) {
+                    return Q.reject(err);
+                }
             });
         },
     });
