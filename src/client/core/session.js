@@ -42,8 +42,8 @@ define([
 
         // Logout
         exit: function() {
-            hr.Storage.set("email", "");
-            hr.Storage.set("token", "");
+            hr.Cookies.remove("email");
+            hr.Cookies.remove("token");
             location.reload();
         }
     };
