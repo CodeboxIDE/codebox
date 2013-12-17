@@ -62,10 +62,9 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations) {
 
         // Template rendering context
         templateContext: function() {
-            var queries = url.parseQueryString();
             return {
-                'email': queries.email || hr.Storage.get("email"),
-                'token': queries.token || hr.Storage.get("token"),
+                'email': hr.Cookies.get("email"),
+                'token': hr.Cookies.get("token"),
             };
         },
 
@@ -158,11 +157,11 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations) {
 
             return session.start(email, password).then(function() {
                 if (tosave) {
-                    hr.Storage.set("email", email);
-                    hr.Storage.set("token", password);
+                    hr.Cookies.set("email", email);
+                    hr.Cookies.set("token", password);
                 } else {
-                    hr.Storage.set("email", "");
-                    hr.Storage.set("token", "");
+                    hr.Cookies.set("email", "");
+                    hr.Cookies.set("token", "");
                 }
                 that.render();
             }).fail(function(err) {

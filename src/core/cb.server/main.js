@@ -54,6 +54,16 @@ function setup(options, imports, register) {
     });
 
     // Client-side
+    app.use('/', function(req, res, next) {
+        if (req.query.email
+        && req.query.token) {
+            // Auth credential: save as cookies and redirect to clean url
+            res.cookie('email', req.query.email, { httpOnly: false });
+            res.cookie('token', req.query.token, { httpOnly: false })
+            return res.redirect("/");
+        }
+        return next();
+    });
     app.use('/', express.static(__dirname + '/../../client/build'));
     app.use('/docs', express.static(__dirname + '/../../../docs'));
 
