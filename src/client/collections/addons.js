@@ -2,9 +2,9 @@ define([
     "q",
     "underscore",
     "hr/hr",
-    "core/api",
+    "core/backends/rpc",
     "models/addon"
-], function(Q, _, hr, api, Addon) {
+], function(Q, _, hr, rpc, Addon) {
     var Addons = hr.Collection.extend({
         model: Addon,
         defaults: _.defaults({
@@ -28,7 +28,7 @@ define([
             
             options = _.defaults(options || {}, {});
 
-            return api.rpc("/addons/list").then(function(data) {
+            return rpc.execute("addons/list").then(function(data) {
                 that.add(_.values(data));
             });
         },
@@ -70,7 +70,7 @@ define([
         install: function(git) {
             var that = this;
 
-            return api.rpc("/addons/install", {
+            return rpc.execute("addons/install", {
                 'git': git
             }).then(function(data) {
                 that.reset([]);
@@ -80,7 +80,7 @@ define([
         uninstall: function(name) {
             var that = this;
 
-            return api.rpc("/addons/uninstall", {
+            return rpc.execute("addons/uninstall", {
                 'name': name
             }).then(function() {
                 that.reset([]);

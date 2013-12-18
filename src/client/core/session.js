@@ -5,8 +5,8 @@ define([
     "core/box",
     "core/addons",
     "core/collaborators",
-    "core/offline/manager"
-], function(_, hr, user, box, addons, collaborators, offline) {
+    "core/backends/rpc"
+], function(_, hr, user, box, addons, collaborators, rpc) {
     // Extend template context
     hr.Template.extendContext({
         'session': {
@@ -17,10 +17,22 @@ define([
         }
     });
 
+    // Redefine check for connexion status
+    hr.Offline.check = function() {
+        return rpc.execute("box/ping").then(function(data) {
+            hr.Offline.setState(data.ping == true);
+            if (!hr.Offline.isConnected()) {
+                return Q.reject(new Error("No connected"));
+            }
+        }, function() {
+            hr.Offline.setState(false);
+        })
+    };
+
     return {
         // Prepare session
         prepare: function() {
-            return offline.check().then(function() {
+            return hr.Offline.check().then(function() {
                 return box.status();
             });
         },

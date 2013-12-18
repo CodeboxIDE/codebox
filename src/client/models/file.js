@@ -2,14 +2,14 @@ define([
     "q",
     "underscore",
     "hr/hr",
-    "core/api",
+    "core/backends/vfs",
     "utils/url",
     "utils/languages",
     "utils/filesync",
     "utils/dialogs",
     "utils/uploader",
     "core/operations"
-], function(Q, _, hr, api, Url, Languages, FileSync, Dialogs, Uploader, operations) {
+], function(Q, _, hr, vfs, Url, Languages, FileSync, Dialogs, Uploader, operations) {
     var logging = hr.Logger.addNamespace("files");
 
     if (typeof String.prototype.endsWith !== 'function') {

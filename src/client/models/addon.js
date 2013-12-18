@@ -3,11 +3,10 @@ define([
     "underscore",
     "jQuery",
     "hr/hr",
-    "core/api",
 
     // addons dependencies
     "core/globals"
-], function(Q, _, $, hr, api) {
+], function(Q, _, $, hr) {
     var logging = hr.Logger.addNamespace("addon");
 
     var Addon = hr.Model.extend({

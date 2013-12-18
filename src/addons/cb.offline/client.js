@@ -2,7 +2,7 @@ define([], function() {
     var app = codebox.require("core/app");
     var menu = codebox.require("core/commands/menu");
     var commands = codebox.require("core/commands/toolbar");
-    var offline = codebox.require("core/offline/manager");
+    var hr = codebox.require("hr/hr");
 
 
     // Command to check connexion
@@ -11,7 +11,7 @@ define([], function() {
         'offline': true,
         'icon': "bolt"
     }, function() {
-        offline.check();
+        hr.Offline.check();
     });
 
     // Add menu

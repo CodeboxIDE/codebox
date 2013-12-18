@@ -1,9 +1,8 @@
 define([
     "underscore",
     "hr/hr",
-    "utils/keyboard",
-    "core/offline/manager"
-], function(_, hr, Keyboard, offline) {
+    "utils/keyboard"
+], function(_, hr, Keyboard) {
     var logging = hr.Logger.addNamespace("command");
 
     Array.prototype.remove = function(val) {
@@ -71,10 +70,10 @@ define([
             this.menu.reset(this.get("menu", []));
 
             if (this.get("offline") !== null) {
-                offline.on("state", function() {
-                    that.toggleFlag("disabled", that.get("offline") == offline.isConnected())
+                hr.Offline.on("state", function() {
+                    that.toggleFlag("disabled", that.get("offline") == hr.Offline.isConnected())
                 });
-                that.toggleFlag("disabled", that.get("offline") == offline.isConnected())
+                that.toggleFlag("disabled", that.get("offline") == hr.Offline.isConnected())
             }
         },
 

@@ -11,11 +11,9 @@ define([
     'core/commands/menu',
     'core/tabs',
     'core/panels',
-    'core/operations',
-    'core/offline/manager'
+    'core/operations'
 ], function (hr, url, dialogs, 
-box, session, addons, box, files, commands, menu, tabs, panels, operations,
-offline) {
+box, session, addons, box, files, commands, menu, tabs, panels, operations) {
 
     // Define base application
     var Application = hr.Application.extend({
@@ -49,12 +47,17 @@ offline) {
                 this.toggleMode("body-fullpage", true);
             }, this);
 
-            // Connexion status
-            offline.on("state", function(state) {
+            // Offline: state/update
+            hr.Offline.on("state", function(state) {
                 if (!state) {
                     dialogs.alert("Offline Mode", "<p>This workspace connexion has encountered an error. This could be due to a lack of network connectivity.</p><p>If your network is still on, please try to reload the page and if the error persists, please signal the issue at <a target='_blank' href='https://github.com/FriendCode/codebox/issues'>feedback</a>.");
                 }
-            }, this);
+            });
+            hr.Offline.on("update", function() {
+                dialogs.alert("Application cache updated", "The offline application cache has been updated, This will refresh the IDE to use the new application cache.").fin(function() {
+                    location.reload();
+                });
+            });
 
             // Title changed
             box.on("change:name", function() {
@@ -117,8 +120,8 @@ offline) {
                     // Open root files
                     files.openNew();
 
-                    // Check offline mode
-                    offline.update();
+                    // Check update
+                    hr.Offline.checkUpdate();
                 });
             }
             return Application.__super__.finish.apply(this, arguments);
