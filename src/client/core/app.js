@@ -11,9 +11,11 @@ define([
     'core/commands/menu',
     'core/tabs',
     'core/panels',
-    'core/operations'
+    'core/operations',
+    'core/offline/manager'
 ], function (hr, url, dialogs, 
-box, session, addons, box, files, commands, menu, tabs, panels, operations) {
+box, session, addons, box, files, commands, menu, tabs, panels, operations,
+offline) {
 
     // Define base application
     var Application = hr.Application.extend({
@@ -48,8 +50,11 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations) {
             }, this);
 
             // Connexion status
-            box.on("status", function(state) {
-                this.$(".cb-connexion-alert").toggle(!state);
+            offline.on("state", function(state) {
+                if (!state) {
+                    dialogs.alert("Connexion Error", "<p>This workspace has encountered an error. We are looking into the problem now. This could be due to a lack of network connectivity (error with websocket).</p><p>Please try to reload the page. If the error persists, please signal the issue at <a target='_blank' href='https://github.com/FriendCode/codebox/issues'>feedback</a>.");
+                }
+                //this.$(".cb-connexion-alert").toggle(!state);
             }, this);
 
             // Title changed
@@ -112,6 +117,9 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations) {
 
                     // Open root files
                     files.openNew();
+
+                    // Check offline mode
+                    offline.start();
                 });
             }
             return Application.__super__.finish.apply(this, arguments);

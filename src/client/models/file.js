@@ -651,11 +651,13 @@ define([
                         'id': "file.upload",
                         'type': "menu",
                         'title': "Upload",
+                        'offline': false,
                         'menu': [
                             {
                                 'id': "file.upload.files",
                                 'type': "action",
                                 'title': "Files",
+                                'offline': false,
                                 'action': function() {
                                     that.actionUpload();
                                 }
@@ -664,6 +666,7 @@ define([
                                 'id': "file.upload.directory",
                                 'type': "action",
                                 'title': "Directory",
+                                'offline': false,
                                 'action': function() {
                                     that.actionUpload({
                                         'directory': true
@@ -677,6 +680,7 @@ define([
                         'id': "file.download",
                         'type': "action",
                         'title': "Download",
+                        'offline': false,
                         'action': function() {
                             that.actionDownload();
                         }

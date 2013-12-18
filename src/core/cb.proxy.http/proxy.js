@@ -32,6 +32,7 @@ function createProxy(baseUrl) {
                         port: port,
                         https: port == 443
                     };
+                    console.log(dest);
 
                     return next(null, dest);
                 },

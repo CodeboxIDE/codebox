@@ -62,6 +62,12 @@ define([
             return $a;
         },
 
+        getFlagsClass: function() {
+            return _.map(this.model.get("flags", "").split(" "), function(flag) {
+                return this.flagsClasses[flag] || "";
+            }, this).join(" ");
+        },
+
         render: function() {
             var that = this;
             var itemType = this.model.get("type");
@@ -70,7 +76,7 @@ define([
             var $li = this.$el;
             $li.empty();
             $li.attr("data-cmdid", this.model.id+"-"+this.model.cid);
-            $li.attr("class", this.className+" "+(this.flagsClasses[this.model.get("flags", "")] || ""));
+            $li.attr("class", this.className+" "+this.getFlagsClass());
 
             if (itemType == "action") {
                 var $a = this.buildAction();

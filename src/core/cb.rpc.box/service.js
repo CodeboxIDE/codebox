@@ -20,5 +20,11 @@ BoxRPCService.prototype.status = function(args, meta) {
     });
 };
 
+BoxRPCService.prototype.ping = function(args, meta) {
+    return Q({
+        'ping': true
+    });
+};
+
 // Exports
 exports.BoxRPCService = BoxRPCService;

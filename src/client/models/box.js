@@ -5,8 +5,9 @@ define([
     'models/file',
     'models/shell',
     'models/user',
-    'core/operations'
-], function (hr, io, api, File, Shell, User, operations) {
+    'core/operations',
+    'core/offline/manager'
+], function (hr, io, api, File, Shell, User, operations, offline) {
     var logging = hr.Logger.addNamespace("codebox");
 
     var Codebox = hr.Model.extend({
@@ -26,7 +27,6 @@ define([
             Codebox.__super__.initialize.apply(this, arguments);
 
             this.baseUrl = this.options.baseUrl || "";
-            this.state = false;
 
             this.user = null;
 
@@ -54,35 +54,24 @@ define([
                     that.trigger(eventName, data);
                 });
                 socket.on('connect', function(data) {
-                    that.setStatus(true);
+                    offline.check();
                 });
                 socket.on('connect_failed', function(data) {
-                    that.setStatus(false);
+                    offline.check();
                 });
                 socket.on('reconnect', function(data) {
-                    that.setStatus(true);
+                    offline.check();
                 });
                 socket.on('reconnect_failed', function(data) {
-                    that.setStatus(true);
+                    offline.check();
                 });
                 socket.on('error', function(data) {
-                    that.setStatus(false);
+                    offline.check();
                 });
                 socket.on('disconnect', function(data) {
-                    that.setStatus(false);
+                    offline.check();
                 });
             });
-        },
-
-        /*
-         *  Set codebox status (working or not)
-         *  
-         *  @status : boolean for the status
-         */
-        setStatus: function(state) {
-            this.state = state;
-            logging.log("status ", this.state);
-            this.trigger("status", state);
         },
 
         /*

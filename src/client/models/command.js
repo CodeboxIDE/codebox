@@ -2,7 +2,8 @@ define([
     "underscore",
     "hr/hr",
     "utils/keyboard",
-], function(_, hr, Keyboard) {
+    "core/offline/manager"
+], function(_, hr, Keyboard, offline) {
     var logging = hr.Logger.addNamespace("command");
 
     Array.prototype.remove = function(val) {
@@ -49,12 +50,16 @@ define([
             // Visible in search
             'search': true,
 
+            // Offline mode
+            'offline': null,
+
             // Others flags
             'flags': ""
         },
 
         // Constructor
         initialize: function() {
+            var that = this;
             Command.__super__.initialize.apply(this, arguments);
 
             // Default unique id
@@ -64,10 +69,21 @@ define([
             var Commands = require("collections/commands");
             this.menu = new Commands();
             this.menu.reset(this.get("menu", []));
+
+            if (this.get("offline") !== null) {
+                offline.on("state", function() {
+                    that.toggleFlag("disabled", that.get("offline") == offline.state)
+                });
+                console.log("offlien command", that.get("offline"), that.get("offline") == offline.state);
+                that.toggleFlag("disabled", that.get("offline") == offline.state)
+            }
         },
 
         // Run the command
         run: function(args) {
+            if (this.hasFlag("disabled")) {
+                return false;
+            }
             return this.get("action").apply(this, [args]);
         },
 

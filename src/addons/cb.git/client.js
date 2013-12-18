@@ -9,7 +9,8 @@ define(["views/dialog"], function(GitDialog) {
     // Branches menu
     var branchesMenu = Command.register("git.branches", {
         'title': "Switch To Branch",
-        'type': "menu"
+        'type': "menu",
+        'offline': false
     });
     var updateBranchesMenu = function() {
         box.gitBranches().then(function(branches) {
@@ -33,6 +34,7 @@ define(["views/dialog"], function(GitDialog) {
             'id': "git.sync",
             'title': "Synchronize",
             'shortcuts': ["mod+S"],
+            'offline': false,
             'action': function() {
                 box.sync();
             }
@@ -42,6 +44,7 @@ define(["views/dialog"], function(GitDialog) {
             'id': "git.commit",
             'title': "Commit",
             'shortcuts': ["mod+shift+C"],
+            'offline': false,
             'action': function() {
                 dialogs.open(GitDialog);
             }
@@ -51,6 +54,7 @@ define(["views/dialog"], function(GitDialog) {
             'id': "git.push",
             'title': "Push",
             'shortcuts': ["mod+P"],
+            'offline': false,
             'action': function() {
                 box.gitPush();
             }
@@ -59,6 +63,7 @@ define(["views/dialog"], function(GitDialog) {
             'id': "git.pull",
             'title': "Pull",
             'shortcuts': ["shift+mod+P"],
+            'offline': false,
             'action': function() {
                 box.gitPull();
             }
@@ -68,12 +73,14 @@ define(["views/dialog"], function(GitDialog) {
         {
             'id': "git.branches.refresh",
             'title': "Refresh branches",
+            'offline': false,
             'action': updateBranchesMenu
         }
     ]).menuSection([
         {
             'id': "git.branch.create",
             'title': "Create a branch",
+            'offline': false,
             'action': function() {
                 dialogs.prompt("Create a branch", "Enter the name for the new branch:").then(function(name) {
                     if (!name) return;
@@ -84,6 +91,7 @@ define(["views/dialog"], function(GitDialog) {
         {
             'id': "git.branch.delete",
             'title': "Delete a branch",
+            'offline': false,
             'action': function() {
                 dialogs.prompt("Delete a branch", "Enter the name of the branch you want to delete:").then(function(name) {
                     if (!name) return;
