@@ -1,1 +1,1 @@
-define("client",[],function(){var e=codebox.require("jQuery"),t=codebox.require("core/collaborators"),n=codebox.require("core/search"),r=codebox.require("core/box"),i=codebox.require("core/user"),s=codebox.require("core/commands")})
+define("client",[],function(){var e=codebox.require("jQuery"),t=codebox.require("core/collaborators"),n=codebox.require("core/search"),r=codebox.require("core/box"),i=codebox.require("core/user"),s=codebox.require("core/commands/menu")})

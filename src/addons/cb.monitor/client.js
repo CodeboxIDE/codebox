@@ -1,9 +1,9 @@
 define([
     "views/tab"
 ], function(MonitorTab) {
-    var commands = codebox.require("core/commands");
+    var commands = codebox.require("core/commands/toolbar");
     var tabs = codebox.require("core/tabs");
-    var menu = codebox.require("core/menu");
+    var menu = codebox.require("core/commands/menu");
 
     // Add opening command
     var command = commands.register("monitor.open", {

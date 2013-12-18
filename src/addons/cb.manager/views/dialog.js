@@ -1,6 +1,7 @@
 define([
-    "views/addons"
-], function(AddonsList) {
+    "views/addons",
+    "text!templates/dialog.html"
+], function(AddonsList, templateFile) {
     var $ = codebox.require("jQuery");
     var DialogView = codebox.require("views/dialogs/base");
     var dialogs = codebox.require("utils/dialogs");
@@ -8,8 +9,8 @@ define([
 
     var InstallerDialog = DialogView.extend({
         className: "addon-manager-dialog modal fade",
-        templateLoader: "addon.cb.manager.templates",
-        template: "dialog.html",
+        templateLoader: "text",
+        template: templateFile,
         events: _.extend({}, DialogView.prototype.events,{
             "click .action-fromurl": "installFromUrl",
             "click a[data-addons]": "filterAddons"

@@ -1,7 +1,8 @@
 define([
     'collections/addons',
+    'text!templates/addon.html',
     'less!stylesheets/addons'
-], function(Addons) {
+], function(Addons, templateFile) {
     var hr = codebox.require("hr/hr");
     var _ = codebox.require("underscore");
     var addons = codebox.require("core/addons");
@@ -12,8 +13,8 @@ define([
 
     var AddonItem = hr.List.Item.extend({
         className: "addon-item",
-        templateLoader: "addon.cb.manager.templates",
-        template: "addon.html",
+        templateLoader: "text",
+        template: templateFile,
         events: {
             'click .action-install': 'install',
             'click .action-uninstall': 'uninstall'
@@ -22,6 +23,7 @@ define([
         templateContext: function() {
             return {
                 'model': this.model,
+                'addonStatus': addons.getState(this.model.get("name")),
                 'isInstalled': addons.isInstalled(this.model.get("name")),
                 'isDefault': addons.isDefault(this.model.get("name")),
                 'isUpdated': addons.isUpdated(this.model)

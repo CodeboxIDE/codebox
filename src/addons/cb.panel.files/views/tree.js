@@ -1,6 +1,7 @@
 define([
+    "text!templates/item.html",
     "less!stylesheets/files.less"
-], function() {
+], function(templateFile) {
     var _ = codebox.require("underscore");
     var $ = codebox.require("jQuery");
     var hr = codebox.require("hr/hr");
@@ -12,7 +13,8 @@ define([
     var FilesTreeViewItem = FilesBaseView.extend({
         tagName: "li",
         className: "file-item",
-        template: "files/tree/item.html",
+        templateLoader: "text",
+        template: templateFile,
         events: {
             "click .name": "select",
             "dblclick .name": "open"

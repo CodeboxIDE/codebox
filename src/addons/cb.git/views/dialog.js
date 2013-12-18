@@ -1,13 +1,14 @@
 define([
+    "text!templates/dialog.html",
     "less!stylesheets/git.less"
-], function() {
+], function(templateFile) {
     var DialogView = codebox.require("views/dialogs/base");
     var box = codebox.require("core/box");
 
     var GitDialog = DialogView.extend({
         className: "addon-git-dialog modal fade",
-        templateLoader: "addon.cb.git.templates",
-        template: "dialog.html",
+        templateLoader: "text",
+        template: templateFile,
         events: _.extend({}, DialogView.prototype.events,{
             "submit .git-commit": "submit"
         }),

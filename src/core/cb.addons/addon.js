@@ -111,7 +111,7 @@ var Addon = function(logger, _rootPath) {
         // Output file
         var output = path.resolve(addonPath, "addon-built.js");
 
-        // Build config
+        // Build config (todo: use this config for the command)
         var optconfig = {
             'baseUrl': addonPath,
             'name': main,
@@ -123,12 +123,13 @@ var Addon = function(logger, _rootPath) {
             'map': {
                 '*': {
                     'css': "require-tools/css/css",
-                    'less': "require-tools/less/less"
+                    'less': "require-tools/less/less",
+                    'text': "require-tools/text/text"
                 }
             }
         };
 
-        var command = rjs+" -o baseUrl="+addonPath+" paths.require-tools="+requiretoolsPath+" name="+main+" map.*.css=require-tools/css/css map.*.less=require-tools/less/less out="+output;
+        var command = rjs+" -o baseUrl="+addonPath+" paths.require-tools="+requiretoolsPath+" name="+main+" map.*.css=require-tools/css/css map.*.less=require-tools/less/less map.*.text=require-tools/text/text out="+output;
 
         // Run optimization
         logger.log("Optimizing", this.infos.name);

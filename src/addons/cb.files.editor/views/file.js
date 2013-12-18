@@ -3,8 +3,9 @@ define([
     "ace/range",
     "ace/ext/modelist",
     "ace/ext/language_tools",
-    "less!stylesheets/file.less"
-], function(ace, CRange, aceModes) {
+    "text!templates/file.html",
+    "less!stylesheets/file.less",
+], function(ace, CRange, aceModes, aceLangs, templateFile) {
     var _ = codebox.require("underscore");
     var $ = codebox.require("jQuery");
     var hr = codebox.require("hr/hr");
@@ -12,7 +13,7 @@ define([
     var FilesBaseView = codebox.require("views/files/base");
     var FileSync = codebox.require("utils/filesync");
     var user = codebox.require("core/user");
-    var menu = codebox.require("core/menu");
+    var menu = codebox.require("core/commands/menu");
     var settings = codebox.require("core/settings");
     var Command = codebox.require("models/command");
 
@@ -50,8 +51,8 @@ define([
 
     var FileEditorView = FilesBaseView.extend({
         className: "addon-files-aceeditor",
-        templateLoader: "addon.cb.files.editor.templates",
-        template: "file.html",
+        templateLoader: "text",
+        template: templateFile,
         defaults: {},
         events: {},
 

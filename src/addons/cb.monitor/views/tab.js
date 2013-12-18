@@ -1,7 +1,8 @@
 define([
     "views/logs",
+    "text!templates/tab.html",
     "less!stylesheets/tab.less"
-], function(LogsList) {
+], function(LogsList, templateFile) {
     var _ = codebox.require("underscore");
     var $ = codebox.require("jQuery");
     var hr = codebox.require("hr/hr");
@@ -9,8 +10,8 @@ define([
     var box = codebox.require("core/box");
 
     var MonitorTab = Tab.extend({
-        templateLoader: "addon.cb.monitor.templates",
-        template: "tab.html",
+        templateLoader: "text",
+        template: templateFile,
         className: Tab.prototype.className+ " addon-monitor-tab",
         events: {
             "click .action-monitor-clear": "clearLogs",

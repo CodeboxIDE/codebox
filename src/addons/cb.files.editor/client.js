@@ -5,7 +5,7 @@ define([
     "ace/ext/themelist"
 ], function(FileEditorView, ace, aceModes, aceThemes) {
     var $ = codebox.require("jQuery");
-    var commands = codebox.require("core/commands");
+    var commands = codebox.require("core/commands/toolbar");
     var settings = codebox.require("core/settings");
     var files = codebox.require("core/files");
     var languages = codebox.require("utils/languages");

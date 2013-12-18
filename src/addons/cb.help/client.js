@@ -1,7 +1,7 @@
 define(["views/dialog"], function(HelpDialog) {
     var app = codebox.require("core/app");
     var dialogs = codebox.require("utils/dialogs");
-    var menu = codebox.require("core/menu");
+    var menu = codebox.require("core/commands/menu");
 
     // Add menu
     menu.register("help", {

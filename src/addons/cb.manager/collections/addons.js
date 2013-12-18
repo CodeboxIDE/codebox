@@ -29,7 +29,6 @@ define([
             return hr.Requests.getJSON(user.settings("manager").get("registry")+"/api/addons?limit=1000&callback=?").then(function(index) {
                 that._index = index;
                 that._index.addons = _.map(that._index.addons, function(addon) {
-                    console.log(addon['package']);
                     return _.extend(addon['package'], {
                         'git': addon.git
                     });

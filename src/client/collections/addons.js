@@ -169,7 +169,10 @@ define([
 
             return _.reduce(addons, function(d, addon) {
                 return d.then(function() {
-                    return addon.load({}, _.pick(that.provides, addon.get("client.consumes", [])));
+                    return addon.load({}, _.pick(that.provides, addon.get("client.consumes", []))).fail(function(err) {
+                        err.addon = addon;
+                        return Q.reject(err);
+                    });
                 }).then(function(provides) {
                     _.extend(that.provides, provides || {});
                 });

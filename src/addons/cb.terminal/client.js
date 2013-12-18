@@ -2,10 +2,10 @@ define([
     "themes",
     "views/tab"
 ], function(THEMES, TerminalTab) {
-    var commands = codebox.require("core/commands");
+    var commands = codebox.require("core/commands/toolbar");
     var tabs = codebox.require("core/tabs");
     var settings = codebox.require("core/settings");
-    var menu = codebox.require("core/menu");
+    var menu = codebox.require("core/commands/menu");
 
     var themes_map = {};
     _.each(THEMES, function(color, name) {

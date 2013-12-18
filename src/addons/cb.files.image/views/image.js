@@ -1,6 +1,7 @@
 define([
+    "text!templates/image.html",
     "less!stylesheets/image.less"
-], function() {
+], function(templateFile) {
     var _ = codebox.require("underscore");
     var $ = codebox.require("jQuery");
     var hr = codebox.require("hr/hr");
@@ -9,8 +10,8 @@ define([
 
     var FileImageView = FilesBaseView.extend({
         className: "addon-files-imageviewer",
-        templateLoader: "addon.cb.files.image.templates",
-        template: "image.html",
+        templateLoader: "text",
+        template: templateFile,
         events: {}
     });
 

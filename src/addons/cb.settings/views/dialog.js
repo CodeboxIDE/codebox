@@ -1,14 +1,15 @@
 define([
+    "text!templates/dialog.html",
     "less!stylesheets/dialog.less"
-], function() {
+], function(templateFile) {
     var _ = codebox.require("underscore");
     var DialogView = codebox.require("views/dialogs/base");
     var settings = codebox.require("core/settings");
 
     var SettingsDialog = DialogView.extend({
         className: "addon-settings-dialog modal fade",
-        templateLoader: "addon.cb.settings.templates",
-        template: "dialog.html",
+        templateLoader: "text",
+        template: templateFile,
         events: _.extend({}, DialogView.prototype.events,{
             "submit form": "submit"
         }),

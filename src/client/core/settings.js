@@ -1,8 +1,9 @@
 define([
     'hr/hr',
+    'models/command',
     'core/user',
     'views/settings/base'
-], function (hr, user, SettingsPageView) {
+], function (hr, Command, user, SettingsPageView) {
 
     /*
      *  This module define a unify way
@@ -61,8 +62,7 @@ define([
          *  Open a settings page
          */
         open: function(page) {
-            var commands = require("core/commands");
-            commands.run("settings", page);
+            Command.run("settings", page);
         }
     };
 

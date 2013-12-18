@@ -3,9 +3,8 @@ define([
     'hr/hr',
     'models/box',
     'core/search',
-    'core/commands',
     'core/collaborators'
-], function (Q, hr, Codebox, search, commands, collaborators) {
+], function (Q, hr, Codebox, search, collaborators) {
     // Current box
     var box = new Codebox();
 

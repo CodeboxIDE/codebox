@@ -1,8 +1,8 @@
 define(["views/dialog"], function(GitDialog) {
-    var commands = codebox.require("core/commands");
+    var commands = codebox.require("core/commands/toolbar");
     var app = codebox.require("core/app");
     var dialogs = codebox.require("utils/dialogs");
-    var menu = codebox.require("core/menu");
+    var menu = codebox.require("core/commands/menu");
     var box = codebox.require("core/box");
     var Command = codebox.require("models/command");
 

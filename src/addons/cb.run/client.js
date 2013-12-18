@@ -1,9 +1,9 @@
 define([], function() {
     var _ = codebox.require("underscore");
-    var commands = codebox.require("core/commands");
+    var commands = codebox.require("core/commands/toolbar");
     var app = codebox.require("core/app");
     var box = codebox.require("core/box");
-    var menu = codebox.require("core/menu");
+    var menu = codebox.require("core/commands/menu");
     var dialogs = codebox.require("utils/dialogs");
     var Command = codebox.require("models/command");
 

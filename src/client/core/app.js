@@ -7,8 +7,8 @@ define([
     'core/addons',
     'core/box',
     'core/files',
-    'core/commands',
-    'core/menu',
+    'core/commands/toolbar',
+    'core/commands/menu',
     'core/tabs',
     'core/panels',
     'core/operations'
@@ -100,7 +100,7 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations) {
 
                 // Load addons
                 addons.loadAll().fail(function(err) {
-                    dialogs.alert("Warning!", "Error when initializing addons, it's possible that one of the addons is not correctly loaded. Please check addons states using the addons manager.");
+                    dialogs.alert("Warning!", "<p>Error when initializing addons, it's possible that one of the addons is not correctly loaded. Please check addons states using the addons manager.</p><p>Addon ref: "+err.addon.get("name")+"</p><p>Error message:"+ err.message+"</p>");
                 }).fin(function() {
                     // Remove loading state
                     that.$(".cb-loading-alert").remove();

@@ -1,7 +1,8 @@
 define([
     "collections/logs",
+    "text!templates/log.html",
     "less!stylesheets/logs.less"
-], function(Logs) {
+], function(Logs, templateFile) {
     var _ = codebox.require("underscore");
     var $ = codebox.require("jQuery");
     var hr = codebox.require("hr/hr");
@@ -10,8 +11,8 @@ define([
 
     // List Item View
     var LogItem = hr.List.Item.extend({
-        templateLoader: "addon.cb.monitor.templates",
-        template: "log.html",
+        templateLoader: "text",
+        template: templateFile,
         className: "log-item",
         events: {},
 

@@ -1,7 +1,7 @@
 define([
     "views/panel"
 ], function(PanelSearchView) {
-    var commands = codebox.require("core/commands");
+    var commands = codebox.require("core/commands/toolbar");
     var app = codebox.require("core/app");
     var panels = codebox.require("core/panels");
 

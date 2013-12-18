@@ -4,7 +4,7 @@ define([], function() {
     var search = codebox.require("core/search");
     var box = codebox.require("core/box");
     var user = codebox.require("core/user");
-    var commands = codebox.require("core/commands");
+    var menu = codebox.require("core/commands/menu");
 
     
 });

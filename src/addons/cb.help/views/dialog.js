@@ -1,14 +1,15 @@
 define([
     "views/page",
+    "text!templates/dialog.html",
     "less!stylesheets/dialog.less"
-], function(PageView) {
+], function(PageView, templateFile) {
     var DialogView = codebox.require("views/dialogs/base");
     var box = codebox.require("core/box");
 
     var HelpDialog = DialogView.extend({
         className: "addon-help-dialog modal fade",
-        templateLoader: "addon.cb.help.templates",
-        template: "dialog.html",
+        templateLoader: "text",
+        template: templateFile,
         events: _.extend({}, DialogView.prototype.events,{
             "click .action-gohome": "openHome"
         }),

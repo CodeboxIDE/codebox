@@ -2,11 +2,11 @@ define([
     "views/panel"
 ], function(PanelFilesView) {
     var Command = codebox.require("models/command");
-    var commands = codebox.require("core/commands");
+    var commands = codebox.require("core/commands/toolbar");
     var app = codebox.require("core/app");
     var panels = codebox.require("core/panels");
     var files = codebox.require("core/files");
-    var menu = codebox.require("core/menu");
+    var menu = codebox.require("core/commands/menu");
     var box = codebox.require("core/box");
 
     // Add files panels

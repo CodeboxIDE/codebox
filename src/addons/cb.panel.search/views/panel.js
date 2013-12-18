@@ -1,6 +1,7 @@
 define([
+    "text!templates/panel.html",
     "less!stylesheets/panel.less"
-], function() {
+], function(templateFile) {
     var _ = codebox.require("underscore");
     var $ = codebox.require("jQuery");
     var hr = codebox.require("hr/hr");
@@ -9,8 +10,8 @@ define([
 
     var PanelSearchView = PanelBaseView.extend({
         className: "cb-panel-search",
-        template: "panel.html",
-        templateLoader: "addon.cb.panel.search.templates",
+        template: templateFile,
+        templateLoader: "text",
         events: {
             "click input": "focus",
             "blur input": "inputBlur",

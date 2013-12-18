@@ -50,7 +50,8 @@ define([
                 'map': {
                     '*': {
                         'css': 'require-tools/css/css',
-                        'less': 'require-tools/less/less'
+                        'less': 'require-tools/less/less',
+                        'text': 'require-tools/text/text'
                     }
                 }
             };
