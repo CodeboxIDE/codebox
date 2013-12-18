@@ -71,6 +71,15 @@ define([
         },
 
         /*
+         *  VFS request
+         */
+        vfsRequest: function(method, url, args) {
+            return vfs.execute(method, args, {
+                'url': url
+            });
+        },
+
+        /*
          *  Open the tab for this file
          */
         open: function(path, options) {
@@ -295,7 +304,7 @@ define([
 
             var parentPath = this.parentPath(path);
             var filename = this.filename(path);
-            return api.request("getJSON", this.vfsUrl(parentPath, true)).then(function(filesData) {
+            return this.vfsRequest("getJSON", this.vfsUrl(parentPath, true)).then(function(filesData) {
                 var fileData = _.find(filesData, function(file) {
                     return file.name == filename;
                 });
@@ -410,7 +419,7 @@ define([
                 group: true
             });
 
-            return api.request("getJSON", this.vfsUrl(null, true)).then(function(filesData) {
+            return this.vfsRequest("getJSON", this.vfsUrl(null, true)).then(function(filesData) {
                 var files = _.map(filesData, function(file) {
                     return new File({
                         "codebox": that.codebox
@@ -436,7 +445,7 @@ define([
          *  @name : name of the file to create
          */
         createFile: function(name) {
-            return api.request("put", this.vfsUrl(null, true)+"/"+name);
+            return this.vfsRequest("put", this.vfsUrl(null, true)+"/"+name);
         },
 
         /*
@@ -445,14 +454,14 @@ define([
          *  @name : name of the directory to create
          */
         mkdir: function(name) {
-            return api.request("put", this.vfsUrl(null, true)+"/"+name+"/");
+            return this.vfsRequest("put", this.vfsUrl(null, true)+"/"+name+"/");
         },
 
         /*
          *  Remove the file or directory
          */
         remove: function() {
-            return api.request("delete", this.vfsUrl(null));
+            return this.vfsRequest("delete", this.vfsUrl(null));
         },
 
         /*
@@ -463,9 +472,9 @@ define([
         rename: function(name) {
             var parentPath = this.parentPath();
             var newPath = parentPath+"/"+name;
-            return api.request("post", this.vfsUrl(newPath), JSON.stringify({
+            return this.vfsRequest("post", this.vfsUrl(newPath), {
                 "renameFrom": this.path()
-            }));
+            });
         },
 
         // (action) Refresh files list

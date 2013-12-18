@@ -10,7 +10,7 @@
         "event-stream": "3.0.11",
         "readable-stream": "1.0.2",
         "request": "2.27.0",
-        "hr.js": "0.2.12",
+        "hr.js": "0.3.0",
         "commander": "1.1.1",
         "googlediff": "0.1.0",
         "cryptojs": "2.5.3",
@@ -52,6 +52,6 @@
         }
     ],
     "scripts": {
-        "start": "[ -f .env ] && source .env || echo 'Store your environment config in .env'; ../../hr.js/bin/hr.js -d src/client build; node bin/codebox.js run"
+        "start": "[ -f .env ] && source .env || echo 'Store your environment config in .env'; node_modules/.bin/hr.js -d src/client build; node bin/codebox.js run"
     }
 }

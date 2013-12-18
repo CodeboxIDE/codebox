@@ -16,8 +16,7 @@
             "ace"
         ],
         "resources": [
-            "ace/css/*",
-            "ace/theme/*.css"
+            "ace/**"
         ]
     }
 }
