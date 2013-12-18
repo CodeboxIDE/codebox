@@ -153,6 +153,9 @@ var start = function(config) {
         // Export
         "./cb.export",
 
+        // Offline manifest
+        "./cb.offline",
+
         // Search
         "./cb.search",
 

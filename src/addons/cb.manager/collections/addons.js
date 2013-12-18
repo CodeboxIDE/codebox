@@ -7,6 +7,7 @@ define([
     var Addon = codebox.require("models/addon");
     var addons = codebox.require("core/addons");
     var Addons = codebox.require("collections/addons");
+    var box = codebox.require("core/box");
 
     var Addons = Addons.extend({
         model: Addon,
@@ -26,7 +27,7 @@ define([
                 return Q(this._index);
             }
 
-            return hr.Requests.getJSON(user.settings("manager").get("registry")+"/api/addons?limit=1000&callback=?").then(function(index) {
+            return hr.Requests.getJSON(box.proxyUrl(user.settings("manager").get("registry")+"/api/addons?limit=1000")).then(function(index) {
                 that._index = index;
                 that._index.addons = _.map(that._index.addons, function(addon) {
                     return _.extend(addon['package'], {

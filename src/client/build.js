@@ -1,4 +1,5 @@
 var path = require("path");
+var fs = require("fs");
 var pkg = require("../../package.json");
 
 exports.config = {
@@ -13,6 +14,7 @@ exports.config = {
 
     // Main entry point for application
     "main": "main",
+    "index": fs.readFileSync(path.resolve(__dirname, "index.html")),
 
     // Build output directory
     "build": path.resolve(__dirname, "build"),
