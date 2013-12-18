@@ -1,9 +1,8 @@
 define([
     'hr/hr',
     'jQuery',
-    'core/api',
     'utils/dialogs',
-], function(hr, $, api, dialogs) {
+], function(hr, $, dialogs) {
     var logging = hr.Logger.addNamespace("offline");
 
     var OfflineManager = hr.Class.extend({
@@ -43,14 +42,21 @@ define([
         // Check connexion status
         check: function() {
             var that = this;
+            var api = require("core/api");
+
             return api.rpc("/box/ping").then(function(data) {
                 that.setState(data.ping == true);
-                if (!that.state) {
+                if (!that.isConnected()) {
                     return Q.reject(new Error("No connected"));
                 }
             }, function() {
                 that.setState(false);
             });
+        },
+
+        // Return true if connexion is on
+        isConnected: function() {
+            return this.state;
         }
     });
 

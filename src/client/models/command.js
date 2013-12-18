@@ -72,10 +72,9 @@ define([
 
             if (this.get("offline") !== null) {
                 offline.on("state", function() {
-                    that.toggleFlag("disabled", that.get("offline") == offline.state)
+                    that.toggleFlag("disabled", that.get("offline") == offline.isConnected())
                 });
-                console.log("offlien command", that.get("offline"), that.get("offline") == offline.state);
-                that.toggleFlag("disabled", that.get("offline") == offline.state)
+                that.toggleFlag("disabled", that.get("offline") == offline.isConnected())
             }
         },
 

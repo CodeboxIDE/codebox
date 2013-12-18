@@ -4,8 +4,9 @@ define([
     "core/user",
     "core/box",
     "core/addons",
-    "core/collaborators"
-], function(_, hr, user, box, addons, collaborators) {
+    "core/collaborators",
+    "core/offline/manager"
+], function(_, hr, user, box, addons, collaborators, offline) {
     // Extend template context
     hr.Template.extendContext({
         'session': {
@@ -19,7 +20,9 @@ define([
     return {
         // Prepare session
         prepare: function() {
-            return box.status();
+            return offline.check().then(function() {
+                return box.status();
+            });
         },
 
         // Start session

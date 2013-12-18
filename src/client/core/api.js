@@ -1,7 +1,9 @@
 define([
     'q',
-    'hr/hr'
-], function (Q, hr) {
+    'hr/hr',
+    'core/offline/manager',
+    'core/offline/backend'
+], function (Q, hr, offline, offlineBackend) {
     var Api = hr.Class.extend({
         /*
          *  Execute a request
@@ -29,9 +31,27 @@ define([
                     }
                 }
             });
+            
+            // Is offline
+            if (!offline.isConnected()) {
+                if (offlineBackend[method]) {
+                    console.log("!!!!! use offlien backend for ", method);
+                    return Q(offlineBackend[method].fallback(args, options));
+                } else {
+                    console.error("no fallback for ", method);
+                    return Q.reject(new Error("No offline fallback for this api rpc method"));
+                }
+            }
 
             return this.request("post", "rpc"+method, JSON.stringify(args), options).then(function(data) {
                 if (!data.ok) return Q.reject(new Error(data.error));
+
+                // Signal to offline backend
+                if (offlineBackend[method] && offlineBackend[method].trigger) {
+                    offlineBackend[method].trigger(data.data);
+                }
+
+                // Return result
                 return Q(data.data);
             }, function(err) {
                 try {

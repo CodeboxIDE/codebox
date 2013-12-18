@@ -52,7 +52,7 @@ offline) {
             // Connexion status
             offline.on("state", function(state) {
                 if (!state) {
-                    dialogs.alert("Connexion Error", "<p>This workspace has encountered an error. We are looking into the problem now. This could be due to a lack of network connectivity (error with websocket).</p><p>Please try to reload the page. If the error persists, please signal the issue at <a target='_blank' href='https://github.com/FriendCode/codebox/issues'>feedback</a>.");
+                    dialogs.alert("Offline Mode", "<p>This workspace connexion has encountered an error. This could be due to a lack of network connectivity.</p><p>If your network is still on, please try to reload the page and if the error persists, please signal the issue at <a target='_blank' href='https://github.com/FriendCode/codebox/issues'>feedback</a>.");
                 }
                 //this.$(".cb-connexion-alert").toggle(!state);
             }, this);
