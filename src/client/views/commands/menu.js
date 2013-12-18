@@ -5,7 +5,7 @@ define([
     'views/commands/manager'
 ], function(_, $, hr, CommandsView) {
 
-    var MenuItem = hr.List.Item.extend({
+    var MenuItem = CommandsView.CommandItem.extend({
         tagName: "li",
         className: "menu-item",
         flagsClasses: {
@@ -60,12 +60,6 @@ define([
 
 
             return $a;
-        },
-
-        getFlagsClass: function() {
-            return _.map(this.model.get("flags", "").split(" "), function(flag) {
-                return this.flagsClasses[flag] || "";
-            }, this).join(" ");
         },
 
         render: function() {

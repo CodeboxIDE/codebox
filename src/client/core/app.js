@@ -54,7 +54,6 @@ offline) {
                 if (!state) {
                     dialogs.alert("Offline Mode", "<p>This workspace connexion has encountered an error. This could be due to a lack of network connectivity.</p><p>If your network is still on, please try to reload the page and if the error persists, please signal the issue at <a target='_blank' href='https://github.com/FriendCode/codebox/issues'>feedback</a>.");
                 }
-                //this.$(".cb-connexion-alert").toggle(!state);
             }, this);
 
             // Title changed
@@ -119,7 +118,7 @@ offline) {
                     files.openNew();
 
                     // Check offline mode
-                    offline.start();
+                    offline.update();
                 });
             }
             return Application.__super__.finish.apply(this, arguments);

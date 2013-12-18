@@ -4,7 +4,7 @@ define([
 ], function(hr, CommandsView) {
 
     // List Item View
-    var CommandItem = hr.List.Item.extend({
+    var CommandItem = CommandsView.CommandItem.extend({
         className: "menu-item",
         template: "commands/command.html",
         events: {
@@ -21,7 +21,7 @@ define([
         // Finish rendering
         finish: function() {
             // Flags
-            this.$el.attr("class", this.className+" "+this.model.get("flags"));
+            this.$el.attr("class", this.className+" "+this.getFlagsClass());
             
             // Tooltip
             this.$("a").tooltip({

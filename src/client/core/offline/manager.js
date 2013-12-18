@@ -16,8 +16,8 @@ define([
             });
         },
 
-        // Start management of offline mode
-        start: function() {
+        // Update cache if necessary
+        update: function() {
             var onUpdateReady = function() {
                 dialogs.alert("Application cache updated", "The offline application cache has been updated, This will refresh the IDE to use the new application cache.").fin(function() {
                     location.reload();
@@ -28,15 +28,15 @@ define([
             if (window.applicationCache.status === window.applicationCache.UPDATEREADY) {
                 onUpdateReady();
             }
-
-            this.check();
         },
 
         // Set connexion status
         setState: function(state) {
+            if (state == this.state) return;
+
             this.state = state;
             logging.log("state ", this.state);
-            this.trigger("state", state);
+            this.trigger("state", this.state);
         },
 
         // Check connexion status

@@ -1,0 +1,1 @@
+define("client",[],function(){var e=codebox.require("core/app"),t=codebox.require("core/commands/menu"),n=codebox.require("core/commands/toolbar"),r=codebox.require("core/offline/manager"),i=n.register("offline.check",{title:"Check Connexion",offline:!0,icon:"bolt"},function(){r.check()});t.register("offline",{title:"Offline",position:90,offline:!0}).menuSection([i])})
