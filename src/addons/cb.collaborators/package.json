@@ -1,8 +1,8 @@
 {
-    "name": "cb.panel.collaborators",
+    "name": "cb.collaborators",
     "version": "0.1.1",
-    "title": "Collaborators Panel",
-    "description": "Collaborators list in a panel.",
+    "title": "Collaborators Menu",
+    "description": "Collaborators list in a menu.",
     "homepage": "https://github.com/FriendCode/codebox",
     "license": "Apache",
     "author": {
