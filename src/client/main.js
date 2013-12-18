@@ -12,5 +12,7 @@ require([
     // Start the application
     session.prepare().then(function() {
         app.run();
+    }, function(err) {
+        console.error("Error when starting the application:", err);
     });
 });
