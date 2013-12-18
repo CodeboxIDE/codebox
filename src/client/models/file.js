@@ -304,7 +304,7 @@ define([
 
             var parentPath = this.parentPath(path);
             var filename = this.filename(path);
-            return this.vfsRequest("read", this.vfsUrl(parentPath, true)).then(function(filesData) {
+            return this.vfsRequest("listdir", this.vfsUrl(parentPath, true)).then(function(filesData) {
                 var fileData = _.find(filesData, function(file) {
                     return file.name == filename;
                 });
@@ -337,7 +337,7 @@ define([
             if (options.redirect) {
                 window.open(url,'_blank');
             } else {
-                return this.vfsRequest("download", url).then(function(content) {
+                return this.vfsRequest("read", url).then(function(content) {
                     that.setCache(content);
                     return content;
                 });
@@ -418,7 +418,7 @@ define([
                 group: true
             });
 
-            return this.vfsRequest("read", this.vfsUrl(null, true)).then(function(filesData) {
+            return this.vfsRequest("listdir", this.vfsUrl(null, true)).then(function(filesData) {
                 var files = _.map(filesData, function(file) {
                     return new File({
                         "codebox": that.codebox
@@ -453,7 +453,7 @@ define([
          *  @name : name of the directory to create
          */
         mkdir: function(name) {
-            return this.vfsRequest("write", this.vfsUrl(null, true)+"/"+name+"/");
+            return this.vfsRequest("mkdir", this.vfsUrl(null, true)+"/"+name+"/");
         },
 
         /*
@@ -471,7 +471,7 @@ define([
         rename: function(name) {
             var parentPath = this.parentPath();
             var newPath = parentPath+"/"+name;
-            return this.vfsRequest("change", this.vfsUrl(newPath), {
+            return this.vfsRequest("rename", this.vfsUrl(newPath), {
                 "renameFrom": this.path()
             });
         },

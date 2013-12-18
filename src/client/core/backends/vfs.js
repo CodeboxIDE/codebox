@@ -9,12 +9,20 @@ define([
 
     // Map vfs method -> http request method
     var methodsMap = {
-        "read": "getJSON",
+        "listdir": "getJSON",
         "write": "put",
-        "change": "post",
+        "mkdir": "put",
+        "rename": "post",
         "delete": "delete",
-        "download": "get"
+        "read": "get"
     };
+
+
+    // Check if an url is for a diretcoey
+    var isDirectory = function(url) {
+        return url.substr(-1) == "/";
+    };
+
 
     // Base method when connexion is on
     vfs.addMethod('*', {
@@ -28,10 +36,43 @@ define([
         }
     });
 
-    // Read file or directory
+    // Read a file content
     vfs.addMethod('read', {
         fallback: function(args, options) {
+            var path = options.url;
 
+            // Get content
+            var content = hr.Storage.get(path);
+            if (!content) return Q.reject(new Error("This path is not available in the local cache"));
+
+            if (isDirectory(path)) return Q.reject(new Error("Reading a directory"));
+
+            return content;
+        },
+        after: function(args, results, options) {
+            // Read file content
+
+        }
+    });
+
+    // LIst a directory
+    vfs.addMethod('listdir', {
+        fallback: function(args, options) {
+            var path = options.url;
+
+            // Get content
+            var content = hr.Storage.get(path);
+            if (!content) return Q.reject(new Error("This path is not available in the local cache"));
+
+            if (!isDirectory(path)) return Q.reject(new Error("listing files in a non-directory"));
+
+            return content;
+        },
+        after: function(args, results, options) {
+            var path = options.url;
+            logger.warn("save content for ", path, results);
+
+            hr.Storage.set(path, results);
         }
     });
 
