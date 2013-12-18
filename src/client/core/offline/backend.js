@@ -8,6 +8,7 @@ define([
      *  Manager can contain:
      *      - fallback: method to call when offline
      *      - trigger: method called when online with the result (used to cache the result)
+     *      - sync: method called when the connexion is back to synx data with the server
      */
 
     var cachedMethod = function(sId) {

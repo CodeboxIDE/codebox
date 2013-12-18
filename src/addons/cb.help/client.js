@@ -20,6 +20,7 @@ define(["views/dialog"], function(HelpDialog) {
         {
             'id': "help.feedback",
             'title': "Submit feedback",
+            'offline': false,
             'action': function() {
                 window.open("https://github.com/FriendCode/codebox/issues");
             }
