@@ -44,7 +44,10 @@ define([
      *  Convert a vfs url in a path
      */
     var urlToPath = function(url) {
-        return url.replace("/vfs/", "");
+        var path = url.replace("/vfs/", "");
+        if (path.length == 0) path = '/';
+        if (path[0] != '/') path = "/" + path;
+        return path;
     };
 
     /*
@@ -104,6 +107,27 @@ define([
     };
 
     /*
+     *  Read a file
+     */
+    var readFile: function(path) {
+        logger.log("read:", path);
+        return fsCall(filer.open, [path], filer).then(function(file) {
+            var d = Q.defer();
+
+            var reader = new FileReader();
+            reader.onerror = function(err) {
+                d.reject(err);
+            };
+            reader.onload = function(e) {
+                d.resolve(this.result);
+            };
+            read.readAsText(file);
+
+            return d.promise;
+        });
+    };
+
+    /*
      *  Create a file
      */
     var createDirectory = function(path) {
@@ -135,6 +159,7 @@ define([
         'create': createFile,
         'mkdir': createDirectory,
         'write': writeFile,
+        'read': readFile,
         'mv': move,
         'rm': remove
     };

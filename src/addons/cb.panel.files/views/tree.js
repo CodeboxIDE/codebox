@@ -106,9 +106,6 @@ define([
             this.countFiles = 0;
             this.paddingLeft = this.options.paddingLeft || 10;
 
-            // Context menu
-            ContextMenu.add(this.$el, this.model.contextMenu());
-
             return this;
         },
 
@@ -117,6 +114,9 @@ define([
             var that = this;
             this.$el.empty();
             this.$el.toggleClass("root", this.model.isRoot());
+
+            // Context menu
+            ContextMenu.add(this.$el, this.model.contextMenu());
 
             this.model.listdir().then(function(files) {
                 that.empty();

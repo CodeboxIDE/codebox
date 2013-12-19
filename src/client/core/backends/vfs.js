@@ -37,7 +37,8 @@ define([
     // Read a file content
     vfs.addMethod('read', {
         fallback: function(args, options) {
-
+            var path = localfs.urlToPath(options.url);
+            return localfs.read(path);
         },
         after: function(args, results, options) {
             
