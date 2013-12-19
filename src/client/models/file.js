@@ -109,13 +109,20 @@ define([
         },
 
         /*
+         *  Return the full url with the host
+         */
+        vfsFullUrl: function() {
+            return this.codebox.baseUrl+this.vfsUrl.apply(this, arguments);
+        },
+
+        /*
          *  Return url to download the file
          */
         exportUrl: function() {
             if (this.get("exportUrl")) {
                 return this.get("exportUrl");
             }
-            return this.codebox.baseUrl+this.vfsUrl();
+            return this.vfsFullUrl();
         },
 
         /*
@@ -355,11 +362,10 @@ define([
             options = _.defaults(options || {}, {
                 redirect: false
             });
-            url = this.exportUrl();
             if (options.redirect) {
-                window.open(url,'_blank');
+                window.open(this.exportUrl(),'_blank');
             } else {
-                return this.vfsRequest("read", url).then(function(content) {
+                return this.vfsRequest("read", this.vfsUrl()).then(function(content) {
                     that.setCache(content);
                     return content;
                 });
