@@ -72,7 +72,7 @@ function setup(options, imports, register) {
 					d.resolve(body);
 				} else {
 					logger.error("Error with hook:", hook, error, body);
-					d.reject(new Error("Error with "+hook+" webhook: "+(body.error || body)));
+					d.reject(new Error("Error with "+hook+" webhook: "+(body ? (body.error || body) : error.message)));
 				}
 			});
 
