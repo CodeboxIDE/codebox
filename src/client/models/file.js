@@ -709,7 +709,7 @@ define([
                     menu.push({
                         'id': "file.sync.offline",
                         'type': "action",
-                        'title': "Sync fo Offline uses",
+                        'title': "Sync for Offline uses",
                         'offline': false,
                         'action': function() {
                             that.actionSyncOffline();

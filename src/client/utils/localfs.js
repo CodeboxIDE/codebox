@@ -82,7 +82,8 @@ define([
                 "mime": fEntry.isDirectory ? "inode/directory" : "application/octet-stream",
                 "href": url,
                 "exportUrl": fEntry.toURL(),
-                "offline": true
+                "offline": true,
+                '_fullPath': fEntry.fullPath
             };
         })
     };
@@ -124,6 +125,15 @@ define([
         return fsCall(filer.write, [path, {
             'data': data || ""
         }], filer);
+    };
+
+    /*
+     *  Open a file
+     */
+    var openFile = function(path) {
+        path = adaptPath(path);
+        logger.log("open:", path);
+        return fsCall(filer.open, [path], filer);
     };
 
     /*
@@ -219,8 +229,78 @@ define([
     };
 
     /*
-     *
+     *  Sync localfs to vfs
      */
+    var syncFileLocalToBox = function() {
+        var File = require("models/file");
+        var box = require("core/box");
+
+        var doSyncDir = function(path, parent) {
+            var localEntries, boxEntries, currentEntryInfos;
+
+            // Get current directory
+            return openFile(path).then(function(fEntry) {
+                // Get infos about current diretcory
+                return getEntryInfos(fEntry);
+            }).then(function(infos) {
+                // Infos about this entry
+                currentEntryInfos = infos;
+
+                return listdir(path);
+            }).then(function(entries) {
+                // Entry in the browser
+                localEntries = entries;
+                return parent.listdir();
+            }).then(function(entries) {
+                // Entries on the boxes
+                boxEntries = entries;
+            }).then(function() {
+                // Eliminate old useless entries
+                return Q.all(_.map(boxEntries, function(boxFile) {
+                    var localEntry = _.find(localEntries, function(localEntry) {
+                        return localEntry.name == boxFile.get("name");
+                    });
+
+                    // File don't exists and box file older than current directory
+                    if (!localEntry && boxFile.get("mtime") < currentEntryInfos.mtime) {
+                        // -> Remove the file on the box
+                        logger.log("resync: need to remove ", boxFile.path());
+                        return boxFile.remove();
+                    }
+
+                    // Do nothing
+                    return Q();
+                }));
+            }).then(function() {
+                // Update entries and create new entries
+                return Q.all(_.map(localEntries, function(localEntry) {
+                    var boxFile = _.find(boxEntries, function(boxFile) {
+                        return localEntry.name == boxFile.get("name");
+                    });
+
+                    
+                    if (!boxFile    // File don't exist
+                    || (boxFile.get("mtime") < localEntry.mtime)    // File modified offline
+                    ) {
+                        // -> Update box content
+                        logger.log("resync: need to update ", localEntry._fullPath);
+                        return read(localEntry._fullPath).then(function(content) {
+                            return parent.write(content, localEntry._fullPath);
+                        });
+                    }
+
+                    // Do nothing
+                    return Q();
+                }));
+            });
+        };
+
+        return operations.start("files.sync.online", function(op) {
+            return doSyncDir("/", box.root)
+        }, {
+            title: "Updating "+this.path()
+        });
+    };
 
     return {
         'getEntryInfos': getEntryInfos,
