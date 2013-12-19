@@ -371,6 +371,11 @@ define([
             if (this.content != null) {
                 return Q(this.content);
             } else {
+                //Download can't work for newfiles
+                if (this.isNewfile()) {
+                    return Q("");
+                }
+
                 return this.download();
             }
         },
