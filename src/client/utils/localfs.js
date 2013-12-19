@@ -109,7 +109,7 @@ define([
     /*
      *  Read a file
      */
-    var readFile: function(path) {
+    var readFile = function(path) {
         logger.log("read:", path);
         return fsCall(filer.open, [path], filer).then(function(file) {
             var d = Q.defer();
@@ -121,7 +121,7 @@ define([
             reader.onload = function(e) {
                 d.resolve(this.result);
             };
-            read.readAsText(file);
+            reader.readAsText(file);
 
             return d.promise;
         });

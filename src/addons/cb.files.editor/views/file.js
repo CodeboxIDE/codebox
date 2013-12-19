@@ -109,9 +109,6 @@ define([
             this.sync.on("mode", function(mode) {
                 this.setMode(mode)
             }, this);
-            this.sync.on("sync:state", function(state) {
-                this.setReadonly(!state)
-            }, this);
             this.sync.on("content", function(content, oldcontent, patches) {
                 var selection, cursor_lead, cursor_anchor, scroll_y;
 
@@ -179,7 +176,15 @@ define([
 
             // Bind editor sync state changements
             this.sync.on("sync:state", function(state) {
+                this.setReadonly(!state)
                 if (!state) {
+                    this.tab.setTabState("warning", true);
+                } else {
+                    this.tab.setTabState("warning", false);
+                }
+            }, this);
+            this.sync.on("sync:offline", function(state) {
+                if (state) {
                     this.tab.setTabState("offline", true);
                 } else {
                     this.tab.setTabState("offline", false);
