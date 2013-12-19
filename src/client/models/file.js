@@ -705,6 +705,7 @@ define([
                 }
 
                 if (!that.isOffline()) {
+                    menu.push({ 'type': "divider" });
                     menu.push({
                         'id': "file.sync.offline",
                         'type': "action",
