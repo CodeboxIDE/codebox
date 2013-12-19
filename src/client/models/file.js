@@ -348,6 +348,19 @@ define([
         },
 
         /*
+         *  Return a child object
+         */
+        getChild: function(name) {
+            var nPath = this.path()+"/"+name;
+            var f = new File({
+                'box': this.box
+            });
+            return f.getByPath(nPath).then(function() {
+                return f;
+            });
+        },
+
+        /*
          *  Refresh infos
          */
         refresh: function() {

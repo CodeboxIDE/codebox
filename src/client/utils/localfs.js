@@ -8,6 +8,7 @@ define([
     var logger = hr.Logger.addNamespace("localfs");
 
     var base = "/";
+    var MIME_DIRECTORY = "inode/directory";
 
     // Create fs interface
     var filer = new Filer();
@@ -79,7 +80,7 @@ define([
                 "name": fEntry.name,
                 "size": metadata.size,
                 "mtime": metadata.modificationTime.getTime(),
-                "mime": fEntry.isDirectory ? "inode/directory" : "application/octet-stream",
+                "mime": fEntry.isDirectory ? MIME_DIRECTORY : "application/octet-stream",
                 "href": url,
                 "exportUrl": fEntry.toURL(),
                 "offline": true,
@@ -274,19 +275,47 @@ define([
             }).then(function() {
                 // Update entries and create new entries
                 return Q.all(_.map(localEntries, function(localEntry) {
+                    var entryIsDir = localEntry.mime != MIME_DIRECTORY;
                     var boxFile = _.find(boxEntries, function(boxFile) {
                         return localEntry.name == boxFile.get("name");
                     });
 
-                    
-                    if (!boxFile    // File don't exist
-                    || (boxFile.get("mtime") < localEntry.mtime)    // File modified offline
-                    ) {
+                    // Is not a directory and:
+                    if (entryIsDir && (!boxFile    // File don't exist
+                    || (boxFile.get("mtime") < localEntry.mtime)))    // or File modified offline
+                    {
                         // -> Update box content
                         logger.log("resync: need to update ", localEntry._fullPath);
                         return read(localEntry._fullPath).then(function(content) {
                             return parent.write(content, localEntry._fullPath);
                         });
+                    }
+
+                    // if a directory
+                    if (entryIsDir) {
+                        logger.log("resync: is a directory", localEntry._fullPath);
+
+                        var syncEntry = function(newParent) {
+                            logger.log("resync: go sync ", newParent.path(), localEntry._fullPath);
+                            return doSyncDir(localEntry._fullPath, newParent);
+                        }
+
+                        var createAndSyncEntry = function() {
+                            logger.log("resync: need to mkdir", localEntry.name, "in", parent.path());
+                            return parent.mkdir(localEntry.name).then(function() {
+                                return parent.getChild(localEntry.name);
+                            }).then(syncEntry);
+                        }
+
+                        if (boxFile) {
+                            if (boxFile.isDirectory()) {
+                                return syncEntry(boxFile);
+                            } else {
+                                return boxFile.remove().then(createAndSyncEntry);
+                            }
+                        } else {
+                            return createAndSyncEntry;
+                        }
                     }
 
                     // Do nothing
