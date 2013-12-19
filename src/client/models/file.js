@@ -584,11 +584,7 @@ define([
         // (action) Sync offline
         actionSyncOffline: function() {
             var that = this;
-            return operations.start("files.sync.offline", function(op) {
-                return localfs.syncTo(that);
-            }, {
-                title: "Syncing "+this.path()
-            });
+            return localfs.syncTo(that);
         },
 
         // Return context menu

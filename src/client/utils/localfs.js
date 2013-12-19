@@ -2,8 +2,9 @@ define([
     'underscore',
     'hr/hr',
     'utils/url',
-    'vendors/filer'
-], function(_, hr, Url, Filer) {
+    'vendors/filer',
+    'core/operations'
+], function(_, hr, Url, Filer, operations) {
     var logger = hr.Logger.addNamespace("localfs");
 
     var base = "/";
@@ -172,37 +173,52 @@ define([
         path = adaptPath(path);
 
         logger.log("remove:", path);
-        return fsCall(filer.remove, [path], filer);
+        return fsCall(filer.rm, [path], filer);
     };
 
     /*
      *  Sync a file in the box fs with the local fs
+     *
+     *  this will download the files and saved them in the localfs
      */
     var syncFileBoxToLocal = function(file) {
-        var path = file.path();
-        logger.log("sync:", path);
+        var doSync = function(fp) {
+            var path = fp.path();
+            logger.log("sync:", path);
 
-        if (file.isDirectory()) {
-            // todo: remove old files
-
-            // Create the directory
-            return createDirectory(path).then(function() {
-                // List subfiles
-                return file.listdir();
-            }).then(function(files) {
-                // Recursively sync files and directory
-                return Q.all(_.map(files, function(file) {
-                    return syncFileBoxToLocal(file);
-                }));
+            if (fp.isDirectory()) {
+                // Create the directory
+                return createDirectory(path).then(function() {
+                    // List subfiles
+                    return fp.listdir();
+                }).then(function(files) {
+                    // Recursively sync files and directory
+                    return Q.all(_.map(files, function(f) {
+                        return doSync(f);
+                    }));
+                });
+            } else {
+                // Read file content
+                return fp.read().then(function(content) {
+                    // Write file content
+                    return writeFile(path, content);
+                });
+            }
+        };
+        return operations.start("files.sync.offline", function(op) {
+            return remove(file.path()).then(function() {
+                doSync(file);
+            }, function() {
+                doSync(file);
             });
-        } else {
-            // Read file content
-            return file.read().then(function(content) {
-                // Write file content
-                return writeFile(path, content);
-            });
-        }
+        }, {
+            title: "Syncing "+this.path()
+        });
     };
+
+    /*
+     *
+     */
 
     return {
         'getEntryInfos': getEntryInfos,
