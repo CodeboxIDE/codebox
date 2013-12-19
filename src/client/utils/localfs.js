@@ -6,6 +6,8 @@ define([
 ], function(_, hr, Url, Filer) {
     var logger = hr.Logger.addNamespace("localfs");
 
+    var base = "/";
+
     // Create fs interface
     var filer = new Filer();
 
@@ -31,14 +33,27 @@ define([
     /*
      *  Init the localfs
      */
-    var initFs = function() {
+    var initFs = function(baseDir) {
+        base = "/"+baseDir;
         return fsCall(filer.init, {
             persistent: true,
             size: 10 * 1024 * 1024
         }, filer).then(function() {
+            if (base!= "/") return createDirectory("/");
+            return Q();
+        }).then(function() {
             logger.log("ready");
         });
     };
+
+    /*
+     * Adapt path
+     */
+    var adaptPath = function(path) {
+        path = base+path;
+        path = path.replace("//", "/");
+        return path;
+    }
 
     /*
      *  Convert a vfs url in a path
@@ -92,6 +107,7 @@ define([
      *  Create a file
      */
     var createFile = function(path) {
+        path = adaptPath(path);
         logger.log("create:", path);
         return fsCall(filer.create, [path, true], filer);
     };
@@ -100,6 +116,7 @@ define([
      *  Write file
      */
     var writeFile = function(path, data) {
+        path = adaptPath(path);
         logger.log("write:", path);
         return fsCall(filer.write, [path, {
             'data': data || ""
@@ -110,6 +127,7 @@ define([
      *  Read a file
      */
     var readFile = function(path) {
+        path = adaptPath(path);
         logger.log("read:", path);
         return fsCall(filer.open, [path], filer).then(function(file) {
             var d = Q.defer();
@@ -131,14 +149,18 @@ define([
      *  Create a file
      */
     var createDirectory = function(path) {
+        path = adaptPath(path);
         logger.log("mkdir:", path);
-        return fsCall(filer.mkdir, [path, true], filer);
+        return fsCall(filer.mkdir, [path, false], filer);
     };
 
     /*
      *  Move a file
      */
     var move = function(from, to) {
+        from = adaptPath(from);
+        to = adaptPath(to);
+
         logger.log("move:", from, "to", to);
         return fsCall(filer.mv, [from, '.', to], filer);
     };
@@ -147,6 +169,8 @@ define([
      *  Remove a file or directory
      */
     var remove = function(path) {
+        path = adaptPath(path);
+
         logger.log("remove:", path);
         return fsCall(filer.remove, [path], filer);
     };

@@ -34,9 +34,9 @@ define([
         // Prepare session
         prepare: function() {
             return hr.Offline.check().then(function() {
-                return localfs.init();
-            }).then(function() {
                 return box.status();
+            }).then(function() {
+                return localfs.init(box.get("name"));
             });
         },
 
