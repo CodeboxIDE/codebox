@@ -692,7 +692,6 @@ define([
                         'id': "file.download",
                         'type': "action",
                         'title': "Download",
-                        'offline': false,
                         'action': function() {
                             that.actionDownload();
                         }
