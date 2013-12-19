@@ -41,9 +41,6 @@ define([
             persistent: true,
             size: 10 * 1024 * 1024
         }, filer).then(function() {
-            if (base!= "/") return createDirectory("/");
-            return Q();
-        }).then(function() {
             logger.log("ready");
         });
     };
@@ -72,7 +69,7 @@ define([
      */
     var getEntryInfos = function(fEntry) {
         return fsCall(fEntry.getMetadata, [], fEntry).then(function(metadata) {
-            var path = fEntry.fullPath.replace(base, "/");
+            var path = fEntry.fullPath.replace(base, "/").replace("//", "/");
             var url = location.protocol+"//"+location.host+"/vfs"+path;
 
             if (fEntry.isDirectory) url = url + "/";
@@ -196,7 +193,9 @@ define([
      *
      *  this will download the files and saved them in the localfs
      */
-    var syncFileBoxToLocal = function(file) {
+    var syncFileBoxToLocal = function() {
+        var box = require("core/box");
+
         var doSync = function(fp) {
             var path = fp.path();
             logger.log("sync:", path);
@@ -221,13 +220,13 @@ define([
             }
         };
         return operations.start("files.sync.offline", function(op) {
-            return remove(file.path()).then(function() {
-                doSync(file);
+            return remove("/").then(function() {
+                doSync(box.root);
             }, function() {
-                doSync(file);
+                doSync(box.root);
             });
         }, {
-            title: "Syncing "+this.path()
+            title: "Downloading ..."
         });
     };
 
@@ -330,8 +329,21 @@ define([
         return operations.start("files.sync.online", function(op) {
             return doSyncDir("/", box.root)
         }, {
-            title: "Updating from offline"
+            title: "Uploading changes..."
         });
+    };
+
+    /*
+     *  Global sync:
+     *      -> if never sync: download everything
+     *      -> if already sync: upload changes and download last changes
+     */
+    var sync = function() {
+        if (hr.Offline.isConnected()) {
+            return openFile("/").then(syncFileLocalToBox, function() {
+                return createDirectory("/");
+            }).then(syncFileBoxToLocal);
+        }
     };
 
     return {
@@ -345,7 +357,6 @@ define([
         'read': readFile,
         'mv': move,
         'rm': remove,
-        'syncTo': syncFileBoxToLocal,
-        'syncFrom': syncFileLocalToBox
+        'sync': sync
     };
 });

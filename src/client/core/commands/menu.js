@@ -6,7 +6,7 @@ define([
     'core/panels',
     'core/tabs',
     'core/session',
-    'utils/localfs'
+    'core/localfs'
 ], function (_, hr, MenubarView, box, panels, tabs, session, localfs) {
     // Collection for all menu commands
     var menu = new MenubarView();
@@ -26,10 +26,11 @@ define([
         position: 0
     }).menuSection([{
         'id': "offline.resync",
-        'title': "Sync",
+        'title': "Synchronize",
+        'offline': false,
         'shortcuts': [],
         'action': function() {
-            localfs.syncFrom();
+            localfs.sync();
         }
     }]).menuSection([{
         'id': "quit",

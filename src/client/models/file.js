@@ -8,9 +8,8 @@ define([
     "utils/filesync",
     "utils/dialogs",
     "utils/uploader",
-    "utils/localfs",
     "core/operations"
-], function(Q, _, hr, vfs, Url, Languages, FileSync, Dialogs, Uploader, localfs, operations) {
+], function(Q, _, hr, vfs, Url, Languages, FileSync, Dialogs, Uploader, operations) {
     var logging = hr.Logger.addNamespace("files");
 
     if (typeof String.prototype.endsWith !== 'function') {
@@ -604,12 +603,6 @@ define([
             $f.trigger('click');
         },
 
-        // (action) Sync offline
-        actionSyncOffline: function() {
-            var that = this;
-            return localfs.syncTo(that);
-        },
-
         // Return context menu
         contextMenu: function() {
             var that = this;
@@ -713,19 +706,6 @@ define([
                         'title': "Download",
                         'action': function() {
                             that.actionDownload();
-                        }
-                    });
-                }
-
-                if (!that.isOffline()) {
-                    menu.push({ 'type': "divider" });
-                    menu.push({
-                        'id': "file.sync.offline",
-                        'type': "action",
-                        'title': "Sync for Offline uses",
-                        'offline': false,
-                        'action': function() {
-                            that.actionSyncOffline();
                         }
                     });
                 }

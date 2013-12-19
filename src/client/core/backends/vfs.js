@@ -2,7 +2,7 @@ define([
     'underscore',
     'hr/hr',
     'utils/url',
-    'utils/localfs'
+    'core/localfs'
 ], function(_, hr, Url, localfs) {
     var logger = hr.Logger.addNamespace("vfs");
 

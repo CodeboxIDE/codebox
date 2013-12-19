@@ -6,7 +6,7 @@ define([
     "core/addons",
     "core/collaborators",
     "core/backends/rpc",
-    "utils/localfs"
+    "core/localfs"
 ], function(_, hr, user, box, addons, collaborators, rpc, localfs) {
     // Extend template context
     hr.Template.extendContext({
