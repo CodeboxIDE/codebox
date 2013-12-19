@@ -5,8 +5,9 @@ define([
     "core/box",
     "core/addons",
     "core/collaborators",
-    "core/backends/rpc"
-], function(_, hr, user, box, addons, collaborators, rpc) {
+    "core/backends/rpc",
+    "utils/localfs"
+], function(_, hr, user, box, addons, collaborators, rpc, localfs) {
     // Extend template context
     hr.Template.extendContext({
         'session': {
@@ -33,6 +34,8 @@ define([
         // Prepare session
         prepare: function() {
             return hr.Offline.check().then(function() {
+                return localfs.init();
+            }).then(function() {
                 return box.status();
             });
         },

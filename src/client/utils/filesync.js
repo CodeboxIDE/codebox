@@ -662,10 +662,25 @@ define([
          *  Save the file
          */
         save: function() {
-            var doSave = _.bind(function(args) {
-                this.send("save", args);
+            var that = this;
+
+            // If online use the socket event "save"
+            var doSave = function(args) {
+                that.send("save", args);
                 return Q();
-            }, this);
+            };
+
+            // If offline save with the vfs backend
+            if (!hr.Offline.isConnected()) {
+                doSave = function(args) {
+                    return that.file.write(that.content_value_t1, args.path).then(function(newPath) {
+                        if (newPath != that.file.path()) {
+                            that.trigger("file:path", newPath);
+                        }
+                        that.modifiedState(false);
+                    });
+                };
+            }
 
             if (this.file.isNewfile()) {
                 return dialogs.prompt("Save as", "", this.file.filename()).then(function(name) {
@@ -674,7 +689,7 @@ define([
                     })
                 });
             } else {
-                return doSave();
+                return doSave({});
             }
         },
 

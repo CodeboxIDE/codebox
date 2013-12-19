@@ -25,7 +25,6 @@ define([
             "mtime": 0,
             "mime": "",
             "href": "",
-            "collaborators": [],
             "exists": true,
             "offline": false
         },
@@ -141,6 +140,9 @@ define([
             }
             if (path.length == 0) {
                 path = "/";
+            }
+            if (path[0] != '/') {
+                path = '/'+path;
             }
             return path;
         },
@@ -355,40 +357,11 @@ define([
         /*
          *  Write file ocntent
          */
-        write: function(content) {
-            var uploadurl = this.codebox.baseUrl+this.vfsUrl(null);
-            var d = Q.defer();
-            var xhr = new XMLHttpRequest(),
-                upload = xhr.upload,
-                start_time = new Date().getTime(),
-                total_size = content.length;
-
-            upload.downloadStartTime = start_time;
-            upload.currentStart = start_time;
-            upload.currentProgress = 0;
-            upload.startData = 0;
-            upload.addEventListener("progress",function(e){
-                if (e.lengthComputable) {
-                    var percentage = Math.round((e.loaded * 100) / total_size);
-                }
-            }, false);
-            
-            xhr.open("PUT", uploadurl, true);
-            xhr.onreadystatechange = function(e){
-                if (xhr.status != 200)  {
-                    d.reject();
-                    e.preventDefault();
-                    return;
-               }
-            };
-            xhr.sendAsBinary(content);
-            xhr.onload = function() {
-                if (xhr.status == 200 && xhr.responseText) {
-                    d.resolve();
-                }
-            }
-
-            return d.promise;
+        write: function(content, filename) {
+            var that = this;
+            return this.vfsRequest("write", this.vfsUrl(filename), content).then(function() {
+                return that.path(filename);
+            });
         },
 
         /*
@@ -452,7 +425,7 @@ define([
          *  @name : name of the file to create
          */
         createFile: function(name) {
-            return this.vfsRequest("write", this.vfsUrl(null, true)+"/"+name);
+            return this.vfsRequest("create", this.vfsUrl(null, true)+"/"+name);
         },
 
         /*
@@ -468,7 +441,7 @@ define([
          *  Remove the file or directory
          */
         remove: function() {
-            return this.vfsRequest("delete", this.vfsUrl(null));
+            return this.vfsRequest("remove", this.vfsUrl(null));
         },
 
         /*

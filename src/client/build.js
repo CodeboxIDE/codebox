@@ -65,6 +65,12 @@ exports.config = {
         },
         'vendors/mousetrap': {
             exports: 'Mousetrap'
+        },
+        'vendors/filer': {
+            exports: 'Filer',
+            deps: [
+                'vendors/idb.filesystem'
+            ]
         }
     },
     'args': {

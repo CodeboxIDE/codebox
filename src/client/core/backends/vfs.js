@@ -1,10 +1,12 @@
 define([
     'underscore',
     'hr/hr',
-    'utils/url'
-], function(_, hr, Url) {
+    'utils/url',
+    'utils/localfs'
+], function(_, hr, Url, localfs) {
     var logger = hr.Logger.addNamespace("vfs");
 
+    // Create backend
     var vfs = new hr.Backend({
         prefix: "vfs"
     });
@@ -14,47 +16,16 @@ define([
         "listdir": "getJSON",
         "write": "put",
         "mkdir": "put",
+        "create": "put",
         "rename": "post",
-        "delete": "delete",
+        "remove": "delete",
         "read": "get"
     };
-
-
-    // Check if an url is for a diretcoey
-    var isDirectory = function(url) {
-        return url.substr(-1) == "/";
-    };
-
-    // Get node key
-    var nodeKey = function(url) {
-        return "vfs:"+url;
-    }
-
-    // Check that a node exists
-    var nodeExists = function(url) {
-        return hr.Storage.has(nodeKey(url));
-    }
-
-    // Read a node
-    var nodeRead = function(url) {
-        return hr.Storage.get(nodeKey(url));
-    }
-
-    // Write a node
-    var nodeWrite = function(url, content) {
-        return hr.Storage.set(nodeKey(url), content);
-    }
-
-    // Norm a url
-    var normUrl =  function(url) {
-        return Url.parse(url).path
-    }
-
 
     // Base method when connexion is on
     vfs.addMethod('*', {
         execute: function(args, options, method) {
-            if (args) args = JSON.stringify(args);
+            if (args && method != "write") args = JSON.stringify(args);
             if (!options.url) return Q.reject(new Error("VFS requests need 'url' option"));
             if (!methodsMap[method]) return Q.reject(new Error("Invalid VFS request: "+method));
 
@@ -66,15 +37,73 @@ define([
     // Read a file content
     vfs.addMethod('read', {
         fallback: function(args, options) {
-            var path = options.url;
 
-            if (isDirectory(path)) return Q.reject(new Error("Invalid node: directory"));
-            if (!nodeExists(path)) return Q.reject(new Error("Invalid node: inexistant"));
-
-            return nodeRead(path);
         },
         after: function(args, results, options) {
-            // Read file content
+            
+
+        }
+    });
+
+    // Create a new file
+    vfs.addMethod('create', {
+        fallback: function(args, options) {
+            var path = localfs.urlToPath(options.url);
+            return localfs.create(path, args);
+        },
+        after: function(args, results, options) {
+            
+
+        }
+    });
+
+    // Create a new directory
+    vfs.addMethod('mkdir', {
+        fallback: function(args, options) {
+            var path = localfs.urlToPath(options.url);
+            return localfs.mkdir(path, args);
+        },
+        after: function(args, results, options) {
+            
+
+        }
+    });
+
+    // Write a file content
+    vfs.addMethod('write', {
+        fallback: function(args, options) {
+            var path = localfs.urlToPath(options.url);
+            return localfs.write(path, args);
+        },
+        after: function(args, results, options) {
+            
+
+        }
+    });
+
+    // Rename a file
+    vfs.addMethod('rename', {
+        fallback: function(args, options) {
+            var to = localfs.urlToPath(options.url);
+            var from = args.renameFrom;
+
+            if (!from) return Q.reject("need 'renameFrom'");
+            return localfs.mv(from, to);
+        },
+        after: function(args, results, options) {
+            
+
+        }
+    });
+
+    // Remove a file or directory
+    vfs.addMethod('remove', {
+        fallback: function(args, options) {
+            var path = localfs.urlToPath(options.url);
+            return localfs.rm(path, args);
+        },
+        after: function(args, results, options) {
+            
 
         }
     });
@@ -82,20 +111,11 @@ define([
     // List a directory
     vfs.addMethod('listdir', {
         fallback: function(args, options) {
-            var path = options.url;
-
-            if (!isDirectory(path)) return Q.reject(new Error("Invalid node: file"));
-            if (!nodeExists(path)) return Q.reject(new Error("Invalid node: inexistant"));
-
-            return _.map(nodeRead(path), function(fileInfos) {
-                return _.extend(fileInfos, {
-                    'offline': nodeExists(normUrl(fileInfos.href))
-                });
-            });
+            var path = localfs.urlToPath(options.url);
+            return localfs.ls(path);
         },
         after: function(args, results, options) {
-            var path = options.url;
-            nodeWrite(path, results);
+            
         }
     });
 
