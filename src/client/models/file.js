@@ -389,7 +389,7 @@ define([
          */
         write: function(content, filename) {
             var that = this;
-            return this.vfsRequest("write", this.vfsUrl(filename), content).then(function() {
+            return this.vfsRequest("write", this.vfsUrl(filename, false), content).then(function() {
                 return that.path(filename);
             });
         },

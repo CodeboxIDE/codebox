@@ -200,6 +200,8 @@ define([
             var path = fp.path();
             logger.log("sync:", path);
 
+            if (path == "/.git") return Q();
+
             if (fp.isDirectory()) {
                 // Create the directory
                 return createDirectory(path).then(function() {
@@ -239,6 +241,8 @@ define([
 
         var doSyncDir = function(path, parent) {
             var localEntries, boxEntries, currentEntryInfos;
+
+            if (path == "/.git") return Q();
 
             // Get current directory
             return openFile(path).then(function(infos) {
