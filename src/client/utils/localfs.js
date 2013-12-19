@@ -72,7 +72,8 @@ define([
      */
     var getEntryInfos = function(fEntry) {
         return fsCall(fEntry.getMetadata, [], fEntry).then(function(metadata) {
-            var url = location.protocol+"//"+location.host+"/vfs"+fEntry.fullPath.replace(base, "/");
+            var path = fEntry.fullPath.replace(base, "/");
+            var url = location.protocol+"//"+location.host+"/vfs"+path;
 
             if (fEntry.isDirectory) url = url + "/";
 
@@ -84,7 +85,7 @@ define([
                 "href": url,
                 "exportUrl": fEntry.toURL(),
                 "offline": true,
-                '_fullPath': fEntry.fullPath
+                '_fullPath': path
             };
         })
     };
@@ -101,7 +102,6 @@ define([
                 return getEntryInfos(entry);
             }))
         }).then(function(entries) {
-            logger.log(entries);
             return entries;
         }, function(err) {
             logger.error("ls:", err);
@@ -134,7 +134,9 @@ define([
     var openFile = function(path) {
         path = adaptPath(path);
         logger.log("open:", path);
-        return fsCall(filer.open, [path], filer);
+        return fsCall(filer.getEntry, [path], filer).then(function(fEntry) {
+            return getEntryInfos(fEntry);
+        })
     };
 
     /*
@@ -240,14 +242,11 @@ define([
             var localEntries, boxEntries, currentEntryInfos;
 
             // Get current directory
-            return openFile(path).then(function(fEntry) {
-                // Get infos about current diretcory
-                return getEntryInfos(fEntry);
-            }).then(function(infos) {
+            return openFile(path).then(function(infos) {
                 // Infos about this entry
                 currentEntryInfos = infos;
 
-                return listdir(path);
+                return listDir(path);
             }).then(function(entries) {
                 // Entry in the browser
                 localEntries = entries;
@@ -275,18 +274,20 @@ define([
             }).then(function() {
                 // Update entries and create new entries
                 return Q.all(_.map(localEntries, function(localEntry) {
-                    var entryIsDir = localEntry.mime != MIME_DIRECTORY;
+                    var entryIsDir = localEntry.mime == MIME_DIRECTORY;
                     var boxFile = _.find(boxEntries, function(boxFile) {
                         return localEntry.name == boxFile.get("name");
                     });
 
                     // Is not a directory and:
-                    if (entryIsDir && (!boxFile    // File don't exist
+                    if (!entryIsDir && (!boxFile    // File don't exist
                     || (boxFile.get("mtime") < localEntry.mtime)))    // or File modified offline
                     {
                         // -> Update box content
                         logger.log("resync: need to update ", localEntry._fullPath);
-                        return read(localEntry._fullPath).then(function(content) {
+                        logger.log(" -> box:", boxFile.get("mtime"));
+                        logger.log(" -> local:", localEntry.mtime);
+                        return readFile(localEntry._fullPath).then(function(content) {
                             return parent.write(content, localEntry._fullPath);
                         });
                     }
@@ -321,13 +322,15 @@ define([
                     // Do nothing
                     return Q();
                 }));
+            }).fail(function(err) {
+                logger.error("Error during sync: ", err);
             });
         };
 
         return operations.start("files.sync.online", function(op) {
             return doSyncDir("/", box.root)
         }, {
-            title: "Updating "+this.path()
+            title: "Updating from offline"
         });
     };
 
@@ -342,6 +345,7 @@ define([
         'read': readFile,
         'mv': move,
         'rm': remove,
-        'syncTo': syncFileBoxToLocal
+        'syncTo': syncFileBoxToLocal,
+        'syncFrom': syncFileLocalToBox
     };
 });

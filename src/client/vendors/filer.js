@@ -607,6 +607,22 @@ var Filer = new function() {
   };
 
   /**
+   * Looks up a FileEntry or DirectoryEntry for a given path.
+   *
+   * @param {function(...FileEntry|DirectorEntry)} callback A callback to be
+   *     passed the entry/entries that were fetched. The ordering of the
+   *     entries passed to the callback correspond to the same order passed
+   *     to this method.
+   */
+  Filer.prototype.getEntry = function(path, successCallback, opt_errorHandler) {
+    if (!fs_) {
+      throw new Error(FS_INIT_ERROR_MSG);
+    }
+
+    getEntry_(successCallback, opt_errorHandler, pathToFsURL_(path));
+  };
+
+  /**
    * Creates an empty file.
    *
    * @param {string} path The relative path of the file to create, from the
