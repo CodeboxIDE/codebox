@@ -71,7 +71,7 @@ define([
      */
     var getEntryInfos = function(fEntry) {
         return fsCall(fEntry.getMetadata, [], fEntry).then(function(metadata) {
-            var url = location.protocol+"//"+location.host+"/vfs"+fEntry.fullPath;
+            var url = location.protocol+"//"+location.host+"/vfs"+fEntry.fullPath.replace(base, "/");
 
             if (fEntry.isDirectory) url = url + "/";
 
@@ -91,6 +91,8 @@ define([
      *  List a directory
      */
     var listDir = function(path) {
+        path = adaptPath(path);
+
         logger.log("ls:", path);
         return fsCall(filer.ls, path, filer).then(function(entries) {
             return Q.all(_.map(entries, function(entry) {
