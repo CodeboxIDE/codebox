@@ -27,7 +27,8 @@ define([
             "mime": "",
             "href": "",
             "exists": true,
-            "offline": false
+            "offline": false,
+            "exportUrl": null
         },
 
         /*
@@ -111,6 +112,9 @@ define([
          *  Return url to download the file
          */
         exportUrl: function() {
+            if (this.get("exportUrl")) {
+                return this.get("exportUrl");
+            }
             return this.codebox.baseUrl+this.vfsUrl();
         },
 

@@ -81,7 +81,7 @@ define([
                 "mtime": metadata.modificationTime.getTime(),
                 "mime": fEntry.isDirectory ? "inode/directory" : "application/octet-stream",
                 "href": url,
-                "accessUrl": fEntry.toURL(),
+                "exportUrl": fEntry.toURL(),
                 "offline": true
             };
         })
