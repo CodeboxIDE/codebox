@@ -151,6 +151,35 @@ define([
         return fsCall(filer.remove, [path], filer);
     };
 
+    /*
+     *  Sync a file in the box fs with the local fs
+     */
+    var syncFileBoxToLocal = function(file) {
+        var path = file.path();
+        logger.log("sync:", path);
+
+        if (file.isDirectory()) {
+            // todo: remove old files
+
+            // Create the directory
+            return createDirectory(path).then(function() {
+                // List subfiles
+                return file.listdir();
+            }).then(function(files) {
+                // Recursively sync files and directory
+                return Q.all(_.map(files, function(file) {
+                    return syncFileBoxToLocal(file);
+                }));
+            });
+        } else {
+            // Read file content
+            return file.read().then(function(content) {
+                // Write file content
+                return writeFile(path, content);
+            });
+        }
+    };
+
     return {
         'getEntryInfos': getEntryInfos,
         'urlToPath': urlToPath,
@@ -161,6 +190,7 @@ define([
         'write': writeFile,
         'read': readFile,
         'mv': move,
-        'rm': remove
+        'rm': remove,
+        'syncTo': syncFileBoxToLocal
     };
 });

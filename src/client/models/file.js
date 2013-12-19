@@ -8,8 +8,9 @@ define([
     "utils/filesync",
     "utils/dialogs",
     "utils/uploader",
+    "utils/localfs",
     "core/operations"
-], function(Q, _, hr, vfs, Url, Languages, FileSync, Dialogs, Uploader, operations) {
+], function(Q, _, hr, vfs, Url, Languages, FileSync, Dialogs, Uploader, localfs, operations) {
     var logging = hr.Logger.addNamespace("files");
 
     if (typeof String.prototype.endsWith !== 'function') {
@@ -194,6 +195,13 @@ define([
          */
         isNewfile: function() {
             return !this.get("exists");
+        },
+
+        /*
+         *  Return true if the file is sync offline
+         */
+        isOffline: function() {
+            return this.get("offline");
         },
 
         /*
@@ -573,6 +581,16 @@ define([
             $f.trigger('click');
         },
 
+        // (action) Sync offline
+        actionSyncOffline: function() {
+            var that = this;
+            return operations.start("files.sync.offline", function(op) {
+                return localfs.syncTo(that);
+            }, {
+                title: "Syncing "+this.path()
+            });
+        },
+
         // Return context menu
         contextMenu: function() {
             var that = this;
@@ -677,6 +695,18 @@ define([
                         'offline': false,
                         'action': function() {
                             that.actionDownload();
+                        }
+                    });
+                }
+
+                if (!that.isOffline()) {
+                    menu.push({
+                        'id': "file.sync.offline",
+                        'type': "action",
+                        'title': "Sync fo Offline uses",
+                        'offline': false,
+                        'action': function() {
+                            that.actionSyncOffline();
                         }
                     });
                 }
