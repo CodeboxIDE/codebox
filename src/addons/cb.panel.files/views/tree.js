@@ -37,6 +37,7 @@ define([
 
         // Finish rendering
         finish: function() {
+            this.$el.toggleClass("disabled", !this.model.canOpen());
             this.$(">.name").css("padding-left", this.paddingLeft);
             this.$el.toggleClass("type-directory", this.model.isDirectory());
 
@@ -51,6 +52,10 @@ define([
             if (e != null) {
                 e.preventDefault();
                 e.stopPropagation();
+            }
+
+            if (!this.model.canOpen()) {
+                return;
             }
 
             if (this.model.isDirectory()) {
@@ -74,6 +79,10 @@ define([
             if (e != null) {
                 e.preventDefault();
                 e.stopPropagation();
+            }
+
+            if (!this.model.canOpen()) {
+                return;
             }
 
             if (!this.model.isDirectory()) {

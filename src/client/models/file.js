@@ -26,7 +26,8 @@ define([
             "mime": "",
             "href": "",
             "collaborators": [],
-            "exists": true
+            "exists": true,
+            "offline": false
         },
 
         /*
@@ -77,6 +78,13 @@ define([
             return vfs.execute(method, args, {
                 'url': url
             });
+        },
+
+        /*
+         *  Check if the file can be open
+         */
+        canOpen: function() {
+            return this.get("offline") || hr.Offline.isConnected();
         },
 
         /*

@@ -1,6 +1,8 @@
 define([
-    'hr/hr'
-], function(hr) {
+    'underscore',
+    'hr/hr',
+    'utils/url'
+], function(_, hr, Url) {
     var logger = hr.Logger.addNamespace("vfs");
 
     var vfs = new hr.Backend({
@@ -23,6 +25,31 @@ define([
         return url.substr(-1) == "/";
     };
 
+    // Get node key
+    var nodeKey = function(url) {
+        return "vfs:"+url;
+    }
+
+    // Check that a node exists
+    var nodeExists = function(url) {
+        return hr.Storage.has(nodeKey(url));
+    }
+
+    // Read a node
+    var nodeRead = function(url) {
+        return hr.Storage.get(nodeKey(url));
+    }
+
+    // Write a node
+    var nodeWrite = function(url, content) {
+        return hr.Storage.set(nodeKey(url), content);
+    }
+
+    // Norm a url
+    var normUrl =  function(url) {
+        return Url.parse(url).path
+    }
+
 
     // Base method when connexion is on
     vfs.addMethod('*', {
@@ -41,13 +68,10 @@ define([
         fallback: function(args, options) {
             var path = options.url;
 
-            // Get content
-            var content = hr.Storage.get(path);
-            if (!content) return Q.reject(new Error("This path is not available in the local cache"));
+            if (isDirectory(path)) return Q.reject(new Error("Invalid node: directory"));
+            if (!nodeExists(path)) return Q.reject(new Error("Invalid node: inexistant"));
 
-            if (isDirectory(path)) return Q.reject(new Error("Reading a directory"));
-
-            return content;
+            return nodeRead(path);
         },
         after: function(args, results, options) {
             // Read file content
@@ -55,24 +79,23 @@ define([
         }
     });
 
-    // LIst a directory
+    // List a directory
     vfs.addMethod('listdir', {
         fallback: function(args, options) {
             var path = options.url;
 
-            // Get content
-            var content = hr.Storage.get(path);
-            if (!content) return Q.reject(new Error("This path is not available in the local cache"));
+            if (!isDirectory(path)) return Q.reject(new Error("Invalid node: file"));
+            if (!nodeExists(path)) return Q.reject(new Error("Invalid node: inexistant"));
 
-            if (!isDirectory(path)) return Q.reject(new Error("listing files in a non-directory"));
-
-            return content;
+            return _.map(nodeRead(path), function(fileInfos) {
+                return _.extend(fileInfos, {
+                    'offline': nodeExists(normUrl(fileInfos.href))
+                });
+            });
         },
         after: function(args, results, options) {
             var path = options.url;
-            logger.warn("save content for ", path, results);
-
-            hr.Storage.set(path, results);
+            nodeWrite(path, results);
         }
     });
 
