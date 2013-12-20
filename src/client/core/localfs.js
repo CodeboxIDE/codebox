@@ -43,12 +43,20 @@ define([
      *  Init the localfs
      */
     var initFs = function(baseDir) {
+        var box = require("core/box");
+        
         base = "/"+baseDir;
         return fsCall(filer.init, {
             persistent: true,
             size: 10 * 1024 * 1024
         }, filer).then(function() {
             logger.log("ready");
+
+            // Box fs changes
+            box.on("box:watch", function() {
+                logger.warn("box change");
+                autoSync();
+            })
         });
     };
 

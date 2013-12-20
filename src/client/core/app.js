@@ -51,7 +51,11 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
             // Offline: state/update
             hr.Offline.on("state", function(state) {
                 if (!state) {
-                    dialogs.alert("Offline Mode", "<p>This workspace connexion has encountered an error. This could be due to a lack of network connectivity.</p><p>If your network is still on, please try to reload the page and if the error persists, please signal the issue at <a target='_blank' href='https://github.com/FriendCode/codebox/issues'>feedback</a>.");
+                    dialogs.alert("Caution: Offline Mode", [
+                        "<p>You are using the offline mode at your own risk, Codebox is still in an alpha version and Synchronization issues can caused data loss.</p>",
+                        "<p>If your network is still on, This workspace connexion has probably encountered an error. This could be due to a lack of network connectivity.",
+                        "please try to reload the page and if the error persists, please signal the issue at <a target='_blank' href='https://github.com/FriendCode/codebox/issues'>feedback</a>.</p>"
+                    ].join(""));
                 } else {
                     // todo: not reload the page when connexion is back
                     location.reload();
