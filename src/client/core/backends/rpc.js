@@ -5,7 +5,7 @@ define([
         prefix: "rpc"
     });
 
-    rpc.addMethod('*', {
+    rpc.defaultMethod({
         execute: function(args, options, method) {
             options = _.defaults({}, options || {}, {
                 dataType: "json",

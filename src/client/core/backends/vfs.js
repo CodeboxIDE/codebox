@@ -23,7 +23,7 @@ define([
     };
 
     // Base method when connexion is on
-    vfs.addMethod('*', {
+    vfs.defaultMethod({
         execute: function(args, options, method) {
             if (args && method != "write") args = JSON.stringify(args);
             if (!options.url) return Q.reject(new Error("VFS requests need 'url' option"));
