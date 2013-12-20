@@ -3,8 +3,9 @@ define([
     'hr/hr',
     'utils/url',
     'vendors/filer',
-    'core/operations'
-], function(_, hr, Url, Filer, operations) {
+    'core/operations',
+    'utils/dialogs'
+], function(_, hr, Url, Filer, operations, dialogs) {
     var logger = hr.Logger.addNamespace("localfs");
 
     // Base folder for localfs
@@ -256,6 +257,7 @@ define([
     var syncFileLocalToBox = function() {
         var File = require("models/file");
         var box = require("core/box");
+        var messages = [];
 
         var doSyncDir = function(path, parent) {
             var localEntries, boxEntries, currentEntryInfos;
@@ -287,7 +289,11 @@ define([
                     if (!localEntry && boxFile.get("mtime") < currentEntryInfos.mtime) {
                         // -> Remove the file on the box
                         //logger.log("resync: need to remove ", boxFile.path());
-                        return boxFile.remove();
+                        messages.push({
+                            'operation': "remove",
+                            'path': boxFile.path(),
+                            'message': "[conflict] You should manually remove "+boxFile.path()
+                        });
                     }
 
                     // Do nothing
@@ -316,28 +322,24 @@ define([
 
                     // if a directory
                     if (entryIsDir) {
-                        //logger.log("resync: is a directory", localEntry._fullPath);
-
                         var syncEntry = function(newParent) {
-                            //logger.log("resync: go sync ", newParent.path(), localEntry._fullPath);
                             return doSyncDir(localEntry._fullPath, newParent);
-                        }
-
-                        var createAndSyncEntry = function() {
-                            //logger.log("resync: need to mkdir", localEntry.name, "in", parent.path());
-                            return parent.mkdir(localEntry.name).then(function() {
-                                return parent.getChild(localEntry.name);
-                            }).then(syncEntry);
                         }
 
                         if (boxFile) {
                             if (boxFile.isDirectory()) {
                                 return syncEntry(boxFile);
                             } else {
-                                return boxFile.remove().then(createAndSyncEntry);
+                                messages.push({
+                                    'operation': "remove",
+                                    'path': boxFile.path(),
+                                    'message': "[conflict] You should manually remove "+boxFile.path()
+                                });
                             }
                         } else {
-                            return createAndSyncEntry;
+                            return parent.mkdir(localEntry.name).then(function() {
+                                return parent.getChild(localEntry.name);
+                            }).then(syncEntry);
                         }
                     }
 
@@ -356,6 +358,10 @@ define([
             })
         }, {
             title: "Uploading changes..."
+        }).then(function() {
+            if (messages.length > 0) {
+                return dialogs.alert("Conflict during synchronization:", _.pluck(messages, 'message').join("<br/>"));
+            }
         });
     };
 
