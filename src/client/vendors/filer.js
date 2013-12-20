@@ -484,13 +484,13 @@ var Filer = new function() {
 
     var callback = function(dirEntry) {
 
-      cwd_ = dirEntry;
+      //cwd_ = dirEntry;
 
       // Read contents of current working directory. According to spec, need to
       // keep calling readEntries() until length of result array is 0. We're
       // guarenteed the same entry won't be returned again.
       var entries_ = [];
-      var reader = cwd_.createReader();
+      var reader = dirEntry.createReader();
 
       var readEntries = function() {
         reader.readEntries(function(results) {
@@ -547,7 +547,6 @@ var Filer = new function() {
       if (folders[0] == '.' || folders[0] == '') {
         folders = folders.slice(1);
       }
-
       rootDir.getDirectory(folders[0], {create: true, exclusive: exclusive},
         function (dirEntry) {
           if (dirEntry.isDirectory) { // TODO: check shouldn't be necessary.
@@ -569,13 +568,11 @@ var Filer = new function() {
           }
         },
         function(e) {
-          if (e.code == FileError.INVALID_MODIFICATION_ERR) {
-            e.message = "'" + path + "' already exists";
-            if (opt_errorHandler) {
-              opt_errorHandler(e);
-            } else {
-              throw e;
-            }
+          e.message = e.message || "'" + path + "' already exists";
+          if (opt_errorHandler) {
+            opt_errorHandler(e);
+          } else {
+            throw e;
           }
         }
       );

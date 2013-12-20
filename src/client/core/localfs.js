@@ -198,9 +198,9 @@ define([
 
         var doSync = function(fp) {
             var path = fp.path();
-            logger.log("sync:", path);
-
             if (path == "/.git") return Q();
+
+            logger.log("sync:box->local:", path);
 
             if (fp.isDirectory()) {
                 // Create the directory
@@ -222,10 +222,13 @@ define([
             }
         };
         return operations.start("files.sync.offline", function(op) {
+            logger.warn("Start sync: box->local");
             return remove("/").then(function() {
-                doSync(box.root);
+                return doSync(box.root);
             }, function() {
-                doSync(box.root);
+                return doSync(box.root)
+            }).then(function() {
+                logger.warn("Finished sync: box->local");
             });
         }, {
             title: "Downloading ..."
@@ -241,8 +244,9 @@ define([
 
         var doSyncDir = function(path, parent) {
             var localEntries, boxEntries, currentEntryInfos;
-
             if (path == "/.git") return Q();
+
+            logger.log("sync:local->box:", path);
 
             // Get current directory
             return openFile(path).then(function(infos) {
@@ -267,7 +271,7 @@ define([
                     // File don't exists and box file older than current directory
                     if (!localEntry && boxFile.get("mtime") < currentEntryInfos.mtime) {
                         // -> Remove the file on the box
-                        logger.log("resync: need to remove ", boxFile.path());
+                        //logger.log("resync: need to remove ", boxFile.path());
                         return boxFile.remove();
                     }
 
@@ -287,9 +291,9 @@ define([
                     || (boxFile.get("mtime") < localEntry.mtime)))    // or File modified offline
                     {
                         // -> Update box content
-                        logger.log("resync: need to update ", localEntry._fullPath);
+                        /*logger.log("resync: need to update ", localEntry._fullPath);
                         logger.log(" -> box:", boxFile.get("mtime"));
-                        logger.log(" -> local:", localEntry.mtime);
+                        logger.log(" -> local:", localEntry.mtime);*/
                         return readFile(localEntry._fullPath).then(function(content) {
                             return parent.write(content, localEntry._fullPath);
                         });
@@ -297,15 +301,15 @@ define([
 
                     // if a directory
                     if (entryIsDir) {
-                        logger.log("resync: is a directory", localEntry._fullPath);
+                        //logger.log("resync: is a directory", localEntry._fullPath);
 
                         var syncEntry = function(newParent) {
-                            logger.log("resync: go sync ", newParent.path(), localEntry._fullPath);
+                            //logger.log("resync: go sync ", newParent.path(), localEntry._fullPath);
                             return doSyncDir(localEntry._fullPath, newParent);
                         }
 
                         var createAndSyncEntry = function() {
-                            logger.log("resync: need to mkdir", localEntry.name, "in", parent.path());
+                            //logger.log("resync: need to mkdir", localEntry.name, "in", parent.path());
                             return parent.mkdir(localEntry.name).then(function() {
                                 return parent.getChild(localEntry.name);
                             }).then(syncEntry);
@@ -331,7 +335,10 @@ define([
         };
 
         return operations.start("files.sync.online", function(op) {
-            return doSyncDir("/", box.root)
+            logger.warn("Start sync: local->box");
+            return doSyncDir("/", box.root).then(function() {
+                logger.warn("Finished sync: local->box");
+            })
         }, {
             title: "Uploading changes..."
         });
@@ -344,9 +351,15 @@ define([
      */
     var sync = function() {
         if (hr.Offline.isConnected()) {
-            return openFile("/").then(syncFileLocalToBox, function() {
+            return openFile("/").then(function(infos) {
+                return syncFileLocalToBox();
+            }, function() {
                 return createDirectory("/");
-            }).then(syncFileBoxToLocal);
+            }).then(function() {
+                return syncFileBoxToLocal();
+            }).fail(function(err) {
+                logger.error("!!!!!! ERROR !!!!!!!", err);
+            });
         }
     };
 
@@ -361,6 +374,7 @@ define([
         'read': readFile,
         'mv': move,
         'rm': remove,
-        'sync': sync
+        'sync': sync,
+        'filer': filer
     };
 });
