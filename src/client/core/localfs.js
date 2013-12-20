@@ -237,7 +237,7 @@ define([
                 });
             }
         };
-        return operations.start("files.sync.offline", function(op) {
+        return operations.start("files.sync", function(op) {
             logger.warn("Start sync: box->local");
             return remove("/").then(function() {
                 return doSync(box.root);
@@ -351,7 +351,7 @@ define([
             });
         };
 
-        return operations.start("files.sync.online", function(op) {
+        return operations.start("files.sync", function(op) {
             logger.warn("Start sync: local->box");
             return doSyncDir("/", box.root).then(function() {
                 logger.warn("Finished sync: local->box");
