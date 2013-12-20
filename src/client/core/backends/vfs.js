@@ -42,7 +42,6 @@ define([
         },
         after: function(args, results, options) {
             
-
         }
     });
 
@@ -53,8 +52,7 @@ define([
             return localfs.create(path, args);
         },
         after: function(args, results, options) {
-            
-
+            localfs.autoSync();
         }
     });
 
@@ -65,8 +63,7 @@ define([
             return localfs.mkdir(path, args);
         },
         after: function(args, results, options) {
-            
-
+            localfs.autoSync();
         }
     });
 
@@ -77,8 +74,7 @@ define([
             return localfs.write(path, args);
         },
         after: function(args, results, options) {
-            
-
+            localfs.autoSync();
         }
     });
 
@@ -92,8 +88,7 @@ define([
             return localfs.mv(from, to);
         },
         after: function(args, results, options) {
-            
-
+            localfs.autoSync();
         }
     });
 
@@ -104,8 +99,7 @@ define([
             return localfs.rm(path, args);
         },
         after: function(args, results, options) {
-            
-
+            localfs.autoSync();
         }
     });
 

@@ -30,15 +30,6 @@ define([
         }
     });
 
-    // ping signal offline mode
-    rpc.addMethod('box/ping', {
-        fallback: function(args) {
-            return {
-                'ping': false
-            }
-        }
-    });
-
     // Cached methods
     rpc.addCachedMethod('box/status');
     rpc.addCachedMethod('auth/join');

@@ -7,8 +7,15 @@ define([
 ], function(_, hr, Url, Filer, operations) {
     var logger = hr.Logger.addNamespace("localfs");
 
+    // Base folder for localfs
     var base = "/";
+
+    // Constant mime type for a directory
     var MIME_DIRECTORY = "inode/directory";
+
+    // Duration for sync (ms)
+    syncDuration = 1*60*1000;
+
 
     // Create fs interface
     var filer = new Filer();
@@ -349,19 +356,51 @@ define([
      *      -> if never sync: download everything
      *      -> if already sync: upload changes and download last changes
      */
-    var sync = function() {
+    var sync = function(options) {
+        options = _.defaults({}, options || {}, {
+            'updateLocal': false
+        });
+
         if (hr.Offline.isConnected()) {
+            var endT, startT = Date.now();
+
             return openFile("/").then(function(infos) {
+                if (options.updateLocal) return Q();
                 return syncFileLocalToBox();
             }, function() {
                 return createDirectory("/");
             }).then(function() {
                 return syncFileBoxToLocal();
-            }).fail(function(err) {
+            }).then(function() {
+                //Calcul duration
+                endT = Date.now();
+                syncDuration = _.max([endT - startT, 5000]);
+                updateAutoSync();
+                return syncDuration;
+            }, function(err) {
                 logger.error("!!!!!! ERROR !!!!!!!", err);
             });
         }
     };
+
+    /*
+     *  Auto sync allow to resync the localfs every interval
+     */
+    var autoSync = null;
+    var updateAutoSync = function() {
+        logger.log("sync take ", syncDuration/1000,"seconds");
+        autoSync =  _.throttle(function() {
+            sync({
+                updateLocal: true
+            });
+        }, 2*syncDuration);
+    };
+    updateAutoSync();
+
+    // Run sync every 5min
+    setTimeout(function() {
+        autoSync();
+    }, 5*60*1000);
 
     return {
         'getEntryInfos': getEntryInfos,
@@ -375,6 +414,10 @@ define([
         'mv': move,
         'rm': remove,
         'sync': sync,
-        'filer': filer
+        'autoSync': function() {
+            return autoSync();
+        },
+        'filer': filer,
+        'syncDuration': syncDuration
     };
 });

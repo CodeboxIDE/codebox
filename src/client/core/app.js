@@ -11,9 +11,10 @@ define([
     'core/commands/menu',
     'core/tabs',
     'core/panels',
-    'core/operations'
+    'core/operations',
+    'core/localfs'
 ], function (hr, url, dialogs, 
-box, session, addons, box, files, commands, menu, tabs, panels, operations) {
+box, session, addons, box, files, commands, menu, tabs, panels, operations, localfs) {
 
     // Define base application
     var Application = hr.Application.extend({
@@ -51,6 +52,9 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations) {
             hr.Offline.on("state", function(state) {
                 if (!state) {
                     dialogs.alert("Offline Mode", "<p>This workspace connexion has encountered an error. This could be due to a lack of network connectivity.</p><p>If your network is still on, please try to reload the page and if the error persists, please signal the issue at <a target='_blank' href='https://github.com/FriendCode/codebox/issues'>feedback</a>.");
+                } else {
+                    // todo: not reload the page when connexion is back
+                    location.reload();
                 }
             });
             hr.Offline.on("update", function() {
@@ -122,6 +126,9 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations) {
 
                     // Check update
                     hr.Offline.checkUpdate();
+
+                    // Run sync
+                    localfs.sync();
                 });
             }
             return Application.__super__.finish.apply(this, arguments);
