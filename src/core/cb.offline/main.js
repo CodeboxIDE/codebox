@@ -4,27 +4,6 @@ var path = require('path');
 var Q = require('q');
 var Manifest = require('./manifest').Manifest;
 
-var listStaticFiles = function(folder, root, globR) {
-    root = root || "/";
-    globR = globR || "**/*";
-
-    return Q.nfcall(glob, globR, {
-        'cwd': folder,
-        'mark': true
-    }).then(function(files) {
-        return _.map(
-            // Ignore diretcories
-            _.filter(files, function(file) {
-                return file.substr(-1) != "/";
-            }),
-            function(file) {
-                return root+file;
-            }
-        );
-    })
-};
-
-
 function setup(options, imports, register) {
     var server = imports.server;
     var addons = imports.addons
