@@ -394,6 +394,8 @@ define([
             }, function(err) {
                 logger.error("!!!!!! ERROR !!!!!!!", err);
             });
+        } else {
+            return Q.reject(new Error("Can't synchronize when offline"));
         }
     };
 
@@ -427,6 +429,7 @@ define([
         'read': readFile,
         'mv': move,
         'rm': remove,
+        'reset': syncFileBoxToLocal,
         'sync': sync,
         'autoSync': function() {
             return autoSync();

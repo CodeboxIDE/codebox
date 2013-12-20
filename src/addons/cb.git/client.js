@@ -36,7 +36,7 @@ define(["views/dialog"], function(GitDialog) {
             'shortcuts': ["mod+S"],
             'offline': false,
             'action': function() {
-                box.sync();
+                return box.sync();
             }
         }
     ]).menuSection([
@@ -56,7 +56,7 @@ define(["views/dialog"], function(GitDialog) {
             'shortcuts': ["mod+P"],
             'offline': false,
             'action': function() {
-                box.gitPush();
+                return box.gitPush();
             }
         },
         {
@@ -65,7 +65,7 @@ define(["views/dialog"], function(GitDialog) {
             'shortcuts': ["shift+mod+P"],
             'offline': false,
             'action': function() {
-                box.gitPull();
+                return box.gitPull();
             }
         }
     ]).menuSection([

@@ -18,7 +18,7 @@ define([
     var Command = hr.Model.extend({
         defaults: {
             // Command type
-            // "divider", "action", "menu"
+            // "divider", "action", "menu", "operation"
             'type': "action",
 
             // Command unique id
@@ -79,10 +79,21 @@ define([
 
         // Run the command
         run: function(args) {
+            var that = this;
             if (this.hasFlag("disabled")) {
                 return false;
             }
-            return this.get("action").apply(this, [args]);
+            
+            var result = this.get("action").apply(this, [args]);
+
+            if (Q.isPromise(result)) {
+                this.toggleFlag("running", true);
+                result.fin(function() {
+                    that.toggleFlag("running", false);
+                });
+            }
+
+            return result;
         },
 
         // Toggle flag
@@ -120,6 +131,7 @@ define([
 
         // Add a section to the command menu
         menuSection: function(commands, properties) {
+            if (!_.isArray(commands)) commands = [commands];
             var section = Command.section(commands, properties);
             this.menu.add(section);
             return this;

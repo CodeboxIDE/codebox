@@ -25,14 +25,6 @@ define([
         title: "File",
         position: 0
     }).menuSection([{
-        'id': "offline.resync",
-        'title': "Synchronize",
-        'offline': false,
-        'shortcuts': [],
-        'action': function() {
-            localfs.sync();
-        }
-    }]).menuSection([{
         'id': "quit",
         'title': "Quit",
         'shortcuts': ["mod+q"],

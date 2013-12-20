@@ -53,6 +53,16 @@ define([
                 itemIcon = "check";
             }
 
+            // Active checkbox
+            if (that.model.hasFlag("active")) {
+                itemIcon = "check";
+            }
+
+            // Running operation
+            if (that.model.hasFlag("running")) {
+                itemIcon = "refresh fa-spin";
+            }
+
             // Icon
             var $icon = $("<i>", {
                 "class": "menu-icon fa fa-"+itemIcon
