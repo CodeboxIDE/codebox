@@ -87,10 +87,10 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
         finish: function() {
             var that = this;
 
-            var email = this.$(".login-box #login-email").val();
-            var password = this.$(".login-box #login-token").val();
+            var email = this.$(".login-box #login-email").val() || hr.Cookies.get("email");
+            var password = this.$(".login-box #login-token").val() || hr.Cookies.get("token");
 
-            if (email && password) {
+            if (!box.isAuth() && email && password) {
                 this.doLogin(email, password, true);
             } else if (box.isAuth()) {
                 // Add menu
