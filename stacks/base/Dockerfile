@@ -34,6 +34,12 @@ RUN apt-get -y install php5-cli
 # Prepare user and directories
 RUN adduser --shell /bin/bash --gecos 'codebox workspace user' --disabled-password --home /home/codebox codebox
 
+# Remove password for user (sudo, ...)
+RUN passwd -d codebox
+
+# Make user sudo capable (add it to the "sudo" group)
+RUN gpasswd -a codebox sudo
+
 # Add codebox's source code to the container
 # "./buildstack.sh base" will generate a local source folder for this
 # That is clean of temporary folders and node_moudles
