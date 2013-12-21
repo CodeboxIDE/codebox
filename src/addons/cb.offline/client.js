@@ -18,8 +18,7 @@ define([], function() {
 
     var syncMenu = Command.register("offline.sync.menu", {
         'type': "menu",
-        'title': "Synchronize",
-        'offline': false
+        'title': "Synchronize"
     });
     syncMenu.menuSection(checkConnexion);
     syncMenu.menuSection([

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 var _ = require('underscore');
 var cli = require('commander');
 var pkg = require('../package.json');
