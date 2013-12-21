@@ -4,8 +4,9 @@ define([
     'utils/url',
     'vendors/filer',
     'core/operations',
-    'utils/dialogs'
-], function(_, hr, Url, Filer, operations, dialogs) {
+    'utils/dialogs',
+    'utils/alerts'
+], function(_, hr, Url, Filer, operations, dialogs, alerts) {
     var logger = hr.Logger.addNamespace("localfs");
 
     // Base folder for localfs
@@ -244,6 +245,7 @@ define([
             }, function() {
                 return doSync(box.root)
             }).then(function() {
+                alerts.show("Workspace has been saved offline.", 5000);
                 logger.warn("Finished sync: box->local");
             });
         }, {
@@ -359,6 +361,7 @@ define([
         }, {
             title: "Uploading changes..."
         }).then(function() {
+            alerts.show("Offline changes have been uploaded to the workspace.", 5000);
             if (messages.length > 0) {
                 return dialogs.alert("Conflict during synchronization:", _.pluck(messages, 'message').join("<br/>"));
             }
@@ -390,6 +393,8 @@ define([
                 endT = Date.now();
                 syncDuration = _.max([endT - startT, 5000]);
                 updateAutoSync();
+
+                alerts.show("Offline and Workspace have been synchronized.", 5000);
                 return syncDuration;
             }, function(err) {
                 logger.error("!!!!!! ERROR !!!!!!!", err);

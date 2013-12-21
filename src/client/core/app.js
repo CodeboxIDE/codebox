@@ -2,6 +2,7 @@ define([
     'hr/hr',
     'utils/url',
     'utils/dialogs',
+    'utils/alerts',
     'core/box',
     'core/session',
     'core/addons',
@@ -13,7 +14,7 @@ define([
     'core/panels',
     'core/operations',
     'core/localfs'
-], function (hr, url, dialogs, 
+], function (hr, url, dialogs, alerts,
 box, session, addons, box, files, commands, menu, tabs, panels, operations, localfs) {
 
     // Define base application
@@ -51,13 +52,9 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
             // Offline: state/update
             hr.Offline.on("state", function(state) {
                 if (!state) {
-                    dialogs.alert("Caution: Offline Mode", [
-                        "<p>You are using the offline mode at your own risk, Codebox is still in an alpha version and Synchronization issues can caused data loss.</p>",
-                        "<p>If your network is still on, This workspace connexion has probably encountered an error. This could be due to a lack of network connectivity.",
-                        "please try to reload the page and if the error persists, please signal the issue at <a target='_blank' href='https://github.com/FriendCode/codebox/issues'>feedback</a>.</p>"
-                    ].join(""));
+                    alerts.show("Caution: Connection lost, Workspace is now in Offline mode", 5000);
                 } else {
-                    // todo: not reload the page when connexion is back
+                    alerts.show("Connection detected. Switching to Codebox online", 5000);
                     location.reload();
                 }
             });
