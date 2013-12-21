@@ -34,7 +34,10 @@
         "less": "1.5.0",
         "csso": "1.3.9",
         "fstream": "0.1.25",
-        "tar": "0.1.19"
+        "tar": "0.1.19",
+
+        "grunt": "0.4.2",
+        "grunt-cli": "0.1.11"
     },
     "bin": {
         "codebox": "./bin/codebox.js"
