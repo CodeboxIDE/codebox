@@ -204,6 +204,16 @@ var Addon = function(logger, _rootPath) {
             return Q(that);
         });
     };
+
+    // Return addons cache resources list
+    this.resources = function() {
+        return ["addon-built.js"].concat(this.infos.client ? (this.infos.client.resources || []) : []);
+    };
+
+    // Return addons network resources list
+    this.network = function() {
+        return [].concat(this.infos.client ? (this.infos.client.network || []) : []);
+    };
 };
 
 module.exports = Addon;

@@ -14,6 +14,9 @@
         "main": "client",
         "provides": [
             "ace"
+        ],
+        "resources": [
+            "ace/**"
         ]
     }
 }

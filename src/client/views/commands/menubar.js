@@ -3,7 +3,7 @@ define([
     "views/commands/manager",
     "views/commands/menu"
 ], function(hr, CommandsView, MenuView) {
-    var MenuCommandItem = hr.List.Item.extend({
+    var MenuCommandItem = CommandsView.CommandItem.extend({
         tagName: "div",
         className: "btn-group menu-command-item",
         events: {},
@@ -21,6 +21,8 @@ define([
 
         // Render the menu item
         render: function() {
+            this.$el.empty();
+            this.$el.attr("class", this.className+" "+this.getFlagsClass());
             $("<button>", {
                 'class': "btn dropdown-toggle",
                 'text': this.model.get("title"),

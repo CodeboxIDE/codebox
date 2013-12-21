@@ -1,12 +1,12 @@
 define([
     'hr/hr',
     'vendors/socket.io',
-    'core/api',
+    'core/backends/rpc',
     'models/file',
     'models/shell',
     'models/user',
     'core/operations'
-], function (hr, io, api, File, Shell, User, operations) {
+], function (hr, io, rpc, File, Shell, User, operations) {
     var logging = hr.Logger.addNamespace("codebox");
 
     var Codebox = hr.Model.extend({
@@ -26,7 +26,6 @@ define([
             Codebox.__super__.initialize.apply(this, arguments);
 
             this.baseUrl = this.options.baseUrl || "";
-            this.state = false;
 
             this.user = null;
 
@@ -54,35 +53,24 @@ define([
                     that.trigger(eventName, data);
                 });
                 socket.on('connect', function(data) {
-                    that.setStatus(true);
+                    hr.Offline.check();
                 });
                 socket.on('connect_failed', function(data) {
-                    that.setStatus(false);
+                    hr.Offline.check();
                 });
                 socket.on('reconnect', function(data) {
-                    that.setStatus(true);
+                    hr.Offline.check();
                 });
                 socket.on('reconnect_failed', function(data) {
-                    that.setStatus(true);
+                    hr.Offline.check();
                 });
                 socket.on('error', function(data) {
-                    that.setStatus(false);
+                    hr.Offline.check();
                 });
                 socket.on('disconnect', function(data) {
-                    that.setStatus(false);
+                    hr.Offline.check();
                 });
             });
-        },
-
-        /*
-         *  Set codebox status (working or not)
-         *  
-         *  @status : boolean for the status
-         */
-        setStatus: function(state) {
-            this.state = state;
-            logging.log("status ", this.state);
-            this.trigger("status", state);
         },
 
         /*
@@ -110,7 +98,7 @@ define([
 
             this.user = user || new User();
 
-            return api.rpc("/auth/join", authInfo).then(function(info) {
+            return rpc.execute("auth/join", authInfo).then(function(info) {
                 that.user.set(info);
                 that.set("auth", true);
                 return Q(info);
@@ -132,7 +120,7 @@ define([
          */
         status: function() {
             var that = this;
-            return api.rpc("/box/status").then(function(data) {
+            return rpc.execute("box/status").then(function(data) {
                 that.set(data);
                 return Q(data);
             });
@@ -142,14 +130,14 @@ define([
          *  Get list of collaborators
          */
         collaborators: function() {
-            return api.rpc("/users/list");
+            return rpc.execute("users/list");
         },
 
         /*
          *  Get git status
          */
         gitStatus: function() {
-            return api.rpc("/git/status");
+            return rpc.execute("git/status");
         },
 
         /*
@@ -157,7 +145,7 @@ define([
          */
         gitPush: function() {
             return operations.start("git.push", function(op) {
-                return api.rpc("/git/push")
+                return rpc.execute("git/push")
             }, {
                 title: "Pushing"
             });
@@ -168,7 +156,7 @@ define([
          */
         gitCheckout: function(ref) {
             return operations.start("git.checkout", function(op) {
-                return api.rpc("/git/checkout", {
+                return rpc.execute("git/checkout", {
                     'ref': ref
                 })
             }, {
@@ -181,7 +169,7 @@ define([
          */
         gitBranchCreate: function(name) {
             return operations.start("git.branch.create", function(op) {
-                return api.rpc("/git/branch_create", {
+                return rpc.execute("git/branch_create", {
                     'name': name
                 })
             }, {
@@ -194,7 +182,7 @@ define([
          */
         gitBranchDelete: function(name) {
             return operations.start("git.branch.delete", function(op) {
-                return api.rpc("/git/branch_delete", {
+                return rpc.execute("git/branch_delete", {
                     'name': name
                 })
             }, {
@@ -206,7 +194,7 @@ define([
          *  List branches
          */
         gitBranches: function(name) {
-            return api.rpc("/git/branches");
+            return rpc.execute("git/branches");
         },
 
         /*
@@ -214,7 +202,7 @@ define([
          */
         gitPull: function() {
             return operations.start("git.pull", function(op) {
-                return api.rpc("/git/pull")
+                return rpc.execute("git/pull")
             }, {
                 title: "Pulling"
             });
@@ -224,14 +212,14 @@ define([
          *  Get commits chages
          */
         commitsPending: function() {
-            return api.rpc("/git/commits_pending");
+            return rpc.execute("git/commits_pending");
         },
 
         /*
          *  Search files
          */
         searchFiles: function(q) {
-            return api.rpc("/search/files", {
+            return rpc.execute("search/files", {
                 "query": q
             });
         },
@@ -242,7 +230,7 @@ define([
         commit: function(args) {
             args = _.extend(args || {});
             return operations.start("git.commit", function(op) {
-                return api.rpc("/git/commit", args)
+                return rpc.execute("git/commit", args)
             }, {
                 title: "Commiting"
             });
@@ -253,7 +241,7 @@ define([
          */
         sync: function() {
             return operations.start("git.sync", function(op) {
-                return api.rpc("/git/sync")
+                return rpc.execute("git/sync")
             }, {
                 title: "Synchronization"
             });
@@ -279,7 +267,7 @@ define([
          *  Return running http process
          */
         procHttp: function() {
-            return api.rpc("/proc/http");
+            return rpc.execute("proc/http");
         },
     });
     

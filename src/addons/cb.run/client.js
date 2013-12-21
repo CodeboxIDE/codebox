@@ -11,7 +11,8 @@ define([], function() {
     var httpPorts = new Command({}, {
         'id': "run.ports.http",
         'title': "Running Ports",
-        'type': "menu"
+        'type': "menu",
+        'offline': false
     });
 
     // Update running ports list
@@ -37,6 +38,7 @@ define([], function() {
     var runCommand = commands.register("run.workspace", {
         title: "Run Application",
         icon: "play",
+        offline: false,
         position: 1,
         shortcuts: [
             "r"
@@ -53,6 +55,7 @@ define([], function() {
         {
             'type': "action",
             'title': "Logging Output",
+            'offline': false,
             'action': function() {
                 Command.run("monitor.open");
             }
@@ -61,6 +64,7 @@ define([], function() {
         {
             'type': "action",
             'title': "Refresh Ports",
+            'offline': false,
             'action': updatePorts
         },
         httpPorts

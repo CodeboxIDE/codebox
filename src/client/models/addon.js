@@ -3,11 +3,10 @@ define([
     "underscore",
     "jQuery",
     "hr/hr",
-    "core/api",
 
     // addons dependencies
     "core/globals"
-], function(Q, _, $, hr, api) {
+], function(Q, _, $, hr) {
     var logging = hr.Logger.addNamespace("addon");
 
     var Addon = hr.Model.extend({
@@ -43,7 +42,7 @@ define([
                 'context': context,
                 'baseUrl': this.url(),
                 'waitSeconds': 200,
-                'urlArgs': "bust=" + hr.configs.revision+"&version="+this.get("version"),
+                //'urlArgs': "version="+this.get("version"),
                 'paths': {
                     "require-tools": "/static/require-tools"
                 },

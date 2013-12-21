@@ -5,6 +5,19 @@ define([
     "utils/keyboard"
 ], function(hr, Command, Commands, Keyboard) {
 
+    var CommandItem = hr.List.Item.extend({
+        flagsClasses: {
+            'active': "active",
+            'disabled': "disabled"
+        },
+
+        getFlagsClass: function() {
+            return _.map(this.model.get("flags", "").split(" "), function(flag) {
+                return this.flagsClasses[flag] || "";
+            }, this).join(" ");
+        }
+    });
+
     // Commands list
     var CommandsView = hr.List.extend({
         Collection: Commands,
@@ -47,6 +60,8 @@ define([
             if (!command) return false;
             return command.run.apply(command, Array.prototype.slice.call(arguments, 1));
         }
+    }, {
+        CommandItem: CommandItem
     });
 
     return CommandsView;

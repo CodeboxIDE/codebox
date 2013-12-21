@@ -1,7 +1,7 @@
 define([
     "underscore",
     "hr/hr",
-    "utils/keyboard",
+    "utils/keyboard"
 ], function(_, hr, Keyboard) {
     var logging = hr.Logger.addNamespace("command");
 
@@ -18,7 +18,7 @@ define([
     var Command = hr.Model.extend({
         defaults: {
             // Command type
-            // "divider", "action", "menu"
+            // "divider", "action", "menu", "operation"
             'type': "action",
 
             // Command unique id
@@ -49,12 +49,16 @@ define([
             // Visible in search
             'search': true,
 
+            // Offline mode
+            'offline': null,
+
             // Others flags
             'flags': ""
         },
 
         // Constructor
         initialize: function() {
+            var that = this;
             Command.__super__.initialize.apply(this, arguments);
 
             // Default unique id
@@ -64,11 +68,32 @@ define([
             var Commands = require("collections/commands");
             this.menu = new Commands();
             this.menu.reset(this.get("menu", []));
+
+            if (this.get("offline") !== null) {
+                hr.Offline.on("state", function() {
+                    that.toggleFlag("disabled", that.get("offline") == hr.Offline.isConnected())
+                });
+                that.toggleFlag("disabled", that.get("offline") == hr.Offline.isConnected())
+            }
         },
 
         // Run the command
         run: function(args) {
-            return this.get("action").apply(this, [args]);
+            var that = this;
+            if (this.hasFlag("disabled")) {
+                return false;
+            }
+            
+            var result = this.get("action").apply(this, [args]);
+
+            if (Q.isPromise(result)) {
+                this.toggleFlag("running", true);
+                result.fin(function() {
+                    that.toggleFlag("running", false);
+                });
+            }
+
+            return result;
         },
 
         // Toggle flag
@@ -106,6 +131,7 @@ define([
 
         // Add a section to the command menu
         menuSection: function(commands, properties) {
+            if (!_.isArray(commands)) commands = [commands];
             var section = Command.section(commands, properties);
             this.menu.add(section);
             return this;

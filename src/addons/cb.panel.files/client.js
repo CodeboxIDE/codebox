@@ -67,6 +67,7 @@ define([
             'id': "workspace.save.zip",
             'type': "action",
             'title': "Save Project As ZIP",
+            'offline': false,
             'action': function() {
                 window.open("/export/zip");
             }

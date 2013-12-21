@@ -37,6 +37,7 @@ define([
 
         // Finish rendering
         finish: function() {
+            this.$el.toggleClass("disabled", !this.model.canOpen());
             this.$(">.name").css("padding-left", this.paddingLeft);
             this.$el.toggleClass("type-directory", this.model.isDirectory());
 
@@ -51,6 +52,10 @@ define([
             if (e != null) {
                 e.preventDefault();
                 e.stopPropagation();
+            }
+
+            if (!this.model.canOpen()) {
+                return;
             }
 
             if (this.model.isDirectory()) {
@@ -76,6 +81,10 @@ define([
                 e.stopPropagation();
             }
 
+            if (!this.model.canOpen()) {
+                return;
+            }
+
             if (!this.model.isDirectory()) {
                 this.model.open({
                     'userChoice': false
@@ -97,9 +106,6 @@ define([
             this.countFiles = 0;
             this.paddingLeft = this.options.paddingLeft || 10;
 
-            // Context menu
-            ContextMenu.add(this.$el, this.model.contextMenu());
-
             return this;
         },
 
@@ -108,6 +114,9 @@ define([
             var that = this;
             this.$el.empty();
             this.$el.toggleClass("root", this.model.isRoot());
+
+            // Context menu
+            ContextMenu.add(this.$el, this.model.contextMenu());
 
             this.model.listdir().then(function(files) {
                 that.empty();

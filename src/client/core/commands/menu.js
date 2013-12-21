@@ -5,8 +5,9 @@ define([
     'core/box',
     'core/panels',
     'core/tabs',
-    'core/session'
-], function (_, hr, MenubarView, box, panels, tabs, session) {
+    'core/session',
+    'core/localfs'
+], function (_, hr, MenubarView, box, panels, tabs, session, localfs) {
     // Collection for all menu commands
     var menu = new MenubarView();
     

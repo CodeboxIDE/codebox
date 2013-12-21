@@ -2,6 +2,7 @@ define([
     'hr/hr',
     'utils/url',
     'utils/dialogs',
+    'utils/alerts',
     'core/box',
     'core/session',
     'core/addons',
@@ -11,9 +12,10 @@ define([
     'core/commands/menu',
     'core/tabs',
     'core/panels',
-    'core/operations'
-], function (hr, url, dialogs, 
-box, session, addons, box, files, commands, menu, tabs, panels, operations) {
+    'core/operations',
+    'core/localfs'
+], function (hr, url, dialogs, alerts,
+box, session, addons, box, files, commands, menu, tabs, panels, operations, localfs) {
 
     // Define base application
     var Application = hr.Application.extend({
@@ -47,10 +49,20 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations) {
                 this.toggleMode("body-fullpage", true);
             }, this);
 
-            // Connexion status
-            box.on("status", function(state) {
-                this.$(".cb-connexion-alert").toggle(!state);
-            }, this);
+            // Offline: state/update
+            hr.Offline.on("state", function(state) {
+                if (!state) {
+                    alerts.show("Caution: Connection lost, Workspace is now in Offline mode", 5000);
+                } else {
+                    alerts.show("Connection detected. Switching to Codebox online", 5000);
+                    location.reload();
+                }
+            });
+            hr.Offline.on("update", function() {
+                dialogs.alert("Application cache updated", "The offline application cache has been updated, This will refresh the IDE to use the new application cache.").fin(function() {
+                    location.reload();
+                });
+            });
 
             // Title changed
             box.on("change:name", function() {
@@ -72,10 +84,10 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations) {
         finish: function() {
             var that = this;
 
-            var email = this.$(".login-box #login-email").val();
-            var password = this.$(".login-box #login-token").val();
+            var email = this.$(".login-box #login-email").val() || hr.Cookies.get("email");
+            var password = this.$(".login-box #login-token").val() || hr.Cookies.get("token");
 
-            if (email && password) {
+            if (!box.isAuth() && email && password) {
                 this.doLogin(email, password, true);
             } else if (box.isAuth()) {
                 // Add menu
@@ -112,6 +124,12 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations) {
 
                     // Open root files
                     files.openNew();
+
+                    // Check update
+                    hr.Offline.checkUpdate();
+
+                    // Run sync
+                    localfs.sync();
                 });
             }
             return Application.__super__.finish.apply(this, arguments);

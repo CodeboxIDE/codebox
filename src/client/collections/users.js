@@ -1,9 +1,9 @@
 define([
     "underscore",
     "hr/hr",
-    "core/api",
+    "core/backends/rpc",
     "models/user"
-], function(_, hr, api, User) {
+], function(_, hr, rpc, User) {
     var Users = hr.Collection.extend({
         model: User,
 
@@ -17,7 +17,7 @@ define([
         // Get list of collaborators from the box
         getCollaborators: function() {
             var that = this;
-            return api.rpc("/users/list").then(function(data) {
+            return rpc.execute("users/list").then(function(data) {
                 that.reset(data);
             });
         }

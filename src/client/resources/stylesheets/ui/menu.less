@@ -32,44 +32,52 @@
 
     .dropdown-submenu{
         position:relative;
-    }
-    .dropdown-submenu>.dropdown-menu{
-        top:0;
-        left:100%;
-        margin-top:-6px;
-        margin-left:-1px;
 
-        max-height: 500px;
-        overflow-y: auto;
-    }
-    .dropdown-submenu:hover>.dropdown-menu{
-        display:block;
-    }
-     .dropdown-submenu>.dropdown-menu:empty{
-        display: none !important;
-    }
-    .dropdown-submenu>a:after{
-        display:block;
-        content:" ";
-        float:right;
-        width:0;
-        height:0;
-        border-color:transparent;
-        border-style:solid;
-        border-width:5px 0 5px 5px;
-        border-left-color:#cccccc;
-        position: absolute;
-        right: 10px;
-        top: 8px;
-    }
-    .dropdown-submenu.active>a:after, .dropdown-submenu>a:hover:after{
-        border-left-color:#ffffff;
-    }
-    .dropdown-submenu.pull-left{
-        float:none;
-    }
-    .dropdown-submenu.pull-left>.dropdown-menu{
-        left:-100%;
-        margin-left:10px;
+        >.dropdown-menu{
+            top:0;
+            left:100%;
+            margin-top:-6px;
+            margin-left:-1px;
+
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        >a:after{
+            display:block;
+            content:" ";
+            float:right;
+            width:0;
+            height:0;
+            border-color:transparent;
+            border-style:solid;
+            border-width:5px 0 5px 5px;
+            border-left-color:#cccccc;
+            position: absolute;
+            right: 10px;
+            top: 8px;
+        }
+
+        &:not(.disabled):hover {
+            >.dropdown-menu{
+                display:block;
+            }
+        }
+        &>.dropdown-menu:empty{
+            display: none !important;
+        }
+
+        &.active>a:after, &:not(.disabled)>a:hover:after{
+            border-left-color:#ffffff;
+        }
+
+        &.pull-left{
+            float:none;
+
+            >.dropdown-menu{
+                left:-100%;
+                margin-left:10px;
+            }
+        }
     }
 }

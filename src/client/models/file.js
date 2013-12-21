@@ -2,14 +2,14 @@ define([
     "q",
     "underscore",
     "hr/hr",
-    "core/api",
+    "core/backends/vfs",
     "utils/url",
     "utils/languages",
     "utils/filesync",
     "utils/dialogs",
     "utils/uploader",
     "core/operations"
-], function(Q, _, hr, api, Url, Languages, FileSync, Dialogs, Uploader, operations) {
+], function(Q, _, hr, vfs, Url, Languages, FileSync, Dialogs, Uploader, operations) {
     var logging = hr.Logger.addNamespace("files");
 
     if (typeof String.prototype.endsWith !== 'function') {
@@ -25,8 +25,9 @@ define([
             "mtime": 0,
             "mime": "",
             "href": "",
-            "collaborators": [],
-            "exists": true
+            "exists": true,
+            "offline": false,
+            "exportUrl": null
         },
 
         /*
@@ -71,6 +72,22 @@ define([
         },
 
         /*
+         *  VFS request
+         */
+        vfsRequest: function(method, url, args) {
+            return vfs.execute(method, args, {
+                'url': url
+            });
+        },
+
+        /*
+         *  Check if the file can be open
+         */
+        canOpen: function() {
+            return this.get("offline") || hr.Offline.isConnected();
+        },
+
+        /*
          *  Open the tab for this file
          */
         open: function(path, options) {
@@ -91,10 +108,20 @@ define([
         },
 
         /*
+         *  Return the full url with the host
+         */
+        vfsFullUrl: function() {
+            return this.codebox.baseUrl+this.vfsUrl.apply(this, arguments);
+        },
+
+        /*
          *  Return url to download the file
          */
         exportUrl: function() {
-            return this.codebox.baseUrl+this.vfsUrl();
+            if (this.get("exportUrl")) {
+                return this.get("exportUrl");
+            }
+            return this.vfsFullUrl();
         },
 
         /*
@@ -124,6 +151,9 @@ define([
             }
             if (path.length == 0) {
                 path = "/";
+            }
+            if (path[0] != '/') {
+                path = '/'+path;
             }
             return path;
         },
@@ -175,6 +205,13 @@ define([
          */
         isNewfile: function() {
             return !this.get("exists");
+        },
+
+        /*
+         *  Return true if the file is sync offline
+         */
+        isOffline: function() {
+            return this.get("offline");
         },
 
         /*
@@ -295,7 +332,7 @@ define([
 
             var parentPath = this.parentPath(path);
             var filename = this.filename(path);
-            return api.request("getJSON", this.vfsUrl(parentPath, true)).then(function(filesData) {
+            return this.vfsRequest("listdir", this.vfsUrl(parentPath, true)).then(function(filesData) {
                 var fileData = _.find(filesData, function(file) {
                     return file.name == filename;
                 });
@@ -310,6 +347,19 @@ define([
         },
 
         /*
+         *  Return a child object
+         */
+        getChild: function(name) {
+            var nPath = this.path()+"/"+name;
+            var f = new File({
+                'box': this.box
+            });
+            return f.getByPath(nPath).then(function() {
+                return f;
+            });
+        },
+
+        /*
          *  Refresh infos
          */
         refresh: function() {
@@ -320,59 +370,28 @@ define([
          *  Download
          */
         download: function(options) {
-            var url, d;
+            var url, d, that = this;
             options = _.defaults(options || {}, {
                 redirect: false
             });
-            url = this.exportUrl();
             if (options.redirect) {
-                window.open(url,'_blank');
+                window.open(this.exportUrl(),'_blank');
             } else {
-                d = hr.Requests.get(url);
-                d.done(_.bind(function(content) {
-                    this.setCache(content);
-                }, this));
-                return d;
+                return this.vfsRequest("read", this.vfsUrl()).then(function(content) {
+                    that.setCache(content);
+                    return content;
+                });
             }
         },
 
         /*
          *  Write file ocntent
          */
-        write: function(content) {
-            var uploadurl = this.codebox.baseUrl+this.vfsUrl(null);
-            var d = Q.defer();
-            var xhr = new XMLHttpRequest(),
-                upload = xhr.upload,
-                start_time = new Date().getTime(),
-                total_size = content.length;
-
-            upload.downloadStartTime = start_time;
-            upload.currentStart = start_time;
-            upload.currentProgress = 0;
-            upload.startData = 0;
-            upload.addEventListener("progress",function(e){
-                if (e.lengthComputable) {
-                    var percentage = Math.round((e.loaded * 100) / total_size);
-                }
-            }, false);
-            
-            xhr.open("PUT", uploadurl, true);
-            xhr.onreadystatechange = function(e){
-                if (xhr.status != 200)  {
-                    d.reject();
-                    e.preventDefault();
-                    return;
-               }
-            };
-            xhr.sendAsBinary(content);
-            xhr.onload = function() {
-                if (xhr.status == 200 && xhr.responseText) {
-                    d.resolve();
-                }
-            }
-
-            return d.promise;
+        write: function(content, filename) {
+            var that = this;
+            return this.vfsRequest("write", this.vfsUrl(filename, false), content).then(function() {
+                return that.path(filename);
+            });
         },
 
         /*
@@ -382,6 +401,11 @@ define([
             if (this.content != null) {
                 return Q(this.content);
             } else {
+                //Download can't work for newfiles
+                if (this.isNewfile()) {
+                    return Q("");
+                }
+
                 return this.download();
             }
         },
@@ -410,7 +434,7 @@ define([
                 group: true
             });
 
-            return api.request("getJSON", this.vfsUrl(null, true)).then(function(filesData) {
+            return this.vfsRequest("listdir", this.vfsUrl(null, true)).then(function(filesData) {
                 var files = _.map(filesData, function(file) {
                     return new File({
                         "codebox": that.codebox
@@ -436,7 +460,7 @@ define([
          *  @name : name of the file to create
          */
         createFile: function(name) {
-            return api.request("put", this.vfsUrl(null, true)+"/"+name);
+            return this.vfsRequest("create", this.vfsUrl(null, true)+"/"+name);
         },
 
         /*
@@ -445,14 +469,14 @@ define([
          *  @name : name of the directory to create
          */
         mkdir: function(name) {
-            return api.request("put", this.vfsUrl(null, true)+"/"+name+"/");
+            return this.vfsRequest("mkdir", this.vfsUrl(null, true)+"/"+name+"/");
         },
 
         /*
          *  Remove the file or directory
          */
         remove: function() {
-            return api.request("delete", this.vfsUrl(null));
+            return this.vfsRequest("remove", this.vfsUrl(null));
         },
 
         /*
@@ -463,9 +487,9 @@ define([
         rename: function(name) {
             var parentPath = this.parentPath();
             var newPath = parentPath+"/"+name;
-            return api.request("post", this.vfsUrl(newPath), JSON.stringify({
+            return this.vfsRequest("rename", this.vfsUrl(newPath), {
                 "renameFrom": this.path()
-            }));
+            });
         },
 
         // (action) Refresh files list
@@ -651,11 +675,13 @@ define([
                         'id': "file.upload",
                         'type': "menu",
                         'title': "Upload",
+                        'offline': false,
                         'menu': [
                             {
                                 'id': "file.upload.files",
                                 'type': "action",
                                 'title': "Files",
+                                'offline': false,
                                 'action': function() {
                                     that.actionUpload();
                                 }
@@ -664,6 +690,7 @@ define([
                                 'id': "file.upload.directory",
                                 'type': "action",
                                 'title': "Directory",
+                                'offline': false,
                                 'action': function() {
                                     that.actionUpload({
                                         'directory': true

@@ -54,6 +54,8 @@ define([
             this.synced = false;
             this.file = null;
             this.envId = null;
+            this.envOptions = null;
+            this.offline = false;
             this.sync = false;  // sync is enabled or disabled
             this.ping = false;  // ping
             this.participants = []; // participants list
@@ -67,6 +69,12 @@ define([
             if (this.options.file) {
                 this.setFile(this.options.file);
             }
+
+            // Offline sync
+            hr.Offline.on("state", function(state) {
+                if (hr.Offline.isConnected()) return;
+                if (this.envId) this.updateEnv(this.envId, this.envOptions);
+            }, this);
         },
 
         // Update current user cursor
@@ -123,6 +131,13 @@ define([
          */
         isSync: function() {
             return (this.envId != null && this.sync == true);
+        },
+
+        /*
+         *  Return true if offline sync
+         */
+        isOfflineSync: function() {
+            return this.offline;
         },
 
         /*
@@ -197,89 +212,106 @@ define([
                 
             });
 
+            this.envOptions = options
             this.envId = envId;
 
-            logging.log("update env with", this.envId);
+            logging.log("update env with", this.envId, hr.Offline.isConnected());
 
-            this.setSyncState(false);
-            this.socket().then(function(socket) {
-                logging.log("creating socket");
-                socket.on('connect', function() {
-                    logging.log("socket connect");
-                });
-                socket.on('connect_failed', function() {
-                    logging.warn("socket connect failed");
-                });
-                socket.on('disconnect', function() {
-                    logging.log("socket disconnect");
-                    self.setSyncState(false);
-                });
-                socket.on('connecting', function() {
-                    logging.log("socket connecting ...");
-                });
-                socket.on('message', function(data) {
-                    logging.log("socket receive packet ", data);
-                    self.ping = true;
+            if (!hr.Offline.isConnected()) {
+                /// Offline sync
+                self.setSyncState(false);
+                this.file.getCache().then(function(content) {
+                    // Update content
+                    self.setContent(content);
 
-                    // Calid data
-                    if (data.action == null || data.environment == null || self.envId != data.environment) {
-                        return;
-                    }
-
-                    // Changement file
-                    if (data.path && (!self.file || data.path != self.file.path())) {
-                        self.trigger("file:path", data.path);
-                    }
-
-                    switch (data.action) {
-                        case "cursor":
-                            if (data.from != user.get("userId")) {
-                                self.cursorMove(data.from, data.cursor.x, data.cursor.y);
-                            }
-                            break;
-                        case "select":
-                            if (data.from != user.get("userId")) {
-                                self.selectionMove(data.from, data.start.x, data.start.y, data.end.x, data.end.y);
-                            }
-                            break;
-                        case "participants":
-                            if (data.participants != null) {
-                                self.setParticipants(data.participants)
-                            }
-                            break;
-                        case "sync":
-                            if (data.content != null) {
-                                self.synced = true;
-                                self.setContent(data.content);
-                            }
-                            if (data.participants != null) {
-                                self.setParticipants(data.participants)
-                            }
-                            if (data.state != null) {
-                                self.modifiedState(data.state);
-                            }
-                            break;
-                        case "patch":
-                            if (data.patch != null) {
-                                self.patchContent(data);
-                            }
-                            break;
-                        case "modified":
-                            if (data.state != null) {
-                                self.modifiedState(data.state);
-                            }
-                            break;
-                    }
+                    // Enable sync
                     self.setSyncState(true);
+                    self.offlineState(true);
+                }, function(err) {
+                    logging.error("Error for offline sync: ", err);
                 });
+            } else {
+                /// Online sync
+                this.offlineState(false);
+                this.setSyncState(false);
+                this.socket().then(function(socket) {
+                    logging.log("creating socket");
+                    socket.on('connect', function() {
+                        logging.log("socket connect");
+                    });
+                    socket.on('connect_failed', function() {
+                        logging.warn("socket connect failed");
+                    });
+                    socket.on('disconnect', function() {
+                        logging.log("socket disconnect");
+                        self.setSyncState(false);
+                    });
+                    socket.on('connecting', function() {
+                        logging.log("socket connecting ...");
+                    });
+                    socket.on('message', function(data) {
+                        logging.log("socket receive packet ", data);
+                        self.ping = true;
 
-                if (self.file != null && !self.file.isNewfile()) {
-                    self.sendLoad(self.file.path());
-                } else {
-                    self.sendSync();
-                }
-                
-            });
+                        // Calid data
+                        if (data.action == null || data.environment == null || self.envId != data.environment) {
+                            return;
+                        }
+
+                        // Changement file
+                        if (data.path && (!self.file || data.path != self.file.path())) {
+                            self.trigger("file:path", data.path);
+                        }
+
+                        switch (data.action) {
+                            case "cursor":
+                                if (data.from != user.get("userId")) {
+                                    self.cursorMove(data.from, data.cursor.x, data.cursor.y);
+                                }
+                                break;
+                            case "select":
+                                if (data.from != user.get("userId")) {
+                                    self.selectionMove(data.from, data.start.x, data.start.y, data.end.x, data.end.y);
+                                }
+                                break;
+                            case "participants":
+                                if (data.participants != null) {
+                                    self.setParticipants(data.participants)
+                                }
+                                break;
+                            case "sync":
+                                if (data.content != null) {
+                                    self.synced = true;
+                                    self.setContent(data.content);
+                                }
+                                if (data.participants != null) {
+                                    self.setParticipants(data.participants)
+                                }
+                                if (data.state != null) {
+                                    self.modifiedState(data.state);
+                                }
+                                break;
+                            case "patch":
+                                if (data.patch != null) {
+                                    self.patchContent(data);
+                                }
+                                break;
+                            case "modified":
+                                if (data.state != null) {
+                                    self.modifiedState(data.state);
+                                }
+                                break;
+                        }
+                        self.setSyncState(true);
+                    });
+
+                    if (self.file != null && !self.file.isNewfile()) {
+                        self.sendLoad(self.file.path());
+                    } else {
+                        self.sendSync();
+                    }
+                });
+            }
         },
 
         /*
@@ -289,6 +321,15 @@ define([
             if (this.modified == state) return;
             this.modified = state;
             this.trigger("sync:modified", this.modified);
+        },
+
+        /*
+         *  Set offline state
+         */
+        offlineState: function(state) {
+            if (this.offline == state) return;
+            this.offline = state;
+            this.trigger("sync:offline", this.offline);
         },
 
         /*
@@ -341,6 +382,14 @@ define([
             } else {
                 throw new Error("need 'envId' to create sync socket");
             }
+        },
+
+        /* Close sync socket */
+        closeSocket: function() {
+            var that = this;
+            if (!this._socket) return;
+            this._socket.disconnect();
+            this_socket = null;
         },
 
         /*
@@ -560,6 +609,8 @@ define([
          *  @data : data for this action
          */
         send: function(action, data) {
+            if (this.isOfflineSync()) return this;
+
             if (this.envId != null && action != null) {
                 data = _.extend({}, data || {}, {
                     'action': action,
@@ -662,10 +713,25 @@ define([
          *  Save the file
          */
         save: function() {
-            var doSave = _.bind(function(args) {
-                this.send("save", args);
+            var that = this;
+
+            // If online use the socket event "save"
+            var doSave = function(args) {
+                that.send("save", args);
                 return Q();
-            }, this);
+            };
+
+            // If offline save with the vfs backend
+            if (!hr.Offline.isConnected()) {
+                doSave = function(args) {
+                    return that.file.write(that.content_value_t1, args.path).then(function(newPath) {
+                        if (newPath != that.file.path()) {
+                            that.trigger("file:path", newPath);
+                        }
+                        that.modifiedState(false);
+                    });
+                };
+            }
 
             if (this.file.isNewfile()) {
                 return dialogs.prompt("Save as", "", this.file.filename()).then(function(name) {
@@ -674,7 +740,7 @@ define([
                     })
                 });
             } else {
-                return doSave();
+                return doSave({});
             }
         },
 

@@ -20,6 +20,10 @@ define([
             this.tree.on("count", function(count) {
                 this.toggle(count > 0);
             }, this);
+
+            hr.Offline.on("state", function() {
+                this.update();
+            }, this);
         },
 
 

@@ -5,7 +5,7 @@ define([
     'views/commands/manager'
 ], function(_, $, hr, CommandsView) {
 
-    var MenuItem = hr.List.Item.extend({
+    var MenuItem = CommandsView.CommandItem.extend({
         tagName: "li",
         className: "menu-item",
         flagsClasses: {
@@ -53,6 +53,16 @@ define([
                 itemIcon = "check";
             }
 
+            // Active checkbox
+            if (that.model.hasFlag("active")) {
+                itemIcon = "check";
+            }
+
+            // Running operation
+            if (that.model.hasFlag("running")) {
+                itemIcon = "refresh fa-spin";
+            }
+
             // Icon
             var $icon = $("<i>", {
                 "class": "menu-icon fa fa-"+itemIcon
@@ -70,7 +80,7 @@ define([
             var $li = this.$el;
             $li.empty();
             $li.attr("data-cmdid", this.model.id+"-"+this.model.cid);
-            $li.attr("class", this.className+" "+(this.flagsClasses[this.model.get("flags", "")] || ""));
+            $li.attr("class", this.className+" "+this.getFlagsClass());
 
             if (itemType == "action") {
                 var $a = this.buildAction();

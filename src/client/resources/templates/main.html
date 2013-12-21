@@ -17,22 +17,7 @@
 
 	<!-- Body -->
 	<div class="cb-body"></div>
-
-	<div class="cb-connexion-alert" style="display: none;">
-		<div class="modal fade in" style="display: block;">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-					    <h4 class="modal-title">Connexion Error</h4>
-					</div>
-					<div class="modal-body">
-					    <p>This workspace has encountered an error. We are looking into the problem now. This could be due to a lack of network connectivity (error with websocket).</p>
-	            		<p>Please try to reload the page. If the error persists, please signal the issue at <a target="_blank" href="https://github.com/FriendCode/codebox/issues">feedback</a>.</p>
-					</div>
-				</div>
-			</div>
-	    </div>
-	</div>
+	<div class="cb-alerts"></div>
 	<div class="cb-loading-alert"><div class="cb-loadings-spinner"></div></div>
 </div>
 <% } else { %>
@@ -46,6 +31,7 @@
 				</span>
 			</div>
 			<div class="inner">
+				<% if (hr.offline.isConnected()) { %>
 					<div class="form-group">
 						<input type="email" class="form-control input-lg" name="login-email" id="login-email" placeholder="Enter email" value="<%- email %>" autocomplete="off">
 						<% if (session.box.get("public")) { %>
@@ -63,6 +49,13 @@
 						</label>
 					</div>
 					<button id="login-submit" class="btn btn-lg btn-block btn-primary">Login</button>
+				<% } else { %>
+					<div class="form-group">
+						<p class="help-block">Sorry, You can't use this workspace in offline mode.</p>
+						<p class="help-block">Please login into your box first when your connexion is back, and then this box will be available in offline mode.</p>
+						<p class="help-block">-- See you later</p>
+					</div>
+				<% } %>
 			</div>
 		</div>
 	</div>

@@ -44,6 +44,7 @@ define([
     var command = commands.register("terminal.open", {
         title: "New Terminal",
         icon: "terminal",
+        offline: false,
         shortcuts: [
             "ctrl+shift+T"
         ]

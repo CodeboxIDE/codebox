@@ -75,7 +75,7 @@ function setup(options, imports, register) {
         // So our handlers can use it as a stream
         req.resume();
 
-        if(_.contains(authorizedPaths, req.path) || res.user) {
+        if(needAuth(req.path) || res.user) {
             return next();
         }
         // Unauthorized
@@ -86,6 +86,13 @@ function setup(options, imports, register) {
             method: req.path,
         });
     });
+
+    // Check if a path need auth
+    var needAuth = function(path) {
+        return _.find(authorizedPaths, function(authPath) {
+            return path.indexOf(authPath) == 0; 
+        }) != null;
+    };
 
     // Disable auth for a path
     var disableAuth = function(path) {
