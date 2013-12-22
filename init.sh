@@ -24,7 +24,7 @@ function setup_workspace () {
 function setup_ssh () {
     echo "Calling setup_ssh ..."
 
-    if [ ! $RSA_PUBLIC ] || [ ! $RSA_PRIVATE ]; then
+    if [ ! "$RSA_PUBLIC" ] || [ ! "$RSA_PRIVATE" ]; then
         echo "Skipping setup_ssh, no private and public keys to setup ..."
     fi
 
