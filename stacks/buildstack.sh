@@ -115,8 +115,8 @@ fi;
 IMAGE_ID=$(get_image_id "${REPO}" "${TAG}")
 
 # Give that image the "latest" tag
-echo "Tagging ${IMAGE_ID} to ${REPO}:latest"
-docker tag "${IMAGE_ID}" "${REPO}" "latest"
+# echo "Tagging ${IMAGE_ID} to ${REPO}:latest"
+# docker tag "${IMAGE_ID}" "${REPO}" "latest"
 
 # Finished
 echo "Finished building ${REPO}:${TAG}"
