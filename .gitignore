@@ -12,7 +12,7 @@ results
 
 npm-debug.log
 /node_modules/
-/.vagrant/
+/stacks/.vagrant/
 
 /src/client/build/
 .addons
