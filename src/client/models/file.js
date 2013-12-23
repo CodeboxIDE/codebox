@@ -37,6 +37,7 @@ define([
             File.__super__.initialize.apply(this, arguments);
             this.codebox = this.options.codebox;
             this.content = null;
+            this.modified = false;
             this.read = this.download;
 
             // Change in codebox : file deleted
@@ -69,6 +70,15 @@ define([
                 }
             }, this);
             return this;
+        },
+
+        /*
+         *  Set modified (and not saved) state
+         */
+        modifiedState: function(state) {
+            if (this.modified == state) return;
+            this.modified = state;
+            this.trigger("modified", this.modified);
         },
 
         /*
@@ -379,6 +389,7 @@ define([
             } else {
                 return this.vfsRequest("read", this.vfsUrl()).then(function(content) {
                     that.setCache(content);
+                    that.modifiedState(false);
                     return content;
                 });
             }
@@ -390,6 +401,10 @@ define([
         write: function(content, filename) {
             var that = this;
             return this.vfsRequest("write", this.vfsUrl(filename, false), content).then(function() {
+                if (!filename) {
+                    that.setCache(content);
+                    that.modifiedState(false);
+                }
                 return that.path(filename);
             });
         },
@@ -414,7 +429,9 @@ define([
          *  Define cache content content
          */
         setCache: function(content) {
+            var modified = this.content != content;
             this.content = content;
+            this.modifiedState(modified);
             this.trigger("cache", this.content);
             return this;
         },

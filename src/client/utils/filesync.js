@@ -305,7 +305,7 @@ define([
                                     self.setParticipants(data.participants)
                                 }
                                 if (data.state != null) {
-                                    self.modifiedState(data.state);
+                                    self.file.modifiedState(data.state);
                                 }
                                 break;
                             case "patch":
@@ -315,7 +315,7 @@ define([
                                 break;
                             case "modified":
                                 if (data.state != null) {
-                                    self.modifiedState(data.state);
+                                    self.file.modifiedState(data.state);
                                 }
                                 break;
                         }
@@ -329,15 +329,6 @@ define([
                     }
                 });
             }
-        },
-
-        /*
-         *  Set modified (and not saved) state
-         */
-        modifiedState: function(state) {
-            if (this.modified == state) return;
-            this.modified = state;
-            this.trigger("sync:modified", this.modified);
         },
 
         /*
@@ -360,6 +351,7 @@ define([
 
             if (this.file != null) {
                 this.file.on("set", _.partial(this.setFile, this.file, options), this);
+                this.file.on("modified", this.trigger.bind(this, "sync:modified"));
                 this.trigger("file:mode", this.file.mode());
                 if (options.autoload) {
                     this.on("file:path", function(path) {
@@ -732,7 +724,6 @@ define([
                         if (newPath != that.file.path()) {
                             that.trigger("file:path", newPath);
                         }
-                        that.modifiedState(false);
                     });
                 };
             }
