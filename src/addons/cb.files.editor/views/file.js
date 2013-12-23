@@ -209,12 +209,8 @@ define([
                     this.tab.setTabState("warning", false);
                 }
             }, this);
-            this.sync.on("sync:offline", function(state) {
-                if (state) {
-                    this.tab.setTabState("offline", true);
-                } else {
-                    this.tab.setTabState("offline", false);
-                }
+            this.sync.on("mode", function(mode) {
+                this.tab.setTabState("sync", mode == this.sync.modes.SYNC);
             }, this);
 
             this.sync.on("sync:modified", function(state) {

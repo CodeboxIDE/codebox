@@ -62,10 +62,15 @@ define([
 
         // Set tab state
         setTabState: function(state, value) {
-            if (value === false && state != this.tabs.tabs[this.tabid].state) {
-                return this;
+            var states = (this.tabs.tabs[this.tabid].state || "").split(" ");
+
+            if (value == null)  state = !_.contains(states, state);
+            if (value) {
+                states.push(state);
+            } else {
+                states.remove(state);
             }
-            this.tabs.tabs[this.tabid].state = (value == null || value) ? state : null;
+            this.tabs.tabs[this.tabid].state = _.uniq(states).join(" ");
             this.tabs.tabs[this.tabid].tab.update();
             return this;
         },

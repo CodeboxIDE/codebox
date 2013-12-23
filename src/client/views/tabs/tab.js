@@ -23,7 +23,8 @@ define([
         states: {
             'modified': "fa-asterisk",
             'warning': "fa-exclamation",
-            'offline': "fa-flash"
+            'offline': "fa-flash",
+            'sync': "fa-exchange"
         },
 
         // Constructor
@@ -91,11 +92,15 @@ define([
                 "html": tab.title
             }).appendTo(this.$el);
 
-            if (tab.state && this.states[tab.state]) {
-                $("<i>", {
-                    "class": "state fa "+this.states[tab.state]+" state-"+tab.state
-                }).prependTo(inner);
-            }
+            var states = (tab.state || "").split(" ");
+            _.each(states, function(state) {
+                if (state && this.states[state]) {
+                    $("<i>", {
+                        "class": "state fa "+this.states[state]+" state-"+state
+                    }).prependTo(inner);
+                }
+            }, this);
+            
 
             if (this.options.close) {
                 $("<a>", {
