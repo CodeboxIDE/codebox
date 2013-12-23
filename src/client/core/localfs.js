@@ -11,6 +11,7 @@ define([
 
     // Base folder for localfs
     var base = "/";
+    var _isInit = false;
 
     // Constant mime type for a directory
     var MIME_DIRECTORY = "inode/directory";
@@ -32,11 +33,15 @@ define([
             d.resolve(arguments);
         });
         args.push(function(err) {
-            logger.error("Error occurs: ", err);
+            logger.error("Error occurs: ", method.name, err);
             d.reject(err);
         })
 
-        method.apply(context, args);
+        try {
+            method.apply(context, args);
+        } catch(err) {
+            d.reject(err);
+        }
 
         return d.promise;
     };
@@ -48,19 +53,35 @@ define([
         var box = require("core/box");
         
         base = "/"+baseDir;
-        return fsCall(filer.init, {
-            persistent: true,
-            size: 10 * 1024 * 1024
-        }, filer).then(function() {
-            logger.log("ready");
-
+        return Q().then(function() {
             // Box fs changes
             box.on("box:watch", function() {
                 logger.warn("box change");
                 autoSync();
-            })
+            });
         });
     };
+
+    var prepareFs = function() {
+        if (_isInit) return Q();
+        return fsCall(filer.init, {
+            persistent: true,
+            size: 10 * 1024 * 1024
+        }, filer).then(function() {
+            logger.log("fs is ready");
+            _isInit = true;
+            return Q();
+        });
+    };
+
+    var needFsReady = function(fn) {
+        return function() {
+            var args = arguments;
+            return prepareFs().then(function() {
+                return fn.apply(fn, args);
+            });
+        };
+    }
 
     /*
      * Adapt path
@@ -84,7 +105,7 @@ define([
     /*
      *  Return informations about a fileentry
      */
-    var getEntryInfos = function(fEntry) {
+    var getEntryInfos = needFsReady(function(fEntry) {
         return fsCall(fEntry.getMetadata, [], fEntry).then(function(metadata) {
             var path = fEntry.fullPath.replace(base, "/").replace("//", "/");
             var url = location.protocol+"//"+location.host+"/vfs"+path;
@@ -102,12 +123,12 @@ define([
                 '_fullPath': path
             };
         })
-    };
+    });
 
     /*
      *  List a directory
      */
-    var listDir = function(path) {
+    var listDir = needFsReady(function(path) {
         path = adaptPath(path);
 
         logger.log("ls:", path);
@@ -120,43 +141,43 @@ define([
         }, function(err) {
             logger.error("ls:", err);
         });
-    };
+    });
 
     /*
      *  Create a file
      */
-    var createFile = function(path) {
+    var createFile = needFsReady(function(path) {
         path = adaptPath(path);
         logger.log("create:", path);
         return fsCall(filer.create, [path, true], filer);
-    };
+    });
 
     /*
      *  Write file
      */
-    var writeFile = function(path, data) {
+    var writeFile = needFsReady(function(path, data) {
         path = adaptPath(path);
         logger.log("write:", path);
         return fsCall(filer.write, [path, {
             'data': data || ""
         }], filer);
-    };
+    });
 
     /*
      *  Open a file
      */
-    var openFile = function(path) {
+    var openFile = needFsReady(function(path) {
         path = adaptPath(path);
         logger.log("open:", path);
         return fsCall(filer.getEntry, [path], filer).then(function(fEntry) {
             return getEntryInfos(fEntry);
         })
-    };
+    });
 
     /*
      *  Read a file
      */
-    var readFile = function(path) {
+    var readFile = needFsReady(function(path) {
         path = adaptPath(path);
         logger.log("read:", path);
         return fsCall(filer.open, [path], filer).then(function(file) {
@@ -173,44 +194,44 @@ define([
 
             return d.promise;
         });
-    };
+    });
 
     /*
      *  Create a file
      */
-    var createDirectory = function(path) {
+    var createDirectory = needFsReady(function(path) {
         path = adaptPath(path);
         logger.log("mkdir:", path);
         return fsCall(filer.mkdir, [path, false], filer);
-    };
+    });
 
     /*
      *  Move a file
      */
-    var move = function(from, to) {
+    var move = needFsReady(function(from, to) {
         from = adaptPath(from);
         to = adaptPath(to);
 
         logger.log("move:", from, "to", to);
         return fsCall(filer.mv, [from, '.', to], filer);
-    };
+    });
 
     /*
      *  Remove a file or directory
      */
-    var remove = function(path) {
+    var remove = needFsReady(function(path) {
         path = adaptPath(path);
 
         logger.log("remove:", path);
         return fsCall(filer.rm, [path], filer);
-    };
+    });
 
     /*
      *  Sync a file in the box fs with the local fs
      *
      *  this will download the files and saved them in the localfs
      */
-    var syncFileBoxToLocal = function() {
+    var syncFileBoxToLocal = needFsReady(function() {
         var box = require("core/box");
 
         var doSync = function(fp) {
@@ -251,12 +272,12 @@ define([
         }, {
             title: "Downloading ..."
         });
-    };
+    });
 
     /*
      *  Sync localfs to vfs
      */
-    var syncFileLocalToBox = function() {
+    var syncFileLocalToBox = needFsReady(function() {
         var File = require("models/file");
         var box = require("core/box");
         var messages = [];
@@ -368,14 +389,14 @@ define([
                 return dialogs.alert("Conflict during synchronization:", _.pluck(messages, 'message').join("<br/>"));
             }
         });
-    };
+    });
 
     /*
      *  Global sync:
      *      -> if never sync: download everything
      *      -> if already sync: upload changes and download last changes
      */
-    var sync = function(options) {
+    var sync = needFsReady(function(options) {
         options = _.defaults({}, options || {}, {
             'updateLocal': false
         });
@@ -404,7 +425,7 @@ define([
         } else {
             return Q.reject(new Error("Can't synchronize when offline"));
         }
-    };
+    });
 
     /*
      *  Auto sync allow to resync the localfs every interval
@@ -426,7 +447,6 @@ define([
     }, 5*60*1000);
 
     return {
-        'getEntryInfos': getEntryInfos,
         'urlToPath': urlToPath,
         'init': initFs,
         'ls': listDir,
