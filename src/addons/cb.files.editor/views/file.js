@@ -106,7 +106,7 @@ define([
             });
 
             // Bind sync changement
-            this.sync.on("mode", function(mode) {
+            this.sync.on("file:mode", function(mode) {
                 this.setMode(mode)
             }, this);
             this.sync.on("content", function(content, oldcontent, patches) {

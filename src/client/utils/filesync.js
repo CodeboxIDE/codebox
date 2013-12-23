@@ -43,6 +43,11 @@ define([
                 "#8e44ad"
             ]
         },
+        modes: {
+            ASYNC: "async",
+            SYNC: "sync",
+            READONLY: "readonly"
+        },
 
         // Constructor
         initialize: function() {
@@ -55,8 +60,7 @@ define([
             this.file = null;
             this.envId = null;
             this.envOptions = null;
-            this.offline = false;
-            this.sync = false;  // sync is enabled or disabled
+            this.mode = this.modes.SYNC;
             this.ping = false;  // ping
             this.participants = []; // participants list
             this.syncState = false; // sync connexion state
@@ -77,6 +81,19 @@ define([
             }, this);
         },
 
+        // Change mode
+        setMode: function(mode) {
+            this.mode = mode;
+            this.trigger("mode", mode);
+        },
+
+        /*
+         *  Return current mode
+         */
+        getMode: function() {
+            return this.mode;
+        },
+
         // Update current user cursor
         updateUserCursor: function(x, y) {
             if (!this.isSync()) return this;
@@ -91,7 +108,7 @@ define([
 
         // Update content
         updateContent: function(value) {
-            if (!this.isSync()) return this;
+            if (this.isReadonly()) return this;
 
             // old content
             this.hash_value_t0 = this.hash_value_t1;
@@ -130,14 +147,14 @@ define([
          *  Return true if syncronization is on
          */
         isSync: function() {
-            return (this.envId != null && this.sync == true);
+            return (this.envId != null && this.getMode() == this.modes.SYNC);
         },
 
         /*
-         *  Return true if offline sync
+         *  Return true if readonly
          */
-        isOfflineSync: function() {
-            return this.offline;
+        isReadonly: function() {
+            return this.getMode() == this.modes.READONLY;
         },
 
         /*
@@ -209,31 +226,31 @@ define([
             var self = this;
 
             options = _.defaults({}, options || {}, {
-                
+                sync: false
             });
 
             this.envOptions = options
             this.envId = envId;
 
-            logging.log("update env with", this.envId, hr.Offline.isConnected());
+            logging.log("update env with", this.envId, options, hr.Offline.isConnected());
 
-            if (!hr.Offline.isConnected()) {
+            if (!hr.Offline.isConnected() || !options.sync) {
                 /// Offline sync
-                self.setSyncState(false);
+                self.setMode(self.modes.READONLY);
+
                 this.file.getCache().then(function(content) {
                     // Update content
                     self.setContent(content);
 
                     // Enable sync
-                    self.setSyncState(true);
-                    self.offlineState(true);
+                    self.setMode(self.modes.ASYNC);
                 }, function(err) {
                     logging.error("Error for offline sync: ", err);
                 });
             } else {
                 /// Online sync
-                this.offlineState(false);
-                this.setSyncState(false);
+                self.setMode(self.modes.SYNC);
+
                 this.socket().then(function(socket) {
                     logging.log("creating socket");
                     socket.on('connect', function() {
@@ -324,25 +341,13 @@ define([
         },
 
         /*
-         *  Set offline state
-         */
-        offlineState: function(state) {
-            if (this.offline == state) return;
-            this.offline = state;
-            this.trigger("sync:offline", this.offline);
-        },
-
-        /*
          *  Set file to the editor
          */
         setFile: function(file, options) {
             options = _.defaults({}, options || {}, {
-                sync: true,
-                readonly: false,
-                cache: true,
+                sync: false,
                 autoload: true
             });
-            options.readonly = this.sync ? options.readonly : true;
 
             if (!file.isValid()) {
                 logging.error("invalid file for sync ", file);
@@ -350,13 +355,12 @@ define([
             }
 
             logging.log("init file with options ", options);
-            this.sync = options.sync;
             
             this.file = file;
 
             if (this.file != null) {
                 this.file.on("set", _.partial(this.setFile, this.file, options), this);
-                this.trigger("mode", this.file.mode());
+                this.trigger("file:mode", this.file.mode());
                 if (options.autoload) {
                     this.on("file:path", function(path) {
                         this.file.getByPath(path);
@@ -609,7 +613,7 @@ define([
          *  @data : data for this action
          */
         send: function(action, data) {
-            if (this.isOfflineSync()) return this;
+            if (!this.isSync()) return this;
 
             if (this.envId != null && action != null) {
                 data = _.extend({}, data || {}, {
@@ -721,8 +725,8 @@ define([
                 return Q();
             };
 
-            // If offline save with the vfs backend
-            if (!hr.Offline.isConnected()) {
+            // If aync mode
+            if (this.getMode() == this.modes.ASYNC) {
                 doSave = function(args) {
                     return that.file.write(that.content_value_t1, args.path).then(function(newPath) {
                         if (newPath != that.file.path()) {
