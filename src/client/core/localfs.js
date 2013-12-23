@@ -283,6 +283,8 @@ define([
             }).then(function() {
                 // Eliminate old useless entries
                 return Q.all(_.map(boxEntries, function(boxFile) {
+                    if (boxFile.path() == "/.git") return Q();
+
                     var localEntry = _.find(localEntries, function(localEntry) {
                         return localEntry.name == boxFile.get("name");
                     });
