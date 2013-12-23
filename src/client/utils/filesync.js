@@ -225,9 +225,16 @@ define([
         updateEnv: function(envId, options) {
             var self = this;
 
+            if (_.isObject(envId)) {
+                options = envId;
+                envId = this.envId;
+            }
+
             options = _.defaults({}, options || {}, {
                 sync: false
             });
+
+            if (!envId) return this;
 
             this.envOptions = options
             this.envId = envId;

@@ -36,7 +36,19 @@ define([
                 currentFileEditor.setMode(name);
             }
         }
-    }))
+    }));
+
+    // Command collaboration mode
+    var collaborationCmd = Command.register("editor.collaboration", {
+        'type': "checkbox",
+        'title': "Collaboration Mode",
+        'action': function(state) {
+            if (!currentFileEditor) return;
+            currentFileEditor.sync.updateEnv({
+                'sync': state
+            });
+        }
+    });
 
     // Add menu
     menu.register("editor", {
@@ -47,7 +59,21 @@ define([
         'action': function() {
             settings.open("editor");
         }
-    }]).menuSection([syntaxMenu]);
+    }]).menuSection([
+        syntaxMenu,
+        collaborationCmd
+    ]);
+
+    // Definie current editor
+    var setCurrentEditor = function(ed) {
+        currentFileEditor = ed;
+
+        if (!currentFileEditor) return;
+        collaborationCmd.toggleFlag("active", currentFileEditor.sync.getMode() == currentFileEditor.sync.modes.SYNC);
+    }
+
+
+
 
     var FileEditorView = FilesBaseView.extend({
         className: "addon-files-aceeditor",
