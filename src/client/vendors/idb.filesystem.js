@@ -913,4 +913,4 @@ if (exports === window && exports.RUNNING_TESTS) {
   exports['Metadata'] = Metadata;
 }
 
-})(self); // Don't use window because we want to run in workers.
+})(self || window); // Don't use window because we want to run in workers.
