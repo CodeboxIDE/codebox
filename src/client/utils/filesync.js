@@ -239,6 +239,11 @@ define([
             this.envOptions = options
             this.envId = envId;
 
+            this.hash_value_t0 = null;
+            this.hash_value_t1 = null;
+            this.content_value_t0 = null;
+            this.content_value_t1 = null;
+
             logging.log("update env with", this.envId, options, hr.Offline.isConnected());
 
             if (!hr.Offline.isConnected() || !options.sync) {

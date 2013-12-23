@@ -79,6 +79,7 @@ Environment.prototype.getUser = function(user) {
 
 Environment.prototype.modifiedState = function(state) {
     if (this.modified == state) return;
+
     this.modified = state;
     return this.notifyAll("modified", {
         'state': this.modified
@@ -257,11 +258,10 @@ Environment.prototype.patch = function(user, payload) {
     );
 
     // Failed patching
-    if(!patched) {
+    if(patched == null) {
         return this.syncAll();
     }
-
-    this.modifiedState(true);
+    this.modifiedState(patched);
 
     return this.notifyOthers(user, null, payload);
 };

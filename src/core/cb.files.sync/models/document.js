@@ -26,16 +26,17 @@ Document.prototype.patch = function(patchText, preHash, postHash) {
 
     // Fail if different base
     if(currentHash != preHash) {
-        return false;
+        return null;
     }
 
     // Do patching
     var patch = diff.patch_fromText(patchText);
 
     // Update buffer
+    var oldBuffer = this.buffer;
     this.buffer = diff.patch_apply(patch, this.buffer)[0];
 
-    return true;
+    return oldBuffer != this.buffer;
 };
 
 Document.prototype.read = function() {
