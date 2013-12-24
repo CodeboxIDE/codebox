@@ -1,7 +1,5 @@
 module.exports = function (grunt) {
-    var engineer = require('engineer');
     var path = require("path");
-    var fs = require("fs");
     var pkg = require("./package.json");
 
     // Path to the client src
