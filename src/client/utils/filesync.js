@@ -110,6 +110,8 @@ define([
         updateContent: function(value) {
             if (this.isReadonly()) return this;
 
+            if (!value) return;
+
             // old content
             this.hash_value_t0 = this.hash_value_t1;
 
@@ -310,8 +312,8 @@ define([
                                 break;
                             case "sync":
                                 if (data.content != null) {
-                                    self.synced = true;
                                     self.setContent(data.content);
+                                    self.synced = true;
                                 }
                                 if (data.participants != null) {
                                     self.setParticipants(data.participants)

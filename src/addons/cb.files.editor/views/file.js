@@ -99,6 +99,7 @@ define([
             this.setOptions();
             this.markersS = {};
             this.markersC = {};
+            this._op_set = false;
 
             // Configure editor
             this.editor.setOptions({
@@ -128,6 +129,7 @@ define([
                 that.sync.updateUserCursor(cursor.column, cursor.row);
             });
             this.editor.getSession().doc.on('change', function(d) {
+                if (that._op_set) return;
                 that.sync.updateContent(that.editor.session.getValue());
             });
 
@@ -156,7 +158,9 @@ define([
                 }, patches, oldcontent);
 
                 // Set editor content
+                this._op_set = true;
                 this.editor.setValue(content);
+                this._op_set = false;
 
                 // Move cursors
                 this.editor.getSession().setScrollTop(scroll_y);
