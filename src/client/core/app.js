@@ -80,16 +80,23 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
             };
         },
 
+        // Render the application
+        render: function() {
+            var email = hr.Cookies.get("email");
+            var password = hr.Cookies.get("token");
+
+            if (!box.isAuth() && email && password) {
+                this.doLogin(email, password, true);
+                return;
+            }
+            return Application.__super__.render.apply(this, arguments);
+        },
+
         // Finish rendering
         finish: function() {
             var that = this;
 
-            var email = this.$(".login-box #login-email").val() || hr.Cookies.get("email");
-            var password = this.$(".login-box #login-token").val() || hr.Cookies.get("token");
-
-            if (!box.isAuth() && email && password) {
-                this.doLogin(email, password, true);
-            } else if (box.isAuth()) {
+            if (box.isAuth()) {
                 // Add menu
                 menu.$el.appendTo(this.$(".cb-menubar"));
                 menu.render();

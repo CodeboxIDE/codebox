@@ -42,6 +42,7 @@ define([
     var collaborationCmd = Command.register("editor.collaboration", {
         'type': "checkbox",
         'title': "Collaboration Mode",
+        'offline': false,
         'action': function(state) {
             if (!currentFileEditor) return;
             currentFileEditor.sync.updateEnv({
