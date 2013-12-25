@@ -56,5 +56,13 @@ define([], function() {
     }).menuSection([
         checkConnexion
     ]);
+
+    // Run sync
+    localfs.sync();
+    
+    // Run sync every 5min
+    setTimeout(function() {
+        localfs.autoSync();
+    }, 5*60*1000);
 });
 

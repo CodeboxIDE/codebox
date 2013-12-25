@@ -441,11 +441,6 @@ define([
     };
     updateAutoSync();
 
-    // Run sync every 5min
-    setTimeout(function() {
-        autoSync();
-    }, 5*60*1000);
-
     return {
         'urlToPath': urlToPath,
         'init': initFs,

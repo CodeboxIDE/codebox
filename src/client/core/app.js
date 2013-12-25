@@ -127,9 +127,6 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
 
                     // Check update
                     hr.Offline.checkUpdate();
-
-                    // Run sync
-                    localfs.sync();
                 });
             }
             return Application.__super__.finish.apply(this, arguments);
