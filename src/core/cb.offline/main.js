@@ -22,11 +22,12 @@ function setup(options, imports, register) {
         manifest.clear().then(function() {
             // Add network
             manifest.add("NETWORK", [
-                '/rpc',
+                '*',
+               /* '/rpc',
                 '/vfs',
                 '/export',
                 '/socket.io',
-                '/proxy'
+                '/proxy' */
             ]);
 
             // Add static files
