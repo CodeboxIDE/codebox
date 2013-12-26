@@ -379,15 +379,21 @@ define([
         /*
          *  Download
          */
-        download: function(options) {
+        download: function(filename, options) {
             var url, d, that = this;
+
+            if (_.isObject(filename)) {
+                options = filename;
+                filename = null;
+            }
+
             options = _.defaults(options || {}, {
                 redirect: false
             });
             if (options.redirect) {
                 window.open(this.exportUrl(),'_blank');
             } else {
-                return this.vfsRequest("read", this.vfsUrl()).then(function(content) {
+                return this.vfsRequest("read", this.vfsUrl(filename, false)).then(function(content) {
                     that.setCache(content);
                     that.modifiedState(false);
                     return content;

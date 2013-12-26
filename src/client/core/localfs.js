@@ -333,7 +333,17 @@ define([
                         logger.log(" -> box:", boxFile.get("mtime"));
                         logger.log(" -> local:", localEntry.mtime);*/
                         return readFile(localEntry._fullPath).then(function(content) {
-                            return parent.write(content, localEntry._fullPath);
+                            return parent.read(localEntry._fullPath).then(function(vfsContent) {
+                                if (vfsContent == content) {
+                                    // Same content
+                                    return Q();
+                                }
+                                return dialogs.confirm("Upload modifications of "
+                                    +localEntry._fullPath+" ("+vfsContent.length+"bytes to "+content.length+"bytes)");
+                            }).then(function(confirm) {
+                                if (!confirm) return;
+                                return parent.write(content, localEntry._fullPath);
+                            });
                         });
                     }
 

@@ -118,9 +118,7 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
                 operations.render();
 
                 // Load addons
-                addons.loadAll().fail(function(err) {
-                    dialogs.alert("Warning!", "<p>Error when initializing addons, it's possible that one of the addons is not correctly loaded. Please check addons states using the addons manager.</p><p>Addon ref: "+err.addon.get("name")+"</p><p>Error message:"+ err.message+"</p>");
-                }).fin(function() {
+                addons.loadAll().fin(function() {
                     // Remove loading state
                     that.$(".cb-loading-alert").remove();
                     
