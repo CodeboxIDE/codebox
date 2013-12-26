@@ -37,12 +37,12 @@ function setup(options, imports, register, app) {
     };
 
     // Load addons list from a directory return as a map name -> addon
-    var loadAddonsInfos = function(addonsRoot, options) {
+    var loadAddonsInfos = function(addonsRoot, _options) {
         // Diretcory to explore
         addonsRoot = addonsRoot || configAddonsPath;
 
         // Options
-        options = _.defaults({}, options || {}, {
+        _options = _.defaults({}, _options || {}, {
             ignoreError: false
         });
 
@@ -52,14 +52,14 @@ function setup(options, imports, register, app) {
                     if (dir.indexOf('.') == 0) return Q(addons);
 
                     var addonPath = path.join(addonsRoot, dir);
-                    var addon = new Addon(logger, addonPath);
+                    var addon = new Addon(logger, addonPath, options);
                     return addon.load().then(function() {
                         addon.infos.default = isDefaultAddon(addon);
                         addons[addon.infos.name] = addon;
                         return Q(addons);
                     }, function(err) {
                         logger.error("error", err);
-                        if (options.ignoreError) {
+                        if (_options.ignoreError) {
                             //  When ignoring error
                             //  it will check that the addon is not a symlink
                             //  and unlink invalid ones
@@ -123,6 +123,12 @@ function setup(options, imports, register, app) {
                 }
             })
             .then(function() {
+                // Blacklist
+                if (addon.isBlacklisted()) {
+                    logger.error("Default addon", addon.infos.name, "is blacklisted");
+                    return Q();
+                }
+
                 // Relink it
                 //logger.log("link ", addon.root, configAddonsPath)
                 return addon.symlink(configAddonsPath);
@@ -131,10 +137,10 @@ function setup(options, imports, register, app) {
     };
 
     // Install an addon by its git url
-    var installAddon = function(git, options) {
+    var installAddon = function(git, _options) {
         var addon, tempDir;
 
-        options = _.defaults({}, options || {}, {
+        _options = _.defaults({}, _options || {}, {
 
         });
 
@@ -158,9 +164,14 @@ function setup(options, imports, register, app) {
             return repo.checkout(gitRef);
         }).then(function() {
             // Load addon
-            addon = new Addon(logger, tempDir);
+            addon = new Addon(logger, tempDir, options);
             return addon.load();
         }).then(function() {
+            // Blacklist
+            if (addon.isBlacklisted()) {
+                return Q.reject(new Error("Addon "+addon.infos.name+"is blacklisted"));
+            }
+
             // Valid installation of addon with a hook
             return hooks.use("addons", addon.infos);
         }).then(function() {

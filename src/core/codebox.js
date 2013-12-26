@@ -42,7 +42,8 @@ var start = function(config) {
             // Base path
             'path': process.env.WORKSPACE_ADDONS_DIR || path.resolve(__dirname + '/../../.addons'),
             'defaultsPath': process.env.WORKSPACE_ADDONS_DEFAULTS_DIR || path.resolve(__dirname + '/../addons'),
-            'tempPath': process.env.WORKSPACE_ADDONS_TEMP_DIR || os.tmpDir()
+            'tempPath': process.env.WORKSPACE_ADDONS_TEMP_DIR || os.tmpDir(),
+            'blacklist': (process.env.WORKSPACE_ADDONS_BLACKLIST || "").split(",")
         },
         'users': {
             // Max number of collaborators
@@ -119,7 +120,8 @@ var start = function(config) {
             'dev': config.dev,
             'path': config.addons.path,
             'tempPath': config.addons.tempPath,
-            'defaultsPath': config.addons.defaultsPath
+            'defaultsPath': config.addons.defaultsPath,
+            'blacklist': config.addons.blacklist
         },
 
         // Express server

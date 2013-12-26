@@ -32,9 +32,10 @@ var exec = function(command, options) {
     return deferred.promise;
 }
 
-var Addon = function(logger, _rootPath) {
+var Addon = function(logger, _rootPath, options) {
     this.root = _rootPath;
     this.infos = {};
+    this.options = options;
 
     // Load addon infos from an addon's directory
     this.load = Q.fbind(function(addonDir) {
@@ -84,6 +85,11 @@ var Addon = function(logger, _rootPath) {
     // Check if an addon has node dependencies
     this.hasDependencies = function() {
         return _.size(this.infos.dependencies || {}) > 0;
+    };
+
+    // Check if the addon is blacklisted
+    this.isBlacklisted = function() {
+        return _.contains(this.options.blacklist, this.infos.name);
     };
 
     // Optimize the addon
