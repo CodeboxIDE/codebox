@@ -50,16 +50,8 @@ define([
      *  Init the localfs
      */
     var initFs = function(baseDir) {
-        var box = require("core/box");
-        
         base = "/"+baseDir;
-        return Q().then(function() {
-            // Box fs changes
-            box.on("box:watch", function() {
-                logger.warn("box change");
-                autoSync();
-            });
-        });
+        return Q();
     };
 
     var prepareFs = function() {

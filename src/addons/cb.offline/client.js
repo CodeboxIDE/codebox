@@ -1,5 +1,6 @@
 define([], function() {
     var app = codebox.require("core/app");
+    var box = codebox.require("core/box");
     var menu = codebox.require("core/commands/menu");
     var commands = codebox.require("core/commands/toolbar");
     var hr = codebox.require("hr/hr");
@@ -64,5 +65,10 @@ define([], function() {
     setTimeout(function() {
         localfs.autoSync();
     }, 5*60*1000);
+
+    // Run sync everytime there is a modification
+    box.on("box:watch", function() {
+        localfs.autoSync();
+    });
 });
 
