@@ -78,10 +78,7 @@ ProjectRunner.prototype.detect = function() {
 };
 
 ProjectRunner.prototype.isRunning = function(portId) {
-    var is = _.has(this.run_ports.ports, portId);
-    console.log('Is', portId, 'running =', is);
-    console.log('PORTS =', this.run_ports.ports);
-    return is;
+    return _.has(this.run_ports.ports, portId);
 };
 
 ProjectRunner.prototype.run = function() {
