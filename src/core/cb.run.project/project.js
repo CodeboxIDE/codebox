@@ -41,7 +41,7 @@ ProjectRunner.prototype.runScript = function(projectType, port) {
     var shellId = this.shellId(projectType, port);
 
     // Spawn the new shell
-    var shell = this.shells.manager.createShell({
+    var shell = this.shells.createShell({
         id: shellId,
         command: this.scriptPath(projectType),
         arguments: [
@@ -62,7 +62,7 @@ ProjectRunner.prototype.runScript = function(projectType, port) {
     var portId = self.portId(projectType);
 
     // Free port on shell exit
-    self.shells.manager.shells[shellId].ps.once('exit', function() {
+    self.shells.shells[shellId].ps.once('exit', function() {
         self.run_ports.release(portId);
     });
 

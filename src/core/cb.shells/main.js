@@ -19,9 +19,7 @@ function setup(options, imports, register) {
 
     // Register
     register(null, {
-        "shells": {
-            manager: manager
-        }
+        "shells": manager
     });
 }
 

@@ -38,7 +38,7 @@ ShellSocketManager.prototype.handleStream = function(stream, shellId, opts) {
 
 function setup(options, imports, register) {
     // Import
-    var shellManager = imports.shells.manager;
+    var shellManager = imports.shells;
     var io = imports.socket_io.io;
     var events = imports.events;
     var shells_rpc = imports.shells_rpc;

@@ -8,7 +8,7 @@ function setup(options, imports, register) {
     var httpRPC = imports.httpRPC;
 
     // Service
-    var service = new ShellsRPCService(shells.manager);
+    var service = new ShellsRPCService(shells);
 
     // Register RPC
     httpRPC.register('shells', service);
