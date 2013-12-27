@@ -52,6 +52,9 @@ define([], function() {
                     'border-color': "transparent",
                     'box-shadow': "none"
                 },
+                content: {
+                    'background': bgLight,
+                },
                 tab: {
                     '&.active': {
                         'background': bgLight,

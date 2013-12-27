@@ -65,6 +65,7 @@ define([
                 // tabs
                 'tabs section': ".cb-tabs .section",
                 'tabs header': ".cb-tabs .section .tabs-header",
+                'tabs content': ".cb-tabs .section .tabs-content",
                 'tabs tab': ".component-tab"
             },
             base: "body #codebox"
