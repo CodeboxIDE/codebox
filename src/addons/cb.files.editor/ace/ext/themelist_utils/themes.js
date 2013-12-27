@@ -30,7 +30,8 @@ module.exports.themes = [
     "tomorrow_night_eighties",
     "twilight",
     "vibrant_ink",
-    "xcode"
+    "xcode",
+    "spacegray"
 ];
 
 });

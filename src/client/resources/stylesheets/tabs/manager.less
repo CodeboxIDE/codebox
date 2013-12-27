@@ -18,24 +18,21 @@
         .tabs-header {
             position: absolute;
             top: 0px;
-            height: @tabHeight+@tabMarginTop;
+            height: @tabHeight;
             right: 0px;
             left: 0px;
             background: @tabBackground;
-            padding-left: 12px;
             overflow: hidden;
-            .cb-panel-background();
         }
 
         .tabs-content {
             position: absolute;
-            top: @tabHeight+@tabMarginTop - 1px;
+            top: @tabHeight - 1px;
             bottom: 0px;
             right: 0px;
             left: 0px;
             z-index: 1;
             background: @tabActiveColor;
-            border-top: 1px solid @tabActiveBorder;
         }
     }
 }

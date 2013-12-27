@@ -4,42 +4,17 @@
     float: left;
     z-index: 0;
     cursor: default;
-    margin: @tabMarginTop 10px 0px;
+    margin: 0px;
+    background: @tabColor;
 
 
     .inner {
         .box-sizing(border-box);
         height: @tabHeight;
-        background: @tabColor;
-        padding: @tabInnerVPadding 5px;
+        padding: @tabInnerVPadding 8px;
         .user-select(none);
         position: relative;
-        border-top: 1px solid @tabBorder;
         font-size: @tabFontSize;
-
-        &:before{
-            width:0;
-            height:0;
-            content:"";
-            display:inline-block;
-            border-top:@tabHeight solid transparent;
-            border-right:(@tabRadius - 1px) solid @tabColor;
-            position:absolute;
-            left: -@tabRadius + 1px;
-            top: 0;
-        }
-        &:after{
-            width:0;
-            height:0;
-            content:"";
-            display:inline-block;
-            border-top:@tabHeight solid transparent;
-            border-left:(@tabRadius - 1px) solid @tabColor;
-            position:absolute;
-            right: -@tabRadius + 1px;
-            top: 0;
-            z-index: 1;
-        }
 
         .state {
             margin-right: 5px;
@@ -68,71 +43,27 @@
             height: 14px;
             text-align: center;
             margin-top: 2px;
-            color: rgba(0,0,0,0.5);
-
-            &:hover {
-                background: #e74c3c;
-                opacity: 1;
-                color: #fff;
-            }
+            color: transparent;
         }
-    }
-
-    /* External border */
-    &:before{
-        width:0;
-        height:0;
-        content:"";
-        display:inline-block;
-        border-top:@tabHeight solid transparent;
-        border-right:@tabRadius solid @tabBorder;
-        position:absolute;
-        left: -@tabRadius;
-        top: 0;
-    }
-    &:after{
-        width:0;
-        height:0;
-        content:"";
-        display:inline-block;
-        border-top:@tabHeight solid transparent;
-        border-left:@tabRadius solid @tabBorder;
-        position:absolute;
-        right: -@tabRadius;
-        top: 0;
     }
 
     &:hover {
         .inner {
-            background: @tabHoverColor;
-
-            &:before {
-                border-right-color: @tabHoverColor;
-            }
-            &:after {
-                border-left-color: @tabHoverColor;
+            .close {
+                color: #e74c3c !important;
+                opacity: 1;
             }
         }
     }
 
     &.active {
-        z-index: 10; 
-        &:before {
-            border-right-color: @tabActiveBorder;
-        }
-        &:after {
-            border-left-color: @tabActiveBorder;
-        }
-
+        z-index: 10;
+        border-color: @tabActiveBorder;
+        background: @tabActiveColor;
+        
         .inner {
-            border-color: @tabActiveBorder;
-            background: @tabActiveColor;
-
-            &:before {
-                border-right-color: @tabActiveColor;
-            }
-            &:after {
-                border-left-color: @tabActiveColor;
+            .close {
+                color: rgba(0,0,0,0.5);
             }
         }
     }

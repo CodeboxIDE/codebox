@@ -17,31 +17,25 @@
             border: 1px solid transparent;
             border-radius: 2px;
             float: left;
-            color: #555;
             vertical-align: middle;
+            opacity: 0.5;
         }
 
-        &.active, &:hover {
+        &:hover {
             a {
-                box-shadow: 0 1px 2px rgba(0,0,0,.1);
-                background: #f8f8f8;
-                border-color: #d5d5d5;
+                opacity: 0.7;
             }
         }
 
         &.active {
             a {
-                background: #e5e5e5;
-                text-decoration: none;
-                border-color: #ccc;
-                color: #333;
-                box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
+                opacity: 1;
             }
         }
 
         &.disabled, &.disabled:hover {
             a {
-                color: #bbb;
+                opacity: 0.2;
                 background: none;
                 box-shadow: none;
                 border-color: transparent;

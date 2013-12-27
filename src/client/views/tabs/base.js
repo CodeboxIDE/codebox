@@ -4,8 +4,9 @@ define([
     "hr/hr",
     "utils/dragdrop",
     "utils/keyboard",
-    "utils/contextmenu"
-], function(_, $, hr, DragDrop, Keyboard, ContextMenu) {
+    "utils/contextmenu",
+    "models/command"
+], function(_, $, hr, DragDrop, Keyboard, ContextMenu, Command) {
     // Tab body view
     var TabPanelView = hr.View.extend({
         className: "component-tab-panel",
@@ -20,9 +21,16 @@ define([
         // Constructor
         initialize: function() {
             TabPanelView.__super__.initialize.apply(this, arguments);
+
             this.tabid = this.options.tabid;
             this.tabs = this.parent;
+            this.menu = new Command({}, {
+                'type': "menu"
+            });
+
             this.setShortcuts(this.shortcuts || {});
+
+
             return this;
         },
 

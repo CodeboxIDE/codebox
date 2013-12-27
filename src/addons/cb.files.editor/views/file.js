@@ -18,7 +18,7 @@ define([
     var Command = codebox.require("models/command");
 
     var logging = hr.Logger.addNamespace("editor");
-    var userSettings = user.settings("aceeditor");
+    var userSettings = user.settings("editor");
 
     // Current file editor
     var currentFileEditor = null;

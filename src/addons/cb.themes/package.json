@@ -1,0 +1,19 @@
+{
+    "name": "cb.themes",
+    "version": "0.0.1",
+    "title": "Themes",
+    "description": "Themes manager.",
+    "homepage": "https://github.com/FriendCode/codebox",
+    "license": "Apache",
+    "author": {
+        "name": "Samy Pessé",
+        "email": "samypesse@gmaiL.com",
+        "url": "http://samypesse.fr"
+    },
+    "client": {
+        "main": "main",
+        "provides": [
+            "themes"
+        ]
+    }
+}

@@ -443,7 +443,8 @@ function setupSettingPanel(settingDiv, settingOpener, editor, options) {
             solarized_light:  "Solarized Light",
             textmate:         "Textmate",
             twilight:         "Twilight",
-            vibrant_ink:      "Vibrant Ink"
+            vibrant_ink:      "Vibrant Ink",
+            spacegray:        "Spacegray"
         },
         gutter: BOOL,
         fontSize: {

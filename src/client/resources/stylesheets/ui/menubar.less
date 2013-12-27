@@ -18,19 +18,22 @@
             cursor: default;
             position: relative;
             height: 26px;
+            color: inherit;
 
             & > .btn {
-                border: 1px solid transparent;
+                margin: 1px;
                 border-radius: 0px;
                 background: transparent;
-                margin: 0px;
                 padding: 2px 8px;
                 cursor: default;
+                color: inherit;
+                -webkit-font-smoothing: antialiased;
+                border: 1px solid transparent;
             }
 
             &:hover {
                 & > .btn {
-                    background: #e8e8e8;
+                    background: rgba(0,0,0,0.10);
                     text-decoration: none;
                 }
             }
@@ -39,9 +42,10 @@
                 & > .btn {
                     background: #fff;
                     z-index: 1001;
-                    border-color: #ddd;
-                    border-bottom-color: #fff;
                     box-shadow: none;
+                    color: #333333;
+                    border-color: rgba(0, 0, 0, 0.15);
+                    border-bottom-color: transparent;
                 }
             }
 
@@ -54,7 +58,7 @@
     .cb-user-email {
         float: right;
         line-height: @codeboxMenubarHeight;
-        color: #666;
+        opacity: 0.5;
         padding: 0px 10px;
     }
 }
