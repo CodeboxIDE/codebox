@@ -24,7 +24,8 @@ define([
             'modified': "fa-asterisk",
             'warning': "fa-exclamation",
             'offline': "fa-flash",
-            'sync': "fa-exchange"
+            'sync': "fa-exchange",
+            'loading': "fa fa-refresh fa-spin"
         },
 
         // Constructor

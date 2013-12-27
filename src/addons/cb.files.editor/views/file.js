@@ -222,6 +222,10 @@ define([
                 this.tab.setTabState("modified", state);
             }, this);
 
+            this.sync.on("sync:loading", function(state) {
+                this.tab.setTabState("loading", state);
+            }, this);
+
             // Define file for code editor
             this.sync.setFile(this.model, {
                 'sync': this.options.edition

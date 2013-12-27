@@ -364,8 +364,11 @@ define([
             this.file = file;
 
             if (this.file != null) {
+                
                 this.file.on("set", _.partial(this.setFile, this.file, options), this);
                 this.file.on("modified", this.trigger.bind(this, "sync:modified"));
+                this.file.on("loading", this.trigger.bind(this, "sync:loading"));
+
                 this.trigger("file:mode", this.file.mode());
                 if (options.autoload) {
                     this.on("file:path", function(path) {

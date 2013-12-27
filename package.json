@@ -43,7 +43,7 @@
         "codebox": "./bin/codebox.js"
     },
     "devDependencies": {
-        "socket.io-client": "0.9.16"
+        
     },
     "contributors": [
         {

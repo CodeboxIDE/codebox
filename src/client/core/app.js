@@ -3,6 +3,7 @@ define([
     'utils/url',
     'utils/dialogs',
     'utils/alerts',
+    'utils/loading',
     'core/box',
     'core/session',
     'core/addons',
@@ -14,7 +15,7 @@ define([
     'core/panels',
     'core/operations',
     'core/localfs'
-], function (hr, url, dialogs, alerts,
+], function (hr, url, dialogs, alerts, loading,
 box, session, addons, box, files, commands, menu, tabs, panels, operations, localfs) {
 
     // Define base application
@@ -59,9 +60,15 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
                 }
             });
             hr.Offline.on("update", function() {
-                dialogs.alert("Application cache updated", "The offline application cache has been updated, This will refresh the IDE to use the new application cache.").fin(function() {
-                    location.reload();
-                });
+                location.reload();
+            });
+
+            // Application manifest
+            $(window.applicationCache).bind('checking downloading', function(e) {
+                loading.show();
+            });
+            $(window.applicationCache).bind('noupdate cached obsolete error', function(e) {
+                loading.stop();
             });
 
             // Title changed
@@ -118,9 +125,7 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
                 operations.render();
 
                 // Load addons
-                addons.loadAll().fin(function() {
-                    // Remove loading state
-                    that.$(".cb-loading-alert").remove();
+                loading.show(addons.loadAll().fin(function() {
                     
                     // Load new addons
                     addons.on("add", function(addon) {
@@ -132,7 +137,7 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
 
                     // Check update
                     hr.Offline.checkUpdate();
-                });
+                }));
             }
             return Application.__super__.finish.apply(this, arguments);
         },

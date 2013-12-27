@@ -38,6 +38,7 @@ define([
             this.codebox = this.options.codebox;
             this.content = null;
             this.modified = false;
+            this._loading = false;
             this.read = this.download;
 
             // Change in codebox : file deleted
@@ -79,6 +80,26 @@ define([
             if (this.modified == state) return;
             this.modified = state;
             this.trigger("modified", this.modified);
+        },
+
+        /*
+         *  Set loading state
+         */
+        loading: function(state) {
+            var that = this;
+
+            if (Q.isPromise(state)) {
+                that.loading(true);
+                state.fin(function() {
+                    that.loading(false);
+                });
+                return state;
+            }
+
+            // Boolean
+            if (this._loading == state) return;
+            this._loading = state;
+            this.trigger("loading", this._loading);
         },
 
         /*
@@ -342,7 +363,7 @@ define([
 
             var parentPath = this.parentPath(path);
             var filename = this.filename(path);
-            return this.vfsRequest("listdir", this.vfsUrl(parentPath, true)).then(function(filesData) {
+            return this.loading(this.vfsRequest("listdir", this.vfsUrl(parentPath, true)).then(function(filesData) {
                 var fileData = _.find(filesData, function(file) {
                     return file.name == filename;
                 });
@@ -353,7 +374,7 @@ define([
                 } else {
                     return Q.reject(new Error("Can't find file"));
                 }
-            });
+            }));
         },
 
         /*
@@ -393,11 +414,11 @@ define([
             if (options.redirect) {
                 window.open(this.exportUrl(),'_blank');
             } else {
-                return this.vfsRequest("read", this.vfsUrl(filename, false)).then(function(content) {
+                return this.loading(this.vfsRequest("read", this.vfsUrl(filename, false)).then(function(content) {
                     that.setCache(content);
                     that.modifiedState(false);
                     return content;
-                });
+                }));
             }
         },
 
@@ -406,13 +427,13 @@ define([
          */
         write: function(content, filename) {
             var that = this;
-            return this.vfsRequest("write", this.vfsUrl(filename, false), content).then(function() {
+            return this.loading(this.vfsRequest("write", this.vfsUrl(filename, false), content).then(function() {
                 if (!filename) {
                     that.setCache(content);
                     that.modifiedState(false);
                 }
                 return that.path(filename);
-            });
+            }));
         },
 
         /*
@@ -457,7 +478,7 @@ define([
                 group: true
             });
 
-            return this.vfsRequest("listdir", this.vfsUrl(null, true)).then(function(filesData) {
+            return this.loading(this.vfsRequest("listdir", this.vfsUrl(null, true)).then(function(filesData) {
                 var files = _.map(filesData, function(file) {
                     return new File({
                         "codebox": that.codebox
@@ -474,7 +495,7 @@ define([
                     files = [].concat(groups["directory"] || []).concat(groups["file"] || []);
                 }
                 return Q(files);
-            });
+            }));
         },
 
         /*
@@ -483,7 +504,7 @@ define([
          *  @name : name of the file to create
          */
         createFile: function(name) {
-            return this.vfsRequest("create", this.vfsUrl(null, true)+"/"+name);
+            return this.loading(this.vfsRequest("create", this.vfsUrl(null, true)+"/"+name));
         },
 
         /*
@@ -492,14 +513,14 @@ define([
          *  @name : name of the directory to create
          */
         mkdir: function(name) {
-            return this.vfsRequest("mkdir", this.vfsUrl(null, true)+"/"+name+"/");
+            return this.loading(this.vfsRequest("mkdir", this.vfsUrl(null, true)+"/"+name+"/"));
         },
 
         /*
          *  Remove the file or directory
          */
         remove: function() {
-            return this.vfsRequest("remove", this.vfsUrl(null));
+            return this.loading(this.vfsRequest("remove", this.vfsUrl(null)));
         },
 
         /*
@@ -510,9 +531,9 @@ define([
         rename: function(name) {
             var parentPath = this.parentPath();
             var newPath = parentPath+"/"+name;
-            return this.vfsRequest("rename", this.vfsUrl(newPath), {
+            return this.loading(this.vfsRequest("rename", this.vfsUrl(newPath), {
                 "renameFrom": this.path()
-            });
+            }));
         },
 
         // (action) Refresh files list
