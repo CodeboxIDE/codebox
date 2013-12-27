@@ -6,7 +6,7 @@ var path = require('path');
 var utils = require('../utils');
 
 // No project detected
-var NONE = 'none';
+var NONE = null;
 
 // Supported languages and project types
 var SUPPORTED = [
@@ -73,10 +73,17 @@ function setup(options, imports, register) {
     var types = _.partial(projectTypes, workspace.root);
 
     register(null, {
-        "projectType": {
+        "project_detect": {
+            // Get main type of the current workspace
             main: detector,
+
+            // Get all types (if many) for the current workspace
             all: types,
 
+            // Detect for any given folder
+            detect: projectType,
+
+            // List of supported types
             SUPPORTED: SUPPORTED,
             NONE: NONE
         }

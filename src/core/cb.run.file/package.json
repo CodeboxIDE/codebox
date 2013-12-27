@@ -1,5 +1,5 @@
 {
-    "name": "cb.projectType",
+    "name": "cb.run.file",
     "version": "0.0.1",
 
     "main": "./main.js",
@@ -7,10 +7,13 @@
 
     "plugin": {
         "provides": [
-            "projectType"
+            "run_file"
         ],
         "consumes": [
-            "workspace"
+            "events",
+            "workspace",
+
+            "shells"
         ]
     }
 }

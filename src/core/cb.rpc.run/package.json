@@ -1,0 +1,19 @@
+{
+    "name": "cb.rpc.run",
+    "version": "0.0.1",
+
+    "main": "./main.js",
+    "private": true,
+
+    "plugin": {
+        "provides": [],
+        "consumes": [
+            "httpRPC",
+            "workspace",
+
+            "run_file",
+            "run_project",
+            "run_ports"
+        ]
+    }
+}

@@ -37,13 +37,17 @@
         "tar": "0.1.19",
 
         "grunt": "0.4.2",
-        "grunt-cli": "0.1.11"
+        "grunt-cli": "0.1.11",
+
+        "harbor": "0.2.0",
+
+        "qpatch": "0.0.3"
     },
     "bin": {
         "codebox": "./bin/codebox.js"
     },
     "devDependencies": {
-        
+
     },
     "contributors": [
         {

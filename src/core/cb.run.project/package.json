@@ -1,0 +1,22 @@
+{
+    "name": "cb.run.project",
+    "version": "0.0.1",
+
+    "main": "./main.js",
+    "private": true,
+
+    "plugin": {
+        "provides": [
+            "run_project"
+        ],
+        "consumes": [
+            "events",
+            "workspace",
+
+            "shells",
+
+            "run_ports",
+            "project_detect"
+        ]
+    }
+}

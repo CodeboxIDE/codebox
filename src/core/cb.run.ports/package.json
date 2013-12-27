@@ -1,0 +1,14 @@
+{
+    "name": "cb.run.ports",
+    "version": "0.0.1",
+
+    "main": "./main.js",
+    "private": true,
+
+    "plugin": {
+        "provides": [
+            "run_ports"
+        ],
+        "consumes": []
+    }
+}
