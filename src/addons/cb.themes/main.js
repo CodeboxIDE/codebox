@@ -19,20 +19,28 @@ define([
 
 
     // Add settings
-    settings.add({
+    var themeSettings = settings.add({
         'namespace': "themes",
         'title': "Themes",
         'defaults': {
             'theme': 'default'
         },
         'fields': {
-            'theme': {
-                'label': 'Theme',
-                'type': 'select',
-                'options': {}
-            }
+            
         }
     });
+
+    // Update theme settings
+    var updateThemeSettings = function() {
+        // Add settings
+        themeSettings.setField("theme", {
+            'label': "Themes",
+            'type': "select",
+            'options': _.object(_.map(themes, function(theme, themeId) {
+                return [theme.id, theme.title]
+            }))
+        });
+    };
 
 
     // Define new themes
@@ -43,6 +51,7 @@ define([
             'styles': {},
             'description': ""
         });
+        updateThemeSettings();
     };
 
     // Change theme
