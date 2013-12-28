@@ -1,8 +1,8 @@
 {
-    "name": "cb.themes",
+    "name": "cb.theme.dark",
     "version": "0.0.1",
-    "title": "Themes",
-    "description": "Themes manager.",
+    "title": "Dark Theme",
+    "description": "Dark and gray theme.",
     "homepage": "https://github.com/FriendCode/codebox",
     "license": "Apache",
     "author": {

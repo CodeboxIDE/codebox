@@ -13,9 +13,8 @@ define([
     var colorLight = "#dadfe6";
 
     themes.add({
-        id: "gray",
-        title: "Gray",
-        description: "Default dark and gray theme.",
+        id: "dark",
+        title: "Dark",
 
         editor: {
             'theme': aceTheme

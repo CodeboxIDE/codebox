@@ -49,6 +49,10 @@ define([
             'description': ""
         });
         updateThemeSettings();
+
+        if (!currentTheme) {
+            changeTheme(properties.id);
+        }
     };
 
     // Change theme
@@ -86,6 +90,12 @@ define([
     var currentTheme = function() {
         return themes[currentTheme];
     };
+
+    // Default theme
+    addTheme({
+        id: "default",
+        title: "Default"
+    });
 
     return {
         'add': addTheme,
