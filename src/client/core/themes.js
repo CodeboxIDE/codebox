@@ -49,7 +49,8 @@ define([
         logger.log("add theme", properties.id, properties);
         themes[properties.id] = _.defaults(properties, {
             'styles': {},
-            'description': ""
+            'description': "",
+            'editor': {}
         });
         updateThemeSettings();
 

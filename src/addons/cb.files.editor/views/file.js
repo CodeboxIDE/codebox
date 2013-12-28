@@ -16,6 +16,7 @@ define([
     var menu = codebox.require("core/commands/menu");
     var settings = codebox.require("core/settings");
     var Command = codebox.require("models/command");
+    var themes = codebox.require("core/themes");
 
     var logging = hr.Logger.addNamespace("editor");
     var userSettings = user.settings("editor");
@@ -72,8 +73,6 @@ define([
         if (!currentFileEditor) return;
         collaborationCmd.toggleFlag("active", currentFileEditor.sync.getMode() == currentFileEditor.sync.modes.SYNC);
     }
-
-
 
 
     var FileEditorView = FilesBaseView.extend({
@@ -254,7 +253,6 @@ define([
         setOptions: function(opts) {
             this.options = _.defaults(opts || {}, userSettings.all({}), {
                 mode: "text",
-                theme: "textmate",
                 fontsize: "12",
                 printmargincolumn: 80,
                 showprintmargin: false,
@@ -267,7 +265,7 @@ define([
 
             this.setMode(this.options.mode);
             this.setKeyboardmode(this.options.keyboard);
-            this.setTheme(this.options.theme);
+            this.setTheme(themes.current().editor.theme || "textmate");
             this.setFontsize(this.options.fontsize);
             this.setPrintmargincolumn(this.options.printmargincolumn);
             this.setShowprintmargin(this.options.showprintmargin);
@@ -375,9 +373,16 @@ define([
          *  Set theme
          *  @theme_name : name of the theme
          */
-        setTheme: function(theme_name) {
-            this.options.theme = theme_name;
-            this.editor.setTheme("ace/theme/" + theme_name);
+        setTheme: function(theme) {
+            var themeName = "unknown";
+
+            console.log("SET THEME", theme);
+
+            if (_.isString(theme)) {
+                themeName = theme;
+                theme = "ace/theme/" + theme;
+            }
+            this.editor.setTheme(theme);
             this.trigger("change:theme");
             return this;
         },

@@ -14,12 +14,6 @@ define([
     var aceconfig = ace.require("ace/config");
     aceconfig.set("basePath", "static/addons/editor/ace");
 
-    // Build themes map
-    var themesMap = {};
-    _.each(aceThemes.themes, function(theme) {
-        themesMap[theme.name] = theme.desc;
-    })
-
     // Add settings
     settings.add({
         'namespace': "editor",
@@ -35,11 +29,6 @@ define([
             'keyboard': "textinput"
         },
         'fields': {
-            'theme': {
-                'label': "Theme",
-                'type': "select",
-                'options': themesMap
-            },
             'keyboard': {
                 'label': "Keyboard mode",
                 'type': "select",
