@@ -154,36 +154,37 @@ define([
                 });
 
                 console.error("Could not resolve dependencies of these plugins:", plugins);
-                console.error("Resolved services:", Object.keys(resolved));
+                console.error("Resolved services:", _.keys(that.resolved));
                 console.error("Missing services:", unresolved);
-                throw new Error("Could not resolve dependencies");
+                return Q.reject(new Error("Could not resolve dependencies"));
             }
 
-            return sorted;
+            return Q(sorted);
         },
 
         // Load all this addons collection
         // similar loading to engineer
         loadAll: function() {
             var that = this;
-            var addons = this.checkCycles();
 
-            return _.reduce(addons, function(d, addon) {
-                return d.then(function() {
-                    return addon.load({}, _.pick(that.provides, addon.get("client.consumes", []))).fail(function(err) {
-                        err.addon = addon;
-                        return Q.reject(err);
-                    }).then(function(provides) {
-                        _.extend(that.provides, provides || {});
-                    }, function(err) {
-                        return dialogs.alert("Error with addon '"+addon.get("name")+"'", "<p>Error when initializing this addon. Please check addons states using the addons manager and reinstall this addon.</p><p>Error message:"+ (err.message || err) +"</p>");
-                    }).then(function() {
-                        return Q();
-                    }, function() {
-                        return Q();
-                    });
-                })
-            }, Q({}));
+            return this.checkCycles().then(function(addons) {
+                return _.reduce(addons, function(d, addon) {
+                    return d.then(function() {
+                        return addon.load({}, _.pick(that.provides, addon.get("client.consumes", []))).fail(function(err) {
+                            err.addon = addon;
+                            return Q.reject(err);
+                        }).then(function(provides) {
+                            _.extend(that.provides, provides || {});
+                        }, function(err) {
+                            return dialogs.alert("Error with addon '"+addon.get("name")+"'", "<p>Error when initializing this addon. Please check addons states using the addons manager and reinstall this addon.</p><p>Error message:"+ (err.message || err) +"</p>");
+                        }).then(function() {
+                            return Q();
+                        }, function() {
+                            return Q();
+                        });
+                    })
+                }, Q({}));
+            });
         }
     });
 

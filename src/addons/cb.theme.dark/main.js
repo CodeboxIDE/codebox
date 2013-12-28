@@ -1,4 +1,7 @@
-define([], function() {
+define([
+    'ace/theme'
+], function(aceTheme) {
+    var themes = codebox.require("core/themes");
 
     var bgDark = "#1a1d24";
     var colorDark = "#65737d";
@@ -9,12 +12,13 @@ define([], function() {
     var bgLight = "#343c45";
     var colorLight = "#dadfe6";
 
-    return {
-        id: "spacegray",
-        title: "Spacegray",
-        description: "Spacegray is all about hype and minimal.",
+    themes.add({
+        id: "gray",
+        title: "Gray",
+        description: "Default dark and gray theme.",
+
         editor: {
-            theme: "spacegray"
+            'theme': aceTheme
         },
         styles: {
             // Top menubar
@@ -63,5 +67,5 @@ define([], function() {
                 }
             }
         }
-    };
+    });
 });

@@ -11,9 +11,6 @@
         "url": "http://samypesse.fr"
     },
     "client": {
-        "main": "main",
-        "provides": [
-            "themes"
-        ]
+        "main": "main"
     }
 }

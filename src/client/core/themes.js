@@ -1,11 +1,10 @@
 define([
-    "cssgen",
-    "defaults/default",
-    "defaults/spacegray" 
-], function(cssgen, themeDefault, themeSpacegray) {
-    var $ = codebox.require("jQuery");
-    var hr = codebox.require("hr/hr");
-    var settings = codebox.require("core/settings");
+    'hr/hr',
+    'jQuery',
+    'underscore',
+    'utils/css',
+    'core/settings'
+], function (hr, $, _, css, settings) {
     var logger = hr.Logger.addNamespace("themes");
 
     // Map of themes
@@ -16,7 +15,6 @@ define([
     var $css = $("<style>", {
         'type': "text/css"
     }).appendTo($("body"));
-
 
     // Add settings
     var themeSettings = settings.add({
@@ -32,7 +30,6 @@ define([
 
     // Update theme settings
     var updateThemeSettings = function() {
-        // Add settings
         themeSettings.setField("theme", {
             'label': "Themes",
             'type': "select",
@@ -85,17 +82,14 @@ define([
         return true;
     };
 
-
-    // Defaults themes
-    addTheme(themeDefault);
-    addTheme(themeSpacegray);
-
-    changeTheme("spacegray");
+    // Return current theme
+    var currentTheme = function() {
+        return themes[currentTheme];
+    };
 
     return {
-        'themes': {
-            'add': addTheme,
-            'change': changeTheme
-        }
-    }
+        'add': addTheme,
+        'change': changeTheme,
+        'current': currentTheme
+    };
 });

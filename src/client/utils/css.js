@@ -46,6 +46,6 @@ define([], function() {
     };
 
     return {
-        convert: convertFromJSON
+        'convertJSON': convertFromJSON
     };
 });

@@ -14,9 +14,10 @@ define([
     'core/tabs',
     'core/panels',
     'core/operations',
-    'core/localfs'
+    'core/localfs',
+    'core/themes'
 ], function (hr, url, dialogs, alerts, loading,
-box, session, addons, box, files, commands, menu, tabs, panels, operations, localfs) {
+box, session, addons, box, files, commands, menu, tabs, panels, operations, localfs, themes) {
 
     // Define base application
     var Application = hr.Application.extend({
@@ -125,7 +126,9 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
                 operations.render();
 
                 // Load addons
-                loading.show(addons.loadAll().fin(function() {
+                loading.show(addons.loadAll().fail(function(err) {
+                    return dialogs.alert("Fatal error", "Fatal error when loading addons, try to reload the all application and reset the cache. Error message: "+(err.message || err));
+                }).fin(function() {
                     
                     // Load new addons
                     addons.on("add", function(addon) {
