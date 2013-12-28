@@ -9,7 +9,7 @@
         "provides": [],
         "consumes": [
             "proc",
-            "httpRPC"
+            "rpc"
         ]
     }
 }

@@ -4,13 +4,13 @@ var UsersRPCService = require('./service').UsersRPCService;
 
 function setup(options, imports, register) {
     // Import
-    var httpRPC = imports.httpRPC;
+    var rpc = imports.rpc;
     var workspace = imports.workspace;
 
     var service = new UsersRPCService(workspace);
 
     // Register RPC
-    httpRPC.register('/users', service);
+    rpc.register('/users', service);
 
     // Register
     register(null, {});

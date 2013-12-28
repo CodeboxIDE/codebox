@@ -4,7 +4,7 @@ var RunRPCService = require('./service').RunRPCService;
 
 function setup(options, imports, register) {
     // Import
-    var httpRPC = imports.httpRPC;
+    var rpc = imports.rpc;
     var workspace = imports.workspace;
 
     var run_file = imports.run_file;
@@ -19,7 +19,7 @@ function setup(options, imports, register) {
     );
 
     // Register RPC
-    httpRPC.register('/run', service, {
+    rpc.register('/run', service, {
         auth: false
     });
 

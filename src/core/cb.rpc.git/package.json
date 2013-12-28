@@ -9,7 +9,7 @@
         "provides": [],
         "consumes": [
             "git",
-            "httpRPC",
+            "rpc",
             "events"
         ]
     }

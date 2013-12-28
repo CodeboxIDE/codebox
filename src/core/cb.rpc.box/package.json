@@ -7,7 +7,7 @@
 
     "plugin": {
         "consumes": [
-            "httpRPC",
+            "rpc",
             "workspace"
         ]
     }

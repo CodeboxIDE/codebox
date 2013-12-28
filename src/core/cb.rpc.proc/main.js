@@ -5,13 +5,13 @@ var ProcRPCService = require('./service').ProcRPCService;
 function setup(options, imports, register) {
     // Import
     var proc = imports.proc;
-    var httpRPC = imports.httpRPC;
+    var rpc = imports.rpc;
 
     // Service
     var service = new ProcRPCService(proc);
 
     // Register RPC
-    httpRPC.register('proc', service);
+    rpc.register('proc', service);
 
     // Register
     register(null, {});

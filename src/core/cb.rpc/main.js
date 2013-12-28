@@ -12,7 +12,7 @@ function setup(options, imports, register) {
 
     // Register
     register(null, {
-        "httpRPC": {
+        "rpc": {
             register: manager.register
         }
     });
