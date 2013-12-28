@@ -2,9 +2,6 @@
 var Q = require('q');
 var _ = require('underscore');
 
-// Utility function for fail promises
-var qfail = require('../utils').qfail;
-
 
 function ShellsRPCService(manager) {
     this.manager = manager;
@@ -14,11 +11,11 @@ function ShellsRPCService(manager) {
 
 ShellsRPCService.prototype._getShell = function(id) {
     if(!id) {
-        return qfail(new Error("Missing Shell ID"));
+        return Q.fail(new Error("Missing Shell ID"));
     } else if(this.manager.shells[id]) {
         return Q(this.manager.shells[id].ps);
     }
-    return qfail(new Error("Shell '"+ id +"' does not exist"));
+    return Q.fail(new Error("Shell '"+ id +"' does not exist"));
 };
 
 ShellsRPCService.prototype.status = function() {
