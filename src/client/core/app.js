@@ -126,7 +126,7 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
                 operations.render();
 
                 // Load addons
-                loading.show(addons.loadAll().fail(function(err) {
+                loading.show(addons.loadAll().then(themes.init, function(err) {
                     return dialogs.alert("Fatal error", "Fatal error when loading addons, try to reload the all application and reset the cache. Error message: "+(err.message || err));
                 }).fin(function() {
                     

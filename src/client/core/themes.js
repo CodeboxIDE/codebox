@@ -3,9 +3,14 @@ define([
     'jQuery',
     'underscore',
     'utils/css',
-    'core/settings'
-], function (hr, $, _, css, settings) {
+    'core/settings',
+    'core/user'
+], function (hr, $, _, css, settings, user) {
     var logger = hr.Logger.addNamespace("themes");
+
+
+    // User settings
+    var userSettings = user.settings("themes");
 
     // Map of themes
     var currentTheme = null;
@@ -14,7 +19,7 @@ define([
     // CSS dom
     var $css = $("<style>", {
         'type': "text/css"
-    }).appendTo($("body"));
+    });
 
     // Add settings
     var themeSettings = settings.add({
@@ -23,9 +28,7 @@ define([
         'defaults': {
             'theme': 'default'
         },
-        'fields': {
-            
-        }
+        'fields': {}
     });
 
     // Update theme settings
@@ -57,13 +60,18 @@ define([
 
     // Change theme
     var changeTheme = function(themeId) {
+        logger.log("try change theme", themeId, themes);
         var cssContent, theme = themes[themeId];
         if (!theme) return false;
+
+        if (themeId == currentTheme) return true;
+
+        logger.log("change theme", themeId);
 
         // Set current theme
         currentTheme = themeId;
 
-        cssContent = cssgen.convert(theme.styles, {
+        cssContent = css.convertJSON(theme.styles, {
             namespace: {
                 // menu bar
                 'menubar': ".cb-menubar",
@@ -91,13 +99,34 @@ define([
         return themes[currentTheme];
     };
 
+    // Update current theme
+    var updateCurrentTheme = function() {
+        return changeTheme(userSettings.get("theme", "default"));
+    };
+    
+
     // Default theme
     addTheme({
         id: "default",
         title: "Default"
     });
 
+    // Init theming
+    var init = function() {
+        // Add css container
+        $css.appendTo($("body"));
+
+        // Bind user settings changement
+        userSettings.change(updateCurrentTheme);
+
+        // Update current theme
+        updateCurrentTheme();
+
+        return Q();
+    };
+
     return {
+        'init': init,
         'add': addTheme,
         'change': changeTheme,
         'current': currentTheme
