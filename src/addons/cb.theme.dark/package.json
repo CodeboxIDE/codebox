@@ -1,0 +1,16 @@
+{
+    "name": "cb.theme.dark",
+    "version": "0.0.1",
+    "title": "Dark Theme",
+    "description": "Dark and gray theme.",
+    "homepage": "https://github.com/FriendCode/codebox",
+    "license": "Apache",
+    "author": {
+        "name": "Samy Pessé",
+        "email": "samypesse@gmaiL.com",
+        "url": "http://samypesse.fr"
+    },
+    "client": {
+        "main": "main"
+    }
+}

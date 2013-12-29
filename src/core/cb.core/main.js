@@ -12,6 +12,7 @@ function setup(options, imports, register) {
     var rootPath = options.root || path.resolve(__dirname, '..', '..');
 
     var workspace = new Workspace({
+        'id': options.id,
         'root': rootPath,
         'name': options.title,
         'public': options.public,

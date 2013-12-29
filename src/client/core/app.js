@@ -14,9 +14,10 @@ define([
     'core/tabs',
     'core/panels',
     'core/operations',
-    'core/localfs'
+    'core/localfs',
+    'core/themes'
 ], function (hr, url, dialogs, alerts, loading,
-box, session, addons, box, files, commands, menu, tabs, panels, operations, localfs) {
+box, session, addons, box, files, commands, menu, tabs, panels, operations, localfs, themes) {
 
     // Define base application
     var Application = hr.Application.extend({
@@ -36,6 +37,7 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
         // Constructor
         initialize: function() {
             Application.__super__.initialize.apply(this, arguments);
+            this._autologin = true;
 
             // Tabs
             tabs.on("tabs:default tabs:opennew", function() {
@@ -92,7 +94,7 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
             var email = hr.Cookies.get("email");
             var password = hr.Cookies.get("token");
 
-            if (!box.isAuth() && email && password) {
+            if (!box.isAuth() && email && password && this._autologin) {
                 this.doLogin(email, password, true);
                 return;
             }
@@ -125,7 +127,9 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
                 operations.render();
 
                 // Load addons
-                loading.show(addons.loadAll().fin(function() {
+                loading.show(addons.loadAll().then(themes.init, function(err) {
+                    return dialogs.alert("Fatal error", "Fatal error when loading addons, try to reload the all application and reset the cache. Error message: "+(err.message || err));
+                }).fin(function() {
                     
                     // Load new addons
                     addons.on("add", function(addon) {
@@ -190,8 +194,10 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
                 }
                 that.render();
             }).fail(function(err) {
-                that.$(".login-box .form-group").addClass("has-error");
-                dialogs.alert("Error at login", err.message);
+                that._autologin = false;
+                dialogs.alert("Error at login", err.message).fin(function() {
+                    that.render();
+                });
             });
         },
 

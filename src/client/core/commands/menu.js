@@ -6,14 +6,22 @@ define([
     'core/panels',
     'core/tabs',
     'core/session',
-    'core/localfs'
-], function (_, hr, MenubarView, box, panels, tabs, session, localfs) {
+    'core/localfs',
+    'core/settings'
+], function (_, hr, MenubarView, box, panels, tabs, session, localfs, settings) {
     // Collection for all menu commands
     var menu = new MenubarView();
     
     menu.register("view", {
         title: "View",
         position: 5
+    }).menuSection({
+        'id': "themes.settings",
+        'title': "Settings",
+        'offline': false,
+        'action': function() {
+            settings.open("themes");
+        }
     }).menuSection([
         panels.visibilityCommand,
         panels.panelsCommand
