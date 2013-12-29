@@ -30,7 +30,14 @@ AuthRPCService.prototype.join = function(args, meta) {
 AuthRPCService.prototype.settings = function(args, meta) {
     var that = this;
     
-    return this.hooks.use("settings", args).then(function(settings) {
+    return this.hooks.use("settings", {
+        'settings': args,
+        'auth': {
+            'box': this.workspace.id,
+            'userId': meta.user.userId,
+            'token': meta.user.token
+        }
+    }).then(function(settings) {
         meta.user.settings = settings;
         return Q(meta.user.settings);
     });

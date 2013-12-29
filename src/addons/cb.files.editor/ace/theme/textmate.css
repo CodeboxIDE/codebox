@@ -40,7 +40,7 @@
 }
 
 .ace-tm .ace_gutter-active-line {
-  background-color : #dcdcdc
+  background-color : transparent;
 }
 
 .ace-tm .ace_marker-layer .ace_selected-word {

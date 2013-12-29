@@ -25,6 +25,9 @@ cli.command('run [args]')
     // Use Codebox
     if (this.box && this.codeboxio && this.key) {
         _.extend(config, {
+            'workspace': {
+                'id': this.box
+            },
             'hooks': {
                 'auth': this.codeboxio+"/api/box/"+this.box+"/auth",
                 'events': this.codeboxio+"/api/box/"+this.box+"/events",

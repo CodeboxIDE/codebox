@@ -14,7 +14,9 @@ var start = function(config) {
         'title': process.env.WORKSPACE_NAME,
         'public': process.env.WORKSPACE_PUBLIC != "false",
         'dev': process.env.DEV != null,
-
+        'workspace': {
+            'id': null
+        },
         'hooks': {
             // Hooks could be:
             //  - string: considered as url
@@ -88,6 +90,7 @@ var start = function(config) {
             'packagePath': "./cb.core",
 
             // Options
+            'id': config.workspace.id,
             'title': config.title,
             'root': config.root,
             'public': config.public,
