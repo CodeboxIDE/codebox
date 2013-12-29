@@ -265,7 +265,7 @@ define([
 
             this.setMode(this.options.mode);
             this.setKeyboardmode(this.options.keyboard);
-            this.setTheme(themes.current().editor.theme || "textmate");
+            this.setTheme(themes.current().editor.theme || "codebox");
             this.setFontsize(this.options.fontsize);
             this.setPrintmargincolumn(this.options.printmargincolumn);
             this.setShowprintmargin(this.options.showprintmargin);
@@ -374,12 +374,7 @@ define([
          *  @theme_name : name of the theme
          */
         setTheme: function(theme) {
-            var themeName = "unknown";
-
-            console.log("SET THEME", theme);
-
             if (_.isString(theme)) {
-                themeName = theme;
                 theme = "ace/theme/" + theme;
             }
             this.editor.setTheme(theme);

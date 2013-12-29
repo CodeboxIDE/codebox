@@ -426,25 +426,7 @@ function setupSettingPanel(settingDiv, settingOpener, editor, options) {
             Scala:      "Scala"
         },
         theme: {
-            clouds:           "Clouds",
-            clouds_midnight:  "Clouds Midnight",
-            cobalt:           "Cobalt",
-            crimson_editor:   "Crimson Editor",
-            dawn:             "Dawn",
-            eclipse:          "Eclipse",
-            idle_fingers:     "Idle Fingers",
-            kr_theme:         "Kr Theme",
-            merbivore:        "Merbivore",
-            merbivore_soft:   "Merbivore Soft",
-            mono_industrial:  "Mono Industrial",
-            monokai:          "Monokai",
-            pastel_on_dark:   "Pastel On Dark",
-            solarized_dark:   "Solarized Dark",
-            solarized_light:  "Solarized Light",
-            textmate:         "Textmate",
-            twilight:         "Twilight",
-            vibrant_ink:      "Vibrant Ink",
-            spacegray:        "Spacegray"
+            textmate:        "Textmate"
         },
         gutter: BOOL,
         fontSize: {
