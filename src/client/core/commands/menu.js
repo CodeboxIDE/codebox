@@ -18,6 +18,7 @@ define([
     }).menuSection({
         'id': "themes.settings",
         'title': "Settings",
+        'offline': false,
         'action': function() {
             settings.open("themes");
         }

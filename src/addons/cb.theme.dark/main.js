@@ -24,23 +24,18 @@ define([
             menubar: {
                 'background': bgNormal,
                 'color': colorNormal,
-                'border-color': "transparent",
-                'box-shadow': "none"
+                'border-color': "#111"
             },
 
             // Lateral bar panels
             lateralbar: {
                 commands: {
                     'background': bgDark,
-                    'color': colorLight,
-                    'border-color': "transparent",
-                    'box-shadow': "none"
+                    'color': colorLight
                 },
                 body: {
                     'background': bgDark,
-                    'color': colorDark,
-                    'border-color': "transparent",
-                    'box-shadow': "none"
+                    'color': colorDark
                 }
             },
 
@@ -51,9 +46,7 @@ define([
                 },
                 header: {
                     'background': bgDark,
-                    'color': colorDark,
-                    'border-color': "transparent",
-                    'box-shadow': "none"
+                    'color': colorDark
                 },
                 content: {
                     'background': bgLight,

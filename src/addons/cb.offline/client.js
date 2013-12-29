@@ -57,12 +57,9 @@ define([], function() {
     }).menuSection([
         checkConnexion
     ]);
-
-    // Run sync
-    localfs.sync();
     
     // Run sync every 5min
-    setTimeout(function() {
+    setInterval(function() {
         localfs.autoSync();
     }, 5*60*1000);
 
@@ -70,5 +67,10 @@ define([], function() {
     box.on("box:watch", function() {
         localfs.autoSync();
     });
+
+    setTimeout(function() {
+        // Run sync
+        localfs.sync();
+    }, 30*1000);
 });
 
