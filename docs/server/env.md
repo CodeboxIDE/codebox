@@ -1,13 +1,13 @@
 # Environment variables
 
-Codebox use environment variables for defining its conffiguration, here is a list of all possibles configurations:
+Codebox use environment variables for defining its configuration, here is a list of all possibles configurations:
 
 | Name | Description | Default |
 | ----- | ------------------- | ------------------- |
-| WORKSPACE_DIR | Workspace current directory | Shell current directory |
-| WORKSPACE_NAME | Name for this workspace | "Workspace" |
-| WORKSPACE_PUBLIC | If defined the workspace will be considered as public | false |
-| WORKSPACE_USERS_MAX | Max number of active collaborators on the box | 100 |
+| WORKSPACE\_DIR | Workspace current directory | Shell current directory |
+| WORKSPACE\_NAME | Name for this workspace | "Workspace" |
+| WORKSPACE\_PUBLIC | If defined the workspace will be considered as public | false |
+| WORKSPACE\_USERS\_MAX | Max number of active collaborators on the box | 100 |
 | WORKSPACE\_USERS\_MAX | Max number of users | 100 |
 | WORKSPACE\_HOOK\_AUTH | Url for the authentification hook | |
 | WORKSPACE\_HOOK\_EVENTS | Url for the events hook | |
