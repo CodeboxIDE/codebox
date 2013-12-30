@@ -191,7 +191,7 @@ define([
                     "tab": null
                 };
                 this.tabs[tabid] = tabinfos;
-                
+
                 this.tabs[tabid].tab = new TabView({
                     "tabid": tabid,
                     "close": options.close,
@@ -232,6 +232,26 @@ define([
             return _.filter(this.tabs, function(tab) {
                 return tab.tab.section == section;
             });
+        },
+
+        getPreviousTab: function(tab) {
+            // We're not closing the active tab
+            // So keep the current tab as active
+            if(tab.tabid !== this.activeTab) return this.activeTab;
+
+            var tabs = this.getSectionTabs(tab.tab.section);
+            var index = tabs.indexOf(tab);
+            // Get all other tabs except the current one
+            var otherTabs = _.filter(tabs, function (t) {
+                return t.tabid !== tab.tabid;
+            });
+
+            // No other tabs
+            if(!otherTabs.length) {
+                return null;
+            }
+
+            return otherTabs[_.max([0, index - 1])].tabid;
         },
 
         // Return active tab for a section
@@ -304,17 +324,26 @@ define([
         close: function(tabid, force) {
             if (this.tabs[tabid] == null) return this;
 
+            // Get previous tab (will set as active)
+            var previousTabId = this.getPreviousTab(this.tabs[tabid]);
+
             // Triger in tab
             this.tabs[tabid].view.trigger("tab:close");
             this.tabs[tabid].view.off();
-            
+
             delete this.tabs[tabid].view;
             delete this.tabs[tabid];
 
             // Trigger global
             this.trigger("tab:"+tabid+":close");
             this.trigger("tabs:close", tabid);
-            if (_.size(this.tabs) == 0) this.trigger("tabs:default");
+
+            if (!_.size(this.tabs) || !previousTabId) {
+                this.trigger("tabs:default");
+            } else {
+                this.open(previousTabId);
+            }
+
             this.update();
             return this;
         },
