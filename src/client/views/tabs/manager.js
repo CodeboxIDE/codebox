@@ -73,7 +73,7 @@ define([
             var sections_n = _.max([1, _.size(sections)]);
 
 
-            var layout = this.layout || Math.floor(Math.sqrt(sections_n)); // Number of columns
+            var layout = this.layout || Math.ceil(Math.sqrt(sections_n)); // Number of columns
 
             var nColumns = Math.min(layout, sections_n);
             var nLines = Math.ceil(sections_n/layout);
@@ -191,7 +191,7 @@ define([
                     "tab": null
                 };
                 this.tabs[tabid] = tabinfos;
-                
+
                 this.tabs[tabid].tab = new TabView({
                     "tabid": tabid,
                     "close": options.close,
@@ -307,7 +307,7 @@ define([
             // Triger in tab
             this.tabs[tabid].view.trigger("tab:close");
             this.tabs[tabid].view.off();
-            
+
             delete this.tabs[tabid].view;
             delete this.tabs[tabid];
 
