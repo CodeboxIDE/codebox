@@ -73,7 +73,7 @@ define([
             var sections_n = _.max([1, _.size(sections)]);
 
 
-            var layout = this.layout || Math.ceil(Math.sqrt(sections_n)); // Number of columns
+            var layout = this.layout || Math.floor(Math.sqrt(sections_n)); // Number of columns
 
             var nColumns = Math.min(layout, sections_n);
             var nLines = Math.ceil(sections_n/layout);
@@ -234,6 +234,26 @@ define([
             });
         },
 
+        getPreviousTab: function(tab) {
+            // We're not closing the active tab
+            // So keep the current tab as active
+            if(tab.tabid !== this.activeTab) return this.activeTab;
+
+            var tabs = this.getSectionTabs(tab.tab.section);
+            var index = tabs.indexOf(tab);
+            // Get all other tabs except the current one
+            var otherTabs = _.filter(tabs, function (t) {
+                return t.tabid !== tab.tabid;
+            });
+
+            // No other tabs
+            if(!otherTabs.length) {
+                return null;
+            }
+
+            return otherTabs[_.max([0, index - 1])].tabid;
+        },
+
         // Return active tab for a section
         getActiveTab: function(section) {
             section = section || 0;
@@ -304,6 +324,9 @@ define([
         close: function(tabid, force) {
             if (this.tabs[tabid] == null) return this;
 
+            // Get previous tab (will set as active)
+            var previousTabId = this.getPreviousTab(this.tabs[tabid]);
+
             // Triger in tab
             this.tabs[tabid].view.trigger("tab:close");
             this.tabs[tabid].view.off();
@@ -314,7 +337,13 @@ define([
             // Trigger global
             this.trigger("tab:"+tabid+":close");
             this.trigger("tabs:close", tabid);
-            if (_.size(this.tabs) == 0) this.trigger("tabs:default");
+
+            if (!_.size(this.tabs) || !previousTabId) {
+                this.trigger("tabs:default");
+            } else {
+                this.open(previousTabId);
+            }
+
             this.update();
             return this;
         },
