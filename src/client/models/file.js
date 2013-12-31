@@ -35,7 +35,7 @@ define([
          */
         initialize: function() {
             File.__super__.initialize.apply(this, arguments);
-            this.codebox = this.options.codebox;
+            this.codebox = this.options.codebox || require("core/box");
             this.content = null;
             this.modified = false;
             this._loading = false;

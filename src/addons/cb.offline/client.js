@@ -5,7 +5,20 @@ define([], function() {
     var commands = codebox.require("core/commands/toolbar");
     var hr = codebox.require("hr/hr");
     var Command = codebox.require("models/command");
-    var localfs = codebox.require("core/localfs")
+    var localfs = codebox.require("core/localfs");
+
+    // Menu changes list
+    var menuChanges = menu.register("offline.changes", {
+        'title': "Changes",
+        'position': 95,
+        'flags': "disabled"
+    });
+    localfs.changes.on("add remove reset", function() {
+        menuChanges.toggleFlag("disabled", localfs.changes.size() == 0);
+        menuChanges.menu.reset(localfs.changes.map(function(change) {
+            return change.command();
+        }));
+    });
 
 
     // Command to check connexion
@@ -24,7 +37,7 @@ define([], function() {
     syncMenu.menuSection(checkConnexion);
     syncMenu.menuSection([
         {
-            'title': "Run Synchronization",
+            'title': "Calcul Changes",
             'offline': false,
             'icon': "refresh",
             'action': function() {
