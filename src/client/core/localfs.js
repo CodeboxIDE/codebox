@@ -228,13 +228,13 @@ define([
         var box = require("core/box");
         changes.reset([]);
 
-        var addChange = function(path, type) {
+        var addChange = function(path, type, args) {
             logger.log("change:",type,path);
-            changes.add({
+            changes.add(_.extend(args || {}, {
                 'path': path,
                 'time': Date.now(),
                 'type': type || "M"
-            });
+            }));
         }
 
         var getDirChanges = function(path) {
@@ -305,7 +305,9 @@ define([
                                     // Same content
                                     return Q();
                                 }
-                                addChange(localEntry._fullPath, "modified");
+                                addChange(localEntry._fullPath, "write", {
+                                    'content': content
+                                });
                             })
                         });
                     }
