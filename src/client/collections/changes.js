@@ -8,7 +8,7 @@ define([
 
         // Sort comparator
         comparator: function(command) {
-            return command.get("time", 0);
+            return command.get("path", "").length;
         }
     });
 
