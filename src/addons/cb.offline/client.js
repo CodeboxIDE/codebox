@@ -8,14 +8,40 @@ define([], function() {
     var localfs = codebox.require("core/localfs");
 
     // Menu changes list
-    var menuChanges = menu.register("offline.changes", {
+    var menuListChanges = new Command({}, {
         'title': "Changes",
-        'position': 95,
-        'flags': "disabled"
+        'type': "menu"
     });
+    var menuChanges = menu.register("offline.changes", {
+        title: "Changes",
+        position: 95,
+        offline: false,
+        flags: "disabled"
+    }).menuSection([
+        {
+            'title': "Recalcul Changes",
+            'offline': false,
+            'icon': "refresh",
+            'action': function() {
+                return localfs.sync();
+            }
+        },
+        {
+            'title': "Apply All Changes",
+            'offline': false,
+            'action': function() {
+                alert("apply all");
+                return localfs.changes.applyAll();
+            }
+        }
+    ]).menuSection([
+        menuListChanges
+    ]);
+
+    // Changes update
     localfs.changes.on("add remove reset", function() {
         menuChanges.toggleFlag("disabled", localfs.changes.size() == 0);
-        menuChanges.menu.reset(localfs.changes.map(function(change) {
+        menuListChanges.menu.reset(localfs.changes.map(function(change) {
             return change.command();
         }));
     });
@@ -84,6 +110,6 @@ define([], function() {
     setTimeout(function() {
         // Run sync
         localfs.sync();
-    }, 30*1000);
+    }, 5*1000);
 });
 
