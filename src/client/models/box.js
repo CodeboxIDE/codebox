@@ -5,8 +5,9 @@ define([
     'models/file',
     'models/shell',
     'models/user',
+    'models/command',
     'core/operations'
-], function (hr, io, rpc, File, Shell, User, operations) {
+], function (hr, io, rpc, File, Shell, User, Command, operations) {
     var logging = hr.Logger.addNamespace("codebox");
 
     var Codebox = hr.Model.extend({
@@ -244,6 +245,16 @@ define([
                 return rpc.execute("git/sync")
             }, {
                 title: "Synchronization"
+            });
+        },
+
+        /*
+         * Run the project
+         */
+        run: function() {
+            return rpc.execute("run/project").then(function(runInfos) {
+                Command.run("terminal.open", runInfos.shellId);
+                return Q(runInfos);
             });
         },
 

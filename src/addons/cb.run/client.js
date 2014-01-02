@@ -44,7 +44,9 @@ define([], function() {
             "r"
         ]
     }, function() {
-        dialogs.alert("Auto-run is not yet available", "Run your application from the terminal on port 5000 and open your applications from the list below.");
+        box.run().then(function(runInfo) {
+            console.log(runInfo);
+        });
     });
 
     // Add menu

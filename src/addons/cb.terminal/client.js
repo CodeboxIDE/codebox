@@ -48,8 +48,10 @@ define([
         shortcuts: [
             "ctrl+shift+T"
         ]
-    }, function() {
-        tabs.add(TerminalTab, {}, {
+    }, function(shellId) {
+        tabs.add(TerminalTab, {
+            'shellId': shellId
+        }, {
             'section': "terminals"
         });
     });
