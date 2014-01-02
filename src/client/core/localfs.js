@@ -392,6 +392,8 @@ define([
 
         });
 
+        var previousChanges = changes.size();
+
         if (hr.Offline.isConnected()) {
             var endT, startT = Date.now();
             return openFile("/").then(function(infos) {
@@ -400,6 +402,7 @@ define([
                 return createDirectory("/");
             }).then(function() {
                 if (changes.size() > 0) {
+                    if (changes.size() == previousChanges) return Q.reject(new Error("Offline changes not synced"));
                     return dialogs.alert("Offline changes", "There are "+changes.size()+" changes made offline that need to be synced manually, use the 'Changes' menu to do so. You can also reset the offline cache using the 'Synchronize' menu.").then(function() {
                         return Q.reject(new Error("Offline changes not synced"));
                     })
@@ -414,7 +417,7 @@ define([
                 alerts.show("Offline and Workspace have been synchronized.", 5000);
                 return syncDuration;
             }, function(err) {
-                logger.error("!!!!!! ERROR !!!!!!!", err);
+                logger.error("Sync error:", err);
             });
         } else {
             return Q.reject(new Error("Can't synchronize when offline"));
