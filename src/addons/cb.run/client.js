@@ -55,15 +55,7 @@ define([], function() {
     menu.register("run", {
         title: "Run"
     }).menuSection([
-        runCommand,
-        {
-            'type': "action",
-            'title': "Logging Output",
-            'offline': false,
-            'action': function() {
-                Command.run("monitor.open");
-            }
-        }
+        runCommand
     ]).menuSection([
         {
             'type': "action",
