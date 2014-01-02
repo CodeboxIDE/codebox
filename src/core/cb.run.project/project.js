@@ -47,30 +47,17 @@ ProjectRunner.prototype.runScript = function(projectType, port) {
     var exitCMD = "read -p  $'####\\n# Press \\e[00;31mENTER\\e[00m to close this shell ...\\n####\\n'";
 
     // Spawn the new shell
-    var shell = this.shells.createShell({
-        id: shellId,
-        command: 'bash',
-        arguments: [
-            '-c',
+    var shell = this.shells.createShellCommand(
+        shellId, [
+            // Script itself
+            this.scriptPath(projectType),
 
-            // Our bash command
-            [
-                // Script itself
-                this.scriptPath(projectType),
+            // Path to project folder
+            this.workspace.root,
 
-                // Path to project folder
-                this.workspace.root,
-
-                // Port allocated/claimed
-                port,
-
-                ';',
-
-                // Keep the shell open with this
-                exitCMD
-            ].join(' ')
-
-        ],
+            // Port allocated/claimed
+            port
+        ], {
         cwd: this.workspace.root,
         env: _.defaults({
             PORT: port,

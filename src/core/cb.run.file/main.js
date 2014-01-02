@@ -33,14 +33,7 @@ function fileRun(shells, filename) {
     }
 
     // Create process
-    var shell = shells.createShell({
-        id: _shellId,
-        command: 'bash',
-        arguments: [
-            '-c',
-            command
-        ]
-    });
+    var shell = shells.createShellCommand(_shellId, command);
 
     return Q({
         shellId: _shellId,
