@@ -122,6 +122,13 @@ define([
                 that.empty();
                 that.countFiles = 0;
 
+                if (that.model.isRoot()) {
+                    $("<li>", {
+                        "class": "file-header",
+                        "text": "folders"
+                    }).appendTo(that.$el);
+                }
+
                 _.each(files, function(file) {
                     if (file.isGit()) return;
                     
