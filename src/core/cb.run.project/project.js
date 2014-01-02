@@ -55,7 +55,7 @@ ProjectRunner.prototype.runScript = function(projectType, port) {
         env: _.defaults({
             PORT: port,
             HTTP_PORT: port
-        })
+        }, process.env)
     });
 
     // Id of our harbor port (to release)
