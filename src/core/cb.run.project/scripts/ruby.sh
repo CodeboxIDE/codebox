@@ -23,7 +23,7 @@ if [ -z "$entry_point" ]; then
 fi
 
 if [ -f ${entry_point} ]; then
-    exec go run ${entry_point}
+    exec ruby ${entry_point}
 else
     # Exit
     exit 1
