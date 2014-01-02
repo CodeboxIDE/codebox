@@ -5,7 +5,52 @@ define([], function() {
     var commands = codebox.require("core/commands/toolbar");
     var hr = codebox.require("hr/hr");
     var Command = codebox.require("models/command");
-    var localfs = codebox.require("core/localfs")
+    var localfs = codebox.require("core/localfs");
+    var dialogs = codebox.require("utils/dialogs");
+
+    // Menu changes list
+    var menuListChanges = new Command({}, {
+        'title': "Changes",
+        'type': "menu",
+        'flags': "disabled"
+    });
+    var menuChanges = menu.register("offline.changes", {
+        title: "Changes",
+        position: 95,
+        offline: false
+    }).menuSection([
+        {
+            'title': "Recalcul Changes",
+            'offline': false,
+            'action': function() {
+                return localfs.sync();
+            }
+        },
+        {
+            'id': "changes.apply",
+            'title': "Apply All Changes",
+            'offline': false,
+            'action': function() {
+                var n = localfs.changes.size();
+                if (n == 0) return;
+
+                dialogs.confirm("Do you really want to apply "+n+" changes?").then(function(yes) {
+                    if (!yes) return;
+                    return localfs.changes.applyAll();
+                });   
+            }
+        }
+    ]).menuSection([
+        menuListChanges
+    ]);
+
+    // Changes update
+    localfs.changes.on("add remove reset", function() {
+        menuListChanges.toggleFlag("disabled", localfs.changes.size() == 0);
+        menuListChanges.menu.reset(localfs.changes.map(function(change) {
+            return change.command();
+        }));
+    });
 
 
     // Command to check connexion
@@ -24,17 +69,17 @@ define([], function() {
     syncMenu.menuSection(checkConnexion);
     syncMenu.menuSection([
         {
-            'title': "Run Synchronization",
+            'id': "changes.calcul",
+            'title': "Calcul Changes",
             'offline': false,
-            'icon': "refresh",
             'action': function() {
                 return localfs.sync();
             }
         },
         {
+            'id': "changes.reset",
             'title': "Reset Offline Cache",
             'offline': false,
-            'icon': "refresh",
             'action': function() {
                 return localfs.reset();
             }
@@ -71,6 +116,6 @@ define([], function() {
     setTimeout(function() {
         // Run sync
         localfs.sync();
-    }, 30*1000);
+    }, 5*1000);
 });
 

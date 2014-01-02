@@ -5,13 +5,15 @@ define([
     'vendors/filer',
     'core/operations',
     'utils/dialogs',
-    'utils/alerts'
-], function(_, hr, Url, Filer, operations, dialogs, alerts) {
+    'utils/alerts',
+    'collections/changes'
+], function(_, hr, Url, Filer, operations, dialogs, alerts, Changes) {
     var logger = hr.Logger.addNamespace("localfs");
 
     // Base folder for localfs
     var base = "/";
     var _isInit = false;
+    var changes = new Changes();
 
     // Constant mime type for a directory
     var MIME_DIRECTORY = "inode/directory";
@@ -219,6 +221,119 @@ define([
     });
 
     /*
+     *  Return changes
+     */
+    var getChanges = needFsReady(function() {
+        var File = require("models/file");
+        var box = require("core/box");
+        changes.reset([]);
+
+        var addChange = function(path, type, args) {
+            logger.log("change:",type,path);
+            changes.add(_.extend(args || {}, {
+                'path': path,
+                'time': Date.now(),
+                'type': type || "M"
+            }));
+        }
+
+        var getDirChanges = function(path) {
+            var localEntries, boxEntries, currentEntryInfos, fp;
+            if (path == "/.git") return Q();
+
+            logger.log("get changes in:", path);
+
+            // File in the workspace
+            fp = new File();
+
+            return openFile(path).then(function(infos) {
+                return listDir(path);
+            }).then(function(entries) {
+                // Entry in the browser
+                localEntries = entries;
+
+                // Get file on the workspace
+                return fp.getByPath(path).fail(function() {
+                    return Q();
+                });
+            }).then(function() {
+                if (fp.isDirectory()) {
+                    return fp.listdir();
+                }
+                return Q([]);
+            }).then(function(entries) {
+                // Entries on the boxes
+                boxEntries = entries;
+            }).then(function() {
+                // Eliminate old useless entries
+                return Q.all(_.map(boxEntries, function(boxFile) {
+                    if (boxFile.path() == "/.git") return Q();
+
+                    var localEntry = _.find(localEntries, function(localEntry) {
+                        return localEntry.name == boxFile.get("name");
+                    });
+
+                    // File don't exists and box file older than current directory
+                    if (!localEntry && boxFile.get("mtime") < currentEntryInfos.mtime) {
+                        // -> Remove the file on the box
+                        addChange(boxFile.path(), "remove");
+                    }
+
+                    // Do nothing
+                    return Q();
+                }));
+            }).then(function() {
+                // Update entries and create new entries
+                return Q.all(_.map(localEntries, function(localEntry) {
+                    var entryIsDir = localEntry.mime == MIME_DIRECTORY;
+                    var boxFile = _.find(boxEntries, function(boxFile) {
+                        return localEntry.name == boxFile.get("name");
+                    });
+
+                    if (!boxFile) {
+                        // Create file
+                        if (!entryIsDir) {
+                            addChange(localEntry._fullPath, "create");
+                        } else {
+                            addChange(localEntry._fullPath, "mkdir");
+                        }
+                    } else if (!entryIsDir && boxFile.get("mtime") < localEntry.mtime) {
+                        // Check modification
+                        return readFile(localEntry._fullPath).then(function(content) {
+                            return boxFile.read().then(function(vfsContent) {
+                                if (vfsContent == content) {
+                                    // Same content
+                                    return Q();
+                                }
+                                addChange(localEntry._fullPath, "write", {
+                                    'content': content
+                                });
+                            })
+                        });
+                    }
+
+                    if (entryIsDir) {
+                        return getDirChanges(localEntry._fullPath);
+                    }
+
+                    // Do nothing
+                    return Q();
+                }));
+            }).fail(function(err) {
+                logger.error("Error during sync: ", err);
+            });
+        };
+
+        return operations.start("files.sync.changes", function(op) {
+            return getDirChanges("/").then(function() {
+                return Q(changes);
+            });
+        }, {
+            title: "Calculating changes ..."
+        });
+    });
+
+    /*
      *  Sync a file in the box fs with the local fs
      *
      *  this will download the files and saved them in the localfs
@@ -251,145 +366,19 @@ define([
                 });
             }
         };
-        return operations.start("files.sync", function(op) {
+        return operations.start("files.sync.download", function(op) {
             logger.warn("Start sync: box->local");
             return remove("/").then(function() {
                 return doSync(box.root);
             }, function() {
                 return doSync(box.root)
             }).then(function() {
+                changes.reset([]);
                 alerts.show("Workspace has been saved offline.", 5000);
                 logger.warn("Finished sync: box->local");
             });
         }, {
             title: "Downloading ..."
-        });
-    });
-
-    /*
-     *  Sync localfs to vfs
-     */
-    var syncFileLocalToBox = needFsReady(function() {
-        var File = require("models/file");
-        var box = require("core/box");
-        var messages = [];
-
-        var doSyncDir = function(path, parent) {
-            var localEntries, boxEntries, currentEntryInfos;
-            if (path == "/.git") return Q();
-
-            logger.log("sync:local->box:", path);
-
-            // Get current directory
-            return openFile(path).then(function(infos) {
-                // Infos about this entry
-                currentEntryInfos = infos;
-
-                return listDir(path);
-            }).then(function(entries) {
-                // Entry in the browser
-                localEntries = entries;
-                return parent.listdir();
-            }).then(function(entries) {
-                // Entries on the boxes
-                boxEntries = entries;
-            }).then(function() {
-                // Eliminate old useless entries
-                return Q.all(_.map(boxEntries, function(boxFile) {
-                    if (boxFile.path() == "/.git") return Q();
-
-                    var localEntry = _.find(localEntries, function(localEntry) {
-                        return localEntry.name == boxFile.get("name");
-                    });
-
-                    // File don't exists and box file older than current directory
-                    if (!localEntry && boxFile.get("mtime") < currentEntryInfos.mtime) {
-                        // -> Remove the file on the box
-                        //logger.log("resync: need to remove ", boxFile.path());
-                        messages.push({
-                            'operation': "remove",
-                            'path': boxFile.path(),
-                            'message': "[conflict] You should manually remove "+boxFile.path()
-                        });
-                    }
-
-                    // Do nothing
-                    return Q();
-                }));
-            }).then(function() {
-                // Update entries and create new entries
-                return Q.all(_.map(localEntries, function(localEntry) {
-                    var entryIsDir = localEntry.mime == MIME_DIRECTORY;
-                    var boxFile = _.find(boxEntries, function(boxFile) {
-                        return localEntry.name == boxFile.get("name");
-                    });
-
-                    // Is not a directory and:
-                    if (!entryIsDir && (!boxFile    // File don't exist
-                    || (boxFile.get("mtime") < localEntry.mtime)))    // or File modified offline
-                    {
-                        // -> Update box content
-                        /*logger.log("resync: need to update ", localEntry._fullPath);
-                        logger.log(" -> box:", boxFile.get("mtime"));
-                        logger.log(" -> local:", localEntry.mtime);*/
-                        return readFile(localEntry._fullPath).then(function(content) {
-                            return parent.read(localEntry._fullPath).then(function(vfsContent) {
-                                if (vfsContent == content) {
-                                    // Same content
-                                    return Q();
-                                }
-                                return dialogs.confirm("Upload modifications of "
-                                    +localEntry._fullPath+" ("+vfsContent.length+"bytes to "+content.length+"bytes)");
-                            }).then(function(confirm) {
-                                if (!confirm) return;
-                                return parent.write(content, localEntry._fullPath);
-                            });
-                        });
-                    }
-
-                    // if a directory
-                    if (entryIsDir) {
-                        var syncEntry = function(newParent) {
-                            return doSyncDir(localEntry._fullPath, newParent);
-                        }
-
-                        if (boxFile) {
-                            if (boxFile.isDirectory()) {
-                                return syncEntry(boxFile);
-                            } else {
-                                messages.push({
-                                    'operation': "remove",
-                                    'path': boxFile.path(),
-                                    'message': "[conflict] You should manually remove "+boxFile.path()
-                                });
-                            }
-                        } else {
-                            return parent.mkdir(localEntry.name).then(function() {
-                                return parent.getChild(localEntry.name);
-                            }).then(syncEntry);
-                        }
-                    }
-
-                    // Do nothing
-                    return Q();
-                }));
-            }).fail(function(err) {
-                logger.error("Error during sync: ", err);
-            });
-        };
-
-        return operations.start("files.sync", function(op) {
-            logger.warn("Start sync: local->box");
-            return doSyncDir("/", box.root).then(function() {
-                logger.warn("Finished sync: local->box");
-            })
-        }, {
-            title: "Uploading changes..."
-        }).then(function() {
-            alerts.show("Offline changes have been uploaded to the workspace.", 5000);
-            if (messages.length > 0) {
-                return dialogs.alert("Conflict during synchronization:", _.pluck(messages, 'message').join("<br/>"));
-            }
         });
     });
 
@@ -400,18 +389,21 @@ define([
      */
     var sync = needFsReady(function(options) {
         options = _.defaults({}, options || {}, {
-            'updateLocal': false
+
         });
 
         if (hr.Offline.isConnected()) {
             var endT, startT = Date.now();
-
             return openFile("/").then(function(infos) {
-                if (options.updateLocal) return Q();
-                return syncFileLocalToBox();
+                return getChanges();
             }, function() {
                 return createDirectory("/");
             }).then(function() {
+                if (changes.size() > 0) {
+                    return dialogs.alert("Offline changes", "There are "+changes.size()+" changes made offline that need to be synced manually, use the 'Changes' menu to do so. You can also reset the offline cache using the 'Synchronize' menu.").then(function() {
+                        return Q.reject(new Error("Offline changes not synced"));
+                    })
+                }
                 return syncFileBoxToLocal();
             }).then(function() {
                 //Calcul duration
@@ -436,14 +428,13 @@ define([
     var updateAutoSync = function() {
         logger.log("sync take ", syncDuration/1000,"seconds");
         autoSync =  _.throttle(function() {
-            sync({
-                updateLocal: true
-            });
+            sync();
         }, 2*syncDuration);
     };
     updateAutoSync();
 
     return {
+        'changes': changes,
         'urlToPath': urlToPath,
         'init': initFs,
         'ls': listDir,
