@@ -20,7 +20,7 @@ function setup(options, imports, register) {
     };
 
     // Simplify shell creation
-    manager.createShellCommand = function(shellId, cmd, args, opts) {
+    manager.createShellCommand = function(shellId, args, opts) {
         var exitCMD = "read -p  $'####\\n# Press \\e[00;31mENTER\\e[00m to close this shell ...\\n####\\n'";
         var shell = manager.createShell(_.defaults({}, opts || {}, {
             id: shellId,

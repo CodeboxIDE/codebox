@@ -265,7 +265,7 @@ define([
 
             this.setMode(this.options.mode);
             this.setKeyboardmode(this.options.keyboard);
-            this.setTheme(themes.current().editor.theme || "codebox");
+            this.setTheme(themes.current().editor.theme || "textmate");
             this.setFontsize(this.options.fontsize);
             this.setPrintmargincolumn(this.options.printmargincolumn);
             this.setShowprintmargin(this.options.showprintmargin);
