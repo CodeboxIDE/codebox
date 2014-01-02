@@ -718,7 +718,7 @@ define([
                     menu.push({
                         'id': "file.upload",
                         'type': "menu",
-                        'title': "Upload",
+                        'title': "Add",
                         'offline': false,
                         'menu': [
                             {
@@ -733,7 +733,7 @@ define([
                             {
                                 'id': "file.upload.directory",
                                 'type': "action",
-                                'title': "Directory",
+                                'title': "Directories",
                                 'offline': false,
                                 'action': function() {
                                     that.actionUpload({
