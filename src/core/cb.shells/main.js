@@ -24,13 +24,19 @@ function setup(options, imports, register) {
         var exitCMD = "read -p  $'####\\n# Press \\e[00;31mENTER\\e[00m to close this shell ...\\n####\\n'";
         var shell = manager.createShell(_.defaults({}, opts || {}, {
             id: shellId,
-            command: "bash",
-            arguments: ['-c', (args || []).concat([';',exitCMD]).join(' ')],
+            command: 'bash',
+            arguments: [
+                '-c',
+                (_.isString(args) ?
+                    [args] :
+                    (args || [])
+                ).concat([';', exitCMD]).join(' ')
+            ],
             cwd: workspace.root
         }));
 
         return shell;
-    }
+    };
 
 
     // Utility function for connecting emitter to eventbus
