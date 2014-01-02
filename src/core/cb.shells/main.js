@@ -22,7 +22,7 @@ function setup(options, imports, register) {
 
     // Utility function for connecting emitter to eventbus
     // (converts arguments to data convention)
-    var emit = function shellEmit(events, eventId, shellId) {
+    var emit = function shellEmit(eventId, shellId) {
         return events.emit(eventId, {
             shellId: shellId
         });
