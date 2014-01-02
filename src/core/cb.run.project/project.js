@@ -96,7 +96,7 @@ ProjectRunner.prototype.run = function() {
     return this.detect()
     .then(function(projectType) {
         if(!projectType) {
-            return Q.fail(new Error("The project has no supported type"));
+            return Q.reject(new Error("The project has no supported type"));
         }
         return projectType;
     })
@@ -104,7 +104,7 @@ ProjectRunner.prototype.run = function() {
         var portId = self.portId(projectType);
 
         if(self.isRunning(portId)) {
-            return Q.fail(new Error("Project is already running"));
+            return Q.reject(new Error("Project is already running"));
         }
 
         // Now that we have the type, claim a port

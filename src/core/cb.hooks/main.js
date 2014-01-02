@@ -13,7 +13,7 @@ function setup(options, imports, register) {
 		'auth': function(data) {
 			if (!data.email
 			|| !data.token) {
-				return Q.fail(new Error("Need 'token' and 'email' for auth hook"));
+				return Q.reject(new Error("Need 'token' and 'email' for auth hook"));
 			}
 
 			var userId = _.uniqueId("user");
@@ -48,7 +48,7 @@ function setup(options, imports, register) {
 		if (baseHooks[hook] == null) {
 			var err = new Error("Error trying to use inexistant hook: "+hook);
 			logger.exception(err, false);
-			return Q.fail(err);
+			return Q.reject(err);
 		}
 
 		var handler = baseHooks[hook];
@@ -81,7 +81,7 @@ function setup(options, imports, register) {
 		} else {
 			var err = new Error("Not a valid hook");
 			logger.exception(err, false);
-			return Q.fail();
+			return Q.reject();
 		}
 	};
 

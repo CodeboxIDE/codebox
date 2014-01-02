@@ -11,11 +11,11 @@ function ShellsRPCService(manager) {
 
 ShellsRPCService.prototype._getShell = function(id) {
     if(!id) {
-        return Q.fail(new Error("Missing Shell ID"));
+        return Q.reject(new Error("Missing Shell ID"));
     } else if(this.manager.shells[id]) {
         return Q(this.manager.shells[id].ps);
     }
-    return Q.fail(new Error("Shell '"+ id +"' does not exist"));
+    return Q.reject(new Error("Shell '"+ id +"' does not exist"));
 };
 
 ShellsRPCService.prototype.status = function() {

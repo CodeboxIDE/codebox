@@ -29,7 +29,7 @@ function fileRun(shells, filename) {
     var command = runCommand(filename);
 
     if(_.has(shells.shells, shellId)) {
-        return Q.fail(new Error('Command is already running'));
+        return Q.reject(new Error('Command is already running'));
     }
 
     // Create process

@@ -65,12 +65,12 @@ Workspace.prototype.addUser = function(user) {
     }
 
     if(!user.isValid()) {
-        return Q.fail(new Error("Could not add user, because user object is not valid (missing data)"));
+        return Q.reject(new Error("Could not add user, because user object is not valid (missing data)"));
     }
 
     // Limit count
     if (_.size(this._users) >= this.maxUsers) {
-        return Q.fail(new Error("Could not add user, because there are already too much users (limit="+this.maxUsers+")"));
+        return Q.reject(new Error("Could not add user, because there are already too much users (limit="+this.maxUsers+")"));
     }
 
     // Add to map
@@ -84,7 +84,7 @@ Workspace.prototype.addUser = function(user) {
 
 Workspace.prototype.removeUser = function(user) {
     if(!this._hasUser(user)) {
-        return Q.fail(new Error("Could not remove user with id="+user.userId+" because, no such user exists"));
+        return Q.reject(new Error("Could not remove user with id="+user.userId+" because, no such user exists"));
     }
 
     var rUserInfo = user.info();
@@ -144,7 +144,7 @@ Workspace.prototype.checkUsers = function() {
 
 Workspace.prototype.getUser = function(userId) {
     if(!this._hasUser(userId)) {
-        return Q.fail(new Error("User with id="+userId+" does not exist"));
+        return Q.reject(new Error("User with id="+userId+" does not exist"));
     }
     return Q(this._users[userId]);
 };

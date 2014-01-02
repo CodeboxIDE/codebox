@@ -51,7 +51,7 @@ GitRPCService.prototype.commit = function(args, meta) {
     var email = meta.user.email;
 
     if(!_.all([msg, files, name, email])) {
-        return Q.fail(new Error("Could not commit because arguments are missing and/or invalid"));
+        return Q.reject(new Error("Could not commit because arguments are missing and/or invalid"));
     }
 
     var that = this;
@@ -92,17 +92,17 @@ GitRPCService.prototype.branches = function(args) {
 };
 
 GitRPCService.prototype.branch_create = function(args) {
-    if (!args.name) return Q.fail(new Error("Need a name to create a branch"));
+    if (!args.name) return Q.reject(new Error("Need a name to create a branch"));
     return this.repo.create_branch(args.name);
 };
 
 GitRPCService.prototype.checkout = function(args) {
-    if (!args.ref) return Q.fail(new Error("Need a referance (ref) to checkout"));
+    if (!args.ref) return Q.reject(new Error("Need a referance (ref) to checkout"));
     return this.repo.checkout(args.ref);
 };
 
 GitRPCService.prototype.branch_delete = function(args) {
-    if (!args.name) return Q.fail(new Error("Need a name to delete a branch"));
+    if (!args.name) return Q.reject(new Error("Need a name to delete a branch"));
     return this.repo.delete_branch(args.name);
 };
 
