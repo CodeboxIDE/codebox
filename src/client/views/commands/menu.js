@@ -29,9 +29,11 @@ define([
             var $a = $("<a>", {
                 'text': this.model.get("title"),
                 'href': "#",
+                'testId': this.model.id,
                 'click': function(e) {
                     e.preventDefault();
                     that.list.trigger("action", that.model);
+
                     if (action) {
                         action() 
                     } else {

@@ -13,9 +13,9 @@ define([
 
         // Apply all
         applyAll: function() {
-            console.log("apply all changes");
+            console.log("apply all changes", this.size());
             return this.reduce(function(prev, change) {
-                console.log("next ", change.get("path"));
+                console.log("next ", change, prev);
                 return prev.then(function() {
                     return change.apply();
                 })

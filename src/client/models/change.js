@@ -1,8 +1,9 @@
 define([
     "underscore",
     "hr/hr",
-    "models/command"
-], function(_, hr, Command) {
+    "models/command",
+    "core/operations"
+], function(_, hr, Command, operations) {
     var logger = hr.Logger.addNamespace("changes");
 
     var Change = hr.Model.extend({
@@ -29,38 +30,40 @@ define([
                 return Q.reject(new Error("Can't apply this change when offline"));
             }
 
-            var url = ("/vfs/"+this.get("path")).replace("//", "/");
-            var ctype = this.get("type");
+            operations.start("change.apply", function(op) {
+                var url = ("/vfs/"+that.get("path")).replace("//", "/");
+                var ctype = that.get("type");
 
-            logger.log("apply change", ctype, this.get("path"));
+                logger.log("apply change", ctype, that.get("path"));
 
-            return Q().then(function() {
-                if (ctype == "remove") {
-                    return vfs.execute("remove", {}, {
-                        'url': url
-                    });
-                } else if (ctype == "mkdir") {
-                    return vfs.execute("mkdir", {}, {
-                        'url': url+"/"
-                    });
-                } else if (ctype == "create") {
-                    return vfs.execute("create", {}, {
-                        'url': url
-                    });
-                } else if (ctype == "write") {
-                    return vfs.execute("write", that.get("content", ""), {
-                        'url': url
-                    });
-                }else {
-                    return Q.reject(new Error("Invalid change type"));
-                }
-            }).then(function() {
-                that.destroy();
-                return Q();
-            }, function(err) {
-                logger.error(err);
-                return Q.reject(err);
-            });
+                return Q().then(function() {
+                    if (ctype == "remove") {
+                        return vfs.execute("remove", {}, {
+                            'url': url
+                        });
+                    } else if (ctype == "mkdir") {
+                        return vfs.execute("mkdir", {}, {
+                            'url': url+"/"
+                        });
+                    } else if (ctype == "create") {
+                        return vfs.execute("create", {}, {
+                            'url': url
+                        });
+                    } else if (ctype == "write") {
+                        return vfs.execute("write", that.get("content", ""), {
+                            'url': url
+                        });
+                    }else {
+                        return Q.reject(new Error("Invalid change type"));
+                    }
+                }).then(function() {
+                    that.destroy();
+                    return Q();
+                }, function(err) {
+                    logger.error(err);
+                    return Q.reject(err);
+                });
+            })
         },
 
         // Return an associated command for this change

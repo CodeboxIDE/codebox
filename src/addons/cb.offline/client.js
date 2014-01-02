@@ -6,32 +6,38 @@ define([], function() {
     var hr = codebox.require("hr/hr");
     var Command = codebox.require("models/command");
     var localfs = codebox.require("core/localfs");
+    var dialogs = codebox.require("utils/dialogs");
 
     // Menu changes list
     var menuListChanges = new Command({}, {
         'title': "Changes",
-        'type': "menu"
+        'type': "menu",
+        'flags': "disabled"
     });
     var menuChanges = menu.register("offline.changes", {
         title: "Changes",
         position: 95,
-        offline: false,
-        flags: "disabled"
+        offline: false
     }).menuSection([
         {
             'title': "Recalcul Changes",
             'offline': false,
-            'icon': "refresh",
             'action': function() {
                 return localfs.sync();
             }
         },
         {
+            'id': "changes.apply",
             'title': "Apply All Changes",
             'offline': false,
             'action': function() {
-                alert("apply all");
-                return localfs.changes.applyAll();
+                var n = localfs.changes.size();
+                if (n == 0) return;
+
+                dialogs.confirm("Do you really want to apply "+n+" changes?").then(function(yes) {
+                    if (!yes) return;
+                    return localfs.changes.applyAll();
+                });   
             }
         }
     ]).menuSection([
@@ -40,7 +46,7 @@ define([], function() {
 
     // Changes update
     localfs.changes.on("add remove reset", function() {
-        menuChanges.toggleFlag("disabled", localfs.changes.size() == 0);
+        menuListChanges.toggleFlag("disabled", localfs.changes.size() == 0);
         menuListChanges.menu.reset(localfs.changes.map(function(change) {
             return change.command();
         }));
@@ -63,17 +69,17 @@ define([], function() {
     syncMenu.menuSection(checkConnexion);
     syncMenu.menuSection([
         {
+            'id': "changes.calcul",
             'title': "Calcul Changes",
             'offline': false,
-            'icon': "refresh",
             'action': function() {
                 return localfs.sync();
             }
         },
         {
+            'id': "changes.reset",
             'title': "Reset Offline Cache",
             'offline': false,
-            'icon': "refresh",
             'action': function() {
                 return localfs.reset();
             }
