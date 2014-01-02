@@ -10,11 +10,16 @@ function setup(options, imports, register) {
     // Construct
     var manager = new HttpRPCManager(server, '/rpc/', logger);
 
+    var rpcObj = {
+        register: manager.register
+    };
+
     // Register
     register(null, {
-        "rpc": {
-            register: manager.register
-        }
+        "rpc": rpcObj,
+
+        // Alias, for retro compatibility reasons
+        "httpRPC": rpcObj
     });
 }
 
