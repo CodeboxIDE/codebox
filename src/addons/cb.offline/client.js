@@ -103,10 +103,10 @@ define([], function() {
         checkConnexion
     ]);
     
-    // Run sync every 5min
+    // Run sync every 10min
     setInterval(function() {
         localfs.autoSync();
-    }, 5*60*1000);
+    }, 10*60*1000);
 
     // Run sync everytime there is a modification
     box.on("box:watch", function() {

@@ -7,7 +7,9 @@ require([
     "core/session",
 ], function(_, hr, args, resources, app, session) {
     // Configure hr
-    hr.configure(args);
+    hr.configure(args, {
+        logLevel: args.debug ? "log" : "error"
+    });
     
     // Start the application
     session.prepare().then(function() {

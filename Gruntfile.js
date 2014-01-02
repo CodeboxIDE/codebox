@@ -81,7 +81,8 @@ module.exports = function (grunt) {
                     }
                 },
                 'args': {
-                    'version': pkg.version
+                    'version': pkg.version,
+                    'debug': process.env.CLIENT_DEBUG != null
                 },
                 'options': {
                     

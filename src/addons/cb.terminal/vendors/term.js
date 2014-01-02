@@ -133,8 +133,6 @@ var normal = 0
 function Terminal(options) {
   var self = this;
 
-  console.log("build term with ", options);
-
   if (!(this instanceof Terminal)) {
     return new Terminal(arguments[0], arguments[1], arguments[2]);
   }
