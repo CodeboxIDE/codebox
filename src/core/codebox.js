@@ -52,12 +52,7 @@ var start = function(config) {
             'max': parseInt(process.env.WORKSPACE_USERS_MAX || 100)
         },
         'proc': {
-            'urlPattern': (
-                process.env.CODEBOX_WEB_URL_PATTERN ||
-                process.env.CODEBOXIO_BOXID ?
-                    'http://web-%d.' + process.env.CODEBOXIO_BOXID + '.vm1.dynobox.io' :
-                    'http://localhost:%d'
-            )
+            'urlPattern': process.env.WORKSPACE_WEB_URL_PATTERN || 'http://localhost:%d'
         },
         'server': {
             'port': parseInt(process.env.PORT || 8000, 10)
@@ -154,7 +149,12 @@ var start = function(config) {
             max: process.env.RUN_PORTS_MAX,
         },
         "./cb.run.file",
-        "./cb.run.project",
+
+        {
+            packagePath: "./cb.run.project",
+            
+            urlPattern: config.proc.urlPattern
+        },
 
         // Socket.io
         "./cb.socket.io",

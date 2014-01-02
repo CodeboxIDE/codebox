@@ -35,6 +35,9 @@ cli.command('run [args]')
             },
             'webhook': {
                 'authToken': this.key
+            },
+            'proc': {
+                'urlPattern': 'http://web-%d.' + this.box + '.vm1.dynobox.io'
             }
         });
     }

@@ -5,6 +5,7 @@ define([], function() {
     var box = codebox.require("core/box");
     var menu = codebox.require("core/commands/menu");
     var dialogs = codebox.require("utils/dialogs");
+    var alerts = codebox.require("utils/alerts");
     var Command = codebox.require("models/command");
 
     // HTTP Ports
@@ -45,7 +46,8 @@ define([], function() {
         ]
     }, function() {
         box.run().then(function(runInfo) {
-            dialogs.alert("Your project is running on port "+runInfo.port, "Your application is now running with the environment variable PORT define to "+runInfo.port+". You can access this application using the 'Run' menu.").fin(updatePorts);
+            alerts.show("Your project is running <a target='_blank' href='"+runInfo.url+"'>on port "+runInfo.port+"</a>", 5000);
+            updatePorts();
         });
     });
 

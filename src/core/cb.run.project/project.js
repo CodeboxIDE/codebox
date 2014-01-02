@@ -7,7 +7,7 @@ var path = require('path');
 var utils = require('../utils');
 
 
-function ProjectRunner(events, workspace, shells, run_ports, project_detect) {
+function ProjectRunner(events, workspace, shells, run_ports, project_detect, urlPattern) {
     // Id for port allocation and stuff
     this.id = 'project';
 
@@ -18,6 +18,8 @@ function ProjectRunner(events, workspace, shells, run_ports, project_detect) {
 
     this.run_ports = run_ports;
     this.project_detect = project_detect;
+
+    this.urlPattern = urlPattern;
 
     _.bindAll(this);
 }
@@ -87,7 +89,8 @@ ProjectRunner.prototype.runScript = function(projectType, port) {
     return {
         shellId: shellId,
         type: projectType,
-        port: port
+        port: port,
+        url: this.urlPattern.replace("%d", port)
     };
 };
 
