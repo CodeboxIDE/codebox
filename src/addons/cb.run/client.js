@@ -45,7 +45,7 @@ define([], function() {
         ]
     }, function() {
         box.run().then(function(runInfo) {
-            console.log(runInfo);
+            dialogs.alert("Your project is running on port "+runInfo.port, "Your application is now running with the environment variable PORT define to "+runInfo.port+". You can access this application using the 'Run' menu.").fin(updatePorts);
         });
     });
 
