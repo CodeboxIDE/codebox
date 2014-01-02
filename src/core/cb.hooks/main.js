@@ -1,7 +1,8 @@
+// Requires
 var _ = require("underscore");
 var Q = require('q');
 var request = require('request');
-var qfail = require('../utils').qfail;
+
 
 function setup(options, imports, register) {
 	var logger = imports.logger.namespace("hooks");
@@ -12,7 +13,7 @@ function setup(options, imports, register) {
 		'auth': function(data) {
 			if (!data.email
 			|| !data.token) {
-				return qfail(new Error("Need 'token' and 'email' for auth hook"));
+				return Q.fail(new Error("Need 'token' and 'email' for auth hook"));
 			}
 
 			var userId = _.uniqueId("user");
@@ -47,7 +48,7 @@ function setup(options, imports, register) {
 		if (baseHooks[hook] == null) {
 			var err = new Error("Error trying to use inexistant hook: "+hook);
 			logger.exception(err, false);
-			return qfail(err);
+			return Q.fail(err);
 		}
 
 		var handler = baseHooks[hook];
@@ -80,13 +81,13 @@ function setup(options, imports, register) {
 		} else {
 			var err = new Error("Not a valid hook");
 			logger.exception(err, false);
-			return qfail();
+			return Q.fail();
 		}
 	};
 
     register(null, {
 	    'hooks': {
-			'use': useHook 
+			'use': useHook
 		}
     });
 };

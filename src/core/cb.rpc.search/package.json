@@ -9,7 +9,7 @@
         "provides": [],
         "consumes": [
             "search",
-            "httpRPC"
+            "rpc"
         ]
     }
 }

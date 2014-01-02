@@ -143,7 +143,18 @@ var start = function(config) {
         "./cb.shells.stream",
 
         // Detect project types
-        "./cb.projectType",
+        "./cb.project.detect",
+
+        // Running code/projects
+        {
+            packagePath: "./cb.run.ports",
+
+            // These are optional, harbor has sane defaults
+            min: process.env.RUN_PORTS_MIN,
+            max: process.env.RUN_PORTS_MAX,
+        },
+        "./cb.run.file",
+        "./cb.run.project",
 
         // Socket.io
         "./cb.socket.io",
@@ -187,6 +198,7 @@ var start = function(config) {
         "./cb.rpc.search",
         "./cb.rpc.addons",
         "./cb.rpc.proc",
+        "./cb.rpc.run",
 
         // Now start the damn server
         "./cb.main",

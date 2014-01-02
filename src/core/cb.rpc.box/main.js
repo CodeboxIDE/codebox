@@ -4,13 +4,13 @@ var BoxRPCService = require('./service').BoxRPCService;
 
 function setup(options, imports, register) {
     // Import
-    var httpRPC = imports.httpRPC;
+    var rpc = imports.rpc;
     var workspace = imports.workspace;
 
     var service = new BoxRPCService(workspace);
 
     // Register RPC
-    httpRPC.register('/box', service, {
+    rpc.register('/box', service, {
         auth: false
     });
 

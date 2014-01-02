@@ -58,13 +58,6 @@ function qnode(func) {
     };
 }
 
-// Create a failed promise from an error
-function qfail(error) {
-    var d = Q.defer();
-    d.reject(error);
-    return d.promise;
-}
-
 // Takes an object with methods
 // and builds a new object
 // with the same methods (bound to the source)
@@ -123,7 +116,6 @@ function startsWith(str, toCheck) {
 // Exports
 exports.exec = exec;
 exports.qnode = qnode;
-exports.qfail = qfail;
 exports.execFile = execFile;
 exports.constant = constant;
 exports.methodObj = methodObj;

@@ -1,5 +1,5 @@
 {
-    "name": "cb.rpc.users",
+    "name": "cb.rpc.run",
     "version": "0.0.1",
 
     "main": "./main.js",
@@ -9,7 +9,11 @@
         "provides": [],
         "consumes": [
             "rpc",
-            "workspace"
+            "workspace",
+
+            "run_file",
+            "run_project",
+            "run_ports"
         ]
     }
 }

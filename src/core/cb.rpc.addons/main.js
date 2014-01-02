@@ -4,14 +4,14 @@ var AddonsRPCService = require('./service').AddonsRPCService;
 
 function setup(options, imports, register) {
     // Import
-    var httpRPC = imports.httpRPC;
+    var rpc = imports.rpc;
     var workspace = imports.workspace;
     var addons = imports.addons;
 
     var service = new AddonsRPCService(addons, workspace);
 
     // Register RPC
-    httpRPC.register('/addons', service);
+    rpc.register('/addons', service);
 
     // Register
     register(null, {});

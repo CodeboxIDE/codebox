@@ -2,8 +2,6 @@
 var Q = require('q');
 var _ = require('underscore');
 
-var qfail = require('../utils').qfail;
-
 
 function GitRPCService(repo, events) {
     this.repo = repo;
@@ -51,9 +49,9 @@ GitRPCService.prototype.commit = function(args, meta) {
     var files = args.files || [];
     var name = meta.user.name;
     var email = meta.user.email;
-    
+
     if(!_.all([msg, files, name, email])) {
-        return qfail(new Error("Could not commit because arguments are missing and/or invalid"));
+        return Q.fail(new Error("Could not commit because arguments are missing and/or invalid"));
     }
 
     var that = this;
@@ -94,17 +92,17 @@ GitRPCService.prototype.branches = function(args) {
 };
 
 GitRPCService.prototype.branch_create = function(args) {
-    if (!args.name) return qfail(new Error("Need a name to create a branch"));
+    if (!args.name) return Q.fail(new Error("Need a name to create a branch"));
     return this.repo.create_branch(args.name);
 };
 
 GitRPCService.prototype.checkout = function(args) {
-    if (!args.ref) return qfail(new Error("Need a referance (ref) to checkout"));
+    if (!args.ref) return Q.fail(new Error("Need a referance (ref) to checkout"));
     return this.repo.checkout(args.ref);
 };
 
 GitRPCService.prototype.branch_delete = function(args) {
-    if (!args.name) return qfail(new Error("Need a name to delete a branch"));
+    if (!args.name) return Q.fail(new Error("Need a name to delete a branch"));
     return this.repo.delete_branch(args.name);
 };
 

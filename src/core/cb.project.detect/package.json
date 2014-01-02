@@ -1,14 +1,15 @@
 {
-    "name": "cb.rpc.users",
+    "name": "cb.project.detect",
     "version": "0.0.1",
 
     "main": "./main.js",
     "private": true,
 
     "plugin": {
-        "provides": [],
+        "provides": [
+            "project_detect"
+        ],
         "consumes": [
-            "rpc",
             "workspace"
         ]
     }

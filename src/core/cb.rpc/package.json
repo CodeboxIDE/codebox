@@ -7,7 +7,7 @@
 
     "plugin": {
         "provides": [
-            "httpRPC"
+            "rpc"
         ],
         "consumes": [
             "logger",

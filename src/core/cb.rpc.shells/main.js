@@ -5,13 +5,13 @@ var ShellsRPCService = require('./service').ShellsRPCService;
 function setup(options, imports, register) {
     // Import
     var shells = imports.shells;
-    var httpRPC = imports.httpRPC;
+    var rpc = imports.rpc;
 
     // Service
-    var service = new ShellsRPCService(shells.manager);
+    var service = new ShellsRPCService(shells);
 
     // Register RPC
-    httpRPC.register('shells', service);
+    rpc.register('shells', service);
 
     // Register
     register(null, {

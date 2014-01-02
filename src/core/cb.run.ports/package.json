@@ -1,5 +1,5 @@
 {
-    "name": "cb.rpc.shells",
+    "name": "cb.run.ports",
     "version": "0.0.1",
 
     "main": "./main.js",
@@ -7,11 +7,8 @@
 
     "plugin": {
         "provides": [
-            "shells_rpc"
+            "run_ports"
         ],
-        "consumes": [
-            "shells",
-            "rpc"
-        ]
+        "consumes": []
     }
 }

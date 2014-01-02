@@ -1,5 +1,5 @@
 {
-    "name": "cb.rpc.shells",
+    "name": "cb.run.project",
     "version": "0.0.1",
 
     "main": "./main.js",
@@ -7,11 +7,16 @@
 
     "plugin": {
         "provides": [
-            "shells_rpc"
+            "run_project"
         ],
         "consumes": [
+            "events",
+            "workspace",
+
             "shells",
-            "rpc"
+
+            "run_ports",
+            "project_detect"
         ]
     }
 }

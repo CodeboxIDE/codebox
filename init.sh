@@ -78,7 +78,7 @@ function setup_git () {
         return
     fi
 
-    if [ ! $GIT_URL ]; then
+    if [ ! "$GIT_URL" ]; then
         echo "Skipping setup_git because no GIT_URL given ..."
         echo "Init empty git repository in workspace ..."
         git init ${WORKSPACE}
@@ -117,7 +117,7 @@ function setup_env () {
 
 function setup_python () {
     echo "Callling setup_python ..."
-    if [ -f ${PYTHON_ACTIVATE} ]; then
+    if [ -f "${PYTHON_ACTIVATE}" ]; then
         source "${PYTHON_ACTIVATE}"
         return
     fi;

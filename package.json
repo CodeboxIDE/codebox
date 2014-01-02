@@ -10,7 +10,6 @@
         "event-stream": "3.0.11",
         "readable-stream": "1.0.2",
         "request": "2.27.0",
-        "grunt": "~0.4.2",
         "hr.js": "0.4.0",
         "commander": "1.1.1",
         "googlediff": "0.1.0",
@@ -22,7 +21,7 @@
         "socket.io-stream": "git+https://github.com/nkzawa/socket.io-stream.git#aab13aabe9474a45f7af478eedf41318f53271de",
         "loadfire": "1.3.4",
         "shux": "0.2.0",
-        "vfs-http-adapter": "git+https://github.com/AaronO/vfs-http-adapter.git#a85e9ff150d53b620d68ff8a5ab80728989a7069",
+        "vfs-http-adapter": "git+https://github.com/AaronO/vfs-http-adapter.git#6c9934e4f2da7886310397170b6ebaf745833936",
         "vfs-local": "0.3.13",
         "watchr": "2.4.7",
         "gittle": "0.1.2",
@@ -37,13 +36,17 @@
         "tar": "0.1.19",
 
         "grunt": "0.4.2",
-        "grunt-cli": "0.1.11"
+        "grunt-cli": "0.1.11",
+
+        "harbor": "0.2.0",
+
+        "qpatch": "0.0.3"
     },
     "bin": {
         "codebox": "./bin/codebox.js"
     },
     "devDependencies": {
-        
+
     },
     "contributors": [
         {
