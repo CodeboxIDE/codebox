@@ -32,7 +32,7 @@ function setup(options, imports, register) {
 
 		// Store and valid user settings
 		'settings': function(data) {
-			return Q(data);
+			return Q(data.settings);
 		},
 
 		// Valid installation of an addon
