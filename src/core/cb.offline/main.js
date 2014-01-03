@@ -3,6 +3,8 @@ var glob = require("glob");
 var path = require('path');
 var Q = require('q');
 var Manifest = require('./manifest').Manifest;
+var pkg = require('../../../package.json');
+var crypto = require('cryptojs').Crypto;
 
 function setup(options, imports, register) {
     var server = imports.server;
@@ -18,16 +20,17 @@ function setup(options, imports, register) {
     server.app.get("/manifest.appcache", function(req, res) {
         res.header("Content-Type", "text/cache-manifest");
 
+        addons.list().then(function(installedAddons) {
+            var revision = pkg.version+"-"+crypto.MD5(_.map(installedAddons, function(addon, addonName) {
+                return addonName;
+            }).sort().join("-")).toString();
 
-        manifest.clear().then(function() {
+            // Clear manifest
+            return manifest.clear(revision);
+        }).then(function() {
             // Add network
             manifest.add("NETWORK", [
-                '*',
-               /* '/rpc',
-                '/vfs',
-                '/export',
-                '/socket.io',
-                '/proxy' */
+                '*'
             ]);
 
             // Add static files

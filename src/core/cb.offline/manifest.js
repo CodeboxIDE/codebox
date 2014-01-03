@@ -4,9 +4,11 @@ var path = require('path');
 var Q = require('q');
 
 var Manifest = function() {
+    this.revision = 0;
+    
     // Regenerate manifest
-    this.clear = function(regenerate) {
-        if (regenerate) this.startTime = Date.now();
+    this.clear = function(revision) {
+        if (revision) this.revision = revision;
         this.sections = {
             'CACHE': {},
             'NETWORK': {},
@@ -52,7 +54,7 @@ var Manifest = function() {
     this.content = function() {
         var lines = [
             "CACHE MANIFEST",
-            "# Revision "+this.startTime
+            "# Revision "+this.revision
         ];
 
         _.each(this.sections, function(content, section) {
@@ -65,7 +67,7 @@ var Manifest = function() {
         return Q(lines.join("\n"));
     };
 
-    this.clear(true);
+    this.clear(Date.now());
 };
 
 exports.Manifest = Manifest;
