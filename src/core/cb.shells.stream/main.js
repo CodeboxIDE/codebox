@@ -27,38 +27,44 @@ ShellSocketManager.prototype.handleStream = function(stream, shellId, opts) {
     );
 
     // Initialize
-    shell
-    .init()
-    .then(function(shell) {
-        // Shell is ready
-    });
-    return stream;
+    return shell.init();
 };
 
 
 function setup(options, imports, register) {
     // Import
-    var shellManager = imports.shells;
+    var shells = imports.shells;
     var io = imports.socket_io.io;
     var events = imports.events;
     var shells_rpc = imports.shells_rpc;
 
-    var socketManager = new ShellSocketManager(shellManager);
+    var socketManager = new ShellSocketManager(shells);
+
+    events.on('shell.spawn', function(data) {
+        return shells.shells[data.shellId].ps.pause();
+    });
+
+    events.on('shell.open', function(data) {
+        shells.shells[data.shellId].ps.resume();
+    });
 
     // Construct
     io.of('/stream/shells').on('connection', function(socket) {
         ss(socket).on('shell.open', function(stream, data) {
-            events.emit('shell.open', {
-                'shellId': data.shellId
-            });
-
             // Default options
             data.opts = _.defaults(data.opts, {
                 'arguments': []
             });
 
-            // Open up shell
-            socketManager.handleStream(stream, data.shellId, data.opts);
+            // Connect stream to socket.io
+            // then resume shell's stream
+            return socketManager.handleStream(stream, data.shellId, data.opts)
+            .then(function(shell) {
+                // Stream is now hooked up
+                events.emit('shell.open', {
+                    'shellId': data.shellId
+                });
+            });
         });
 
         socket.on('shell.destroy', function (data) {
