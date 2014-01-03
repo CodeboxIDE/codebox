@@ -45,9 +45,11 @@ define([], function() {
             "r"
         ]
     }, function() {
-        box.run().then(function(runInfo) {
+        return box.run().then(function(runInfo) {
             alerts.show("Your project is running <a target='_blank' href='"+runInfo.url+"'>on port "+runInfo.port+"</a>", 5000);
             updatePorts();
+        }, function(err) {
+            dialogs.alert("Error running this project", "An error occurred when trying to run this project: "+(err.message || err));
         });
     });
 
