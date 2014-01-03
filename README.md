@@ -1,35 +1,18 @@
-![Image](../master/docs/assets/logo.png?raw=true)
+# Codebox
+> "Open source cloud-based web IDE."
 
-Codebox is a complete and extensible Cloud IDE. It cans runs on any unix machines (Linux, Mac OS X). It is an open source component of [Codebox.io](https://www.codebox.io) (Cloud IDE as a Service).
+Codebox is a complete and extensible Cloud IDE. It cans runs on any unix machines (Linux, Mac OS X). It is an open source component of [codebox.io](https://www.codebox.io) (Cloud IDE as a Service).
+
+It's easy to run the IDE on your desktop (Linux and Mac), your server or the cloud. You can use [codebox.io](https://www.codebox.io) to host and manage the IDE for you and let you focus on 
+
+Codebox is build only with web technologies: node.js, javasctipt, html and less. The IDE is also build with a very extensible architecture, it lets you build your own features and functionnalities with an add-on system.
+
+**Questions:** Feel free to ask any questions or signal problems by adding issues.
+
+**News:** You can get update about Codebox on [Twitter](https://twitter.com/CodeboxIO).
+
+**Usage:** Install Codebox using NPM: ```npm install -g codebox```, and use it with: ```codebox run ./myworkspace```
+
+**Documentation:** Complete documentation can be found in [docs](https://github.com/FriendCode/codebox/blob/master/docs).
 
 ![Image](../master/docs/assets/base.png?raw=true)
-
-## Why is Codebox great?
-
-* Easy to run on your desktop, server or cloud
-* Build with web technologies: javascript, less, node.js
-* Natively collaborative
-* Extensible Architecture
-* Offline mode
-
-## How to use it?
-
-#### Mac Application
-
-Coming soon
-
-#### Command Line
-
-First of all install codebox on your machine using npm:
-
-```
-$ npm install -g codebox
-```
-
-You can now run Codebox into a directory (Codebox can only be run on GIT repository):
-
-```
-$ codebox run ./myworkspace
-```
-
-Complete documentation can be found in [docs](https://github.com/FriendCode/codebox/blob/master/docs).
