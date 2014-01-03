@@ -22,7 +22,7 @@ function setup(options, imports, register) {
 
         addons.list().then(function(installedAddons) {
             var revision = pkg.version+"-"+crypto.MD5(_.map(installedAddons, function(addon, addonName) {
-                return addonName;
+                return addonName+":"+addon.infos.version;
             }).sort().join("-")).toString();
 
             // Clear manifest
