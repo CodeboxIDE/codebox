@@ -66,8 +66,11 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
             });
 
             // Application manifest
-            $(window.applicationCache).bind('checking downloading', function(e) {
-                loading.show();
+            $(window.applicationCache).bind('downloading', function(e) {
+                loading.show("Downloading new application cache");
+            });
+            $(window.applicationCache).bind('checking', function(e) {
+                loading.show("Checking new application cache version");
             });
             $(window.applicationCache).bind('noupdate cached obsolete error', function(e) {
                 loading.stop();
@@ -141,7 +144,7 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
 
                     // Check update
                     hr.Offline.checkUpdate();
-                }));
+                }), "Loading add-ons");
             }
             return Application.__super__.finish.apply(this, arguments);
         },

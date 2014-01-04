@@ -12,6 +12,7 @@ function setup(options, imports, register) {
     var logger = imports.logger.namespace("offline");
 
     var manifest = new Manifest();
+    var startTime = Date.now();
 
     // Disable auth for the manifest file
     server.disableAuth("/manifest.appcache");
@@ -24,6 +25,8 @@ function setup(options, imports, register) {
             var revision = pkg.version+"-"+crypto.MD5(_.map(installedAddons, function(addon, addonName) {
                 return addonName+":"+addon.infos.version;
             }).sort().join("-")).toString();
+
+            if (options.dev) revision = revision+"-"+startTime;
 
             // Clear manifest
             return manifest.clear(revision);

@@ -170,7 +170,11 @@ var start = function(config) {
         "./cb.export",
 
         // Offline manifest
-        "./cb.offline",
+        {
+            packagePath: "./cb.offline",
+            
+            dev: config.dev
+        },
 
         // Search
         "./cb.search",
