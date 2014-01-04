@@ -5,5 +5,3 @@ RUN apt-get -y update
 
 RUN apt-get install -y dartsdk
 
-# Default init command
-CMD su codebox /opt/codebox/init.sh

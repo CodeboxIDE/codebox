@@ -13,5 +13,3 @@ RUN virtualenv /opt/virtualenv; chown -R codebox:codebox /opt/virtualenv
 # Install IPython
 RUN bash -c "su codebox bash -c 'source /opt/virtualenv/bin/activate && pip install ipython'"
 
-# Default init command
-CMD su codebox /opt/codebox/init.sh

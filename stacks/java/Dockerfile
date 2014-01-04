@@ -19,6 +19,4 @@ RUN apt-get install -y --no-install-recommends openjdk-7-jdk
 # Install Maven
 RUN apt-get install -y maven
 
-# Default init command
-CMD su codebox /opt/codebox/init.sh
 

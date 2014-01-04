@@ -51,8 +51,6 @@ RUN gpasswd -a codebox sudo
 # Build client
 #RUN cd /opt/codebox; node_modules/.bin/hr.js -d client build
 
-# Default init command
-CMD su codebox /opt/codebox/init.sh
 
 # Needed Volumes
 VOLUME ["/opt/codebox"]
