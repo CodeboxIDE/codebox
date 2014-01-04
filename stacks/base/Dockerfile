@@ -40,6 +40,9 @@ RUN passwd -d codebox
 # Make user sudo capable (add it to the "sudo" group)
 RUN gpasswd -a codebox sudo
 
+# Install SSH server
+RUN "apt-get -y install openssh-server"
+
 # Add codebox's source code to the container
 # "./buildstack.sh base" will generate a local source folder for this
 # That is clean of temporary folders and node_moudles
