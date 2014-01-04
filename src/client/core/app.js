@@ -66,11 +66,16 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
             });
 
             // Application manifest
-            $(window.applicationCache).bind('downloading', function(e) {
-                loading.show("Downloading new application cache");
+            $(window.applicationCache).bind('downloading progress', function(e) {
+                var progress = "";
+                if (e && e.originalEvent && e.originalEvent.lengthComputable) {
+                    progress = Math.round(100*e.originalEvent.loaded/e.originalEvent.total) + "%";
+                }
+
+                loading.show("Downloading new version "+progress);
             });
             $(window.applicationCache).bind('checking', function(e) {
-                loading.show("Checking new application cache version");
+                loading.show("Checking for a new version");
             });
             $(window.applicationCache).bind('noupdate cached obsolete error', function(e) {
                 loading.stop();
