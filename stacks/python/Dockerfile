@@ -1,4 +1,4 @@
-FROM codebox/codebox.base:latest
+FROM codebox/codebox.base
 
 # Install pip/virtualenv
 RUN apt-get -y install python-virtualenv python-pip

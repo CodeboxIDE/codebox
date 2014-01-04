@@ -1,4 +1,4 @@
-FROM codebox/codebox.base:latest
+FROM codebox/codebox.base
 
 # Install lua interpreter
 RUN apt-get install -y luajit

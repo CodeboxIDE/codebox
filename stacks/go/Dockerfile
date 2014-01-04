@@ -1,3 +1,3 @@
-FROM codebox/codebox.base:latest
+FROM codebox/codebox.base
 
 

@@ -1,4 +1,4 @@
-FROM codebox/codebox.base:latest
+FROM codebox/codebox.base
 
 # OpenJDK and JRE runtime
 RUN apt-get install -y openjdk-7-jre-headless
