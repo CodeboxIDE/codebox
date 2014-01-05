@@ -17,7 +17,7 @@ function setup(options, imports, register) {
     // Disable auth for the manifest file
     server.disableAuth("/manifest.appcache");
 
-    // Gneerate manifest
+    // Generate manifest
     server.app.get("/manifest.appcache", function(req, res) {
         res.header("Content-Type", "text/cache-manifest");
 
