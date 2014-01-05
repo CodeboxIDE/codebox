@@ -17,6 +17,12 @@
         font-size: @tabFontSize;
         line-height: (@tabHeight - (2*@tabInnerVPadding));
         min-width: 100px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        position: relative;
+        padding-right: 28px;
+        max-width: 330px;
 
         .state {
             margin-right: 5px;
@@ -46,6 +52,8 @@
             text-align: center;
             margin-top: 3px;
             color: transparent;
+            position: absolute;
+            right: 8px;
         }
     }
 

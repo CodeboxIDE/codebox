@@ -2,14 +2,16 @@ define([
     "q",
     "underscore",
     "hr/hr",
+    'core/backends/rpc',
     "core/backends/vfs",
+    'models/command',
     "utils/url",
     "utils/languages",
     "utils/filesync",
     "utils/dialogs",
     "utils/uploader",
     "core/operations"
-], function(Q, _, hr, vfs, Url, Languages, FileSync, Dialogs, Uploader, operations) {
+], function(Q, _, hr, rpc, vfs, Command, Url, Languages, FileSync, dialogs, Uploader, operations) {
     var logging = hr.Logger.addNamespace("files");
 
     if (typeof String.prototype.endsWith !== 'function') {
@@ -536,6 +538,27 @@ define([
             }));
         },
 
+        /*
+         * Run the file
+         */
+        run: function() {
+            var path = this.path();
+            return rpc.execute("run/file", {
+                'file': path
+            }).then(function(runInfos) {
+                Command.run("terminal.open", runInfos.shellId);
+                return Q(runInfos);
+            }, function(err) {
+                dialogs.alert("Error running this file", "An error occurred when trying to run this file ("+path+"): "+(err.message || err));
+            });
+        },
+
+        // (action) Run the file
+        actionRun: function(e) {
+            if (e) e.preventDefault();
+            return this.run();  
+        },
+
         // (action) Refresh files list
         actionRefresh: function(e) {
             if (e) e.preventDefault();
@@ -546,7 +569,7 @@ define([
         actionCreate: function(e) {
             var that = this;
             if (e) e.preventDefault();
-            return Dialogs.prompt("Create a new file", "", "newfile.txt").then(function(name) {
+            return dialogs.prompt("Create a new file", "", "newfile.txt").then(function(name) {
                 if (name.length > 0) {
                     return that.createFile(name);
                 }
@@ -558,7 +581,7 @@ define([
         actionMkdir: function(e) {
             var that = this;
             if (e) e.preventDefault();
-            Dialogs.prompt("Create a new directory", "", "newdirectory").then(function(name) {
+            dialogs.prompt("Create a new directory", "", "newdirectory").then(function(name) {
                 if (name.length > 0) {
                     return that.mkdir(name);
                 }
@@ -571,7 +594,7 @@ define([
             var that = this;
             if (e) e.preventDefault();
 
-            return Dialogs.prompt("Rename", "", this.get("name")).then(function(name) {
+            return dialogs.prompt("Rename", "", this.get("name")).then(function(name) {
                 if (name.length > 0) {
                     return that.rename(name);
                 }
@@ -584,7 +607,7 @@ define([
             var that = this;
             if (e) e.preventDefault();
 
-            return Dialogs.confirm("Do your really want to remove '"+_.escape(this.get("name"))+"'?").then(function(st) {
+            return dialogs.confirm("Do your really want to remove '"+_.escape(this.get("name"))+"'?").then(function(st) {
                 if (st != true) return Q.reject(new Error("No confirmation"));
                 return that.remove();
             });
@@ -750,6 +773,16 @@ define([
                         'title': "Download",
                         'action': function() {
                             that.actionDownload();
+                        }
+                    });
+                    menu.push({ 'type': "divider" });
+                    menu.push({
+                        'id': "file.run",
+                        'type': "action",
+                        'title': "Run",
+                        'offline': false,
+                        'action': function() {
+                            that.actionRun();
                         }
                     });
                 }

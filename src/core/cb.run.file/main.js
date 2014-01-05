@@ -28,6 +28,10 @@ function fileRun(shells, filename) {
     var _shellId = shellId(filename);
     var command = runCommand(filename);
 
+    if (!command) {
+        return Q.reject(new Error('No command found to run this file'));
+    }
+
     if(_.has(shells.shells, shellId)) {
         return Q.reject(new Error('Command is already running'));
     }
