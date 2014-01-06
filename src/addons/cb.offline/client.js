@@ -102,6 +102,9 @@ define([], function() {
     }).menuSection([
         checkConnexion
     ]);
+
+    // Enable sync
+    localfs.enableSync();
     
     // Run sync every 10min
     setInterval(function() {

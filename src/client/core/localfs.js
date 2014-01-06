@@ -13,6 +13,7 @@ define([
     // Base folder for localfs
     var base = "/";
     var _isInit = false;
+    var _syncIsEnable = false;
     var changes = new Changes();
 
     // Constant mime type for a directory
@@ -54,6 +55,10 @@ define([
     var initFs = function(baseDir) {
         base = "/"+baseDir;
         return Q();
+    };
+
+    var enableSync = function() {
+        _syncIsEnable = true;
     };
 
     var prepareFs = function() {
@@ -228,6 +233,8 @@ define([
         var box = require("core/box");
         changes.reset([]);
 
+        if (!_syncIsEnable) return Q(changes);
+
         var addChange = function(path, type, args) {
             logger.log("change:",type,path);
             changes.add(_.extend(args || {}, {
@@ -341,6 +348,8 @@ define([
     var syncFileBoxToLocal = needFsReady(function() {
         var box = require("core/box");
 
+        if (!_syncIsEnable) return Q(false);
+
         var doSync = function(fp) {
             var path = fp.path();
             if (path == "/.git") return Q();
@@ -391,6 +400,8 @@ define([
         options = _.defaults({}, options || {}, {
 
         });
+
+        if (!_syncIsEnable) return Q.reject(new Error("Offline sync is not enable"));
 
         var previousChanges = changes.size();
 
@@ -453,6 +464,7 @@ define([
         'autoSync': function() {
             return autoSync();
         },
+        'enableSync': enableSync,
         'filer': filer,
         'syncDuration': syncDuration
     };
