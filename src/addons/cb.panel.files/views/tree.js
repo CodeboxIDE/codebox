@@ -116,7 +116,6 @@ define([
         // Render the files tree
         render: function() {
             var that = this;
-            this.$el.empty();
             this.$el.toggleClass("root", this.model.isRoot());
 
             // Context menu
