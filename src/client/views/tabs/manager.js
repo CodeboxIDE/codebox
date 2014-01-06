@@ -239,19 +239,28 @@ define([
             // So keep the current tab as active
             if(tab.tabid !== this.activeTab) return this.activeTab;
 
-            var tabs = this.getSectionTabs(tab.tab.section);
-            var index = tabs.indexOf(tab);
-            // Get all other tabs except the current one
-            var otherTabs = _.filter(tabs, function (t) {
-                return t.tabid !== tab.tabid;
-            });
+            var selectTab = function(tabs) {
+                var index = tabs.indexOf(tab);
 
-            // No other tabs
-            if(!otherTabs.length) {
-                return null;
+                // Get all other tabs except the current one
+                var otherTabs = _.filter(tabs, function (t) {
+                    return t.tabid !== tab.tabid;
+                });
+
+                // No other tabs
+                if(!otherTabs.length) {
+                    return null;
+                }
+
+                return otherTabs[_.max([0, index - 1])].tabid;
             }
 
-            return otherTabs[_.max([0, index - 1])].tabid;
+            var tabs = this.getSectionTabs(tab.tab.section);
+            
+            var pTab = selectTab(tabs);
+            if (!pTab) pTab = selectTab(_.values(this.tabs));
+
+            return pTab;
         },
 
         // Return active tab for a section
