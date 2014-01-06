@@ -83,10 +83,28 @@ function setup(options, imports, register, app) {
     };
 
     // Run an operation for a collection fo addons
-    var runAddonsOperation = function(operation) {
+    var runAddonsOperation = function(operation, options) {
+        options = _.defaults(options || {}, {
+            failOnError: true
+        });
+
+        var failedAddons = [];
+
         return function(addons) {
-            return Q.all(_.map(addons, operation)).then(function() {
-                return Q(addons);
+            return Q.all(_.map(addons, function(addon) {
+                return operation(addon).then(function() {
+                    return addon;
+                }, function(err) {
+                    if (options.failOnError) {
+                        return Q.reject(err);
+                    } else {
+                        logger.error("ignore error", err);
+                        failedAddons.push(addon.infos.name);
+                        return Q();
+                    }
+                });
+            })).then(function() {
+                return Q(_.omit(addons, failedAddons));
             });
         };
     };
@@ -229,12 +247,18 @@ function setup(options, imports, register, app) {
     }).then(runAddonsOperation(function(addon) {
         // Install node dependencies
         return addon.installDependencies();
+    }, {
+        failOnError: false
     })).then(runAddonsOperation(function(addon) {
         // Optimized addons
         return addon.optimizeClient(options.dev);
+    }, {
+        failOnError: false
     })).then(runAddonsOperation(function(addon) {
         // Start addons
         return addon.start(app);
+    }, {
+        failOnError: false
     })).then(function() {
         logger.log("Addons are ready");
         return {

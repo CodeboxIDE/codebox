@@ -139,7 +139,11 @@ var Addon = function(logger, _rootPath, options) {
 
         // Run optimization
         logger.log("Optimizing", this.infos.name);
-        return exec(command).then(function() {
+        return Q.nfcall(fs.unlink, output).fail(function() {
+            return Q();
+        }).then(function() {
+            return exec(command)
+        }).then(function() {
             logger.log("Finished", that.infos.name, "optimization");
             return Q(that);
         }, function(err) {
