@@ -36,6 +36,9 @@ define([
             });
             this.root.getByPath("/");
 
+            // Active file
+            this.activeFile = "/";
+
             // Connect to events
             this.listenEvents();
 
@@ -280,6 +283,25 @@ define([
         procHttp: function() {
             return rpc.execute("proc/http");
         },
+
+        /*
+         *  Set active file
+         */
+        setActiveFile: function(path) {
+            if (!_.isString(path)) {
+                if (path.isNewfile()) {
+                    path = null; 
+                } else {
+                    path = path.path();
+                }
+            }
+
+            if (this.activeFile == path) return;
+
+            this.activeFile = path;
+            this.trigger("file.active", this.activeFile);
+            return this;
+        }
     });
     
 

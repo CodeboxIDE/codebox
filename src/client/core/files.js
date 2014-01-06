@@ -56,12 +56,15 @@ define([
                     tab.view.load(path, handler);
                 } else {
                     // Add new tab
-                    tabs.add(FileTab, {
+                    var tab = tabs.add(FileTab, {
                         "model": file,
                         "handler": handler
                     }, {
                         "uniqueId": uniqueId,
                         "type": "file",
+                    });
+                    tab.on("tab:state", function(state) {
+                        if (state) box.setActiveFile(file);
                     });
                 }
             };
@@ -91,6 +94,7 @@ define([
         if (!file.isNewfile()) recentFiles.add(file);
 
         // Open
+        box.setActiveFile(file);
         return handler.open(file);
     }
 

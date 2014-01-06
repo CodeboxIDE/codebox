@@ -17,6 +17,7 @@ define([
     var settings = codebox.require("core/settings");
     var Command = codebox.require("models/command");
     var themes = codebox.require("core/themes");
+    var box = codebox.require("core/box");
 
     var logging = hr.Logger.addNamespace("editor");
     var userSettings = user.settings("editor");

@@ -32,6 +32,10 @@ define([
             // Context menu
             ContextMenu.add(this.$el, this.model.contextMenu());
 
+            box.on("file.active", function(path) {
+                this.$el.toggleClass("active", this.model.path() == path);
+            }, this);
+
             return this;
         },
 
