@@ -429,7 +429,8 @@ define([
      */
     var autoSync = null;
     var updateAutoSync = function() {
-        logger.log("sync take ", syncDuration/1000,"seconds");
+        syncDuration = _.max([syncDuration, 5*60*1000]);
+        logger.log("sync took ", syncDuration/1000,"seconds");
         autoSync =  _.throttle(function() {
             sync();
         }, 2*syncDuration);
