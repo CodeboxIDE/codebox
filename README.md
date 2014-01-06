@@ -7,7 +7,7 @@ It's easy to run the IDE on your desktop (Linux and Mac), your server or the clo
 
 Codebox is build only with web technologies: node.js, javasctipt, html and less. The IDE is also build with a very extensible architecture, it lets you build your own features and functionnalities with an add-on system.
 
-**Screencast:** A complete screencast of the IDE is available on [Youtube](http://www.youtube.com/watch?v=fyQx97iJ-jk).
+**Screencast:** A complete screencast of the IDE is available on [Youtube](https://www.youtube.com/watch?v=xvPEngyXA2A).
 
 **Questions:** Feel free to ask any questions or signal problems by adding issues.
 
