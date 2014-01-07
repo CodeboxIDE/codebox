@@ -11,7 +11,7 @@ Codebox is build only with web technologies: node.js, javasctipt, html and less.
 
 **News:** You can get update about Codebox on [Twitter](https://twitter.com/CodeboxIO) and [Youtube](http://www.youtube.com/channel/UCWocQwS2VmDS3Ej0LQYWVIw).
 
-**Usage:** Install Codebox using NPM: ```npm install -g codebox```, and use it with: ```codebox run ./myworkspace```
+**Usage:** Install Codebox using NPM: ```npm install -g codebox```, and use it with: ```codebox run ./myworkspace```, use ```codebox --help``` for more informations about differents options.
 
 **Help:** Complete documentation can be found in [docs](../master/docs). Feel free to ask any questions or signal problems by adding issues.
 
