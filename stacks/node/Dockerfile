@@ -1,3 +1,0 @@
-FROM codebox/codebox.base
-
-
