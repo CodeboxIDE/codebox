@@ -1,9 +1,11 @@
 define([
     'underscore',
     'jQuery',
+    'q',
     'hr/hr',
-    'views/tabs/base'
-], function(_, $, hr, Tab) {
+    'views/tabs/base',
+    'utils/dialogs'
+], function(_, $, Q, hr, Tab, dialogs) {
 
     var FileTab = Tab.extend({
         defaults: {},
@@ -61,6 +63,20 @@ define([
             this.setTabType(this.model.isDirectory() ? "directory" : "file");
             this.setTabId(this.fileHandler.id+":"+this.model.syncEnvId());
             return this;
+        },
+
+        /* Close the tab: check that file is saved */
+        tabCanBeClosed: function() {
+            var that = this;
+
+            if (this.model.modified && !this.model.isNewfile()) {
+                return dialogs.confirm("Do you really want to close this file ("+_.escape(this.model.get("name"))+") without saving change?").then(function(c) {
+                    return true;
+                }, function() {
+                    return false;
+                });
+            }
+            return true;
         }
     });
 

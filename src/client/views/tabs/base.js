@@ -109,6 +109,11 @@ define([
         // Close the lateral panel
         closeLateralPanel: function() {
             this.$(".tab-panel-body").removeClass("with-lateralpanel");
+        },
+
+        // Check that tab can be closed
+        tabCanBeClosed: function() {
+            return true;
         }
     });
 

@@ -331,40 +331,53 @@ define([
 
         // Close a tab by tabid
         close: function(tabid, force) {
+            var that = this;
+
             if (this.tabs[tabid] == null) return this;
 
-            // Get previous tab (will set as active)
-            var previousTabId = this.getPreviousTab(this.tabs[tabid]);
+            var handleClose = function(state) {
+                if (state == false && !force) return;
 
-            // Triger in tab
-            this.tabs[tabid].view.trigger("tab:close");
-            this.tabs[tabid].view.off();
+                // Get previous tab (will set as active)
+                var previousTabId = that.getPreviousTab(that.tabs[tabid]);
 
-            delete this.tabs[tabid].view;
-            delete this.tabs[tabid];
+                // Triger in tab
+                that.tabs[tabid].view.trigger("tab:close");
+                that.tabs[tabid].view.off();
 
-            // Trigger global
-            this.trigger("tab:"+tabid+":close");
-            this.trigger("tabs:close", tabid);
+                delete that.tabs[tabid].view;
+                delete that.tabs[tabid];
 
-            if (!_.size(this.tabs) || !previousTabId) {
-                this.trigger("tabs:default");
-            } else {
-                this.open(previousTabId);
-            }
+                // Trigger global
+                that.trigger("tab:"+tabid+":close");
+                that.trigger("tabs:close", tabid);
 
-            this.update();
-            return this;
+                if (!_.size(that.tabs) || !previousTabId) {
+                    that.trigger("tabs:default");
+                } else {
+                    that.open(previousTabId);
+                }
+
+                that.update();
+
+                return Q(tabid);
+            };
+
+            // Check that we can close the tab
+            return Q(that.tabs[tabid].view.tabCanBeClosed()).then(handleClose, handleClose);
         },
 
         // Close others tabs
         closeOthers: function(tabid) {
-            _.each(this.tabs, function(tab, oTabId) {
-                if (oTabId == tabid) return;
-                this.close(oTabId);
-            }, this);
+            var that = this;
 
-            return this;
+            return _.reduce(this.tabs, function(prev, tab, oTabId) {
+                if (oTabId == tabid) return prev;
+
+                return prev.then(function() {
+                    return that.close(oTabId);
+                });
+            }, Q());
         },
 
         // Open default new tab
