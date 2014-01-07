@@ -1,9 +1,11 @@
 {
     "name": "codebox",
-    "description": "Open Cloud IDE",
-    "homepage": "https://www.codebox.io",
     "version": "0.4.1",
-    "author": "contact@friendco.de",
+    "description": "Open source cloud-based Web IDE.",
+    "homepage": "https://www.codebox.io",
+    "author": "FriendCode Inc. <contact@friendco.de>",
+    "license": "Apache 2",
+    "preferGlobal": true,
     "dependencies": {
         "q": "0.9.6",
         "underscore": "1.4.4",
@@ -45,9 +47,13 @@
     "bin": {
         "codebox": "./bin/codebox.js"
     },
-    "devDependencies": {
-
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/FriendCode/codebox.git"
     },
+    "keywords": [
+        "cli", "ide", "server", "desktop", "development", "code editor"
+    ],
     "contributors": [
         {
             "name": "Aaron O'Mullan",
