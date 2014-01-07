@@ -1,4 +1,4 @@
-This documentation contains everything you need to know for using Codebox or running it locally. You can contribute to this documentation [with pull-requests on Github](https://github.com/FriendCode/codebox).
+This documentation contains everything you need to know for using Codebox or running it locally. You can contribute to this documentation with pull-requests on [Github](https://github.com/FriendCode/codebox).
 
 ---------------------------------------
 
@@ -6,6 +6,8 @@ This documentation contains everything you need to know for using Codebox or run
 
 * [Keyboard shortcuts](client/shortcuts.md)
 * [Tabs](client/tabs.md)
+* [Offline](client/offline.md)
+* [Auto-run](client/autorun.md)
 
 ---------------------------------------
 
