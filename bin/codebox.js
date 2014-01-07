@@ -26,7 +26,7 @@ cli.command('run [folder]')
     // Default options
     this.directory = projectDirectory || process.env.WORKSPACE_DIR || "./";
     this.title = this.title || process.env.WORKSPACE_NAME;
-    this.port = this.port || process.env.PORT || 5000;
+    this.port = this.port || process.env.PORT || 8000;
 
 
     var config = {
