@@ -65,6 +65,7 @@
         }
     ],
     "scripts": {
-        "start": "[ -f .env ] && source .env || echo 'Store your environment config in .env'; grunt"
+        "start": "[ -f .env ] && source .env || echo 'Store your environment config in .env'; ./node_modules/.bin/grunt",
+        "postinstall": "./node_modules/.bin/grunt build"
     }
 }
