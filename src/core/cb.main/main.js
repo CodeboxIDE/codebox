@@ -11,18 +11,19 @@ function setup(options, imports, register) {
 
     server.on('listening', function() {
         logger.log("Server is listening on ", port);
-        watch.init(workspace.root)
-        .then(function() {
-            logger.log("Started Watch");
-        })
-        .fail(function(err) {
-            logger.error("Failed to start Watch because of:");
-            logger.exception(err, false);
-        }).fin(function() {
-            // Register
-            register(null, {});
-        });
+    });
+
+    watch.init(workspace.root)
+    .then(function() {
+        logger.log("Started Watch");
     })
+    .fail(function(err) {
+        logger.error("Failed to start Watch because of:");
+        logger.exception(err, false);
+    }).fin(function() {
+        // Register
+        register(null, {});
+    });
 }
 
 // Exports
