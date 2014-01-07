@@ -19,3 +19,10 @@ This documentation contains everything you need to know for using Codebox or run
 
 * [Configuration with environment variables](server/env.md)
 * [Managing addons](server/addons.md)
+
+---------------------------------------
+
+### Questions & Issues
+
+* [Signal issues on GitHub](https://github.com/FriendCode/codebox/issues)
+* [Keep yourself updated on Twitter](https://twitter.com/CodeboxIO)
