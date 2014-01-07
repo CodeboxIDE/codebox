@@ -70,7 +70,7 @@ define([
             var that = this;
 
             if (this.model.modified && !this.model.isNewfile()) {
-                return dialogs.confirm("Do you really want to close this file ("+_.escape(this.model.get("name"))+") without saving change?").then(function(c) {
+                return dialogs.confirm("Do you really want to close "+_.escape(this.model.get("name"))+" without saving changes?", "Your changes will be lost if you don't save them.").then(function(c) {
                     return true;
                 }, function() {
                     return false;

@@ -62,8 +62,14 @@ define([
          *  Open a confirmation dialog windows
          *  @message : message to print
          */
-        confirm: function(message) {
+        confirm: function(title, message) {
+            if (!message) {
+                message = title;
+                title = null;
+            }
+
             return Dialogs.open(null, {
+                "title": title,
                 "message": message,
                 "dialog": "confirm"
             });
