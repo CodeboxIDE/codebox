@@ -2,24 +2,39 @@
 
 var _ = require('underscore');
 var cli = require('commander');
+var open = require("open");
+
 var pkg = require('../package.json');
 var codebox = require("../index.js");
 
+// Options
+cli.option('-p, --port [http port]', 'Port to run the IDE');
+cli.option('-t, --title [project title]', 'Title for the project.');
+cli.option('-o, --open', 'Open the IDE in your favorite browser')
+
 // Command 'run'
-cli.command('run [args]')
-.description('Run a Codebox into a folder.')
+cli.command('run [folder]')
+.description('Run a Codebox into a specific folder.')
 .action(function(projectDirectory) {
+    var that = this;
+
     // Codebox.io settings
     this.box = process.env.CODEBOXIO_BOXID;
     this.key = process.env.CODEBOXIO_TOKEN;
     this.codeboxio = process.env.CODEBOXIO_HOST || "https://api.codenow.io";
 
+    // Default options
     this.directory = projectDirectory || process.env.WORKSPACE_DIR || "./";
     this.title = this.title || process.env.WORKSPACE_NAME;
+    this.port = this.port || process.env.PORT || 5000;
+
 
     var config = {
         'root': this.directory,
-        'title': this.title
+        'title': this.title,
+        'server': {
+            'port': parseInt(this.port)
+        }
     };
 
     // Use Codebox
@@ -43,8 +58,15 @@ cli.command('run [args]')
     }
 
     // Start Codebox
-    codebox.start(config).fail(function(err) {
+    codebox.start(config).then(function() {
+        var url = "http://localhost:"+that.port;
 
+        console.log("\nCodebox is running at",url);
+
+        if (that.open) {
+            open(url);
+        }
+    }, function(err) {
         console.error('Error initializing CodeBox');
         console.error(err);
         console.error(err.stack);
@@ -60,10 +82,10 @@ cli.on('--help', function(){
     console.log('    $ codebox run');
     console.log('    $ codebox run ./myProject');
     console.log('');
+    console.log('    Use option --open to directly open the IDE in your browser:');
+    console.log('    $ codebox run ./myProject --open');
+    console.log('');
 });
-
-cli.option('-t, --title <title>', 'Title for the project.');
 
 cli.version(pkg.version).parse(process.argv);
 if (!cli.args.length) cli.help();
-

@@ -18,11 +18,11 @@ function setup(options, imports, register) {
         .fail(function(err) {
             logger.error("Failed to start Watch because of:");
             logger.exception(err, false);
+        }).fin(function() {
+            // Register
+            register(null, {});
         });
-    });
-
-    // Register
-    register(null, {});
+    })
 }
 
 // Exports
