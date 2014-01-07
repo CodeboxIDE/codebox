@@ -65,7 +65,7 @@ function setup(options, imports, register) {
         return next();
     });
     app.use('/', express.static(__dirname + '/../../client/build'));
-    app.use('/docs', express.static(__dirname + '/../../../docs'));
+    app.use('/docs', express.static(__dirname + '/../../docs'));
 
     // Block queries for unAuthenticated users
     //

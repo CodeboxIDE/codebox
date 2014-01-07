@@ -1,0 +1,15 @@
+<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		    <h4 class="modal-title"><%- options.title || "Input" %></h4>
+		</div>
+		<div class="modal-body">
+		    <p><%= options.message %></p>
+		    <input type="text" class="input form-control" value="<%- options.default || "" %>" placeholder="<%- options.placeholder || "" %>" />
+		</div>
+		<div class="modal-footer">
+		    <button class="btn btn-default action-confirm">OK</button>
+		</div>
+	</div>
+</div>

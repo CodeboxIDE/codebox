@@ -103,7 +103,7 @@ var Addon = function(logger, _rootPath, options) {
         }
 
         // R.js bin
-        var rjs = path.resolve(__dirname, "../../../node_modules/.bin/r.js");
+        var rjs = path.resolve(__dirname, "../../node_modules/.bin/r.js");
 
         // Base directory for the addon
         var addonPath = this.root;

@@ -3,7 +3,7 @@ var glob = require("glob");
 var path = require('path');
 var Q = require('q');
 var Manifest = require('./manifest').Manifest;
-var pkg = require('../../../package.json');
+var pkg = require('../../package.json');
 var crypto = require('cryptojs').Crypto;
 
 function setup(options, imports, register) {
@@ -40,7 +40,7 @@ function setup(options, imports, register) {
             return manifest.addFolder(path.resolve(__dirname + '/../../client/build'), '/')
         }).then(function() {
             // Add static files
-            return manifest.addFolder(path.resolve(__dirname + '/../../../docs'), '/docs/')
+            return manifest.addFolder(path.resolve(__dirname + '/../../docs'), '/docs/')
         }).then(function() {
             // Add addons
             return addons.list().then(function(addons) {

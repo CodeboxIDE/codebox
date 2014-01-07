@@ -3,7 +3,7 @@ module.exports = function (grunt) {
     var pkg = require("./package.json");
 
     // Path to the client src
-    var clientPath = path.resolve(__dirname, "src/client");
+    var clientPath = path.resolve(__dirname, "client");
 
     // Init GRUNT configuraton
     grunt.initConfig({

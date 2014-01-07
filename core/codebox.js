@@ -42,7 +42,7 @@ var start = function(config) {
         },
         'addons': {
             // Base path
-            'path': process.env.WORKSPACE_ADDONS_DIR || path.resolve(__dirname + '/../../.addons'),
+            'path': process.env.WORKSPACE_ADDONS_DIR || path.resolve(__dirname + '/../.addons'),
             'defaultsPath': process.env.WORKSPACE_ADDONS_DEFAULTS_DIR || path.resolve(__dirname + '/../addons'),
             'tempPath': process.env.WORKSPACE_ADDONS_TEMP_DIR || os.tmpDir(),
             'blacklist': (process.env.WORKSPACE_ADDONS_BLACKLIST || "").split(",")

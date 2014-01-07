@@ -1,0 +1,19 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title"><%- options.title || "Select" %></h4>
+        </div>
+        <div class="modal-body">
+            <p><%= options.message %></p>
+            <select class="input form-control">
+                <% _.each(options.choices, function(choice, key) { %>
+                    <option value="<%- key %>" <% if (options.default == key) { %>selected<% } %>><%- choice %></option>
+                <% }); %>
+            </select>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-default action-confirm">OK</button>
+        </div>
+    </div>
+</div>

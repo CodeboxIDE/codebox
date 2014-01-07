@@ -1,0 +1,63 @@
+<% if (session.box.isAuth()) { %>
+<div id="codebox" class="mode-body-fullpage">
+	<!-- Menu bar -->
+	<div class="cb-menubar">
+		<span class="cb-user-email"><%- session.user.get("email") %></span>
+	</div>
+
+
+	<!-- Lateral bar -->
+	<div class="cb-lateralbar">
+		<div class="lateral-commands cb-commands"></div>
+		<div class="lateral-body">
+			<div class="cb-panels"></div>
+			<div class="lateral-operations"></div>
+		</div>
+	</div>
+
+	<!-- Body -->
+	<div class="cb-body"></div>
+	<div class="cb-alerts"></div>
+	<div class="cb-loading-alert"><div class="cb-loadings-spinner"></div><div class="cb-loading-message"></div></div>
+</div>
+<% } else { %>
+<div id="codebox">
+	<div class="cb-login">
+		<div class="login-box">
+			<div class="header">
+				<span class="fa-stack">
+				  <i class="fa fa-cloud fa-stack-2x"></i>
+				  <i class="fa fa-code fa-stack-1x fa-inverse"></i>
+				</span>
+			</div>
+			<div class="inner">
+				<% if (hr.offline.isConnected()) { %>
+					<div class="form-group">
+						<input type="email" class="form-control input-lg" name="login-email" id="login-email" placeholder="Enter email" value="<%- email %>" autocomplete="off">
+						<% if (session.box.get("public")) { %>
+						<p class="help-block">This box is public, please enter an email to log in.</p>
+						<% } %>
+					</div>
+					<% if (!session.box.get("public")) { %>
+					<div class="form-group">
+						<input type="password" class="form-control input-lg" name="login-token" id="login-token" placeholder="Enter token" value="<%- token %>" autocomplete="off">
+					</div>
+					<% } %>
+					<div class="checkbox">
+						<label>
+							<input type="checkbox" id="login-save" checked> Remember me
+						</label>
+					</div>
+					<button id="login-submit" class="btn btn-lg btn-block btn-primary">Login</button>
+				<% } else { %>
+					<div class="form-group">
+						<p class="help-block">Sorry, You can't use this workspace in offline mode.</p>
+						<p class="help-block">Please login into your box first when your connexion is back, and then this box will be available in offline mode.</p>
+						<p class="help-block">-- See you later</p>
+					</div>
+				<% } %>
+			</div>
+		</div>
+	</div>
+</div>
+<% } %>
