@@ -21,7 +21,7 @@ cli.command('run [folder]')
     // Codebox.io settings
     this.box = process.env.CODEBOXIO_BOXID;
     this.key = process.env.CODEBOXIO_TOKEN;
-    this.codeboxio = process.env.CODEBOXIO_HOST || "https://api.codenow.io";
+    this.codeboxio = process.env.CODEBOXIO_HOST || "https://api.codebox.io";
 
     // Default options
     this.directory = projectDirectory || process.env.WORKSPACE_DIR || "./";
@@ -37,7 +37,7 @@ cli.command('run [folder]')
         }
     };
 
-    // Use Codebox
+    // Use Codebox.io
     if (this.box && this.codeboxio && this.key) {
         _.extend(config, {
             'workspace': {
