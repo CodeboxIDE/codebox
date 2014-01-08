@@ -14,9 +14,7 @@ npm-debug.log
 /node_modules/
 /stacks/.vagrant/
 
-/src/client/build/
+/client/build/
 .addons
 
 /.env
-
-/stacks/base/src/
