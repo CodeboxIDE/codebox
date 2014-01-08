@@ -54,5 +54,5 @@ Screencast: A screencast of the IDE is available on [Youtube](https://www.youtub
 
 ## License
 
-The project is open source under the [Apache 2.0](https://github.com/FriendCode/codebox/blob/master/docs) license.
+The project is open source under the [Apache 2.0](https://github.com/FriendCode/codebox/blob/master/LICENSE) license.
 
