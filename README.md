@@ -1,22 +1,22 @@
 # Codebox
 > "Open source cloud-based web IDE."
 
-Codebox is a complete and extensible Cloud IDE. It cans runs on any unix machines (Linux, Mac OS X). It is an open source component of [codebox.io](https://www.codebox.io) (Cloud IDE as a Service).
+Codebox is a complete and modular Cloud IDE. It can run on any unix-like machine (Linux, Mac OS X). It is an open source component of [codebox.io](https://www.codebox.io) (Cloud IDE as a Service).
 
-It's easy to run the IDE on your desktop (Linux and Mac), your server or the cloud. You can use [codebox.io](https://www.codebox.io) to host and manage the IDE for you and let you focus on 
+The IDE can run on your desktop (Linux or Mac), on your server or the cloud. You can use the [codebox.io](https://www.codebox.io) service to host and manage IDE instances.
 
-Codebox is build only with web technologies: node.js, javasctipt, html and less. The IDE is also build with a very extensible architecture, it lets you build your own features and functionnalities with an add-on system. It's the first IDE built with web technologies that supports to run both on desktop and in the Cloud, and it's working offline.
+Codebox is built with web technologies: `node.js`, `javasctipt`, `html` and `less`. The IDE is possesses a very modular and extensible architecture, that allows you to build your own features with through add-ons. Codebox is the first open and modular IDE capable of running both on the Desktop and in the cloud (with offline support).
 
-**Screencast:** A complete screencast of the IDE is available on [Youtube](https://www.youtube.com/watch?v=xvPEngyXA2A).
+**Screencast:** A screencast of the IDE is available on [Youtube](https://www.youtube.com/watch?v=xvPEngyXA2A).
 
-**News:** You can get update about Codebox on [Twitter](https://twitter.com/CodeboxIO) and [Youtube](http://www.youtube.com/channel/UCWocQwS2VmDS3Ej0LQYWVIw).
+**News:** Follow updates about Codebox on [Twitter](https://twitter.com/CodeboxIO) and [Youtube](http://www.youtube.com/channel/UCWocQwS2VmDS3Ej0LQYWVIw).
 
-**Usage:** Install Codebox using NPM: ```npm install -g codebox```, and use it with: ```codebox run ./myworkspace```, use ```codebox --help``` for more informations about differents options.
+**Usage:** Install Codebox using NPM: ```npm install -g codebox```, and run it with: ```codebox run ./myworkspace```, use ```codebox --help``` for a list of commands and help.
 
-**Help:** Complete documentation can be found in [docs](../master/docs). Feel free to ask any questions or signal problems by adding issues.
+**Help:** The IDE's documentation can be found in the [docs](../master/docs) folder. Feel free to ask any questions or signal problems by adding issues.
 
-**Contributing:** This project is open to pull-request, please see the [Contributing to Codebox](../master/CONTRIBUTING.md) guide for information on contributing to this project
+**Contributing:** Codebox accepts pull-requests, please see the [Contributing to Codebox](../master/CONTRIBUTING.md) guide for information on contributing to this project
 
-**License:** The project is completely open source under the [Apache 2.0](https://github.com/FriendCode/codebox/blob/master/docs) license.
+**License:** The project is open source under the [Apache 2.0](https://github.com/FriendCode/codebox/blob/master/docs) license.
 
 ![Image](../master/docs/assets/base.png?raw=true)
