@@ -8,7 +8,7 @@ The IDE can run on your desktop (Linux or Mac), on your server or the cloud. You
 ![Image](../master/docs/assets/base.png?raw=true)
 
 
-Codebox is built with web technologies: `node.js`, `javascript`, `html` and `less`. The IDE is possesses a very modular and extensible architecture, that allows you to build your own features with through add-ons. Codebox is the first open and modular IDE capable of running both on the Desktop and in the cloud (with offline support).
+Codebox is built with web technologies: `node.js`, `javascript`, `html` and `less`. The IDE possesses a very modular and extensible architecture, that allows you to build your own features with through add-ons. Codebox is the first open and modular IDE capable of running both on the Desktop and in the cloud (with offline support).
 
 
 ## Install
