@@ -1,5 +1,5 @@
 # Codebox
-> "Open source cloud-based web IDE."
+> "Open source cloud & desktop IDE."
 
 Codebox is a complete and modular Cloud IDE. It can run on any unix-like machine (Linux, Mac OS X). It is an open source component of [codebox.io](https://www.codebox.io) (Cloud IDE as a Service).
 
