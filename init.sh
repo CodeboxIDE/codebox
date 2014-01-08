@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Constants
+HOME="/home/workspace"
 WORKSPACE="${HOME}/workspace/"
 SSH_DIR="${HOME}/.ssh/"
 SERVER_SCRIPT="/opt/codebox/bin/codebox.js"
