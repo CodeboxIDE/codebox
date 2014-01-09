@@ -89,7 +89,6 @@ define([
             },
             base: "body #codebox"
         });
-        logger.log("Output:", cssContent);
         $css.html(cssContent);
 
         return true;
