@@ -261,19 +261,24 @@ define([
                 wraplimitrange: 80,
                 enablesoftwrap: false,
                 keyboard: "textinput",
-                readonly: false
+                readonly: false,
+                enablesofttabs: true,
+                tabsize: 4
             });
 
+            this.setReadonly(this.options.readonly);
             this.setMode(this.options.mode);
             this.setKeyboardmode(this.options.keyboard);
             this.setTheme(themes.current().editor.theme || "textmate");
-            this.setFontsize(this.options.fontsize);
-            this.setPrintmargincolumn(this.options.printmargincolumn);
-            this.setShowprintmargin(this.options.showprintmargin);
-            this.setHighlightactiveline(this.options.highlightactiveline);
-            this.setEnablesoftwrap(this.options.enablesoftwrap);
-            this.setWraplimitrange(this.options.wraplimitrange);
-            this.setReadonly(this.options.readonly);
+
+            this.editor.setFontSize(this.options.fontsize);
+            this.editor.setPrintMarginColumn(this.options.printmargincolumn);
+            this.editor.setShowPrintMargin(this.options.showprintmargin);
+            this.editor.setHighlightActiveLine(this.options.highlightactiveline);
+            this.editor.getSession().setUseWrapMode(this.options.enablesoftwrap);
+            this.editor.getSession().setWrapLimitRange(this.options.wraplimitrange, this.options.wraplimitrange);
+            this.editor.getSession().setUseSoftTabs(this.options.enablesofttabs);
+            this.editor.getSession().setTabSize(this.options.tabsize);
             return this;
         },
 
@@ -308,65 +313,6 @@ define([
                     self.trigger("change:keyboardmode");
                 }
             });
-            return this;
-        },
-
-        /*
-         *  Set font size
-         *  @fontsize : font size for the editor text
-         */
-        setFontsize: function(fontsize) {
-            this.options.fontsize = parseInt(fontsize);
-            this.editor.setFontSize(this.options.fontsize);
-            this.trigger("change:fontsize");
-            return this;
-        },
-
-        /*
-         *  Set print margin column
-         *  @value : number of column for print margin
-         */
-        setPrintmargincolumn: function(value) {
-            this.options.printmargincolumn = value;
-            this.editor.setPrintMarginColumn(this.options.printmargincolumn);
-            return this;
-        },
-
-        /*
-         *  Set show print margin column
-         *  @value : number of column for print margin
-         */
-        setShowprintmargin: function(value) {
-            this.options.showprintmargin = value;
-            this.editor.setShowPrintMargin(this.options.showprintmargin);
-            return this;
-        },
-
-        /*
-         *  Set highlight active line
-         *  @value : boolean : true => highlight all the active line
-         */
-        setHighlightactiveline: function(value) {
-            this.options.highlightactiveline = value;
-            this.editor.setHighlightActiveLine(this.options.highlightactiveline);
-            return this;
-        },
-
-        /*
-         *  Set wrap limit range
-         */
-        setWraplimitrange: function(value) {
-            this.options.wraplimitrange = value;
-            this.editor.getSession().setWrapLimitRange(this.options.wraplimitrange, this.options.wraplimitrange);
-            return this;
-        },
-
-        /*
-         *  Set enable soft wrap
-         */
-        setEnablesoftwrap: function(value) {
-            this.options.enablesoftwrap = value;
-            this.editor.getSession().setUseWrapMode(this.options.enablesoftwrap);
             return this;
         },
 

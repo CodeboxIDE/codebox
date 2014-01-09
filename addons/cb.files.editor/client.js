@@ -26,6 +26,8 @@ define([
             'highlightactiveline': false,
             'wraplimitrange': 80,
             'enablesoftwrap': false,
+            'enablesofttabs': true,
+            'tabsize': 4,
             'keyboard': "textinput"
         },
         'fields': {
@@ -70,6 +72,17 @@ define([
             'enablesoftwrap': {
                 'label': "Enable Soft Wrap",
                 'type': "checkbox"
+            },
+            'enablesofttabs': {
+                'label': "Use Soft Tabs",
+                'type': "checkbox"
+            },
+            'tabsize': {
+                'label': "Tab Size",
+                'type': "number",
+                'min':  0,
+                'max': 1000,
+                'step': 1
             }
         }
     });
