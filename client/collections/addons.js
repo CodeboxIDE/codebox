@@ -166,6 +166,7 @@ define([
         // similar loading to engineer
         loadAll: function() {
             var that = this;
+            var errors = [];
 
             return this.checkCycles().then(function(addons) {
                 return _.reduce(addons, function(d, addon) {
@@ -175,15 +176,23 @@ define([
                             return Q.reject(err);
                         }).then(function(provides) {
                             _.extend(that.provides, provides || {});
+                            return Q();
                         }, function(err) {
-                            return dialogs.alert("Error with addon '"+addon.get("name")+"'", "<p>Error when initializing this addon. Please check addons states using the addons manager and reinstall this addon.</p><p>Error message:"+ (err.message || err) +"</p>");
-                        }).then(function() {
+                            errors.push({
+                                'error': err,
+                                'addon': addon.get("name")
+                            })
                             return Q();
-                        }, function() {
-                            return Q();
-                        });
+                        })
                     })
                 }, Q({}));
+            }).then(function() {
+                if (_.size(errors) > 0) {
+                    var e = new Error("Error with "+_.size(errors)+" addons");
+                    e.addonsError = errors;
+                    return Q.reject(e);
+                }
+                return Q();
             });
         }
     });

@@ -119,10 +119,15 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
                 operations.render();
 
                 // Load addons
-                loading.show(addons.loadAll().then(themes.init, function(err) {
-                    return dialogs.alert("Fatal error", "Fatal error when loading addons, try to reload the all application and reset the cache. Error message: "+(err.message || err));
-                }).fin(function() {
-                    
+                loading.show(addons.loadAll(), "Loading add-ons").then(themes.init, function(err) {
+                    return dialogs.alert("Error loading Add-ons", 
+                        "<p>Error when initializing addons." +
+                        " Please check addons states using the addons manager and reinstall problematic add-ons.</p>" +
+                        "<p>Error message: "+ (err.message || err) +"</p>" +
+                        _.map(err.addonsError || [], function(error) {
+                            return "<p> - <b>"+_.escape(error.addon)+"</b>: "+(error.error.message || error.error)+"</p>";
+                        }).join("\n"));
+                }).fin(function() {    
                     // Load new addons
                     addons.on("add", function(addon) {
                         addon.load();
@@ -133,7 +138,7 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
 
                     // Check update
                     hr.Offline.checkUpdate();
-                }), "Loading add-ons");
+                });
             }
             return Application.__super__.finish.apply(this, arguments);
         },
