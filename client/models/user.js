@@ -2,8 +2,9 @@ define([
     "underscore",
     "hr/hr",
     "utils/gravatar",
+    'utils/loading',
     "core/backends/rpc"
-], function(_, hr, gravatar, rpc) {
+], function(_, hr, gravatar, loading, rpc) {
     var logging = hr.Logger.addNamespace("user");
 
     var User = hr.Model.extend({
@@ -51,9 +52,9 @@ define([
         // Save user settings
         saveSettings: function(data) {
             var that = this;
-            return rpc.execute("auth/settings", data).then(function(settings) {
+            return loading.show(rpc.execute("auth/settings", data).then(function(settings) {
                 that.set("settings", settings);
-            });
+            }), "Saving Settings");
         }
     });
 

@@ -33,3 +33,35 @@ to {-o-transform: rotate(359deg);}
 from {transform: rotate(0deg);}
 to {transform: rotate(359deg);}
 }
+
+.cb-loading-alert {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+    z-index: 2000;
+    background: rgba(255, 255, 255, 0.75);
+
+    .cb-loadings-spinner {
+        position: absolute;
+        margin-left: -30px;
+        margin-top: -30px;
+        top: 50%;
+        left: 50%;
+    }
+
+    .cb-loading-message {
+        position: absolute;
+        width: 500px;
+        height: 60px;
+        line-height: 60px;
+        font-size: 26px;
+        margin-left: -250px;
+        margin-top: -30px;
+        top: 50%;
+        left: 50%;
+        text-align: center;
+        color: rgb(94, 158, 243);
+    }
+}
