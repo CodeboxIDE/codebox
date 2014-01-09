@@ -16,12 +16,21 @@ define([
             'progress': null,
 
             // Icon to show
-            'icon': "fa-refresh fa-spin"
+            'icon': "fa-refresh fa-spin",
+
+            // State
+            'state': 'running' // 'idle', 'running'
         },
 
         // Update progress
         progress: function(p) {
             this.set("progress", p);
+            return this;
+        },
+
+        // Set state
+        state: function(st) {
+            this.set("state", st);
             return this;
         }
     });

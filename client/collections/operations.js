@@ -38,18 +38,27 @@ define([
 
             this.add(op);
 
-            d = startMethod(op);
+            if (startMethod) {
+                d = startMethod(op);
 
-            // Error during the operation
-            d.fail(function(err) {
-                dialogs.alert("Error during an operation ("+_.escape(opId)+")", err.message || err);
-            });
+                // Error during the operation
+                d.fail(function(err) {
+                    dialogs.alert("Error during an operation ("+_.escape(opId)+")", err.message || err);
+                });
 
-            // Destroy the operation
-            d.fin(function() {
-                op.destroy();
-            });
-            return d;
+                // Progress
+                d.progress(function(p) {
+                    op.progress(p);
+                });
+
+                // Destroy the operation
+                d.fin(function() {
+                    op.destroy();
+                });
+                return d;
+            } else {
+                return op;
+            }
         }
     });
 

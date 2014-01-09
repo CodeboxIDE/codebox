@@ -1,8 +1,11 @@
 define([], function() {
+    var $ = codebox.require("jQuery");
+    var Q = codebox.require("q");
     var app = codebox.require("core/app");
     var box = codebox.require("core/box");
     var menu = codebox.require("core/commands/menu");
     var commands = codebox.require("core/commands/toolbar");
+    var operations = codebox.require("core/operations");
     var hr = codebox.require("hr/hr");
     var Command = codebox.require("models/command");
     var localfs = codebox.require("core/localfs");
@@ -85,6 +88,31 @@ define([], function() {
             }
         }
     ])
+
+    // Run offline cache update operation
+    var op = operations.start("offline.update", null, {
+        'title': "Downloading new version",
+        'icon': "fa-download",
+        'state': window.applicationCache.status == window.applicationCache.IDLE ? "idle" : "running",
+        'progress': 0
+    });
+
+    // Application manifest
+    $(window.applicationCache).bind('downloading progress', function(e) {
+        var progress = 0;
+        if (e && e.originalEvent && e.originalEvent.lengthComputable) {
+            progress = Math.round(100*e.originalEvent.loaded/e.originalEvent.total);
+        }
+        op.state("running");
+        op.progress(progress);
+    });
+    $(window.applicationCache).bind('checking', function(e) {
+        op.state("running");
+        op.progress(0);
+    });
+    $(window.applicationCache).bind('noupdate cached obsolete error', function(e) {
+        op.state("idle");
+    });
 
 
     // Add sync submenu
