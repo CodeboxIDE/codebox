@@ -1105,7 +1105,7 @@ Terminal.prototype.bindMouse = function() {
   //  on(self.document, 'mousemove', sendMove);
   //}
 
-  /*on(el, wheelEvent, function(ev) {
+  on(el, wheelEvent, function(ev) {
     if (!self.mouseEvents) return;
     if (self.x10Mouse
         || self.vt300Mouse
@@ -1120,12 +1120,12 @@ Terminal.prototype.bindMouse = function() {
     if (self.mouseEvents) return;
     if (self.applicationKeypad) return;
     if (ev.type === 'DOMMouseScroll') {
-      self.scrollDisp(ev.detail < 0 ? -5 : 5);
+      self.scrollDisp(ev.detail < 0 ? -1 : 1);
     } else {
-      self.scrollDisp(ev.wheelDeltaY > 0 ? -5 : 5);
+      self.scrollDisp(ev.wheelDeltaY > 0 ? -1 : 1);
     }
     return cancel(ev);
-  });*/
+  });
 };
 
 /**

@@ -52,7 +52,7 @@ define([
                 rows: this.term_h,
                 screenKeys: true,
                 useStyle: false,
-                scrollback: 0,
+                scrollback: 1000,
                 parent: this.term_el,
                 colors: themeColors(this.theme)
             });
