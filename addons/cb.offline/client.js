@@ -11,19 +11,29 @@ define([], function() {
     var localfs = codebox.require("core/localfs");
     var dialogs = codebox.require("utils/dialogs");
 
-    // Menu changes list
+    // Command to check connexion
+    var checkConnexion = commands.register("offline.check", {
+        'title': "Check Connexion",
+        'offline': true,
+        'icon': "bolt"
+    }, function() {
+        hr.Offline.check();
+    });
+
+    // Menu Synchronize  list
     var menuListChanges = new Command({}, {
         'title': "Changes",
         'type': "menu",
         'flags': "disabled"
     });
-    var menuChanges = menu.register("offline.changes", {
-        title: "Changes",
+    var menuChanges = menu.register("offline.synchronize", {
+        title: "Synchronize",
         position: 95,
         offline: false
-    }).menuSection([
+    }).menuSection(checkConnexion)
+    .menuSection([
         {
-            'title': "Recalcul Changes",
+            'title': "Calcul Changes",
             'offline': false,
             'action': function() {
                 return localfs.sync();
@@ -62,38 +72,6 @@ define([], function() {
         }));
     });
 
-
-    // Command to check connexion
-    var checkConnexion = commands.register("offline.check", {
-        'title': "Check Connexion",
-        'offline': true,
-        'icon': "bolt"
-    }, function() {
-        hr.Offline.check();
-    });
-
-    var syncMenu = Command.register("offline.sync.menu", {
-        'type': "menu",
-        'title': "Synchronize"
-    });
-    syncMenu.menuSection(checkConnexion);
-    syncMenu.menuSection([
-        {
-            'title': "Calcul Changes",
-            'offline': false,
-            'action': function() {
-                return localfs.sync();
-            }
-        },
-        {
-            'title': "Reset Offline Cache",
-            'offline': false,
-            'action': function() {
-                return localfs.reset();
-            }
-        }
-    ])
-
     // Run offline cache update operation
     var op = operations.start("offline.update", null, {
         'title': "Downloading new version",
@@ -117,14 +95,6 @@ define([], function() {
     });
     $(window.applicationCache).bind('noupdate cached obsolete error', function(e) {
         op.state("idle");
-    });
-
-
-    // Add sync submenu
-    menu.getById("file").menuSection([
-        syncMenu
-    ], {
-        'position': 10
     });
 
     // Add menu when offline
