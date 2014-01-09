@@ -65,22 +65,6 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
                 location.reload();
             });
 
-            // Application manifest
-            $(window.applicationCache).bind('downloading progress', function(e) {
-                var progress = "";
-                if (e && e.originalEvent && e.originalEvent.lengthComputable) {
-                    progress = Math.round(100*e.originalEvent.loaded/e.originalEvent.total) + "%";
-                }
-
-                loading.show("Downloading new version "+progress);
-            });
-            $(window.applicationCache).bind('checking', function(e) {
-                loading.show("Checking for a new version");
-            });
-            $(window.applicationCache).bind('noupdate cached obsolete error', function(e) {
-                loading.stop();
-            });
-
             // Title changed
             box.on("change:name", function() {
                 this.title(box.get("name"));

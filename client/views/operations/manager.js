@@ -9,6 +9,12 @@ define([
         template: "operations/operation.html",
         events: {
             
+        },
+
+        finish: function() {
+            this.$el.toggle(this.model.get("state") == "running");
+            
+            return OperationItem.__super__.finish.apply(this, arguments);
         }
     });
 
