@@ -28,9 +28,16 @@ define([], function() {
             'action': function() {
                 return localfs.sync();
             }
+        }
+    ]).menuSection([
+        {
+            'title': "Reset All Changes",
+            'offline': false,
+            'action': function() {
+                return localfs.reset();
+            }
         },
         {
-            'id': "changes.apply",
             'title': "Apply All Changes",
             'offline': false,
             'action': function() {
@@ -72,7 +79,6 @@ define([], function() {
     syncMenu.menuSection(checkConnexion);
     syncMenu.menuSection([
         {
-            'id': "changes.calcul",
             'title': "Calcul Changes",
             'offline': false,
             'action': function() {
@@ -80,7 +86,6 @@ define([], function() {
             }
         },
         {
-            'id': "changes.reset",
             'title': "Reset Offline Cache",
             'offline': false,
             'action': function() {
