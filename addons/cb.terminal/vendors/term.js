@@ -2557,7 +2557,7 @@ Terminal.prototype.keyDown = function(ev) {
             break;
         default:
             // a-z and space
-            if (ev.ctrlKey  || (this.isMac && ev.metaKey)) {
+            if (ev.ctrlKey) { //}  || (this.isMac && ev.metaKey)) {
                 if (ev.keyCode >= 65 && ev.keyCode <= 90) {
                     // Ctrl-A
                     if (this.screenKeys) {
@@ -2569,7 +2569,7 @@ Terminal.prototype.keyDown = function(ev) {
                     // Ctrl-V
                     if (this.prefixMode && ev.keyCode === 86) {
                         this.leavePrefix();
-                        return;
+                        return true;
                     }
                     // Ctrl-C
                     if ((this.prefixMode || this.selectMode) && ev.keyCode === 67) {
@@ -2578,7 +2578,7 @@ Terminal.prototype.keyDown = function(ev) {
                                 self.leaveVisual();
                             }, 1);
                         }
-                        return;
+                        return true;
                     }
                     key = String.fromCharCode(ev.keyCode - 64);
                 } else if (ev.keyCode === 32) {
@@ -2598,7 +2598,9 @@ Terminal.prototype.keyDown = function(ev) {
                     key = String.fromCharCode(29);
                 }
             } else if ((!this.isMac && ev.altKey) || (this.isMac && ev.metaKey)) {
-                if (ev.keyCode >= 65 && ev.keyCode <= 90) {
+                if (ev.keyCode === 86) {
+                    return true;
+                } else if (ev.keyCode >= 65 && ev.keyCode <= 90) {
                     key = '\x1b' + String.fromCharCode(ev.keyCode + 32);
                 } else if (ev.keyCode === 192) {
                     key = '\x1b`';
