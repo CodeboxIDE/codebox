@@ -2557,7 +2557,7 @@ Terminal.prototype.keyDown = function(ev) {
       break;
     default:
       // a-z and space
-      if (ev.ctrlKey) {
+      if (ev.ctrlKey  || (this.isMac && ev.metaKey)) {
         if (ev.keyCode >= 65 && ev.keyCode <= 90) {
           // Ctrl-A
           if (this.screenKeys) {
@@ -2604,6 +2604,14 @@ Terminal.prototype.keyDown = function(ev) {
           key = '\x1b`';
         } else if (ev.keyCode >= 48 && ev.keyCode <= 57) {
           key = '\x1b' + (ev.keyCode - 48);
+        }
+      } else if (this.isMac && ev.altKey) {
+        if (ev.keyCode == 220) {
+          if (ev.keyIdentifier == "U+004C") {
+            key = '|';
+          } else if (ev.keyIdentifier == "U+002F") {
+            key = '\\';
+          }
         }
       }
       break;
