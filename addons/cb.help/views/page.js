@@ -46,12 +46,15 @@ define([
 
         // Click link
         clickLink: function(e) {
+            e.preventDefault();
+
             var a = $(e.currentTarget);
             var url = a.attr("href");
             var r = new RegExp('^(?:[a-z]+:)?//', 'i');
             if (!r.test(url)) {
-                e.preventDefault();
                 this.loadPage(url);
+            } else {
+                window.open(url);
             }
         } 
     });
