@@ -9,7 +9,7 @@ var commands = require('./commands.json');
 
 function runCommand(filename) {
     // Extract extension from filename (no '.')
-    var ext = path.extname(filename).replace('.', '');
+    var ext = path.extname(filename).replace('.', '').toLowerCase();
 
     // Make sure we support running this
     if(!commands[ext]) {

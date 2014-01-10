@@ -11,5 +11,7 @@
     "c": "gcc %s -o /tmp/codebox_c_build && /tmp/codebox_c_build && rm /tmp/codebox_c_build",
     "cpp": "g++ %s -o /tmp/codebox_cpp_build && /tmp/codebox_cpp_build && rm /tmp/codebox_cpp_build",
 
-    "sh": "bash %s"
+    "sh": "bash %s",
+
+    "r": "Rscript %s"
 }
