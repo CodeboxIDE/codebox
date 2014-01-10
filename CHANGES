@@ -1,0 +1,8 @@
+2014-01-11  Samy Pessé  <samy.pesse@friendco.de>
+
+    * Bump version to 0.4.5
+    * Terminals: Enable Cmd+V and specials keys (\, |) on Mac
+    * Add R support: coloration and run support for files
+    * Create authors list in /AUTHORS
+    * Create ChangeLogs in /CHANGES
+    * Open external link in new tab in help dialog
