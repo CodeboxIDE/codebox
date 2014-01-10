@@ -28,3 +28,11 @@ This documentation contains everything you need to know for using Codebox or run
 
 * [Signal issues on GitHub](https://github.com/FriendCode/codebox/issues)
 * [Keep yourself updated on Twitter](https://twitter.com/CodeboxIO)
+
+
+### Extra
+
+* [ChangeLog](https://github.com/FriendCode/codebox/blob/master/CHANGES)
+* [Authors](https://github.com/FriendCode/codebox/blob/master/AUTHORS)
+* [How to contribute](https://github.com/FriendCode/codebox/blob/master/CONTRIBUTING.md)
+* [License](https://github.com/FriendCode/codebox/blob/master/LICENSE)
