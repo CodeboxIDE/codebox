@@ -73,6 +73,7 @@
     "window": {
         "width": 1200,
         "height": 800,
+        "position": "center",
         "min_height": 400,
         "min_width": 400,
         "show":true,
