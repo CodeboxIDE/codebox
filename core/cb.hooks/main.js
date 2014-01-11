@@ -16,7 +16,7 @@ function setup(options, imports, register) {
 				return Q.reject(new Error("Need 'token' and 'email' for auth hook"));
 			}
 
-			var userId = _.uniqueId("user");
+			var userId = data.email;
 
 			return Q({
 				'userId': userId,

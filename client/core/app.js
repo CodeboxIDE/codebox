@@ -86,7 +86,7 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
             var email = hr.Cookies.get("email");
             var password = hr.Cookies.get("token");
 
-            if (!box.isAuth() && email && password && this._autologin) {
+            if (!box.isAuth() && ((email && password) || (email && box.get("public"))) && this._autologin) {
                 this.doLogin(email, password, true);
                 return;
             }

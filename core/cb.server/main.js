@@ -10,6 +10,13 @@ function setup(options, imports, register) {
     // Expres app
     var app = express();
 
+    if (options.dev) {
+        app.use(function(req, res, next) {
+            logger.log("["+req.method+"]", req.url);
+            next();
+        });
+    }
+
     // Apply middlewares
     app.use(express.cookieParser());
     app.use(express.cookieSession({
@@ -20,6 +27,8 @@ function setup(options, imports, register) {
     // Error handling
     app.use(function(err, req, res, next) {
         if(!err) return next();
+
+        logger.error("Error:");
         res.send({
             'error': err.message
         }, 500);
@@ -30,7 +39,7 @@ function setup(options, imports, register) {
     // Get User and set it to res object
     app.use(function getUser(req, res, next) {
         // Pause request stream
-        req.pause();
+        //req.pause();
 
         var uid = req.session.userId;
         if(uid) {
@@ -54,12 +63,31 @@ function setup(options, imports, register) {
     });
 
     // Client-side
-    app.use('/', function(req, res, next) {
+    app.get('/', function(req, res, next) {
+        var doRedirect = false;
+        var baseToken = options.defaultToken;
+        var baseEmail = options.defaultEmail;
+
+        console.log("check auth settings", req.query);
+
         if (req.query.email
         && req.query.token) {
             // Auth credential: save as cookies and redirect to clean url
-            res.cookie('email', req.query.email, { httpOnly: false });
-            res.cookie('token', req.query.token, { httpOnly: false })
+            baseEmail = req.query.email;
+            baseToken = req.query.token;
+            doRedirect = true;
+        }
+        if (baseEmail) {
+            res.cookie('email', baseEmail, { httpOnly: false });
+        }
+
+        if (baseToken) {
+            res.cookie('token', baseToken, { httpOnly: false })
+        }
+
+        console.log(baseEmail, baseToken, doRedirect);
+
+        if (doRedirect) {
             return res.redirect("/");
         }
         return next();

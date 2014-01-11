@@ -49,7 +49,11 @@ var start = function(config) {
         },
         'users': {
             // Max number of collaborators
-            'max': parseInt(process.env.WORKSPACE_USERS_MAX || 100)
+            'max': parseInt(process.env.WORKSPACE_USERS_MAX || 100),
+
+            // Default auth email
+            'defaultEmail': null,
+            'defaultToken': null
         },
         'proc': {
             'urlPattern': process.env.WORKSPACE_WEB_URL_PATTERN || 'http://localhost:%d'
@@ -126,7 +130,10 @@ var start = function(config) {
         {
             packagePath: "./cb.server",
 
-            port: config.server.port
+            'dev': config.dev,
+            'port': config.server.port,
+            'defaultEmail': config.users.defaultEmail,
+            'defaultToken': config.users.defaultToken
         },
 
         // VFS
