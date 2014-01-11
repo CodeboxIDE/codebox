@@ -1,11 +1,17 @@
 #!/usr/bin/env node
 
+var Q = require('q');
 var _ = require('underscore');
 var cli = require('commander');
+var path = require('path')
 var open = require("open");
+var Gittle = require('gittle');
 
 var pkg = require('../package.json');
 var codebox = require("../index.js");
+
+// Codebox git repo: use to identify the user
+var codeboxGitRepo = new Gittle(path.resolve(__dirname, ".."))
 
 // Options
 cli.option('-p, --port [http port]', 'Port to run the IDE');
@@ -17,63 +23,79 @@ cli.command('run [folder]')
 .description('Run a Codebox into a specific folder.')
 .action(function(projectDirectory) {
     var that = this;
+    var prepare = Q();
 
     // Codebox.io settings
-    this.box = process.env.CODEBOXIO_BOXID;
-    this.key = process.env.CODEBOXIO_TOKEN;
-    this.codeboxio = process.env.CODEBOXIO_HOST || "https://api.codebox.io";
+    that.box = process.env.CODEBOXIO_BOXID;
+    that.key = process.env.CODEBOXIO_TOKEN;
+    that.codeboxio = process.env.CODEBOXIO_HOST || "https://api.codebox.io";
 
     // Default options
-    this.directory = projectDirectory || process.env.WORKSPACE_DIR || "./";
-    this.title = this.title || process.env.WORKSPACE_NAME;
-    this.port = this.port || process.env.PORT || 8000;
+    that.directory = projectDirectory || process.env.WORKSPACE_DIR || "./";
+    that.title = that.title || process.env.WORKSPACE_NAME;
+    that.port = that.port || process.env.PORT || 8000;
 
 
     var config = {
-        'root': this.directory,
-        'title': this.title,
+        'root': that.directory,
+        'title': that.title,
         'server': {
-            'port': parseInt(this.port)
+            'port': parseInt(that.port)
         }
     };
 
     // Use Codebox.io
-    if (this.box && this.codeboxio && this.key) {
+    if (that.box && that.codeboxio && that.key) {
         _.extend(config, {
             'workspace': {
-                'id': this.box
+                'id': that.box
             },
             'hooks': {
-                'auth': this.codeboxio+"/api/box/"+this.box+"/auth",
-                'events': this.codeboxio+"/api/box/"+this.box+"/events",
-                'settings': this.codeboxio+"/api/account/settings"
+                'auth': that.codeboxio+"/api/box/"+that.box+"/auth",
+                'events': that.codeboxio+"/api/box/"+that.box+"/events",
+                'settings': that.codeboxio+"/api/account/settings"
             },
             'webhook': {
-                'authToken': this.key
+                'authToken': that.key
             },
             'proc': {
-                'urlPattern': 'http://web-%d.' + this.box + '.vm1.dynobox.io'
+                'urlPattern': 'http://web-%d.' + that.box + '.vm1.dynobox.io'
             }
+        });
+    } else {
+        // get GIT settings for defining default user
+        prepare = prepare.then(function() {
+            return codeboxGitRepo.identity().then(function(actor) {
+                console.log("Use GIT actor for auth: ", actor.email);
+                _.extend(config, {
+                    'users': {
+                        'defaultEmail': actor.email
+                    }
+                });
+            })
         });
     }
 
-    // Start Codebox
-    codebox.start(config).then(function() {
-        var url = "http://localhost:"+that.port;
+    // Auth user using git
+    prepare.fin(function() {
+        // Start Codebox
+        return codebox.start(config).then(function() {
+            var url = "http://localhost:"+that.port;
 
-        console.log("\nCodebox is running at",url);
+            console.log("\nCodebox is running at",url);
 
-        if (that.open) {
-            open(url);
-        }
-    }, function(err) {
-        console.error('Error initializing CodeBox');
-        console.error(err);
-        console.error(err.stack);
+            if (that.open) {
+                open(url);
+            }
+        }, function(err) {
+            console.error('Error initializing CodeBox');
+            console.error(err);
+            console.error(err.stack);
 
-        // Kill process
-        process.exit(1);
-    });
+            // Kill process
+            process.exit(1);
+        });
+    })
 });
 
 cli.on('--help', function(){
