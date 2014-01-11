@@ -16,7 +16,8 @@ var codeboxGitRepo = new Gittle(path.resolve(__dirname, ".."))
 // Options
 cli.option('-p, --port [http port]', 'Port to run the IDE');
 cli.option('-t, --title [project title]', 'Title for the project.');
-cli.option('-o, --open', 'Open the IDE in your favorite browser')
+cli.option('-o, --open', 'Open the IDE in your favorite browser');
+cli.option('-e, --email [email address]', 'Email address to use as a default authentication');
 
 // Command 'run'
 cli.command('run [folder]')
@@ -41,6 +42,9 @@ cli.command('run [folder]')
         'title': that.title,
         'server': {
             'port': parseInt(that.port)
+        },
+        'users': {
+            'defaultEmail': that.email
         }
     };
 
@@ -62,7 +66,7 @@ cli.command('run [folder]')
                 'urlPattern': 'http://web-%d.' + that.box + '.vm1.dynobox.io'
             }
         });
-    } else {
+    } else if (!that.email) {
         // get GIT settings for defining default user
         prepare = prepare.then(function() {
             return codeboxGitRepo.identity().then(function(actor) {
