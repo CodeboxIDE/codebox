@@ -5,7 +5,7 @@ Codebox is a complete and modular Cloud IDE. It can run on any unix-like machine
 
 The IDE can run on your desktop (Linux or Mac), on your server or the cloud. You can use the [codebox.io](https://www.codebox.io) service to host and manage IDE instances.
 
-![Image](../master/docs/assets/base.png?raw=true)
+![Image](https://github.com/FriendCode/codebox/blob/master/docs/assets/base.png?raw=true)
 
 
 Codebox is built with web technologies: `node.js`, `javascript`, `html` and `less`. The IDE possesses a very modular and extensible architecture, that allows you to build your own features with through add-ons. Codebox is the first open and modular IDE capable of running both on the Desktop and in the cloud (with offline support).
@@ -37,14 +37,14 @@ codebox --help
 Follow updates about Codebox on [Twitter](https://twitter.com/CodeboxIO) and [Youtube](http://www.youtube.com/channel/UCWocQwS2VmDS3Ej0LQYWVIw).
 
 
-## [Help](../master/docs)
+## [Help](https://github.com/FriendCode/codebox/blob/master/docs)
 
 The IDE's documentation can be found in the [docs](../master/docs) folder. Feel free to ask any questions or signal problems by adding issues.
 
 
-## [Contributing](../master/CONTRIBUTING.md)
+## [Contributing](https://github.com/FriendCode/codebox/blob/master/CONTRIBUTING.md)
 
-Codebox accepts pull-requests, please see the [Contributing to Codebox](../master/CONTRIBUTING.md) guide for information on contributing to this project
+Codebox accepts pull-requests, please see the [Contributing to Codebox](https://github.com/FriendCode/codebox/blob/master/CONTRIBUTING.md) guide for information on contributing to this project
 
 
 ## Extras
