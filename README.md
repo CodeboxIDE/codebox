@@ -5,54 +5,48 @@ Codebox is a complete and modular Cloud IDE. It can run on any unix-like machine
 
 The IDE can run on your desktop (Linux or Mac), on your server or the cloud. You can use the [codebox.io](https://www.codebox.io) service to host and manage IDE instances.
 
-![Image](https://github.com/FriendCode/codebox/blob/master/docs/assets/base.png?raw=true)
-
-
 Codebox is built with web technologies: `node.js`, `javascript`, `html` and `less`. The IDE possesses a very modular and extensible architecture, that allows you to build your own features with through add-ons. Codebox is the first open and modular IDE capable of running both on the Desktop and in the cloud (with offline support).
 
+The project is open source under the [Apache 2.0](https://github.com/FriendCode/codebox/blob/master/LICENSE) license.
+A screencast of the IDE is available on [Youtube](https://www.youtube.com/watch?v=xvPEngyXA2A).
 
-## Install
+![Image](https://github.com/FriendCode/codebox/blob/master/docs/assets/base.png?raw=true)
+
+## How to install and run Codebox
+
+#### Install
 
 Install Codebox globally using NPM:
 ```
 npm install -g codebox
 ```
 
+Desktop binaries for Mac and Linux are coming soon.
 
-## Usage
+#### Usage
 
-Run Codebox with:
 ```
-codebox run ./myworkspace
-```
-
-Get help and list of commands with:
-```
-codebox --help
+codebox run ./myworkspace --open
 ```
 
+Use this command to run and open Codebox IDE. By default, Codebox uses GIT to identify you, you can use the option ```--email=john.doe@gmail.com``` to define the email you cant to use during GIT operations.
 
-## [News](https://twitter.com/CodeboxIO)
+Others comand line options are available and can be list with: ```codebox --help```. For deeper configuration, take a look at the documentation about [environment variables](https://github.com/FriendCode/codebox/blob/master/docs/server/env.md).
 
-Follow updates about Codebox on [Twitter](https://twitter.com/CodeboxIO) and [Youtube](http://www.youtube.com/channel/UCWocQwS2VmDS3Ej0LQYWVIw).
-
-
-## [Help](https://github.com/FriendCode/codebox/blob/master/docs)
+#### Need help?
 
 The IDE's documentation can be found in the [docs](../master/docs) folder. Feel free to ask any questions or signal problems by adding issues.
 
+## Helping Codebox
 
-## [Contributing](https://github.com/FriendCode/codebox/blob/master/CONTRIBUTING.md)
+**I want to help with the code:** Codebox accepts pull-requests, please see the [Contributing to Codebox](https://github.com/FriendCode/codebox/blob/master/CONTRIBUTING.md) guide for information on contributing to this project.
 
-Codebox accepts pull-requests, please see the [Contributing to Codebox](https://github.com/FriendCode/codebox/blob/master/CONTRIBUTING.md) guide for information on contributing to this project
+**I found a bug:** File it as an [issue](https://github.com/FriendCode/codebox/issues) and please describe as much as possible the bug and the context.
 
+**I have a new suggestion:** For feature requests please first check [the issues list](https://github.com/FriendCode/codebox/issues) to see if it's already there. If not, feel free to file it as an issue and to define the label **enhancement**.
 
-## Extras
+## Contact info
 
-Screencast: A screencast of the IDE is available on [Youtube](https://www.youtube.com/watch?v=xvPEngyXA2A).
-
-
-## License
-
-The project is open source under the [Apache 2.0](https://github.com/FriendCode/codebox/blob/master/LICENSE) license.
-
+* **Twitter:** [@CodeboxIO](https://twitter.com/CodeboxIO)
+* **Blog:** [blog.codebox.io](http://blog.codebox.io)
+* **Youtube:** [Codebox Channel](http://www.youtube.com/channel/UCWocQwS2VmDS3Ej0LQYWVIw).
