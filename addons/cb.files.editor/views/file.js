@@ -43,7 +43,7 @@ define([
     // Command collaboration mode
     var collaborationCmd = Command.register("editor.collaboration", {
         'type': "checkbox",
-        'title': "Collaboration Mode",
+        'title': "Toggle Collaboration Mode",
         'offline': false,
         'action': function(state) {
             if (!currentFileEditor) return;
