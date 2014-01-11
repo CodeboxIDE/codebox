@@ -21,7 +21,7 @@ Install Codebox globally using NPM:
 npm install -g codebox
 ```
 
-Desktop binaries for Mac and Linux are coming soon.
+Desktop binaries for Mac and Linux are **coming soon**.
 
 #### Usage
 
@@ -39,7 +39,7 @@ The IDE's documentation can be found in the [docs](../master/docs) folder. Feel 
 
 ## Helping Codebox
 
-**I want to help with the code:** Codebox accepts pull-requests, please see the [Contributing to Codebox](https://github.com/FriendCode/codebox/blob/master/CONTRIBUTING.md) guide for information on contributing to this project.
+**I want to help with the code:** Codebox accepts pull-requests, please see the [Contributing to Codebox](https://github.com/FriendCode/codebox/blob/master/CONTRIBUTING.md) guide for information on contributing to this project. And don't forget to add your contact informations on the AUTHORS list.
 
 **I found a bug:** File it as an [issue](https://github.com/FriendCode/codebox/issues) and please describe as much as possible the bug and the context.
 
@@ -47,6 +47,7 @@ The IDE's documentation can be found in the [docs](../master/docs) folder. Feel 
 
 ## Contact info
 
+* **Website:** [www.codebox.io](https://www.codebox.io)
 * **Twitter:** [@CodeboxIO](https://twitter.com/CodeboxIO)
 * **Blog:** [blog.codebox.io](http://blog.codebox.io)
-* **Youtube:** [Codebox Channel](http://www.youtube.com/channel/UCWocQwS2VmDS3Ej0LQYWVIw).
+* **Youtube:** [Codebox Channel](http://www.youtube.com/channel/UCWocQwS2VmDS3Ej0LQYWVIw)
