@@ -57,7 +57,8 @@ cli.command('run [folder]')
             'hooks': {
                 'auth': that.codeboxio+"/api/box/"+that.box+"/auth",
                 'events': that.codeboxio+"/api/box/"+that.box+"/events",
-                'settings': that.codeboxio+"/api/account/settings"
+                'settings': that.codeboxio+"/api/account/settings",
+                'addons': that.codeboxio+"/api/addons/valid"
             },
             'webhook': {
                 'authToken': that.key
