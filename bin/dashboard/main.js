@@ -1,7 +1,18 @@
+// Requires
 var gui = require('nw.gui');
 var path = require('path');
-var codebox = require('../../index.js');
+
+var Q = require('q');
 var _ = require('underscore');
+
+// Port allocation
+var qClass = require('qpatch').qClass;
+var harbor = qClass(require('harbor'));
+var ports = new harbor(19000, 20000);
+
+// Local requires
+var codebox = require('../../index.js');
+
 
 // IDEs
 var instances = {};
@@ -31,14 +42,14 @@ var updateProjects = function() {
     var projects = storageGet("projects");
     $projectList.empty();
 
-    if (projects.length == 0) {
+    if (projects.length === 0) {
         $projectList.append($("<div>", {
             'class': "empty-message",
             'text': "No recent folders"
         }));
     }
 
-    
+
     projects.reverse().forEach(function(path) {
         var $project = $("<li>", {
             'class': "project",
@@ -66,14 +77,14 @@ var addProject = function(path) {
     if (projects.indexOf(path) >= 0) return;
 
     projects.push(path);
-    storageSet("projects", projects)
+    storageSet("projects", projects);
     updateProjects();
-}
+};
 
 // Select new project
 var selectPath = function() {
     $directorySelector.click();
-}
+};
 
 var openWindow = function(url) {
     if (windows[url]) {
@@ -105,33 +116,42 @@ var openWindow = function(url) {
 var runCodebox = function(path) {
     if (instances[path]) {
         openWindow(instances[path].url);
-        
         return;
     }
 
-
-    var port = 8000+_.size(instances);
-    var url = "http://localhost:"+port;
-    instances[path] = {
-        'url': url
-    };
-
-    codebox.start({
-        'root': path,
-        'server': {
-            'port': port
-        },
-        'addons': {
-            'blacklist': ["cb.offline"]
-        }
-    }).then(function() {
+    // Claim port
+    return ports.claim(path)
+    .then(function(port) {
+        // Setup url
+        var url = "http://localhost:"+port;
+        instances[path] = {
+            'url': url
+        };
+        return [port, url];
+    })
+    .spread(function (port, url) {
+        return codebox.start({
+            'root': path,
+            'server': {
+                'port': port
+            },
+            'addons': {
+                'blacklist': ["cb.offline"]
+            }
+        })
+        .then(function() {
+            return url;
+        });
+    })
+    .then(function(url) {
         openWindow(url);
-        
-    }, function(err) {
+
+    })
+    .fail(function(err) {
         console.error('Error initializing CodeBox');
         console.error(err);
         console.error(err.stack);
-    })
+    });
 };
 
 // Bind events
