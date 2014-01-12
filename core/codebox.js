@@ -70,6 +70,12 @@ var start = function(config) {
         },
         'settings': {
             'path': path.resolve(__dirname + '/../settings.json')
+        },
+        'process': {
+            // Path to external process
+            'git': "git",
+            'node': "node",
+            'npm': "npm"
         }
     }, config || {});
 
@@ -156,7 +162,8 @@ var start = function(config) {
                 'path': config.addons.path,
                 'tempPath': config.addons.tempPath,
                 'defaultsPath': config.addons.defaultsPath,
-                'blacklist': config.addons.blacklist
+                'blacklist': config.addons.blacklist,
+                'processMap': config.process
             },
 
             // Express server
