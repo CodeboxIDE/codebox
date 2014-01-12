@@ -74,7 +74,7 @@
     "window": {
         "title": "Codebox",
         "width": 400,
-        "height": 800,
+        "height": 500,
         "position": "center",
         "min_height": 400,
         "min_width": 450,
