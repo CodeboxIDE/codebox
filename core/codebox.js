@@ -19,7 +19,7 @@ var start = function(config) {
         'public': process.env.WORKSPACE_PUBLIC != "false",
         'dev': process.env.DEV != null,
         'workspace': {
-            'id': null
+            'id': null // Default will be a hash of the root path
         },
         'hooks': {
             // Hooks could be:
