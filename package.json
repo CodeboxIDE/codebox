@@ -82,7 +82,7 @@
         "min_height": 400,
         "min_width": 450,
         "max_width": 450,
-        "show": true,
+        "show": false,
         "toolbar": false,
         "frame": true
     }

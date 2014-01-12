@@ -169,7 +169,12 @@ $projectList.on("click", ".project", function(e) {
     runCodebox($(e.currentTarget).attr("project"));
 });
 
-// Start
-if (!updateProjects()) {
-    selectPath();
+// Start the application
+window.onload = function() {
+    gui.Window.get().show();
+
+    // Start
+    if (!updateProjects()) {
+        selectPath();
+    }
 }
