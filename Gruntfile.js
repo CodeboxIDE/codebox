@@ -89,40 +89,31 @@ module.exports = function (grunt) {
                 }
             }
         },
-        'run': {
-            'options': {
-                'modules': [
-                    "./config",
-                    "./logger",
-                    "./analytics",
-                    "./payment",
-                    "./database",
-                    "./dynobox",
-                    "./email",
-                    "./model.user",
-                    "./model.event",
-                    "./model.addon",
-                    "./model.box",
-                    "./web.offline",
-                    "./web.api",
-                    "./web.api.auth",
-                    "./web.api.box",
-                    "./web.api.addon",
-                    "./web.oauth",
-                    "./web.oauth.github",
-                    "./web.oauth.bitbucket",
-                    "./web.oauth.assembla",
-                    "./web.oauth.heroku",
-                    "./web.main"
-                ]
-            }
-        }
+        nodewebkit: {
+        options: {
+            build_dir: './appBuilds',
+            mac: true,
+            win: false,
+            linux32: false,
+            linux64: false,
+            mac_icns: "./bin/dashboard/icons/mac.icns",
+            credits: "./bin/dashboard/credits.html"
+        },
+        src: ["./*"]
+}
     });
 
     // Build
     grunt.loadNpmTasks('hr.js');
     grunt.registerTask('build', [
         'hr'
+    ]);
+
+    // Desktop app generation
+    grunt.loadNpmTasks('grunt-node-webkit-builder');
+    grunt.registerTask('buildApps', [
+        'build',
+        'nodewebkit'
     ]);
 
     // Run

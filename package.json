@@ -45,6 +45,9 @@
 
         "qpatch": "0.0.3"
     },
+    "devDependencies": {
+        "grunt-node-webkit-builder": "0.1.14"
+    },
     "bin": {
         "codebox": "./bin/codebox.js"
     },
