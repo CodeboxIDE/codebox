@@ -13,8 +13,16 @@ var $btnOpen = $("#open-new");
 // Update list of projects
 var updateProjects = function() {
     var projects = JSON.parse(localStorage.projects || "[]");
-
     $projectList.empty();
+
+    if (projects.length == 0) {
+        $projectList.append($("<div>", {
+            'class': "empty-message",
+            'text': "No recent folders"
+        }));
+    }
+
+    
     projects.reverse().forEach(function(path) {
         var $project = $("<li>", {
             'class': "project",

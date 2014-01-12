@@ -24,6 +24,13 @@ body {
     background: #EDEDED;
     border-bottom: 1px solid #959595;
 }
+#projects .empty-message {
+    text-transform: uppercase;;
+    text-align: center;
+    margin: 150px 20px;
+    font-size: 18px;
+    color: #ccc;
+}
 
 #projects .project {
     display: block;
