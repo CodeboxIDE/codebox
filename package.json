@@ -71,11 +71,12 @@
     },
     "main": "bin/dashboard/index.html",
     "window": {
-        "width": 1200,
+        "width": 400,
         "height": 800,
         "position": "center",
         "min_height": 400,
-        "min_width": 400,
+        "min_width": 450,
+        "max_width": 450,
         "show":true,
         "toolbar": false,
         "frame": true

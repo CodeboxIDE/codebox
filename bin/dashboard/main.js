@@ -16,13 +16,20 @@ var updateProjects = function() {
 
     $projectList.empty();
     projects.forEach(function(path) {
-        var project = $("<li>", {
-            'text': path,
+        var $project = $("<li>", {
             'class': "project",
             "project": path
         });
+        $("<p>", {
+            'text': path.split("/").pop(),
+            'class': 'project-title'
+        }).appendTo($project);
+        $("<p>", {
+            'text': path,
+            'class': 'project-path'
+        }).appendTo($project);
 
-        $projectList.append(project);
+        $projectList.append($project);
     });
 
     return projects.length > 0;
