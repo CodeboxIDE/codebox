@@ -21,6 +21,18 @@ Install Codebox globally using NPM:
 npm install -g codebox
 ```
 
+##### Ubuntu (extra steps).
+
+On ubuntu you'll need `git` and `build-essential`, install them with:
+```
+sudo apt-get -y install git build-essential
+```
+
+You will also need to install via `npm` using `sudo` with the following:
+```
+sudo npm install -g codebox
+```
+
 Desktop binaries for Mac and Linux are **coming soon**.
 
 #### Usage
