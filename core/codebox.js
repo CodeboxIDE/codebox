@@ -92,7 +92,10 @@ var start = function(config) {
         console.log("WARNING! your codebox is in dev mode");
     }
 
-    // Use git for auth
+    // Define Git executable for Gittle
+    Gittle.setBin(config.process.git);
+
+    // Use Git for auth
     if (config.users.gitDefault && !config.users.email) {
         // get GIT settings for defining default user
         prepare = prepare.then(function() {
