@@ -94,7 +94,7 @@ var start = function(config) {
                         'defaultEmail': actor.email
                     }
                 });
-            })
+            });
         });
     }
 
@@ -110,7 +110,7 @@ var start = function(config) {
         console.log("Error in the application:");
         console.log(err.stack);
     });
-    return prepare.then(function() {
+    return prepare.fin(function() {
         // Plugins to load
         var plugins = [
             // Core
