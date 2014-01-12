@@ -14,10 +14,6 @@ var ports = new harbor(19000, 20000);
 var codebox = require('../../index.js');
 
 
-// IDEs
-var instances = {};
-var windows = {};
-
 // DOM elements
 var $directorySelector = $('#directory-selector');
 var $projectList = $('#projects');
@@ -90,73 +86,21 @@ var selectPath = function() {
     $directorySelector.click();
 };
 
-var openWindow = function(url) {
-    if (windows[url]) {
-        windows[url].focus();
-        return;
-    }
-
-    var win = gui.Window.open(url, {
+var runCodebox = function(path) {
+    var win = gui.Window.open("./ide.html?"+path, {
         'title': "Codebox",
         'position': 'center',
         'width': 1024,
         'height': 768,
         'min_height': 400,
         'min_width': 400,
-        'show':true,
+        'show':false,
         'toolbar': false,
-        'frame': true
+        'frame': true,
+        'new-instance': true    // Because new isntance, we can't access the win object
     });
     win.maximize();
-    windows[url] = win;
-
-    win.on("close", function() {
-        windows[url] = null;
-        this.close(true);
-    });
-
     return win;
-};
-
-var runCodebox = function(path) {
-    if (instances[path]) {
-        openWindow(instances[path].url);
-        return;
-    }
-
-    // Claim port
-    return ports.claim(path)
-    .then(function(port) {
-        // Setup url
-        var url = "http://localhost:"+port;
-        instances[path] = {
-            'url': url
-        };
-        return [port, url];
-    })
-    .spread(function (port, url) {
-        return codebox.start({
-            'root': path,
-            'server': {
-                'port': port
-            },
-            'addons': {
-                'blacklist': ["cb.offline"]
-            }
-        })
-        .then(function() {
-            return url;
-        });
-    })
-    .then(function(url) {
-        openWindow(url);
-
-    })
-    .fail(function(err) {
-        console.error('Error initializing CodeBox');
-        console.error(err);
-        console.error(err.stack);
-    });
 };
 
 // Bind events
