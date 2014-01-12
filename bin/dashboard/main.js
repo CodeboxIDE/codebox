@@ -55,6 +55,10 @@ var updateProjects = function() {
             'class': "project",
             "project": path
         });
+        $("<img>", {
+            'src': "icons/folder.png",
+            'class': 'project-icon'
+        }).appendTo($project);
         $("<p>", {
             'text': path.split("/").pop(),
             'class': 'project-title'

@@ -57,6 +57,10 @@ body {
     color: #555;
     margin-bottom: 5px;
 }
+#projects .project .project-icon {
+    float: left;
+    margin: 9px 10px 0px 2px;
+}
 
 #open-new {
     position: fixed;
