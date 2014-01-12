@@ -18,7 +18,7 @@ function Workspace(options, events) {
     });
 
     // Public ID of workspace (ok to share)
-    this.id = options.id || crc.hex32(options.root);
+    this.id = options.id || crc.hex32(crc.crc32(options.root));
 
     // Secret token used for securing cookies, sessions ...
     this.secret = options.secret;
