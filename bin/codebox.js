@@ -64,19 +64,11 @@ cli.command('run [folder]')
             },
             'proc': {
                 'urlPattern': 'http://web-%d.' + that.box + '.vm1.dynobox.io'
+            },
+            'users': {
+                // Don't use default git user
+                'gitDefault': false
             }
-        });
-    } else if (!that.email) {
-        // get GIT settings for defining default user
-        prepare = prepare.then(function() {
-            return codeboxGitRepo.identity().then(function(actor) {
-                console.log("Use GIT actor for auth: ", actor.email);
-                _.extend(config, {
-                    'users': {
-                        'defaultEmail': actor.email
-                    }
-                });
-            })
         });
     }
 

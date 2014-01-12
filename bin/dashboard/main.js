@@ -52,6 +52,9 @@ var runCodebox = function(path) {
         'root': path,
         'server': {
             'port': port
+        },
+        'addons': {
+            'blacklist': ["cb.offline"]
         }
     }).then(function() {
         var url = "http://localhost:"+port;

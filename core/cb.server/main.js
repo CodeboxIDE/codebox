@@ -68,8 +68,6 @@ function setup(options, imports, register) {
         var baseToken = options.defaultToken;
         var baseEmail = options.defaultEmail;
 
-        console.log("check auth settings", req.query);
-
         if (req.query.email
         && req.query.token) {
             // Auth credential: save as cookies and redirect to clean url
@@ -84,8 +82,6 @@ function setup(options, imports, register) {
         if (baseToken) {
             res.cookie('token', baseToken, { httpOnly: false })
         }
-
-        console.log(baseEmail, baseToken, doRedirect);
 
         if (doRedirect) {
             return res.redirect("/");

@@ -2,14 +2,18 @@
 var Q = require('q');
 var _ = require('underscore');
 
+var urils = require('./utils');
 var os = require('os');
 var path = require('path');
-
+var Gittle = require('gittle');
 var engineer = require('engineer');
 
 var start = function(config) {
+    var codeboxGitRepo = new Gittle(path.resolve(__dirname, ".."));
+    var prepare = Q();
+
     // Options
-    config = _.defaults({}, config || {}, {
+    config = _.deepExtend({
         'root': process.env.WORKSPACE_DIR || process.cwd(),
         'title': process.env.WORKSPACE_NAME,
         'public': process.env.WORKSPACE_PUBLIC != "false",
@@ -53,7 +57,10 @@ var start = function(config) {
 
             // Default auth email
             'defaultEmail': null,
-            'defaultToken': null
+            'defaultToken': null,
+
+            // Use git for auth
+            'gitDefault': true
         },
         'proc': {
             'urlPattern': process.env.WORKSPACE_WEB_URL_PATTERN || 'http://localhost:%d'
@@ -61,7 +68,7 @@ var start = function(config) {
         'server': {
             'port': parseInt(process.env.PORT || 8000, 10)
         }
-    });
+    }, config || {});
 
     // Normalize root path
     config.root = path.resolve(process.cwd(), config.root);
@@ -76,144 +83,25 @@ var start = function(config) {
         console.log("WARNING! your codebox is in dev mode");
     }
 
+    // Use git for auth
+    if (!config.users.gitDefault && !config.users.email) {
+        // get GIT settings for defining default user
+        prepare = prepare.then(function() {
+            return codeboxGitRepo.identity().then(function(actor) {
+                console.log("Use GIT actor for auth: ", actor.email);
+                _.extend(config, {
+                    'users': {
+                        'defaultEmail': actor.email
+                    }
+                });
+            })
+        });
+    }
+
     // The root of our plugins
     var pluginPath = path.resolve(
         __dirname
     );
-
-    // Plugins to load
-    var plugins = [
-        // Core
-        {
-            // Path to plugin
-            'packagePath': "./cb.core",
-
-            // Options
-            'id': config.workspace.id,
-            'title': config.title,
-            'root': config.root,
-            'public': config.public,
-            'maxUsers': config.users.max
-        },
-
-        // Utils
-        "./cb.logger",
-        {
-            // Path to plugin
-            'packagePath': "./cb.hooks",
-
-            // Options
-            'hooks': config.hooks,
-            'webAuthToken': config.webhook.authToken
-        },
-
-        // Event bus
-        "./cb.events",
-        "./cb.events.log",
-        "./cb.events.socketio",
-        "./cb.events.webhook",
-
-        // Addons
-        {
-            // Path to plugin
-            'packagePath': "./cb.addons",
-
-            // Options
-            'dev': config.dev,
-            'path': config.addons.path,
-            'tempPath': config.addons.tempPath,
-            'defaultsPath': config.addons.defaultsPath,
-            'blacklist': config.addons.blacklist
-        },
-
-        // Express server
-        {
-            packagePath: "./cb.server",
-
-            'dev': config.dev,
-            'port': config.server.port,
-            'defaultEmail': config.users.defaultEmail,
-            'defaultToken': config.users.defaultToken
-        },
-
-        // VFS
-        "./cb.vfs",
-        "./cb.vfs.http",
-
-        // Shells
-        "./cb.shells",
-        "./cb.shells.stream",
-
-        // Detect project types
-        "./cb.project.detect",
-
-        // Running code/projects
-        {
-            packagePath: "./cb.run.ports",
-
-            // These are optional, harbor has sane defaults
-            min: process.env.RUN_PORTS_MIN,
-            max: process.env.RUN_PORTS_MAX,
-        },
-        "./cb.run.file",
-
-        {
-            packagePath: "./cb.run.project",
-            
-            urlPattern: config.proc.urlPattern
-        },
-
-        // Socket.io
-        "./cb.socket.io",
-
-        // Files
-        "./cb.files.service",
-        "./cb.files.sync",
-
-        // Git
-        "./cb.git",
-
-        // Export
-        "./cb.export",
-
-        // Offline manifest
-        {
-            packagePath: "./cb.offline",
-            
-            dev: config.dev
-        },
-
-        // Search
-        "./cb.search",
-
-        // Proxy
-        "./cb.proxy.http",
-
-        // Watch (file modifications)
-        "./cb.watch",
-
-        // Manages processes
-        {
-            packagePath: "./cb.proc",
-
-            urlPattern: config.proc.urlPattern
-        },
-
-        // APIs
-        "./cb.rpc",
-        "./cb.rpc.users",
-        "./cb.rpc.box",
-        "./cb.rpc.shells",
-        "./cb.rpc.git",
-        "./cb.rpc.auth",
-        "./cb.rpc.search",
-        "./cb.rpc.addons",
-        "./cb.rpc.proc",
-        "./cb.rpc.run",
-
-        // Now start the damn server
-        "./cb.main",
-    ];
 
     var app = new engineer.Application({
         'paths': [pluginPath]
@@ -222,10 +110,143 @@ var start = function(config) {
         console.log("Error in the application:");
         console.log(err.stack);
     });
-    return app.load(plugins).then(function() {
+    return prepare.then(function() {
+        // Plugins to load
+        var plugins = [
+            // Core
+            {
+                // Path to plugin
+                'packagePath': "./cb.core",
+
+                // Options
+                'id': config.workspace.id,
+                'title': config.title,
+                'root': config.root,
+                'public': config.public,
+                'maxUsers': config.users.max
+            },
+
+            // Utils
+            "./cb.logger",
+            {
+                // Path to plugin
+                'packagePath': "./cb.hooks",
+
+                // Options
+                'hooks': config.hooks,
+                'webAuthToken': config.webhook.authToken
+            },
+
+            // Event bus
+            "./cb.events",
+            "./cb.events.log",
+            "./cb.events.socketio",
+            "./cb.events.webhook",
+
+            // Addons
+            {
+                // Path to plugin
+                'packagePath': "./cb.addons",
+
+                // Options
+                'dev': config.dev,
+                'path': config.addons.path,
+                'tempPath': config.addons.tempPath,
+                'defaultsPath': config.addons.defaultsPath,
+                'blacklist': config.addons.blacklist
+            },
+
+            // Express server
+            {
+                packagePath: "./cb.server",
+
+                'dev': config.dev,
+                'port': config.server.port,
+                'defaultEmail': config.users.defaultEmail,
+                'defaultToken': config.users.defaultToken
+            },
+
+            // VFS
+            "./cb.vfs",
+            "./cb.vfs.http",
+
+            // Shells
+            "./cb.shells",
+            "./cb.shells.stream",
+
+            // Detect project types
+            "./cb.project.detect",
+
+            // Running code/projects
+            {
+                packagePath: "./cb.run.ports",
+
+                // These are optional, harbor has sane defaults
+                min: process.env.RUN_PORTS_MIN,
+                max: process.env.RUN_PORTS_MAX,
+            },
+            "./cb.run.file",
+
+            {
+                packagePath: "./cb.run.project",
+                
+                urlPattern: config.proc.urlPattern
+            },
+
+            // Socket.io
+            "./cb.socket.io",
+
+            // Files
+            "./cb.files.service",
+            "./cb.files.sync",
+
+            // Git
+            "./cb.git",
+
+            // Export
+            "./cb.export",
+
+            // Offline manifest
+            {
+                packagePath: "./cb.offline",
+                
+                dev: config.dev
+            },
+
+            // Search
+            "./cb.search",
+
+            // Proxy
+            "./cb.proxy.http",
+
+            // Watch (file modifications)
+            "./cb.watch",
+
+            // Manages processes
+            {
+                packagePath: "./cb.proc",
+
+                urlPattern: config.proc.urlPattern
+            },
+
+            // APIs
+            "./cb.rpc",
+            "./cb.rpc.users",
+            "./cb.rpc.box",
+            "./cb.rpc.shells",
+            "./cb.rpc.git",
+            "./cb.rpc.auth",
+            "./cb.rpc.search",
+            "./cb.rpc.addons",
+            "./cb.rpc.proc",
+            "./cb.rpc.run",
+
+            // Now start the damn server
+            "./cb.main",
+        ];
+        return app.load(plugins); 
+    }).then(function() {
         return Q(app);
-    }, function(err) {
-        process.exit(1);
     });
 };
 
