@@ -1,9 +1,11 @@
 var gui = require('nw.gui');
 var path = require('path');
 var codebox = require('../../index.js');
+var _ = require('underscore');
 
 // IDEs
-var countInstances = 0;
+var instances = {};
+var windows = {};
 
 // DOM elements
 var $directorySelector = $('#directory-selector');
@@ -73,9 +75,46 @@ var selectPath = function() {
     $directorySelector.click();
 }
 
+var openWindow = function(url) {
+    if (windows[url]) {
+        windows[url].focus();
+        return;
+    }
+
+    var win = gui.Window.open(url, {
+        'title': "Codebox",
+        'position': 'center',
+        'width': 1024,
+        'height': 768,
+        'min_height': 400,
+        'min_width': 400,
+        'show':true,
+        'toolbar': false,
+        'frame': true
+    });
+    windows[url] = win;
+
+    win.on("close", function() {
+        windows[url] = null;
+        this.close(true);
+    });
+
+    return win;
+};
+
 var runCodebox = function(path) {
-    var port = 8000+countInstances;
-    countInstances++;
+    if (instances[path]) {
+        openWindow(instances[path].url);
+        
+        return;
+    }
+
+
+    var port = 8000+_.size(instances);
+    var url = "http://localhost:"+port;
+    instances[path] = {
+        'url': url
+    };
 
     codebox.start({
         'root': path,
@@ -86,20 +125,8 @@ var runCodebox = function(path) {
             'blacklist': ["cb.offline"]
         }
     }).then(function() {
-        var url = "http://localhost:"+port;
-
-        console.log("\nCodebox is running at",url);
-        var win = gui.Window.open(url, {
-            'title': "Codebox",
-            'position': 'center',
-            'width': 1024,
-            'height': 768,
-            'min_height': 400,
-            'min_width': 400,
-            'show':true,
-            'toolbar': false,
-            'frame': true
-        });
+        openWindow(url);
+        
     }, function(err) {
         console.error('Error initializing CodeBox');
         console.error(err);
