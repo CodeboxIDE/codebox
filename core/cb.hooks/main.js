@@ -18,26 +18,26 @@ function setup(options, imports, register) {
 
 			var userId = data.email;
 
-			return Q({
+			return {
 				'userId': userId,
 				'name': userId,
 				'token': data.token,
 				'email': data.email,
 				'settings': {}
-			});
+			};
 		},
 
 		// Report list of events
-		'events': null,
+		'events': function() {},
 
 		// Store and valid user settings
 		'settings': function(data) {
-			return Q(data.settings);
+			return data.settings;
 		},
 
 		// Valid installation of an addon
 		'addons': function(addon) {
-			return Q(true);
+			return true;
 		}
 	});
 
@@ -54,7 +54,7 @@ function setup(options, imports, register) {
 		var handler = baseHooks[hook];
 		logger.log("use hook", hook);
 		if (_.isFunction(handler)) {
-			return handler(data);
+			return Q(handler(data));
 		} else if (_.isString(handler)) {
 			var d = Q.defer();
 

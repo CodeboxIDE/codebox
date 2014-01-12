@@ -10,9 +10,23 @@ var $directorySelector = $('#directory-selector');
 var $projectList = $('#projects');
 var $btnOpen = $("#open-new");
 
+
+// Local storage
+var storageGet = function(key, def) {
+    try {
+        return JSON.parse(localStorage[key]);
+    } catch(err) {
+        return localStorage[key] || def;
+    }
+};
+var storageSet = function(key, value) {
+    localStorage[key] = JSON.stringify(value);
+};
+
+
 // Update list of projects
 var updateProjects = function() {
-    var projects = JSON.parse(localStorage.projects || "[]");
+    var projects = storageGet("projects");
     $projectList.empty();
 
     if (projects.length == 0) {
@@ -41,16 +55,16 @@ var updateProjects = function() {
     });
 
     return projects.length > 0;
-}
+};
 
 // Add a path to the projects list
 var addProject = function(path) {
-    var projects = JSON.parse(localStorage.projects || "[]");
+    var projects = storageGet("projects");
 
     if (projects.indexOf(path) >= 0) return;
 
     projects.push(path);
-    localStorage.projects = JSON.stringify(projects);
+    storageSet("projects", projects)
     updateProjects();
 }
 
