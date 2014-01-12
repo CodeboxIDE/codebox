@@ -70,12 +70,6 @@ var start = function(config) {
         },
         'settings': {
             'path': path.resolve(__dirname + '/../settings.json')
-        },
-        'process': {
-            // Path to external process
-            'git': "git",
-            'node': "node",
-            'npm': "npm"
         }
     }, config || {});
 
@@ -92,10 +86,7 @@ var start = function(config) {
         console.log("WARNING! your codebox is in dev mode");
     }
 
-    // Define Git executable for Gittle
-    Gittle.setBin(config.process.git);
-
-    // Use Git for auth
+    // Use git for auth
     if (config.users.gitDefault && !config.users.email) {
         // get GIT settings for defining default user
         prepare = prepare.then(function() {
@@ -165,8 +156,7 @@ var start = function(config) {
                 'path': config.addons.path,
                 'tempPath': config.addons.tempPath,
                 'defaultsPath': config.addons.defaultsPath,
-                'blacklist': config.addons.blacklist,
-                'processMap': config.process
+                'blacklist': config.addons.blacklist
             },
 
             // Express server
