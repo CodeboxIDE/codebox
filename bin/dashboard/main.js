@@ -15,7 +15,7 @@ var updateProjects = function() {
     var projects = JSON.parse(localStorage.projects || "[]");
 
     $projectList.empty();
-    projects.forEach(function(path) {
+    projects.reverse().forEach(function(path) {
         var $project = $("<li>", {
             'class': "project",
             "project": path
@@ -39,7 +39,7 @@ var updateProjects = function() {
 var addProject = function(path) {
     var projects = JSON.parse(localStorage.projects || "[]");
 
-    if (projects.indexOf(path) < 0) return;
+    if (projects.indexOf(path) >= 0) return;
 
     projects.push(path);
     localStorage.projects = JSON.stringify(projects);
