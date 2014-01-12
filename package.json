@@ -74,6 +74,7 @@
     },
     "main": "bin/dashboard/index.html",
     "window": {
+        "title": "Codebox",
         "width": 400,
         "height": 800,
         "position": "center",
