@@ -99,7 +99,13 @@ module.exports = function (grunt) {
             mac_icns: "./bin/dashboard/icons/mac.icns",
             credits: "./bin/dashboard/credits.html"
         },
-        src: ["./*"]
+        src: [
+            "!./.git/",
+            "!./.addons/",
+            "!./appBuilds/",
+
+            "./**"
+        ]
 }
     });
 
