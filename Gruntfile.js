@@ -85,7 +85,7 @@ module.exports = function (grunt) {
                     'debug': process.env.CLIENT_DEBUG != null
                 },
                 'options': {
-                    
+
                 }
             }
         },
@@ -97,7 +97,8 @@ module.exports = function (grunt) {
             linux32: false,
             linux64: false,
             mac_icns: "./bin/dashboard/icons/mac.icns",
-            credits: "./bin/dashboard/credits.html"
+            credits: "./bin/dashboard/credits.html",
+            version: "0.8.4",
         },
         src: [
             "!./.git/",
