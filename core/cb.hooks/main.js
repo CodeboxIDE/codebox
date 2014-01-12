@@ -6,6 +6,7 @@ var request = require('request');
 
 function setup(options, imports, register) {
 	var logger = imports.logger.namespace("hooks");
+	var settings = imports.settings;
 
 	// Defaults hooks
 	var baseHooks = _.defaults(options.hooks || {}, {
@@ -23,7 +24,7 @@ function setup(options, imports, register) {
 				'name': userId,
 				'token': data.token,
 				'email': data.email,
-				'settings': {}
+				'settings': settings.get(userId, {}).settings || {}
 			};
 		},
 
@@ -32,7 +33,12 @@ function setup(options, imports, register) {
 
 		// Store and valid user settings
 		'settings': function(data) {
-			return data.settings;
+			settings.extend(data.auth.userId, {
+				'settings': data.settings
+			});
+			return settings.save().then(function() {
+				return data.settings;
+			})
 		},
 
 		// Valid installation of an addon

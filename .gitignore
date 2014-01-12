@@ -11,6 +11,7 @@ logs
 results
 
 npm-debug.log
+settings.json
 /node_modules/
 /appBuilds/
 /client/build/

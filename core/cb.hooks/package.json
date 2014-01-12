@@ -7,7 +7,7 @@
 
     "plugin": {
         "consumes": [
-            "logger"
+            "logger", "settings"
         ],
         "provides": [
         	"hooks"

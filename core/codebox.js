@@ -67,6 +67,9 @@ var start = function(config) {
         },
         'server': {
             'port': parseInt(process.env.PORT || 8000, 10)
+        },
+        'settings': {
+            'path': path.resolve(__dirname + '/../settings.json')
         }
     }, config || {});
 
@@ -211,6 +214,13 @@ var start = function(config) {
                 packagePath: "./cb.offline",
                 
                 dev: config.dev
+            },
+
+            // Settings
+            {
+                packagePath: "./cb.settings",
+                
+                storageFile: config.settings.path
             },
 
             // Search
