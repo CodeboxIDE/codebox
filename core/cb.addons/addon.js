@@ -171,6 +171,7 @@ var Addon = function(logger, _rootPath, options) {
 
     // Transfer to a new root directory
     this.transfer = function(newRoot, options) {
+        var that = this;
         options = _.defaults({}, options || {}, {
             forceDelete: true,
             excludeHiddenUnix: false,
@@ -179,16 +180,17 @@ var Addon = function(logger, _rootPath, options) {
 
         var addonPath = path.join(newRoot, this.infos.name);
         return Q.nfcall(wrench.copyDirRecursive, this.root, addonPath, options).then(function() {
-            var addon = new Addon(logger, addonPath);
+            var addon = new Addon(logger, addonPath, that.options);
             return addon.load();
         });
     };
 
     // Symlink this addons
     this.symlink = function(newRoot) {
+        var that = this;
         var addonPath = path.join(newRoot, this.infos.name);
         return Q.nfcall(fs.symlink, this.root, addonPath, 'dir').then(function() {
-            var addon = new Addon(logger, addonPath);
+            var addon = new Addon(logger, addonPath, that.options);
             return addon.load();
         });
     };
