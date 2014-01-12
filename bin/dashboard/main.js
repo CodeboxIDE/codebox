@@ -107,6 +107,7 @@ var openWindow = function(url) {
         'toolbar': false,
         'frame': true
     });
+    win.maximize();
     windows[url] = win;
 
     win.on("close", function() {
