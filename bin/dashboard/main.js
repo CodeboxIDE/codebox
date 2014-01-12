@@ -98,9 +98,7 @@ $btnOpen.click(function(e) {
 $projectList.on("click", ".project", function(e) {
     e.preventDefault();
     runCodebox($(e.currentTarget).attr("project"));
-})
-
-
+});
 
 // Start
 if (!updateProjects()) {
