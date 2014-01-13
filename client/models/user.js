@@ -3,8 +3,9 @@ define([
     "hr/hr",
     "utils/gravatar",
     'utils/loading',
-    "core/backends/rpc"
-], function(_, hr, gravatar, loading, rpc) {
+    "core/backends/rpc",
+    "models/command"
+], function(_, hr, gravatar, loading, rpc, Command) {
     var logging = hr.Logger.addNamespace("user");
 
     var User = hr.Model.extend({
@@ -43,8 +44,20 @@ define([
                 'save': function() {
                     return that.saveSettings();
                 },
-                'change': function(callback, context) {
-                    return that.on("change:settings."+namespace, callback, context);
+                'change': function(callback, context, keys) {
+                    var events = [];
+                    keys = keys || [];
+                    if (_.size(keys)) {
+                        events = _.map(keys, function (key) {
+                            return "change:settings."+namespace+"."+key;
+                        });
+                    } else {
+                        events.push("change:settings."+namespace);
+                    }
+                    return that.on(events.join(" "), callback, context);
+                },
+                open: function() {
+                    Command.run("settings", namespace);
                 }
             }
         },

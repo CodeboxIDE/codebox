@@ -17,11 +17,13 @@ define([
         // Constructor
         initialize: function() {
             SettingsPageView.__super__.initialize.apply(this, arguments);
+            var user = require("core/user");
 
             this.namespace = this.options.namespace;
             this.title = this.options.title || this.namespace;
             this.fields = this.options.fields || {};
             this.defaults = this.options.defaults || {};
+            this.user = user.settings(this.namespace);
         },
 
         // Define a field
@@ -63,6 +65,7 @@ define([
 
             var selectors = {
                 'text': function(el) { return el.val(); },
+                'textarea': function(el) { return el.val(); },
                 'number': function(el) { return el.val(); },
                 'select': function(el) { return el.val(); },
                 'checkbox': function(el) { return el.is(":checked"); },

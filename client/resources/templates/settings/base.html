@@ -14,6 +14,8 @@
         <input type="checkbox" name="<%- field_name %>" <% if(field_value) { %>checked<% } %> />
         <% } else if (field.type == "action") { %>
         <button class="btn btn-default" data-settings-action="<%- key %>"><%= field.content %></button>
+        <% } else if (field.type == "textarea") { %>
+        <textarea class="form-control" name="<%- field_name %>" rows="<%- field.rows || 3 %>"><%- field_value %></textarea>
         <% } else if (field.type == "select") { %>
         <select class="form-control" name="<%- field_name %>">
             <% _.each(field.options, function(opname, opkey) { %>

@@ -38,11 +38,11 @@ function setup(options, imports, register) {
 
     // Get User and set it to res object
     app.use(function getUser(req, res, next) {
-        // Pause request stream
-        //req.pause();
-
         var uid = req.session.userId;
         if(uid) {
+            // Pause request stream
+            req.pause();
+
             return workspace.getUser(uid)
             .then(function(user) {
                 // Set user
@@ -50,11 +50,10 @@ function setup(options, imports, register) {
 
                 // Activate user
                 res.user.activate();
-
-                next();
-            })
-            .fail(function(err) {
+            }, function(err) {
                 res.user = null;
+            }).done(function() {
+                req.resume();
                 next();
             });
         }
@@ -67,8 +66,6 @@ function setup(options, imports, register) {
         var doRedirect = false;
         var baseToken = options.defaultToken;
         var baseEmail = options.defaultEmail;
-
-        console.log("check auth settings", req.query);
 
         if (req.query.email
         && req.query.token) {
@@ -99,10 +96,6 @@ function setup(options, imports, register) {
     //
     var authorizedPaths = [];
     app.use(function(req, res, next) {
-        // Resume request now
-        // So our handlers can use it as a stream
-        req.resume();
-
         if(needAuth(req.path) || res.user) {
             return next();
         }

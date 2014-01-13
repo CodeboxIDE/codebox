@@ -12,6 +12,7 @@ define([
             open: true,
             autoFocus: false,
             keyboard: true,
+            keyboardEnter: true,
             className: "",
             valueSelector: true
         },
@@ -139,7 +140,7 @@ define([
             var key = e.keyCode || e.which;
 
             // Enter: valid
-            if (key == 13) {
+            if (key == 13 && this.options.keyboardEnter) {
                 this.actionConfirm(e);
             } else 
             // Esc: close

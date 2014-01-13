@@ -21,6 +21,8 @@ define([
 
         // Render the menu item
         render: function() {
+            if (this.menu) this.menu.$el.detach();
+            
             this.$el.empty();
             this.$el.attr("class", this.className+" "+this.getFlagsClass());
             $("<button>", {

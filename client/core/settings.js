@@ -37,6 +37,7 @@ define([
             var currentValues = user.get("settings."+namespace, {});
             currentValues = _.defaults(currentValues, defaults);
             user.set("settings."+namespace, currentValues);
+
             return tab;
         },
 
@@ -63,6 +64,13 @@ define([
          */
         open: function(page) {
             Command.run("settings", page);
+        },
+
+        /*
+         *  User settings
+         */
+        user: function(namespace) {
+            return user.settings(namespace);
         }
     };
 
