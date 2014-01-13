@@ -87,7 +87,7 @@ var start = function(config) {
     }
 
     // Use git for auth
-    if (config.users.gitDefault && !config.users.email) {
+    if (config.users.gitDefault && !config.users.defaultEmail) {
         // get GIT settings for defining default user
         prepare = prepare.then(function() {
             return codeboxGitRepo.identity().then(function(actor) {
