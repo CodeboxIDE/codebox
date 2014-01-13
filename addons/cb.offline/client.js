@@ -1,4 +1,7 @@
-define([], function() {
+define([
+    "settings",
+    "menus"
+], function(settings, menus) {
     var $ = codebox.require("jQuery");
     var Q = codebox.require("q");
     var app = codebox.require("core/app");
@@ -9,68 +12,9 @@ define([], function() {
     var hr = codebox.require("hr/hr");
     var Command = codebox.require("models/command");
     var localfs = codebox.require("core/localfs");
-    var dialogs = codebox.require("utils/dialogs");
 
-    // Command to check connexion
-    var checkConnexion = commands.register("offline.check", {
-        'title': "Check Connexion",
-        'offline': true,
-        'icon': "bolt"
-    }, function() {
-        hr.Offline.check();
-    });
+    var _syncInterval = null;
 
-    // Menu Synchronize  list
-    var menuListChanges = new Command({}, {
-        'title': "Changes",
-        'type': "menu",
-        'flags': "disabled"
-    });
-    var menuChanges = menu.register("offline.synchronize", {
-        title: "Synchronize",
-        position: 95,
-        offline: false
-    }).menuSection(checkConnexion)
-    .menuSection([
-        {
-            'title': "Calcul Changes",
-            'offline': false,
-            'action': function() {
-                return localfs.sync();
-            }
-        }
-    ]).menuSection([
-        {
-            'title': "Reset All Changes",
-            'offline': false,
-            'action': function() {
-                return localfs.reset();
-            }
-        },
-        {
-            'title': "Apply All Changes",
-            'offline': false,
-            'action': function() {
-                var n = localfs.changes.size();
-                if (n == 0) return;
-
-                dialogs.confirm("Do you really want to apply "+n+" changes?").then(function(yes) {
-                    if (!yes) return;
-                    return localfs.changes.applyAll();
-                });   
-            }
-        }
-    ]).menuSection([
-        menuListChanges
-    ]);
-
-    // Changes update
-    localfs.changes.on("add remove reset", function() {
-        menuListChanges.toggleFlag("disabled", localfs.changes.size() == 0);
-        menuListChanges.menu.reset(localfs.changes.map(function(change) {
-            return change.command();
-        }));
-    });
 
     // Run offline cache update operation
     var op = operations.start("offline.update", null, {
@@ -97,31 +41,34 @@ define([], function() {
         op.state("idle");
     });
 
-    // Add menu when offline
-    menu.register("offline", {
-        title: "Offline",
-        position: 90,
-        offline: true
-    }).menuSection([
-        checkConnexion
-    ]);
 
-    // Enable sync
-    localfs.enableSync();
-    
-    // Run sync every 10min
-    setInterval(function() {
-        localfs.autoSync();
-    }, 10*60*1000);
+    // Update settings
+    var updateSettings = function() {
+        if (_syncInterval) clearInterval(_syncInterval);
+
+        // Enable sync
+        localfs.enableSync(settings.user.get("enabled", true));
+
+        // Toggle menu
+        menus.sync.toggleFlag("disabled", !settings.user.get("enabled", true));
+        
+        // Run sync every 10min
+        _syncInterval = setInterval(function() {
+            localfs.autoSync();
+        }, settings.user.get("syncInterval", 10)*60*1000);
+    };  
+
+    setTimeout(function() {
+        localfs.sync();
+    }, 5*1000);
 
     // Run sync everytime there is a modification
     box.on("box:watch", function() {
         localfs.autoSync();
     });
 
-    setTimeout(function() {
-        // Run sync
-        localfs.sync();
-    }, 5*1000);
+    // Change settings
+    settings.user.change(updateSettings);
+    updateSettings();
 });
 

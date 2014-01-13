@@ -57,8 +57,8 @@ define([
         return Q();
     };
 
-    var enableSync = function() {
-        _syncIsEnable = true;
+    var enableSync = function(state) {
+        _syncIsEnable = state != undefined? state : true;
     };
 
     var prepareFs = function() {
