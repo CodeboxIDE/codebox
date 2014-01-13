@@ -95,7 +95,8 @@ function setup_perm () {
     echo "Calling setup_perm ..."
 
     chown ${USER} -R ${HOME}
-    chmod 0600 -R ${SSH_DIR}
+    chmod +x ${SSH_DIR}
+    chmod 600 ${SSH_DIR}*
 }
 
 
