@@ -39,7 +39,7 @@ function setup(options, imports, register) {
     // Get User and set it to res object
     app.use(function getUser(req, res, next) {
         // Pause request stream
-        //req.pause();
+        if (req.path != "/rpc/auth/join") req.pause();
 
         var uid = req.session.userId;
         if(uid) {

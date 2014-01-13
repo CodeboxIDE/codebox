@@ -187,7 +187,7 @@ define([
                 d.reject(err);
             };
             reader.onload = function(e) {
-                d.resolve(this.result);
+                d.resolve(reader.result);
             };
             reader.readAsText(file);
 
