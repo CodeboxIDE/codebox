@@ -39,10 +39,10 @@ function setup(options, imports, register) {
     // Get User and set it to res object
     app.use(function getUser(req, res, next) {
         // Pause request stream
-        if (req.path != "/rpc/auth/join") req.pause();
-
         var uid = req.session.userId;
         if(uid) {
+            req.pause();
+
             return workspace.getUser(uid)
             .then(function(user) {
                 // Set user
@@ -50,11 +50,11 @@ function setup(options, imports, register) {
 
                 // Activate user
                 res.user.activate();
-
-                next();
             })
             .fail(function(err) {
                 res.user = null;
+            }).fin(function() {
+                req.resume();
                 next();
             });
         }
@@ -99,10 +99,6 @@ function setup(options, imports, register) {
     //
     var authorizedPaths = [];
     app.use(function(req, res, next) {
-        // Resume request now
-        // So our handlers can use it as a stream
-        req.resume();
-
         if(needAuth(req.path) || res.user) {
             return next();
         }
