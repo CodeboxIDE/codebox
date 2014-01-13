@@ -57,26 +57,19 @@ cli.command('run [folder]')
             'hooks': {
                 'auth': that.codeboxio+"/api/box/"+that.box+"/auth",
                 'events': that.codeboxio+"/api/box/"+that.box+"/events",
-                'settings': that.codeboxio+"/api/account/settings"
+                'settings': that.codeboxio+"/api/account/settings",
+                'addons': that.codeboxio+"/api/addons/valid"
             },
             'webhook': {
                 'authToken': that.key
             },
             'proc': {
                 'urlPattern': 'http://web-%d.' + that.box + '.vm1.dynobox.io'
+            },
+            'users': {
+                // Don't use default git user
+                'gitDefault': false
             }
-        });
-    } else if (!that.email) {
-        // get GIT settings for defining default user
-        prepare = prepare.then(function() {
-            return codeboxGitRepo.identity().then(function(actor) {
-                console.log("Use GIT actor for auth: ", actor.email);
-                _.extend(config, {
-                    'users': {
-                        'defaultEmail': actor.email
-                    }
-                });
-            })
         });
     }
 

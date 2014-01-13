@@ -4,7 +4,7 @@ var path = require('path');
 var Q = require('q');
 var Manifest = require('./manifest').Manifest;
 var pkg = require('../../package.json');
-var crypto = require('cryptojs').Crypto;
+var crc = require('crc');
 
 function setup(options, imports, register) {
     var server = imports.server;
@@ -22,9 +22,9 @@ function setup(options, imports, register) {
         res.header("Content-Type", "text/cache-manifest");
 
         addons.list().then(function(installedAddons) {
-            var revision = pkg.version+"-"+crypto.MD5(_.map(installedAddons, function(addon, addonName) {
+            var revision = pkg.version+"-"+crc.hex32(crc.crc32(_.map(installedAddons, function(addon, addonName) {
                 return addonName+":"+addon.infos.version;
-            }).sort().join("-")).toString();
+            }).sort().join("-")));
 
             if (options.dev) revision = revision+"-"+startTime;
 

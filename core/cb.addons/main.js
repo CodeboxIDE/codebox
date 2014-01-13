@@ -5,7 +5,6 @@ var path = require('path');
 var express = require('express');
 var Gittle = require('gittle');
 var wrench = require('wrench');
-var requirejs = require('requirejs');
 var exec = require('child_process').exec;
 
 var Addon = require("./addon");

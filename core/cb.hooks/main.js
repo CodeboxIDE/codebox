@@ -6,6 +6,7 @@ var request = require('request');
 
 function setup(options, imports, register) {
 	var logger = imports.logger.namespace("hooks");
+	var settings = imports.settings;
 
 	// Defaults hooks
 	var baseHooks = _.defaults(options.hooks || {}, {
@@ -18,26 +19,31 @@ function setup(options, imports, register) {
 
 			var userId = data.email;
 
-			return Q({
+			return {
 				'userId': userId,
 				'name': userId,
 				'token': data.token,
 				'email': data.email,
-				'settings': {}
-			});
+				'settings': settings.get(userId, {}).settings || {}
+			};
 		},
 
 		// Report list of events
-		'events': null,
+		'events': function() {},
 
 		// Store and valid user settings
 		'settings': function(data) {
-			return Q(data.settings);
+			settings.extend(data.auth.userId, {
+				'settings': data.settings
+			});
+			return settings.save().then(function() {
+				return data.settings;
+			})
 		},
 
 		// Valid installation of an addon
 		'addons': function(addon) {
-			return Q(true);
+			return true;
 		}
 	});
 
@@ -54,7 +60,7 @@ function setup(options, imports, register) {
 		var handler = baseHooks[hook];
 		logger.log("use hook", hook);
 		if (_.isFunction(handler)) {
-			return handler(data);
+			return Q(handler(data));
 		} else if (_.isString(handler)) {
 			var d = Q.defer();
 

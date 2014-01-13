@@ -82,8 +82,6 @@ function setup(options, imports, register) {
             res.cookie('token', baseToken, { httpOnly: false })
         }
 
-        console.log(baseEmail, baseToken, doRedirect);
-
         if (doRedirect) {
             return res.redirect("/");
         }

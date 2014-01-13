@@ -1,0 +1,60 @@
+<html>
+    <head>
+        <title>Codebox</title>
+    </head>
+    <body></body>
+    <script>
+    // Port allocation
+    var gui = require('nw.gui');
+    var qClass = require('qpatch').qClass;
+    var harbor = qClass(require('harbor'));
+    var ports = new harbor(19000, 20000);
+
+    // Local requires
+    var codebox = require('../../index.js');
+
+    var win = gui.Window.get();
+
+    var startCodebox = function(path) {
+        console.log("start ide in ", path);
+
+        // Claim port
+        return ports.claim(path)
+        .then(function(port) {
+            // Setup url
+            var url = "http://localhost:"+port;
+            return [port, url];
+        })
+        .spread(function (port, url) {
+            return codebox.start({
+                'root': path,
+                'server': {
+                    'port': port
+                },
+                'addons': {
+                    'blacklist': ["cb.offline"]
+                }
+            })
+            .then(function() {
+                return url;
+            });
+        })
+        .then(function(url) {
+            location.href = url;
+        });
+    };
+
+    window.onload = function() {
+        win.show();
+
+        var path = location.search.replace("?", "");
+        if (!path) {
+            win.close();
+        } else {
+            startCodebox(path).fail(function() {
+                win.close();
+            });
+        }
+    };
+    </script>
+</html>

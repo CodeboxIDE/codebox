@@ -2,13 +2,14 @@
 var Q = require('q');
 var _ = require('underscore');
 var uuid = require('uuid');
+var crc = require('crc');
 
 var User = require('./user').User;
 
 
 function Workspace(options, events) {
     options = _.defaults({}, options, {
-        'id': uuid.v4(),
+        'id': null,
         'secret': uuid.v4(),
         'name': 'codebox',
         'public': true,
@@ -17,7 +18,7 @@ function Workspace(options, events) {
     });
 
     // Public ID of workspace (ok to share)
-    this.id = options.id;
+    this.id = options.id || crc.hex32(crc.crc32(options.root));
 
     // Secret token used for securing cookies, sessions ...
     this.secret = options.secret;

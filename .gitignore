@@ -11,9 +11,9 @@ logs
 results
 
 npm-debug.log
+settings.json
 /node_modules/
-/stacks/.vagrant/
-
+/appBuilds/
 /client/build/
 .addons
 
