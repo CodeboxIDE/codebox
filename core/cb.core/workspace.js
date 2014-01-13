@@ -70,7 +70,7 @@ Workspace.prototype.addUser = function(user) {
 
     // Limit count
     if (_.size(this._users) >= this.maxUsers) {
-        return Q.reject(new Error("Could not add user, because there are already too much users (limit="+this.maxUsers+")"));
+        return Q.reject(new Error("Could not add user, because there are already too many users (limit="+this.maxUsers+")"));
     }
 
     // Add to map
