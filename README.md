@@ -41,7 +41,7 @@ Desktop binaries for Mac and Linux are **coming soon**.
 codebox run ./myworkspace --open
 ```
 
-Use this command to run and open Codebox IDE. By default, Codebox uses GIT to identify you, you can use the option ```--email=john.doe@gmail.com``` to define the email you cant to use during GIT operations.
+Use this command to run and open Codebox IDE. By default, Codebox uses GIT to identify you, you can use the option ```--email=john.doe@gmail.com``` to define the email you want to use during GIT operations.
 
 Others comand line options are available and can be list with: ```codebox --help```. For deeper configuration, take a look at the documentation about [environment variables](https://github.com/FriendCode/codebox/blob/master/docs/server/env.md).
 
