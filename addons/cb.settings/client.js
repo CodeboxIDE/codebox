@@ -16,7 +16,8 @@ define(["views/dialog"], function(SettingsDialog) {
         offline: false
     }, function(page) {
         dialogs.open(SettingsDialog, {
-            "page": page
+            'page': page,
+            'keyboardEnter': false
         });
     });
 

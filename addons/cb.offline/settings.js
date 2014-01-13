@@ -20,6 +20,10 @@ define([], function() {
                 'min':  1,
                 'max': 1000,
                 'step': 1
+            },
+            'syncIgnore': {
+                'label': "Ignored files (one by line)",
+                'type': "textarea"
             }
         }
     });
