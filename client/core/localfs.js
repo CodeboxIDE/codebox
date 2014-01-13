@@ -14,6 +14,7 @@ define([
     var base = "/";
     var _isInit = false;
     var _syncIsEnable = false;
+    var _ignoredFiles = [];
     var changes = new Changes();
 
     // Constant mime type for a directory
@@ -57,8 +58,24 @@ define([
         return Q();
     };
 
+    /*
+     *  Enable/Disable sync
+     */
     var enableSync = function(state) {
         _syncIsEnable = state != undefined? state : true;
+    };
+
+    /*
+     *  Set ignored files list
+     */
+    var setIgnoredFiles = function(files) {
+        _ignoredFiles = files || [];
+        _ignoredFiles.push("/.git")
+        _ignoredFiles = _.uniq(_ignoredFiles);
+        _ignoredFiles = _.map(_ignoredFiles, function(p) {
+            if (p[0] != "/") p = "/"+p;
+            return p;
+        });
     };
 
     var prepareFs = function() {
@@ -99,6 +116,16 @@ define([
         if (path.length == 0) path = '/';
         if (path[0] != '/') path = "/" + path;
         return path;
+    };
+
+    /*
+     *  Test if path is ignored files
+     */
+    var isIgnoredFile = function(path) {
+        return _.reduce(_ignoredFiles, function(state, ignoredPath) {
+            if (state) return state;
+            if (path.indexOf(ignoredPath) == 0) return true;
+        }, false);
     };
 
     /*
@@ -236,6 +263,9 @@ define([
         if (!_syncIsEnable) return Q(changes);
 
         var addChange = function(path, type, args) {
+            if (isIgnoredFile(path)) {
+                return;
+            }
             logger.log("change:",type,path);
             changes.add(_.extend(args || {}, {
                 'path': path,
@@ -246,7 +276,9 @@ define([
 
         var getDirChanges = function(path) {
             var localEntries, boxEntries, currentEntryInfos, fp;
-            if (path == "/.git") return Q();
+            if (isIgnoredFile(path)) {
+                return Q();
+            }
 
             logger.log("get changes in:", path);
 
@@ -274,7 +306,7 @@ define([
             }).then(function() {
                 // Eliminate old useless entries
                 return Q.all(_.map(boxEntries, function(boxFile) {
-                    if (boxFile.path() == "/.git") return Q();
+                    if (isIgnoredFile(boxFile.path())) return Q();
 
                     var localEntry = _.find(localEntries, function(localEntry) {
                         return localEntry.name == boxFile.get("name");
@@ -352,7 +384,7 @@ define([
 
         var doSync = function(fp) {
             var path = fp.path();
-            if (path == "/.git") return Q();
+            if (isIgnoredFile(path)) return Q();
 
             logger.log("sync:box->local:", path);
 
@@ -466,6 +498,7 @@ define([
         },
         'enableSync': enableSync,
         'filer': filer,
-        'syncDuration': syncDuration
+        'syncDuration': syncDuration,
+        'setIgnoredFiles': setIgnoredFiles
     };
 });

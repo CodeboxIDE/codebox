@@ -49,6 +49,9 @@ define([
         // Enable sync
         localfs.enableSync(settings.user.get("enabled", true));
 
+        // Set ignored files
+        localfs.setIgnoredFiles(settings.user.get("syncIgnore", "").split("\n"));
+
         // Toggle menu
         menus.sync.toggleFlag("disabled", !settings.user.get("enabled", true));
         
