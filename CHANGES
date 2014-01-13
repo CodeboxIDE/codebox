@@ -1,3 +1,19 @@
+2014-01-13  Samy Pessé  <samy.pesse@friendco.de>
+            Aaron O'Mullan <aaron.omullan@friendco.de>
+            Colin Prieto <colin.prieto@gmail.com>
+            Lachlan Dowding <lachlan@permafro.st>
+
+    * Bump version to 0.4.6
+    * Version version for desktop applications (no build yet)
+    * Dashboard for desktop applications
+    * Add options for offline synchronization: enable/disable, ignored files
+    * Use git default user email for auth in command line
+    * New command line option --email to define default auth email
+    * Use Codebox.io addons installation hook
+    * Store user settings in settings.json
+    * Set correct SSH_DIR permissions
+
+
 2014-01-11  Samy Pessé  <samy.pesse@friendco.de>
 
     * Bump version to 0.4.5
