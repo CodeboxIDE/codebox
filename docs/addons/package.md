@@ -41,6 +41,8 @@ name should be globally unique since Codebox will store addon's data under the d
 
 (string) version for the addon, format should be : X.X.X, comparaison are done by converting A.B.C to the int ABC.
 
+### Fields
+
 #### author
 
 (object) information about he add-on author, example:
@@ -52,8 +54,6 @@ name should be globally unique since Codebox will store addon's data under the d
     "url": "http://samypesse.fr"
 }
 ```
-
-### Fields
 
 #### description
 
