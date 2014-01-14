@@ -13,6 +13,7 @@ This documentation contains everything you need to know for using Codebox or run
 
 ### Add-on development
 
+* [Get started](addons/getstarted.md)
 * [Publish add-ons](addons/publish.md)
 
 ---------------------------------------
