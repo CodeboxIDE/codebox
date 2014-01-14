@@ -13,9 +13,10 @@
             position: absolute;
             left: 0px;
             right: 0px;
-            width: 100%;
+            width: @codeboxToolbarWidth;
             top: 0px;
-            height: @codeboxToolbarHeight;
+            bottom: 9px;
+            height: 100%;
             z-index: 1;
             overflow: hidden;
             background: @codeboxBodyBackground;
@@ -23,10 +24,10 @@
 
         .lateral-body {
             position: absolute;
-            top: @codeboxToolbarHeight;
-            left: 0px;
+            top: 0px;
+            left: @codeboxToolbarWidth;
             bottom: 0px;
-            width: 100%;
+            right: 0px;
             overflow-y: auto;
             overflow-x: hidden;
             .transition(all @lateralTransitionSpeed);
