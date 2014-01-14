@@ -63,7 +63,7 @@ define([
             this.mode = this.modes.SYNC;
             this.ping = false;  // ping
             this.participants = []; // participants list
-            this.syncState = false; // sync connexion state
+            this.syncState = false; // sync connection state
             this.modified = false;
 
             // Add timer for ping
@@ -133,7 +133,7 @@ define([
         },
 
 
-        // Maintain connexion with ping
+        // Maintain connection with ping
         _intervalPing: function(){
             if (!this.isSync()) return;
             if (this.synced == false) {
@@ -380,7 +380,7 @@ define([
             }
         },
 
-        /* Socket for the connexion */
+        /* Socket for the connection */
         socket: function() {
             var that = this;
 
@@ -757,7 +757,7 @@ define([
         },
 
         /*
-         *  Close the connexion
+         *  Close the connection
          */
         close: function() {
             this.send("close");

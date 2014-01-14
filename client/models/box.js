@@ -78,7 +78,7 @@ define([
         },
 
         /*
-         *  Socket for the connexion
+         *  Socket for the connection
          *
          *  @namespace : namespace for the socket
          *  @forceCreate : force creation of a new socket
