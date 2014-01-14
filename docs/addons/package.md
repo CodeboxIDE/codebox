@@ -6,7 +6,7 @@ Every add-on package should contain a manifest file named **package.json**, it w
 
 Example:
 
-```
+```json
 {
     "name": "helloworld",
     "version": "0.1.0",
