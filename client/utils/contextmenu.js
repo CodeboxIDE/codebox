@@ -37,6 +37,22 @@ define([
             ContextMenu.clear();
 
             var menu = ContextMenu.generateMenu(menuItems);
+
+            var w = menu.$el.width();
+            var h = menu.$el.height();
+
+            var windowW = $(window).width();
+            var windowH = $(window).height();
+
+            if ((pos.left+w) > windowW) {
+                pos.left = pos.left - w;
+                menu.$el.addClass("submenus-right");
+            }
+            if ((pos.top+h) > windowH) {
+                pos.top = pos.top - h;
+                menu.$el.addClass("submenus-top");
+            }
+
             menu.$el.css(_.extend({
                 'position': "fixed",
                 'z-index': 100
@@ -67,8 +83,8 @@ define([
                 }
 
                 ContextMenu.open(menu, {
-                    left: e.pageX,
-                    top: e.pageY 
+                    'left': e.pageX,
+                    'top': e.pageY
                 });
 
                 $el.addClass("ui-context-menu");
