@@ -270,8 +270,7 @@ define([
             this.setMode(this.options.mode);
             this.setKeyboardmode(this.options.keyboard);
             this.setTheme(themes.current().editor.theme || "textmate");
-
-            this.editor.setFontSize(this.options.fontsize);
+            this.$editor.css("font-size", this.options.fontsize+"px");
             this.editor.setPrintMarginColumn(this.options.printmargincolumn);
             this.editor.setShowPrintMargin(this.options.showprintmargin);
             this.editor.setHighlightActiveLine(this.options.highlightactiveline);
