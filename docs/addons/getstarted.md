@@ -41,4 +41,5 @@ $ git remote set-url origin https://github.com/user/repo2.git
 * [Structure of the package.json](package.md)
 * [Running node.js code](nodejs.md)
 * [Running client code](client.md)
+* [Publish your add-on](publish.md)
 
