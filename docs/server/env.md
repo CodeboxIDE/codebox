@@ -5,6 +5,7 @@ Codebox use environment variables for defining its configuration, here is a list
 | Name | Description | Default |
 | ----- | ------------------- | ------------------- |
 | PORT | HTTP Port for running the IDE | 8000 |
+| DEV | Dev-mode: rebuild all the addons at boot, logs, ... | |
 | WORKSPACE\_DIR | Workspace current directory | Shell current directory |
 | WORKSPACE\_NAME | Name for this workspace | "Workspace" |
 | WORKSPACE\_PUBLIC | If defined the workspace will be considered as public | false |
