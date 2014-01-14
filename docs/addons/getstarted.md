@@ -7,7 +7,7 @@ Most of the IDE functionnalities are conserved in the defaults addons. These add
 
 Addons can extend the client and the node process. Addons structure is based on a node.js package structure. Addon code should be stored in a GIT (GIT is used for downlaoding the addon's code during the installation).
 
-### Testing an HelloWorld Addons
+### Writting an HelloWorld Addons
 
 The best way for developing addons is to install Codebox locally and run it an adapted configuration.
 
@@ -17,7 +17,7 @@ The best way for developing addons is to install Codebox locally and run it an a
 
 ```
 export DEV=true
-export WORKSPACE_ADDONS_DIR=/Users/You/codebox/addons  # change it for a directory outside teh codebox directory
+export WORKSPACE_ADDONS_DIR=/Users/You/codebox/addons  # change it for a directory outside the codebox directory
 ```
 
 3) Start codebox with these variables using:
@@ -35,3 +35,10 @@ $ git remote set-url origin https://github.com/user/repo2.git
 ```
 
 6) Restart Codebox using ```$ npm start``` and you just finished your first HelloWorld add-on!
+
+### Writting your add-on
+
+* [Structure of the package.json](package.md)
+* [Running node.js code](nodejs.md)
+* [Running client code](client.md)
+
