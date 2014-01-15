@@ -160,7 +160,7 @@ define([
 
                 // Set editor content
                 this._op_set = true;
-                this.editor.setValue(content);
+                this.editor.session.setValue(content);
                 this._op_set = false;
 
                 // Move cursors
