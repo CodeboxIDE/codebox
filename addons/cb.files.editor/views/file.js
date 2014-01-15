@@ -22,59 +22,6 @@ define([
     var logging = hr.Logger.addNamespace("editor");
     var userSettings = user.settings("editor");
 
-    // Current file editor
-    var currentFileEditor = null;
-
-    // Syntax menu command
-    var syntaxMenu = Command.register("editor.syntax", {
-        'title': "Syntax",
-        'type': "menu"
-    });
-    syntaxMenu.menu.add(_.map(aceModes.modesByName, function(mode, name) {
-        return {
-            'title': mode.caption,
-            'action': function() {
-                if (!currentFileEditor) return;
-                currentFileEditor.setMode(name);
-            }
-        }
-    }));
-
-    // Command collaboration mode
-    var collaborationCmd = Command.register("editor.collaboration", {
-        'type': "checkbox",
-        'title': "Toggle Collaboration Mode",
-        'offline': false,
-        'action': function(state) {
-            if (!currentFileEditor) return;
-            currentFileEditor.sync.updateEnv({
-                'sync': state
-            });
-        }
-    });
-
-    // Add menu
-    menu.register("editor", {
-        title: "Editor"
-    }).menuSection([{
-        'type': "action",
-        'title': "Settings",
-        'action': function() {
-            settings.open("editor");
-        }
-    }]).menuSection([
-        syntaxMenu,
-        collaborationCmd
-    ]);
-
-    // Definie current editor
-    var setCurrentEditor = function(ed) {
-        currentFileEditor = ed;
-
-        if (!currentFileEditor) return;
-        collaborationCmd.toggleFlag("active", currentFileEditor.sync.getMode() == currentFileEditor.sync.modes.SYNC);
-    }
-
 
     var FileEditorView = FilesBaseView.extend({
         className: "addon-files-aceeditor",
@@ -88,16 +35,40 @@ define([
             var that = this;
             FileEditorView.__super__.initialize.apply(this, arguments);
 
+
+            // Syntax menu command
+            var syntaxMenu = new Command({}, {
+                'title': "Syntax",
+                'type': "menu"
+            });
+            syntaxMenu.menu.add(_.map(aceModes.modesByName, function(mode, name) {
+                return {
+                    'title': mode.caption,
+                    'action': function() {
+                        that.setMode(name);
+                    }
+                }
+            }));
+
             // Tab menu
-            this.tab.menu.menuSection([
+            this.tab.menu.menuSection([{
+                'type': "action",
+                'title': "Settings",
+                'action': function() {
+                    settings.open("editor");
+                }
+            }]).menuSection([
                 {
                     'type': "checkbox",
                     'title': "Toggle Collaboration Mode",
                     'offline': false,
                     'action': function(state) {
-                        alert("lol");
+                        that.sync.updateEnv({
+                            'sync': state
+                        });
                     }
-                }
+                },
+                syntaxMenu
             ]);
 
             // Create sync
@@ -130,9 +101,6 @@ define([
             }, this);
 
             // Bind editor changement
-            this.editor.on("focus", function() {
-                currentFileEditor = that;
-            });
             this.editor.getSession().selection.on('changeSelection', function(){
                 var selection = that.editor.getSelectionRange();
                 that.sync.updateUserSelection(selection.start.column, selection.start.row, selection.end.column, selection.end.row);
