@@ -4,7 +4,10 @@
     "js": "node %s",
     "rb": "ruby %s",
     "lua": "lua %s",
+    
     "java": "javac %s",
+    "scala": "scala %s",
+    "clj": "clojure %s",
 
     "go": "go run %s",
 
