@@ -21,6 +21,7 @@ This documentation contains everything you need to know for using Codebox or run
 ### Server side
 
 * [Configuration with environment variables](server/env.md)
+* [Run Codebox from source](server/dev.md)
 * [Managing addons](server/addons.md)
 
 ---------------------------------------
