@@ -51,13 +51,30 @@ define([
             }));
 
             // Tab menu
-            this.tab.menu.menuSection([{
-                'type': "action",
-                'title': "Settings",
-                'action': function() {
-                    settings.open("editor");
+            this.tab.menu.menuSection([
+                {
+                    'type': "action",
+                    'title': "Save",
+                    'shortcuts': [
+                        "mod+s"
+                    ],
+                    'bindKeyboard': false,
+                    'action': function() {
+                        that.sync.save();
+                    }
+                },
+                {
+                    'type': "action",
+                    'title': "Run File",
+                    'shortcuts': [
+                        "mod+r"
+                    ],
+                    'bindKeyboard': false,
+                    'action': function() {
+                        that.model.run();
+                    }
                 }
-            }]).menuSection([
+            ]).menuSection([
                 {
                     'type': "checkbox",
                     'title': "Toggle Collaboration Mode",
@@ -69,7 +86,13 @@ define([
                     }
                 },
                 syntaxMenu
-            ]);
+            ]).menuSection([{
+                'type': "action",
+                'title': "Settings",
+                'action': function() {
+                    settings.open("editor");
+                }
+            }]);
 
             // Create sync
             this.sync = new FileSync();
@@ -100,7 +123,7 @@ define([
                 this.setOptions(ops);
             }, this);
 
-            // Bind editor changement
+            // Bind editor changement -> sync
             this.editor.getSession().selection.on('changeSelection', function(){
                 var selection = that.editor.getSelectionRange();
                 that.sync.updateUserSelection(selection.start.column, selection.start.row, selection.end.column, selection.end.row);
@@ -114,7 +137,7 @@ define([
                 that.sync.updateContent(that.editor.session.getValue());
             });
 
-            // Bind sync changement
+            // Bind sync -> edito
             this.sync.on("file:mode", function(mode) {
                 this.setMode(mode)
             }, this);
@@ -170,9 +193,23 @@ define([
             this.editor.commands.addCommand({
                 name: 'save',
                 readOnly: true,
-                bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
+                bindKey: {
+                    win: 'Ctrl-S',
+                    mac: 'Command-S'
+                },
                 exec: _.bind(function(editor) {
                     this.sync.save();
+                }, this)
+            });
+            this.editor.commands.addCommand({
+                name: 'run',
+                readOnly: true,
+                bindKey: {
+                    win: 'Ctrl-R',
+                    mac: 'Command-R'
+                },
+                exec: _.bind(function(editor) {
+                    this.model.run();
                 }, this)
             });
 

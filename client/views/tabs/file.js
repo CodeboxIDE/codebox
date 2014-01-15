@@ -9,10 +9,11 @@ define([
 
     var FileTab = Tab.extend({
         defaults: {},
-        menuTitle: "Code Editor",
+        menuTitle: "Editor",
 
         initialize: function(options) {
             FileTab.__super__.initialize.apply(this, arguments);
+            var that = this;
 
             this.fileHandler = this.options.handler;
 
