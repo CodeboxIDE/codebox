@@ -22,7 +22,7 @@ define([
         "read": "get"
     };
 
-    // Base method when connexion is on
+    // Base method when connection is on
     vfs.defaultMethod({
         execute: function(args, options, method) {
             if (args && method != "write") args = JSON.stringify(args);

@@ -8,9 +8,9 @@ define([], function() {
     var localfs = codebox.require("core/localfs");
     var dialogs = codebox.require("utils/dialogs");
 
-    // Command to check connexion
-    var checkConnexion = commands.register("offline.check", {
-        'title': "Check Connexion",
+    // Command to check connection
+    var checkConnection = commands.register("offline.check", {
+        'title': "Check Connection",
         'offline': true,
         'icon': "bolt"
     }, function() {
@@ -29,7 +29,7 @@ define([], function() {
         title: "Synchronize",
         position: 95,
         offline: false
-    }).menuSection(checkConnexion)
+    }).menuSection(checkConnection)
     .menuSection([
         {
             'title': "Calcul Changes",
@@ -69,7 +69,7 @@ define([], function() {
         position: 90,
         offline: true
     }).menuSection([
-        checkConnexion
+        checkConnection
     ]);
 
     // Changes update

@@ -18,7 +18,7 @@ define([
         }
     });
 
-    // Redefine check for connexion status
+    // Redefine check for connection status
     hr.Offline.check = function() {
         return rpc.execute("box/ping").then(function(data) {
             hr.Offline.setState(data.ping == true);
