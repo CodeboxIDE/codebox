@@ -22,7 +22,7 @@ The following guidelines for contribution should be followed if you want to subm
 * Make sure you stick to the coding style that is used already.
 * Make commits of logical units and describe them properly.
 * Syntax:
-    * Two spaces, no tabs.
+    * Four spaces, no tabs.
     * No trailing whitespace. Blank lines should not have any space.
     * a = b and not a=b.
     * Follow the conventions you see used in the source already.
