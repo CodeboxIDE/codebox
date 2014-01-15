@@ -30,6 +30,7 @@ define([
             shellId: null,
             resize: true
         },
+        menuTitle: "Terminal",
 
         initialize: function(options) {
             var that = this;

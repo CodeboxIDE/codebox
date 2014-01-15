@@ -41,9 +41,5 @@ define([
         'position': 1000
     });
 
-    menu.register("tools", {
-        title: "Tools"
-    });
-
     return menu;
 });

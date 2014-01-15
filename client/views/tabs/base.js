@@ -13,9 +13,15 @@ define([
         events: {
             "click": "openTab"
         },
+
+        // Keyboard shortcuts inside the tab
         shortcuts: {
             "mod+shift+c": "closeTab"
         },
+
+        // Menu title
+        menuTitle: "Tab",
+
 
         // Constructor
         initialize: function() {
@@ -28,7 +34,8 @@ define([
             // Create tab menu
             this.menu = new Command({}, {
                 'type': "menu",
-                'title': "Tab"
+                'title': this.menuTitle,
+                'position': 1
             });
             this.on("tab:state", function(active) {
                 this.menu.toggleFlag("disabled", !active);
