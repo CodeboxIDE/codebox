@@ -144,6 +144,7 @@ define([
 
                     tab.tab.$el.appendTo(section_tabs);
                     tab.view.$el.appendTo(section_tabs_content);
+                    tab.view.trigger("tab:layout");
                 }, this);
 
                 // Calcul next position

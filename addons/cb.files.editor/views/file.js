@@ -214,6 +214,9 @@ define([
             });
 
             // Parent tab
+            this.tab.on("tab:layout", function() {
+                this.editor.resize();
+            }, this);
             this.tab.on("tab:state", function(state) {
                 if (state) this.focus();
             }, this);
