@@ -10,7 +10,8 @@ define([
         className: "menu-item",
         flagsClasses: {
             'active': "",
-            'disabled': "disabled"
+            'disabled': "disabled",
+            "hidden": "hidden"
         },
 
         // Constructor

@@ -69,6 +69,7 @@ define([
                     'shortcuts': [
                         "mod+r"
                     ],
+                    'flags': this.model.isNewfile() ? "disabled": "",
                     'bindKeyboard': false,
                     'action': function() {
                         that.model.run();
@@ -78,6 +79,7 @@ define([
                 {
                     'type': "checkbox",
                     'title': "Toggle Collaboration Mode",
+                    'flags': this.model.isNewfile() ? "hidden": "",
                     'offline': false,
                     'action': function(state) {
                         that.sync.updateEnv({
