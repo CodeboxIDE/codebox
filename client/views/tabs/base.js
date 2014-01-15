@@ -11,8 +11,7 @@ define([
     var TabPanelView = hr.View.extend({
         className: "component-tab-panel",
         events: {
-            "mouseenter .tab-panel-lateralopener": "openLateralPanel",
-            "mouseleave .tab-panel-lateralbar": "closeLateralPanel"
+            "click": "openTab"
         },
         shortcuts: {
             "mod+shift+c": "closeTab"
@@ -21,16 +20,26 @@ define([
         // Constructor
         initialize: function() {
             TabPanelView.__super__.initialize.apply(this, arguments);
+            var menu = require("core/commands/menu");
 
             this.tabid = this.options.tabid;
             this.tabs = this.parent;
+
+            // Create tab menu
             this.menu = new Command({}, {
-                'type': "menu"
+                'type': "menu",
+                'title': "Tab"
             });
+            this.on("tab:state", function(active) {
+                this.menu.toggleFlag("disabled", !active);
+            }, this);
+            this.on("tab:close", function() {
+                this.menu.destroy();
+            }, this);
+            menu.collection.add(this.menu);
 
+            // Keyboard shortcuts
             this.setShortcuts(this.shortcuts || {});
-
-
             return this;
         },
 
@@ -59,6 +68,11 @@ define([
         closeTab: function(e, force) {
             if (e != null) e.preventDefault();
             this.tabs.close(this.tabid, force);
+        },
+
+        // Open the tab
+        openTab: function(e) {
+            this.tabs.open(this.tabid);
         },
 
         // Set tab title
@@ -99,16 +113,6 @@ define([
         isActiveTab: function() {
             var active = this.tabs.getCurrentTab();
             return !(active == null || active.tabid != this.tabid);
-        },
-
-        // Open the lateral panel
-        openLateralPanel: function() {
-            this.$(".tab-panel-body").addClass("with-lateralpanel");
-        },
-
-        // Close the lateral panel
-        closeLateralPanel: function() {
-            this.$(".tab-panel-body").removeClass("with-lateralpanel");
         },
 
         // Check that tab can be closed

@@ -88,6 +88,18 @@ define([
             var that = this;
             FileEditorView.__super__.initialize.apply(this, arguments);
 
+            // Tab menu
+            this.tab.menu.menuSection([
+                {
+                    'type': "checkbox",
+                    'title': "Toggle Collaboration Mode",
+                    'offline': false,
+                    'action': function(state) {
+                        alert("lol");
+                    }
+                }
+            ]);
+
             // Create sync
             this.sync = new FileSync();
 

@@ -318,11 +318,12 @@ define([
             }, 0);
 
             _.each(this.tabs, function(tab) {
-                if (tab.tab.section != section) return;
                 active = (tab.tabid == this.activeTab);
+                tab.view.trigger("tab:state", active);
+
+                if (tab.tab.section != section) return;
                 tab.tab.$el.toggleClass("active", active);
                 tab.view.$el.toggleClass("active", active);
-                tab.view.trigger("tab:state", active);
             }, this);
 
             this.checkTabs();

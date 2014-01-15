@@ -36,6 +36,17 @@ define([
             TerminalTab.__super__.initialize.apply(this, arguments);
             this.connected = false;
 
+            // Init menu
+            this.menu.menuSection([
+                {
+                    'type': "checkbox",
+                    'title': "Exit",
+                    'action': function(state) {
+                        alert("exit");
+                    }
+                }
+            ]);
+
             // Init rendering
             this.term_w = 80;
             this.term_h = 24;
