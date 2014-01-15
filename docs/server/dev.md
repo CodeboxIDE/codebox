@@ -14,7 +14,11 @@ export CLIENT_DEBUG=true
 export WORKSPACE_NAME=test
 export WORKSPACE_PUBLIC=false
 export WORKSPACE_USERS_MAX=3
+
+# Where to store installed addons
 export WORKSPACE_ADDONS_DIR=/Users/samypesse/Desktop/Projects/CodeBox/addons
+
+# Where the project source code is stored (=active directory)
 export WORKSPACE_DIR=/Users/samypesse/Desktop/Projects/CodeBox/examples/node-js-sample
 ```
 
