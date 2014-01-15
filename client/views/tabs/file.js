@@ -38,6 +38,7 @@ define([
         /* Render */
         render: function() {
             this.$el.empty();
+            this.menu.clearMenu();
             var f = new this.fileHandler.View({
                 model: this.model
             }, this);

@@ -138,6 +138,12 @@ define([
             var section = Command.section(commands, properties);
             this.menu.add(section);
             return this;
+        },
+
+        // Clear the menu
+        clearMenu: function() {
+            this.menu.reset([]);
+            return this;
         }
     }, {
         // Map of command by ids
