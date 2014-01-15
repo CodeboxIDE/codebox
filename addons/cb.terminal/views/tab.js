@@ -42,7 +42,7 @@ define([
                     'type': "checkbox",
                     'title': "Exit",
                     'action': function(state) {
-                        alert("exit");
+                        that.closeTab();
                     }
                 }
             ]);
