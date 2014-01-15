@@ -97,6 +97,8 @@ var start = function(config) {
                         'defaultEmail': actor.email
                     }
                 });
+            }, function() {
+                return Q();
             });
         });
     }
