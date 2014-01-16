@@ -25,7 +25,7 @@ define([
             
             // Tooltip
             this.$("a").tooltip({
-                'placement': 'bottom',
+                'placement': 'right',
                 'delay': {
                     'show': 600,
                     'hide': 0
