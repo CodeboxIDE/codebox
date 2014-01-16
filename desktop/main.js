@@ -10,9 +10,6 @@ var qClass = require('qpatch').qClass;
 var harbor = qClass(require('harbor'));
 var ports = new harbor(19000, 20000);
 
-// Local requires
-var codebox = require('../../index.js');
-
 
 // DOM elements
 var $directorySelector = $('#directory-selector');

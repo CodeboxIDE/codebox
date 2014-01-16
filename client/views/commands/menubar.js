@@ -8,29 +8,28 @@ define([
         className: "btn-group menu-command-item",
         events: {},
 
-        // Constructor
-        initialize: function() {
-            MenuCommandItem.__super__.initialize.apply(this, arguments);
-            
-            this.menu = new MenuView({
-                'collection': this.model.menu
-            }, this);
-
-            return this;
-        },
-
         // Render the menu item
         render: function() {
+            var that = this;
             if (this.menu) this.menu.$el.detach();
             
             this.$el.empty();
             this.$el.attr("class", this.className+" "+this.getFlagsClass());
-            $("<button>", {
+
+            var $btn = $("<button>", {
                 'class': "btn dropdown-toggle",
                 'text': this.model.get("title"),
                 'data-toggle': "dropdown"
             }).appendTo(this.$el);
-            this.menu.$el.appendTo(this.$el);
+
+            $btn.one("click", function() {
+                if (!that.menu) {
+                    that.menu = new MenuView({
+                        'collection': that.model.menu
+                    }, that);
+                }
+                that.menu.$el.appendTo(that.$el);
+            });
             return this.ready();
         }
     });

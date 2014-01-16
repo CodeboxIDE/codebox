@@ -52,6 +52,9 @@ define([
             // Offline mode
             'offline': null,
 
+            // Bind keybaord
+            'bindKeyboard': true,
+
             // Others flags
             'flags': ""
         },
@@ -135,6 +138,12 @@ define([
             var section = Command.section(commands, properties);
             this.menu.add(section);
             return this;
+        },
+
+        // Clear the menu
+        clearMenu: function() {
+            this.menu.reset([]);
+            return this;
         }
     }, {
         // Map of command by ids
@@ -144,9 +153,16 @@ define([
         register: function(commandId, properties) {
             if (_.isObject(commandId)) {
                 properties = commandId;
-                commandId = properties.id || _.uniqueId("command");
+                commandId = properties.id;
             }
 
+            if (!commandId) {
+                commandId = _.uniqueId("command");
+                return new Command({}, _.extend(properties, {
+                    'id': commandId
+                }));
+            }
+            
             if (!Command.mapIds[commandId]) {
                 logging.log("Register command", commandId);
                 var command = new Command({}, _.extend(properties, {
@@ -154,12 +170,14 @@ define([
                 }));
 
                 // Bind keyboard shortcuts
-                _.each(command.get("shortcuts", []), function(shortcut) {
-                    Keyboard.bind(shortcut, function(e) {
-                        e.preventDefault();
-                        command.run();
+                if (command.get("bindKeyboard")) {
+                    _.each(command.get("shortcuts", []), function(shortcut) {
+                        Keyboard.bind(shortcut, function(e) {
+                            e.preventDefault();
+                            command.run();
+                        });
                     });
-                });
+                }
 
                 Command.mapIds[commandId] = command;
             } else {

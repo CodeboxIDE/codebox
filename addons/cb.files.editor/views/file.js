@@ -22,59 +22,6 @@ define([
     var logging = hr.Logger.addNamespace("editor");
     var userSettings = user.settings("editor");
 
-    // Current file editor
-    var currentFileEditor = null;
-
-    // Syntax menu command
-    var syntaxMenu = Command.register("editor.syntax", {
-        'title': "Syntax",
-        'type': "menu"
-    });
-    syntaxMenu.menu.add(_.map(aceModes.modesByName, function(mode, name) {
-        return {
-            'title': mode.caption,
-            'action': function() {
-                if (!currentFileEditor) return;
-                currentFileEditor.setMode(name);
-            }
-        }
-    }));
-
-    // Command collaboration mode
-    var collaborationCmd = Command.register("editor.collaboration", {
-        'type': "checkbox",
-        'title': "Toggle Collaboration Mode",
-        'offline': false,
-        'action': function(state) {
-            if (!currentFileEditor) return;
-            currentFileEditor.sync.updateEnv({
-                'sync': state
-            });
-        }
-    });
-
-    // Add menu
-    menu.register("editor", {
-        title: "Editor"
-    }).menuSection([{
-        'type': "action",
-        'title': "Settings",
-        'action': function() {
-            settings.open("editor");
-        }
-    }]).menuSection([
-        syntaxMenu,
-        collaborationCmd
-    ]);
-
-    // Definie current editor
-    var setCurrentEditor = function(ed) {
-        currentFileEditor = ed;
-
-        if (!currentFileEditor) return;
-        collaborationCmd.toggleFlag("active", currentFileEditor.sync.getMode() == currentFileEditor.sync.modes.SYNC);
-    }
-
 
     var FileEditorView = FilesBaseView.extend({
         className: "addon-files-aceeditor",
@@ -87,6 +34,67 @@ define([
         initialize: function() {
             var that = this;
             FileEditorView.__super__.initialize.apply(this, arguments);
+
+
+            // Syntax menu command
+            var syntaxMenu = new Command({}, {
+                'title': "Syntax",
+                'type': "menu"
+            });
+            syntaxMenu.menu.add(_.map(aceModes.modesByName, function(mode, name) {
+                return {
+                    'title': mode.caption,
+                    'action': function() {
+                        that.setMode(name);
+                    }
+                }
+            }));
+
+            // Tab menu
+            this.tab.menu.menuSection([
+                {
+                    'type': "action",
+                    'title': "Save",
+                    'shortcuts': [
+                        "mod+s"
+                    ],
+                    'bindKeyboard': false,
+                    'action': function() {
+                        that.sync.save();
+                    }
+                },
+                {
+                    'type': "action",
+                    'title': "Run File",
+                    'shortcuts': [
+                        "mod+r"
+                    ],
+                    'flags': this.model.isNewfile() ? "disabled": "",
+                    'bindKeyboard': false,
+                    'action': function() {
+                        that.model.run();
+                    }
+                }
+            ]).menuSection([
+                {
+                    'type': "checkbox",
+                    'title': "Toggle Collaboration Mode",
+                    'flags': this.model.isNewfile() ? "hidden": "",
+                    'offline': false,
+                    'action': function(state) {
+                        that.sync.updateEnv({
+                            'sync': state
+                        });
+                    }
+                },
+                syntaxMenu
+            ]).menuSection([{
+                'type': "action",
+                'title': "Settings",
+                'action': function() {
+                    settings.open("editor");
+                }
+            }]);
 
             // Create sync
             this.sync = new FileSync();
@@ -117,10 +125,7 @@ define([
                 this.setOptions(ops);
             }, this);
 
-            // Bind editor changement
-            this.editor.on("focus", function() {
-                currentFileEditor = that;
-            });
+            // Bind editor changement -> sync
             this.editor.getSession().selection.on('changeSelection', function(){
                 var selection = that.editor.getSelectionRange();
                 that.sync.updateUserSelection(selection.start.column, selection.start.row, selection.end.column, selection.end.row);
@@ -134,7 +139,7 @@ define([
                 that.sync.updateContent(that.editor.session.getValue());
             });
 
-            // Bind sync changement
+            // Bind sync -> edito
             this.sync.on("file:mode", function(mode) {
                 this.setMode(mode)
             }, this);
@@ -190,13 +195,30 @@ define([
             this.editor.commands.addCommand({
                 name: 'save',
                 readOnly: true,
-                bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
+                bindKey: {
+                    win: 'Ctrl-S',
+                    mac: 'Command-S'
+                },
                 exec: _.bind(function(editor) {
                     this.sync.save();
                 }, this)
             });
+            this.editor.commands.addCommand({
+                name: 'run',
+                readOnly: true,
+                bindKey: {
+                    win: 'Ctrl-R',
+                    mac: 'Command-R'
+                },
+                exec: _.bind(function(editor) {
+                    this.model.run();
+                }, this)
+            });
 
             // Parent tab
+            this.tab.on("tab:layout", function() {
+                this.editor.resize();
+            }, this);
             this.tab.on("tab:state", function(state) {
                 if (state) this.focus();
             }, this);

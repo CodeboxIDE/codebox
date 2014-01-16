@@ -49,7 +49,6 @@ var supportedModes = {
     Assembly_x86:["asm"],
     AutoHotKey:  ["ahk"],
     BatchFile:   ["bat|cmd"],
-    C9Search:    ["c9search_results"],
     C_Cpp:       ["cpp|c|cc|cxx|h|hh|hpp"],
     Clojure:     ["clj"],
     Cobol:       ["CBL|COB"],

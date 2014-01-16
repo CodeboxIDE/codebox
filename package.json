@@ -12,7 +12,7 @@
         "event-stream": "3.0.11",
         "readable-stream": "1.0.2",
         "request": "2.27.0",
-        "hr.js": "0.4.0",
+        "hr.js": "0.4.2",
         "commander": "1.1.1",
         "googlediff": "0.1.0",
         "cryptojs": "2.5.3",
@@ -70,17 +70,5 @@
         "start": "[ -f .env ] && source .env || echo 'Store your environment config in .env'; ./node_modules/.bin/grunt",
         "postinstall": "./node_modules/.bin/grunt build"
     },
-    "main": "bin/dashboard/index.html",
-    "window": {
-        "title": "Codebox",
-        "width": 400,
-        "height": 500,
-        "position": "center",
-        "min_height": 400,
-        "min_width": 450,
-        "max_width": 450,
-        "show": false,
-        "toolbar": false,
-        "frame": true
-    }
+    "main": "index.js"
 }

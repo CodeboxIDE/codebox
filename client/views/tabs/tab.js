@@ -2,10 +2,11 @@ define([
     "underscore",
     "jQuery",
     "hr/hr",
+    "models/command",
     "utils/dragdrop",
     "utils/keyboard",
     "utils/contextmenu"
-], function(_, $, hr, DragDrop, Keyboard, ContextMenu) {
+], function(_, $, hr, Command, DragDrop, Keyboard, ContextMenu) {
     // Tab header
     var TabView = hr.View.extend({
         className: "component-tab",

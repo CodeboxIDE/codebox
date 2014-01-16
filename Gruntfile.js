@@ -96,8 +96,8 @@ module.exports = function (grunt) {
             win: false,
             linux32: false,
             linux64: false,
-            mac_icns: "./bin/dashboard/icons/mac.icns",
-            credits: "./bin/dashboard/credits.html",
+            mac_icns: "./desktop/icons/mac.icns",
+            credits: "./desktop/credits.html",
             version: "0.8.4",
         },
         src: [

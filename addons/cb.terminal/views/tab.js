@@ -30,11 +30,23 @@ define([
             shellId: null,
             resize: true
         },
+        menuTitle: "Terminal",
 
         initialize: function(options) {
             var that = this;
             TerminalTab.__super__.initialize.apply(this, arguments);
             this.connected = false;
+
+            // Init menu
+            this.menu.menuSection([
+                {
+                    'type': "checkbox",
+                    'title': "Exit",
+                    'action': function(state) {
+                        that.closeTab();
+                    }
+                }
+            ]);
 
             // Init rendering
             this.term_w = 80;

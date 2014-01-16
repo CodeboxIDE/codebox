@@ -9,9 +9,11 @@ define([
 
     var FileTab = Tab.extend({
         defaults: {},
+        menuTitle: "Editor",
 
         initialize: function(options) {
             FileTab.__super__.initialize.apply(this, arguments);
+            var that = this;
 
             this.fileHandler = this.options.handler;
 
@@ -36,6 +38,7 @@ define([
         /* Render */
         render: function() {
             this.$el.empty();
+            this.menu.clearMenu();
             var f = new this.fileHandler.View({
                 model: this.model
             }, this);

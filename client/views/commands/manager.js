@@ -8,7 +8,8 @@ define([
     var CommandItem = hr.List.Item.extend({
         flagsClasses: {
             'active': "active",
-            'disabled': "disabled"
+            'disabled': "disabled",
+            "hidden": "hidden"
         },
 
         getFlagsClass: function() {

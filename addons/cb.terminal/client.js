@@ -58,5 +58,4 @@ define([
 
     // Add the command to file/tools menu
     menu.getById("file").menuSection([command]);
-    menu.getById("tools").menu.add(command);
 });

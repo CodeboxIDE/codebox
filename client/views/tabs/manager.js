@@ -144,6 +144,7 @@ define([
 
                     tab.tab.$el.appendTo(section_tabs);
                     tab.view.$el.appendTo(section_tabs_content);
+                    tab.view.trigger("tab:layout");
                 }, this);
 
                 // Calcul next position
@@ -318,11 +319,12 @@ define([
             }, 0);
 
             _.each(this.tabs, function(tab) {
-                if (tab.tab.section != section) return;
                 active = (tab.tabid == this.activeTab);
+                tab.view.trigger("tab:state", active);
+
+                if (tab.tab.section != section) return;
                 tab.tab.$el.toggleClass("active", active);
                 tab.view.$el.toggleClass("active", active);
-                tab.view.trigger("tab:state", active);
             }, this);
 
             this.checkTabs();

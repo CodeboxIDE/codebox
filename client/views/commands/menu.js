@@ -10,7 +10,8 @@ define([
         className: "menu-item",
         flagsClasses: {
             'active': "",
-            'disabled': "disabled"
+            'disabled': "disabled",
+            "hidden": "hidden"
         },
 
         // Constructor
@@ -81,7 +82,6 @@ define([
 
             var $li = this.$el;
             $li.empty();
-            $li.attr("data-cmdid", this.model.id+"-"+this.model.cid);
             $li.attr("class", this.className+" "+this.getFlagsClass());
 
             if (itemType == "action") {
@@ -97,17 +97,16 @@ define([
                 $li.addClass("divider");
             } else if (itemType == "menu") {
                 $li.addClass("dropdown-submenu");
+                $li.one("mouseenter", function() {
+                    var submenu = that.submenu();
+                    
+                    submenu.$el.appendTo(that.$el);
+                    submenu.render();
+                });
                 
                 var $a = this.buildAction(function() {});
                 $a.attr("tabindex", -1);
                 $a.appendTo($li);
-
-                var submenu = that.submenu();
-                submenu.on("action", function(subitem) {
-                    this.trigger("action", that.model, subitem);
-                }, that);
-                submenu.$el.appendTo($li);
-                submenu.render();
             }
             return this.ready();
         },
@@ -118,6 +117,9 @@ define([
                 this._submenu = new MenuView({
                     'collection': this.model.menu
                 });
+                this._submenu.on("action", function(subitem) {
+                    this.trigger("action", this.model, subitem);
+                }, this);
             }
             return this._submenu;
         }
