@@ -258,7 +258,8 @@ define([
                     ".hh",
                     ".hxx",
                     ".hpp",
-                    ".tcc"
+                    ".tcc",
+                    ".cc"
                 ],
                 "primary_extension":".cpp",
                 "search_term":"cpp",
