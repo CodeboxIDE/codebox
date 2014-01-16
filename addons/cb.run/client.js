@@ -37,7 +37,7 @@ define([], function() {
 
     // Run command
     var runCommand = commands.register("run.workspace", {
-        title: "Run Application",
+        title: "Run Project",
         icon: "play",
         offline: false,
         position: 1,
