@@ -101,7 +101,11 @@ module.exports = function (grunt) {
             version: "0.8.4",
         },
         src: [
-            "./desktop/**"
+            "./**",
+
+            "!./.git/**",
+            "!./.addons/**",
+            "!./appBuilds/**",
         ]
 }
     });
