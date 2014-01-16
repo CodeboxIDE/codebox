@@ -7,6 +7,7 @@ define([
     var hr = codebox.require("hr/hr");
     var _ = codebox.require("underscore");
     var $ = codebox.require("jQuery");
+    var URL = codebox.require("utils/url");
 
     var PageView = hr.View.extend({
         className: "addon-help-page",
@@ -48,10 +49,11 @@ define([
         clickLink: function(e) {
             e.preventDefault();
 
-            var a = $(e.currentTarget);
-            var url = a.attr("href");
+            var $a = $(e.currentTarget);
+            var url = $a.attr("href")
             var r = new RegExp('^(?:[a-z]+:)?//', 'i');
             if (!r.test(url)) {
+                url = URL.absolutize(this.currentPage, url);
                 this.loadPage(url);
             } else {
                 window.open(url);

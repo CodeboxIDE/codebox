@@ -180,7 +180,7 @@ define([
         path: function(path) {
             if (path == null) {
                 if (this.get("href").length == 0) { return null; }
-                path = Url.parse(this.get("href")).path.replace("/vfs", "");
+                path = Url.parse(this.get("href")).pathname.replace("/vfs", "");
             }
             
             if (path.endsWith("/")) {

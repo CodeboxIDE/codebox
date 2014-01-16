@@ -1,7 +1,9 @@
 define([
     'hr/hr'
 ], function (hr) {
-    return {
+
+
+    return URL = {
     	/*
          *  Parse query string
          */
@@ -27,35 +29,46 @@ define([
          *  'source', 'scheme', 'authority', 'userInfo', 'user', 'pass', 'host', 'port',
          *  'relative', 'path', 'directory', 'file', 'query', 'fragment'
          */
-        parse: function(str, urlmode) {
-            var query, key = ['source', 'scheme', 'authority', 'userInfo', 'user', 'pass', 'host', 'port',
-                'relative', 'path', 'directory', 'file', 'query', 'fragment'],
-            mode = urlmode || 'php',
-            parser = {
-                php: /^(?:([^:\/?#]+):)?(?:\/\/()(?:(?:()(?:([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?))?()(?:(()(?:(?:[^?#\/]*\/)*)()(?:[^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
-                strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
-                loose: /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/\/?)?((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/ // Added one optional slash to post-scheme to catch file:/// (should restrict this)
-            };
+        parse: function(url) {
+            var m = String(url).replace(/^\s+|\s+$/g, '').match(/^([^:\/?#]+:)?(\/\/(?:[^:@]*(?::[^:@]*)?@)?(([^:\/?#]*)(?::(\d*))?))?([^?#]*)(\?[^#]*)?(#[\s\S]*)?/);
+            // authority = '//' + user + ':' + pass '@' + hostname + ':' port
+            return (m ? {
+                href     : m[0] || '',
+                protocol : m[1] || '',
+                authority: m[2] || '',
+                host     : m[3] || '',
+                hostname : m[4] || '',
+                port     : m[5] || '',
+                pathname : m[6] || '',
+                search   : m[7] || '',
+                hash     : m[8] || ''
+            } : null);
+        },
 
-            var m = parser[mode].exec(str),
-            uri = {},
-            i = 14;
-            while (i--) {
-                if (m[i]) {
-                    uri[key[i]] = m[i];
-                }
-            }
-            if (mode !== 'php') {
-                var name = 'queryKey';
-                parser = /(?:^|&)([^&=]*)=?([^&]*)/g;
-                uri[name] = {};
-                query = uri[key[12]] || '';
-                query.replace(parser, function ($0, $1, $2) {
-                    if ($1) {uri[name][$1] = $2;}
+        absolutize: function (base, href) {
+            function removeDotSegments(input) {
+                var output = [];
+                input.replace(/^(\.\.?(\/|$))+/, '')
+                 .replace(/\/(\.(\/|$))+/g, '/')
+                 .replace(/\/\.\.$/, '/../')
+                 .replace(/\/?[^\/]*/g, function (p) {
+                    if (p === '/..') {
+                        output.pop();
+                    } else {
+                        output.push(p);
+                    }
                 });
+                return output.join('').replace(/^\//, input.charAt(0) === '/' ? '/' : '');
             }
-            delete uri.source;
-            return uri;
+
+            href = URL.parse(href || '');
+            base = URL.parse(base || '');
+
+            return !href || !base ? null : (href.protocol || base.protocol) +
+                (href.protocol || href.authority ? href.authority : base.authority) +
+                removeDotSegments(href.protocol || href.authority || href.pathname.charAt(0) === '/' ? href.pathname : (href.pathname ? ((base.authority && !base.pathname ? '/' : '') + base.pathname.slice(0, base.pathname.lastIndexOf('/') + 1) + href.pathname) : base.pathname)) +
+                (href.protocol || href.authority || href.pathname ? href.search : (href.search || base.search)) +
+                href.hash;
         }
     };
 });
