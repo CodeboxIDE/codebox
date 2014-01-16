@@ -82,7 +82,6 @@ define([
 
             var $li = this.$el;
             $li.empty();
-            $li.attr("data-cmdid", this.model.id+"-"+this.model.cid);
             $li.attr("class", this.className+" "+this.getFlagsClass());
 
             if (itemType == "action") {
