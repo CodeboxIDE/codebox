@@ -70,17 +70,5 @@
         "start": "[ -f .env ] && source .env || echo 'Store your environment config in .env'; ./node_modules/.bin/grunt",
         "postinstall": "./node_modules/.bin/grunt build"
     },
-    "main": "bin/dashboard/index.html",
-    "window": {
-        "title": "Codebox",
-        "width": 400,
-        "height": 500,
-        "position": "center",
-        "min_height": 400,
-        "min_width": 450,
-        "max_width": 450,
-        "show": false,
-        "toolbar": false,
-        "frame": true
-    }
+    "main": "index.js"
 }

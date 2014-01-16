@@ -3,7 +3,7 @@
 var Q = require('q');
 var _ = require('underscore');
 var cli = require('commander');
-var path = require('path')
+var path = require('path');
 var open = require("open");
 var Gittle = require('gittle');
 
