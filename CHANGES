@@ -1,3 +1,18 @@
+2014-01-16  Samy Pessé  <samy.pesse@friendco.de>
+            Aaron O'Mullan <aaron.omullan@friendco.de>
+            Mario Gutierrez <mario@mgutz.com>
+            Jan-Christoph Borchardt <hey@jancborchardt.net>
+
+    * Bump version to 0.4.7
+    * New menu for editor and terminal
+    * New sidebar for commands
+    * Alerts no longer disable menubar
+    * Fix codebox as a node.js module
+    * Add .cc extension to C++ language
+    * Add shell script and D language syntax highlighting
+    * Add D, Clojure and Scala for file autorun
+    * Some minor fix and improvements
+
 2014-01-13  Samy Pessé  <samy.pesse@friendco.de>
             Aaron O'Mullan <aaron.omullan@friendco.de>
             Colin Prieto <colin.prieto@gmail.com>
