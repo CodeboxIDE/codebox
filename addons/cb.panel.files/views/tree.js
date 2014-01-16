@@ -108,7 +108,7 @@ define([
         initialize: function(options) {
             FilesTreeView.__super__.initialize.apply(this, arguments);
             var that = this;
-            
+
             this.countFiles = 0;
             this.paddingLeft = this.options.paddingLeft || 10;
 
@@ -117,7 +117,7 @@ define([
                     "mkdir",
                     "create"
                 ], action)) return;
-                that.render();
+                that.update();
             });
 
             return this;
@@ -158,7 +158,7 @@ define([
                             "rename",
                             "remove"
                         ], action)) return;
-                        that.render();
+                        that.update();
                     });
 
                     that.countFiles = that.countFiles + 1;
