@@ -377,7 +377,7 @@ var Filer = new function() {
         } else {
           srcEntry.copyTo(destDir, newName, opt_successCallback, opt_errorHandler);
         }
-      }, src, dest);
+      }, opt_errorHandler, src, dest);
     }
   }
 
