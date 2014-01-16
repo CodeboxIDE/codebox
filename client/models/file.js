@@ -87,13 +87,13 @@ define([
         /*
          *  Set loading state
          */
-        loading: function(state) {
+        loading: function(state, action) {
             var that = this;
 
             if (Q.isPromise(state)) {
-                that.loading(true);
+                that.loading(true, action);
                 state.fin(function() {
-                    that.loading(false);
+                    that.loading(false, action);
                 });
                 return state;
             }
@@ -102,6 +102,10 @@ define([
             if (this._loading == state) return;
             this._loading = state;
             this.trigger("loading", this._loading);
+
+            if (!state && action) {
+                this.trigger("loading:action:"+action, state, action);
+            }
         },
 
         /*
@@ -506,7 +510,7 @@ define([
          *  @name : name of the file to create
          */
         createFile: function(name) {
-            return this.loading(this.vfsRequest("create", this.vfsUrl(null, true)+"/"+name));
+            return this.loading(this.vfsRequest("create", this.vfsUrl(null, true)+"/"+name), "create");
         },
 
         /*
@@ -515,14 +519,14 @@ define([
          *  @name : name of the directory to create
          */
         mkdir: function(name) {
-            return this.loading(this.vfsRequest("mkdir", this.vfsUrl(null, true)+"/"+name+"/"));
+            return this.loading(this.vfsRequest("mkdir", this.vfsUrl(null, true)+"/"+name+"/"), "mkdir");
         },
 
         /*
          *  Remove the file or directory
          */
         remove: function() {
-            return this.loading(this.vfsRequest("remove", this.vfsUrl(null)));
+            return this.loading(this.vfsRequest("remove", this.vfsUrl(null)), "remove");
         },
 
         /*
@@ -535,7 +539,7 @@ define([
             var newPath = parentPath+"/"+name;
             return this.loading(this.vfsRequest("rename", this.vfsUrl(newPath), {
                 "renameFrom": this.path()
-            }));
+            }), "rename");
         },
 
         /*
