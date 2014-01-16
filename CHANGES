@@ -1,5 +1,13 @@
 2014-01-16  Samy Pessé  <samy.pesse@friendco.de>
             Aaron O'Mullan <aaron.omullan@friendco.de>
+
+    * Bump version to 0.4.8
+    * HHVM support in PHP running
+    * Fix pages loading in help dialog with relative links
+    * Add option 'hostname' to command line
+
+2014-01-16  Samy Pessé  <samy.pesse@friendco.de>
+            Aaron O'Mullan <aaron.omullan@friendco.de>
             Mario Gutierrez <mario@mgutz.com>
             Jan-Christoph Borchardt <hey@jancborchardt.net>
 
