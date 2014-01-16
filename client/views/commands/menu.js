@@ -129,6 +129,9 @@ define([
         tagName: "ul",
         className: "dropdown-menu ui-menu",
         Item: MenuItem,
+        defaults: {
+            displayEmptyList: false
+        },
 
         // Open the dropdown
         open: function() {
