@@ -66,6 +66,7 @@ var start = function(config) {
             'urlPattern': process.env.WORKSPACE_WEB_URL_PATTERN || 'http://localhost:%d'
         },
         'server': {
+            'hostname': "0.0.0.0",
             'port': parseInt(process.env.PORT || 8000, 10)
         },
         'settings': {
@@ -167,6 +168,7 @@ var start = function(config) {
 
                 'dev': config.dev,
                 'port': config.server.port,
+                'hostname': config.server.hostname,
                 'defaultEmail': config.users.defaultEmail,
                 'defaultToken': config.users.defaultToken
             },

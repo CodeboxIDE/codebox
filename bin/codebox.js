@@ -15,6 +15,7 @@ var codeboxGitRepo = new Gittle(path.resolve(__dirname, ".."))
 
 // Options
 cli.option('-p, --port [http port]', 'Port to run the IDE');
+cli.option('-n, --hostname [http hostname]', 'Hostname to run the IDE');
 cli.option('-t, --title [project title]', 'Title for the project.');
 cli.option('-o, --open', 'Open the IDE in your favorite browser');
 cli.option('-e, --email [email address]', 'Email address to use as a default authentication');
@@ -35,13 +36,14 @@ cli.command('run [folder]')
     that.directory = projectDirectory || process.env.WORKSPACE_DIR || "./";
     that.title = that.title || process.env.WORKSPACE_NAME;
     that.port = that.port || process.env.PORT || 8000;
-
+    that.hostname = that.hostname || "0.0.0.0";
 
     var config = {
         'root': that.directory,
         'title': that.title,
         'server': {
-            'port': parseInt(that.port)
+            'port': parseInt(that.port),
+            'hostname': that.hostname
         },
         'users': {
             'defaultEmail': that.email

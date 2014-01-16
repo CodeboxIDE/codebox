@@ -129,6 +129,7 @@ function setup(options, imports, register) {
             "http": server,
             'disableAuth': disableAuth,
             'port': options.port,
+            'hostname': options.hostname
         }
     });
 }
