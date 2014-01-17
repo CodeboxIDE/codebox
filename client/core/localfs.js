@@ -4,10 +4,9 @@ define([
     'utils/url',
     'vendors/filer',
     'core/operations',
-    'utils/dialogs',
     'utils/alerts',
     'collections/changes'
-], function(_, hr, Url, Filer, operations, dialogs, alerts, Changes) {
+], function(_, hr, Url, Filer, operations, alerts, Changes) {
     var logger = hr.Logger.addNamespace("localfs");
 
     // Base folder for localfs
@@ -55,6 +54,7 @@ define([
      */
     var initFs = function(baseDir) {
         base = "/"+baseDir;
+        logger.log("base is", base);
         return Q();
     };
 
@@ -71,6 +71,7 @@ define([
     var setIgnoredFiles = function(files) {
         _ignoredFiles = files || [];
         _ignoredFiles.push("/.git")
+        _ignoredFiles = _.compact(_ignoredFiles);
         _ignoredFiles = _.uniq(_ignoredFiles);
         _ignoredFiles = _.map(_ignoredFiles, function(p) {
             if (p[0] != "/") p = "/"+p;
@@ -368,7 +369,7 @@ define([
                 return Q(changes);
             });
         }, {
-            title: "Calculating changes ..."
+            title: "Calculating Offline Changes"
         });
     });
 
@@ -415,11 +416,10 @@ define([
                 return doSync(box.root)
             }).then(function() {
                 changes.reset([]);
-                alerts.show("Workspace has been saved offline.", 5000);
                 logger.warn("Finished sync: box->local");
             });
         }, {
-            title: "Downloading ..."
+            title: "Updating Offline Cache"
         });
     });
 
@@ -446,9 +446,8 @@ define([
             }).then(function() {
                 if (changes.size() > 0) {
                     if (changes.size() == previousChanges) return Q.reject(new Error("Offline changes not synced"));
-                    return dialogs.alert("Offline changes", "There are "+changes.size()+" changes made offline that need to be synced manually, use the 'Changes' menu to do so. You can also reset the offline cache using the 'Synchronize' menu.").then(function() {
-                        return Q.reject(new Error("Offline changes not synced"));
-                    })
+                    alerts.show(changes.size()+" changes made offline need to be synced manually", 5000);
+                    return Q.reject(new Error("Offline changes not synced"));
                 }
                 return syncFileBoxToLocal();
             }).then(function() {
@@ -456,8 +455,6 @@ define([
                 endT = Date.now();
                 syncDuration = _.max([endT - startT, 5000]);
                 updateAutoSync();
-
-                alerts.show("Offline and Workspace have been synchronized.", 5000);
                 return syncDuration;
             }, function(err) {
                 logger.error("Sync error:", err);
