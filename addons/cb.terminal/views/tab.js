@@ -163,13 +163,15 @@ define([
         resize: function(w, h) {
             if (!this.options.resize) { return false; }
 
+            var lineHeight = Math.floor(settings.get("line-height", 1.3) *  settings.get("size", 13));
+
             w = w || _.min([
                 400,
                 _.max([Math.floor((this.$el.outerWidth()-10)/8)-1, 10])
             ]);
             h = h || _.min([
                 400,
-                _.max([Math.floor(this.$el.outerHeight()/20)-1, 10])
+                _.max([Math.floor(this.$el.outerHeight()/lineHeight)-1, 10])
             ]);
             if (w == this.term_w && h == this.term_h) {
                 return this;
