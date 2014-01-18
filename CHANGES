@@ -1,4 +1,13 @@
 2014-01-18  Samy Pessé  <samy.pesse@friendco.de>
+            Cyril MORISSE <cmorisse@boxes3.net>
+            Aaron O'Mullan <aaron.omullan@friendco.de>
+
+    * Bump version to 0.4.10
+    * Add parameters to improve Terminal rendering for 'ncurses' applications
+    * Disable offline sync by default
+    * Use dir local to user for addons & settings
+
+2014-01-18  Samy Pessé  <samy.pesse@friendco.de>
             Aaron O'Mullan <aaron.omullan@friendco.de>
 
     * Bump version to 0.4.9
