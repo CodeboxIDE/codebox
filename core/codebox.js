@@ -8,6 +8,11 @@ var path = require('path');
 var Gittle = require('gittle');
 var engineer = require('engineer');
 
+var LOCAL_SETTINGS_DIR = path.join(
+    process.env.HOME,
+    '.codebox'
+);
+
 var start = function(config) {
     var codeboxGitRepo = new Gittle(path.resolve(__dirname, ".."));
     var prepare = Q();
@@ -46,7 +51,7 @@ var start = function(config) {
         },
         'addons': {
             // Base path
-            'path': process.env.WORKSPACE_ADDONS_DIR || path.resolve(__dirname + '/../.addons'),
+            'path': process.env.WORKSPACE_ADDONS_DIR || path.join(LOCAL_SETTINGS_DIR, 'addons'),
             'defaultsPath': process.env.WORKSPACE_ADDONS_DEFAULTS_DIR || path.resolve(__dirname + '/../addons'),
             'tempPath': process.env.WORKSPACE_ADDONS_TEMP_DIR || os.tmpDir(),
             'blacklist': (process.env.WORKSPACE_ADDONS_BLACKLIST || "").split(",")
@@ -70,7 +75,7 @@ var start = function(config) {
             'port': parseInt(process.env.PORT || 8000, 10)
         },
         'settings': {
-            'path': path.resolve(__dirname + '/../settings.json')
+            'path': path.join(LOCAL_SETTINGS_DIR, 'settings.json')
         }
     }, config || {});
 
@@ -196,7 +201,7 @@ var start = function(config) {
 
             {
                 packagePath: "./cb.run.project",
-                
+
                 urlPattern: config.proc.urlPattern
             },
 
@@ -216,14 +221,14 @@ var start = function(config) {
             // Offline manifest
             {
                 packagePath: "./cb.offline",
-                
+
                 dev: config.dev
             },
 
             // Settings
             {
                 packagePath: "./cb.settings",
-                
+
                 storageFile: config.settings.path
             },
 
@@ -258,7 +263,7 @@ var start = function(config) {
             // Now start the damn server
             "./cb.main",
         ];
-        return app.load(plugins); 
+        return app.load(plugins);
     }).then(function() {
         return Q(app);
     });
