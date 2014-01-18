@@ -1,3 +1,13 @@
+2014-01-18  Samy Pessé  <samy.pesse@friendco.de>
+            Aaron O'Mullan <aaron.omullan@friendco.de>
+
+    * Bump version to 0.4.9
+    * Improve performances of the client-side
+    * Handle symlinks in the vfs
+    * Add action for editor to convert indentation to tabs/spaces
+    * Fix conflict between D and Node.js detectors
+    * Improve alerts for offline synchronization
+
 2014-01-16  Samy Pessé  <samy.pesse@friendco.de>
             Aaron O'Mullan <aaron.omullan@friendco.de>
 
