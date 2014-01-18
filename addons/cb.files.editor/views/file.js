@@ -3,9 +3,10 @@ define([
     "ace/range",
     "ace/ext/modelist",
     "ace/ext/language_tools",
+    "ace/ext/whitespace",
     "text!templates/file.html",
     "less!stylesheets/file.less",
-], function(ace, CRange, aceModes, aceLangs, templateFile) {
+], function(ace, CRange, aceModes, aceLangs, aceWhitespace, templateFile) {
     var _ = codebox.require("underscore");
     var $ = codebox.require("jQuery");
     var hr = codebox.require("hr/hr");
@@ -88,6 +89,19 @@ define([
                     }
                 },
                 syntaxMenu
+            ]).menuSection([
+                {
+                    'title': "Convert Indentation to Spaces",
+                    'action': function() {
+                        that.convertIndentation(" ", userSettings.get("tabsize", 4));
+                    }
+                },
+                {
+                    'title': "Convert Indentation to Tabs",
+                    'action': function() {
+                        that.convertIndentation("\t", 1);
+                    }
+                }
             ]).menuSection([{
                 'type': "action",
                 'title': "Settings",
@@ -358,7 +372,14 @@ define([
             this.readonly = b;
             this.editor.setReadOnly(b);
             return this;
-        }
+        },
+
+        /*
+         *  Convert indentations to
+         */
+        convertIndentation: function(ch, len) {
+            aceWhitespace.convertIndentation(this.editor.session, ch, len);
+        } 
     });
 
     return FileEditorView;
