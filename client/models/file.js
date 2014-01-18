@@ -234,7 +234,8 @@ define([
          *  Return true if is a directory
          */
         isDirectory: function() {
-            return this.get("mime") == "inode/directory";
+            return (this.get("mime") == "inode/directory"
+                || (this.get("mime") == "inode/symlink" && this.get("linkStat.mime") == "inode/directory"));
         },
 
         /*
