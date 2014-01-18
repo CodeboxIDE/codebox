@@ -18,7 +18,7 @@ define([
     var Command = hr.Model.extend({
         defaults: {
             // Command type
-            // "divider", "action", "menu", "operation"
+            // "divider", "action", "menu", "operation", "label"
             'type': "action",
 
             // Command unique id

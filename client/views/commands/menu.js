@@ -95,6 +95,9 @@ define([
                 $a.appendTo($li);
             } else if (itemType == "divider") {
                 $li.addClass("divider");
+            } else if (itemType == "label") {
+                $li.addClass("dropdown-header");
+                $li.text(itemText);
             } else if (itemType == "menu") {
                 $li.addClass("dropdown-submenu");
                 $li.one("mouseenter", function() {

@@ -6,7 +6,7 @@ define([], function() {
         'namespace': "offline",
         'title': "Offline",
         'defaults': {
-            'enabled': true,
+            'enabled': false,
             'syncInterval': 10
         },
         'fields': {

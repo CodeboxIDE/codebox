@@ -29,8 +29,9 @@ define([], function() {
         title: "Synchronize",
         position: 95,
         offline: false
-    }).menuSection(checkConnection)
-    .menuSection([
+    }).menuSection([
+        checkConnection
+    ]).menuSection([
         {
             'title': "Calcul Changes",
             'offline': false,

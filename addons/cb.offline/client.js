@@ -44,6 +44,7 @@ define([
 
     // Update settings
     var updateSettings = function() {
+        var enabled = settings.user.get("enabled", true);
         if (_syncInterval) clearInterval(_syncInterval);
 
         // Enable sync
@@ -53,7 +54,7 @@ define([
         localfs.setIgnoredFiles(settings.user.get("syncIgnore", "").split("\n"));
 
         // Toggle menu
-        menus.sync.toggleFlag("disabled", !settings.user.get("enabled", true));
+        menus.sync.toggleFlag("disabled", !enabled);
         
         // Run sync every 10min
         _syncInterval = setInterval(function() {
