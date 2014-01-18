@@ -34,7 +34,7 @@ define([
                     "'Lucida Sans Unicode', 'Lucida Grande', sans-serif": "Lucida Sans Unicode",
                     'monaco': "Monaco (Mac OS)",
                     'menlo': "Menlo (Mac OS)",
-                    'ubuntu': "Ubuntu (Ubuntu)",
+                    'Ubuntu Mono': "Ubuntu Mono (Ubuntu)",
                     'Consolas': "Consolas (Windows)",
                     'Lucida Console': "Lucida Console (Windows)"
                 },
