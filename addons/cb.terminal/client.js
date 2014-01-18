@@ -18,6 +18,8 @@ define([
         'title': "Terminal",
         'defaults': {
             'font': "monospace",
+            'size': 13,
+            'line-height': 1.3,            
             'theme': 'monokai_soda'
         },
         'fields': {
@@ -29,8 +31,27 @@ define([
                     'arial': "Arial",
                     'Courier New': "Courier New",
                     "'MS Sans Serif', Geneva, sans-serif;": "MS Sans Serif",
-                    "'Lucida Sans Unicode', 'Lucida Grande', sans-serif": "Lucida Sans Unicode"
+                    "'Lucida Sans Unicode', 'Lucida Grande', sans-serif": "Lucida Sans Unicode",
+                    'monaco': "Monaco (Mac OS)",
+                    'menlo': "Menlo (Mac OS)",
+                    'Ubuntu Mono': "Ubuntu Mono (Ubuntu)",
+                    'Consolas': "Consolas (Windows)",
+                    'Lucida Console': "Lucida Console (Windows)"
                 },
+            },
+            'size': {
+                'label': 'Font size',
+                'type': 'number',
+                'min': 8,
+                'max': 20,
+                'step': 1
+            },
+            'line-height': {
+                'label': 'Line height',
+                'type': 'number',
+                'min': 1,
+                'max': 1.9,
+                'step': 0.1
             },
             'theme': {
                 'label': 'Theme',
