@@ -142,7 +142,9 @@ define([
         // Render
         render: function() {
             this.$el.css({
-                "font-family": settings.get("font", "monospace")
+                "font-family": settings.get("font", "monospace"),
+                "font-size": settings.get("size", 13)+'px',
+                "line-height": settings.get("line-height", 1.3)            
             });
             $(this.term_el).css({
                 'background': this.theme.background,
