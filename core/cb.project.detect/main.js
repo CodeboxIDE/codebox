@@ -10,6 +10,7 @@ var NONE = null;
 
 // Supported languages and project types
 var SUPPORTED = [
+    'procfile',
     'd',
     'go',
     'clojure',
