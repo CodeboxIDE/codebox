@@ -155,8 +155,8 @@ define([
     /*
      *  List a directory
      */
-    var listDir = needFsReady(function(path) {
-        path = adaptPath(path);
+    var listDir = needFsReady(function(path, adapt) {
+        path = (adapt == false) ? path : adaptPath(path);
 
         logger.log("ls:", path);
         return fsCall(filer.ls, path, filer).then(function(entries) {
@@ -246,8 +246,8 @@ define([
     /*
      *  Remove a file or directory
      */
-    var remove = needFsReady(function(path) {
-        path = adaptPath(path);
+    var remove = needFsReady(function(path, adapt) {
+        path = (adapt == false) ? path : adaptPath(path);
 
         logger.log("remove:", path);
         return fsCall(filer.rm, [path], filer);
@@ -410,7 +410,12 @@ define([
         };
         return operations.start("files.sync.download", function(op) {
             logger.warn("Start sync: box->local");
-            return remove("/").then(function() {
+
+            return listDir("/", false).then(function(rootFiles) {
+                return Q.all(_.map(rootFiles, function(fp) {
+                    return remove("/"+fp.name, false);
+                }));
+            }).then(function() {
                 return doSync(box.root);
             }, function() {
                 return doSync(box.root)
