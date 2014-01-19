@@ -88,6 +88,13 @@ define([
         });
     };
 
+    // get fallback handlers for a file
+    var getFallbacks = function(file) {
+        return _.filter(handlers, function(handler) {
+            return userSettings.get(handler.id, true) && handler.fallback == true;
+        });
+    };
+
     // Open file with handler
     var openFileHandler = function(handler, file) {
         // Add to recent files
@@ -118,7 +125,8 @@ define([
     // Open a file
     var openFile = function(file, options) {
         options = _.defaults({}, options || {}, {
-            'userChoice': null
+            'userChoice': null,
+            'useFallback': true
         });
 
         if (_.isString(file)) {
@@ -131,6 +139,13 @@ define([
         }
 
         var possibleHandlers = getHandlers(file);
+
+        // get fallbacks
+        if (_.size(possibleHandlers) == 0 && options.useFallback) {
+            possibleHandlers = getFallbacks();
+        }
+
+        // All choices
         if (_.size(possibleHandlers) == 0) {
             return openFileWith(file);
         }

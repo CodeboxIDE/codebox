@@ -106,6 +106,7 @@ define([
     files.addHandler("ace", {
         name: "Code Editor",
         View: FileEditorView,
+        fallback: true,
         valid: function(file) {
             return (!file.isDirectory()
             && (_.contains(textExts, file.extension()) || _.contains(mimeTypes, file.get("mime"))));
