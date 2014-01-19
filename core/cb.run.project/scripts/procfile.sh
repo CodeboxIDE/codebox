@@ -8,17 +8,69 @@
 # Make sure that any errors cause the script to exit immediately.
 set -e
 
+# Program count, incremented by 1 on each exec. (Used in rotating colors.)
+PROGRAM_COUNT=0
+
 # ## Logging
+
+# Pick a color from a preset given an integer, echo ANSI escape sequence.
+pick_color() {
+    if [ $# -eq 0 ]; then
+        return
+    fi
+
+    local number=$1
+    shift
+
+    local cyan='\033[36m'
+    local magenta='\033[35m'
+    local red='\033[31m'
+    local green='\033[32m'
+    local yellow='\033[33m'
+
+    local colors=( $cyan $magenta $red $green $yellow )
+    let index=$number%5
+    echo ${colors[$index]}
+}
+
+# Execute <first_argument> for each line in stdin.
+#
+# map_lines function forked from the nixd project.
+
+# Understanding the internal field separator (IFS) in bash:
+#
+# The IFS is used in word splitting. To split across lines in a string, a
+# for-loop can simply iterate across that string with IFS set to the
+# newline character. IFS must be restored to support normal operation of
+# any further commands.
+map_lines() {
+    local line_function=$1
+    shift
+
+    local OLD_IFS="$IFS"
+    local NEW_IFS=$'\n' # Specifying ANSI escaped char requires $'string' form.
+
+    IFS="$NEW_IFS"
+    local count=0
+    while read line; do
+        IFS="$OLD_IFS"
+        $line_function "$line"
+        local result=$?
+        IFS="$NEW_IFS"
+        if [ $result -ne 0 ]; then
+            # Ensure errors do not get swallowed in this loop.
+            return $result
+        fi
+    done
+    IFS="$OLD_IFS"
+}
 
 # For logging we want to prefix each entry with the current time, as well
 # as the process name. This takes one argument, the name of the process, and
 # then reads data from stdin, formats it, and sends it to stdout.
 log() {
-  while read data
-  do
-    __TAB_CHARACTER=$'\t'
-    echo "$(date +"%H:%M:%S") ${1}${__TAB_CHARACTER}| $data"
-  done
+  __TAB_CHARACTER=$'\t'
+  echo -e "$PROCFILE_LOG_COLOR$(date +"%H:%M:%S") $PROCFILE_LOG_NAME${__TAB_CHARACTER}|\033[0m $1"
 }
 
 # ## Running commands
@@ -33,7 +85,7 @@ store_pid() {
 # This starts a command asynchronously and stores its pid in a list for use
 # later on in the script.
 start_command() {
-  sh -c "$1" &
+  sh -c "$1" 2>&1 | map_lines log &  
   pid="$!"
   store_pid "$pid"
 }
@@ -44,7 +96,7 @@ start_command() {
 # Only lines containing an equal sign are read, which means you can add comments.
 # Preferably shell-style comments so that your editor print them like shell scripts.
 
-ENV_FILE=${2:-'.env'}
+ENV_FILE=$1/.env
 if [ -f $ENV_FILE ]; then
   while read line || [ -n "$line" ]; do
     if [[ "$line" == *=* ]]; then
@@ -61,8 +113,14 @@ PROCFILE=$1/Procfile
 while read line || [ -n "$line" ]; do
   name=${line%%:*}
   command=${line#*: }
+
+  export PROCFILE_LOG_COLOR=`pick_color $PROGRAM_COUNT`
+  export PROCFILE_LOG_NAME="${name}.1"
+  let PROGRAM_COUNT=PROGRAM_COUNT+1
+
   start_command "$command"
-  echo "'${command}' started with pid ${pid}" | log "${name}.1"
+  log "'${command}' started with pid ${pid}"
+  
 done < "$PROCFILE"
 
 # ## Cleanup
