@@ -91,6 +91,7 @@ ProjectRunner.prototype.run = function() {
     // Check if project has a specific type
     return this.detect()
     .then(function(projectType) {
+        console.log("detected ", projectType);
         if(!projectType) {
             return Q.reject(new Error("The project has no supported type"));
         }
