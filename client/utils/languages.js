@@ -59,13 +59,17 @@ define([
          *  @extension : extension of the file
          */
         get_byextension: function(extension) {
+            var name = extension.replace(".", "");
             extension = extension.toLowerCase();
             return _.find(_.values(Languages.LIST), function(lang) {
+
                 if (lang.primary_extension.toLowerCase() == extension) {
                     return true;
                 }
-                var extensions = _.map(lang.extensions || [], function(ext) { return ext.toLowerCase(); });
-                return _.contains(extensions, extension);
+                return _.contains(_.map(lang.extensions || [], function(ext) {
+                    return ext.toLowerCase();
+                }), extension) 
+                || _.contains(lang.filenames, name);
             });
         },
 
@@ -1283,6 +1287,9 @@ define([
                     "bash",
                     "zsh"
                 ],
+                "filenames": [
+                    "Dockerfile"
+                ],
                 "color":"#5861ce",
                 "lexer":"Bash",
                 "primary_extension":".sh",
@@ -1473,6 +1480,9 @@ define([
                 ],
                 "extensions":[
                     ".yaml"
+                ],
+                "filenames":[
+                    "Procfile"
                 ],
                 "primary_extension":".yml",
                 "type":"markup",
