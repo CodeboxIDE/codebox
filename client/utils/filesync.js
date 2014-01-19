@@ -600,7 +600,7 @@ define([
                 participant.color = this.options.colors[i % this.options.colors.length];
                 return participant;
             }, this));
-            this.trigger("participants:change");
+            this.trigger("participants");
             return this;
         },
 

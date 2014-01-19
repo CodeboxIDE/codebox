@@ -36,7 +36,6 @@ define([
             var that = this;
             FileEditorView.__super__.initialize.apply(this, arguments);
 
-
             // Syntax menu command
             var syntaxMenu = new Command({}, {
                 'title': "Syntax",
@@ -50,6 +49,13 @@ define([
                     }
                 }
             }));
+
+            // Collaborators
+            this.collaboratorsMenu = new Command({}, {
+                'title': "Collaborators",
+                'type': "menu",
+                'flags': "disabled"
+            });
 
             // Tab menu
             this.tab.menu.menuSection([
@@ -83,6 +89,7 @@ define([
                     'flags': this.model.isNewfile() ? "hidden": "",
                     'offline': false,
                     'action': function(state) {
+                        that.collaboratorsMenu.toggleFlag("disabled", !state);
                         that.sync.updateEnv({
                             'sync': state
                         });
@@ -102,6 +109,8 @@ define([
                         that.convertIndentation("\t", 1);
                     }
                 }
+            ]).menuSection([
+                this.collaboratorsMenu
             ]).menuSection([{
                 'type': "action",
                 'title': "Settings",
@@ -203,6 +212,20 @@ define([
             }, this);
             this.sync.on("cursor:remove selection:remove", function(cId) {
                 this.editor.getSession().removeMarker(cId);
+            }, this);
+            this.sync.on("participants", function() {
+                this.collaboratorsMenu.set("label", _.size(this.sync.participants));
+                this.collaboratorsMenu.menu.reset(_.map(this.sync.participants, function(participant) {
+                    return {
+                        'type': "action",
+                        'title': participant.user.get("name"),
+                        'action': function() {
+                            that.editor.getSession().getSelection().setSelectionAnchor(participant.cursor.y, participant.cursor.x);
+                            that.editor.getSession().getSelection().selectTo(participant.cursor.y, participant.cursor.x);
+                            that.editor.focus();
+                        }
+                    }
+                }));
             }, this);
 
             // Commands
