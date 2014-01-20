@@ -69,6 +69,11 @@ ProjectRunner.prototype.runScript = function(projectType, port) {
         self.run_ports.release(portId);
     });
 
+    // Emit event
+    self.events.emit("run.project", {
+        type: projectType
+    });
+
     return {
         shellId: shellId,
         type: projectType,

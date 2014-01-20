@@ -7,10 +7,7 @@ var path = require('path');
 var commands = require('./commands.json');
 
 
-function runCommand(filename) {
-    // Extract extension from filename (no '.')
-    var ext = path.extname(filename).replace('.', '').toLowerCase();
-
+function runCommand(ext, filename) {
     // Make sure we support running this
     if(!commands[ext]) {
         return null;
@@ -24,9 +21,12 @@ function shellId(filename) {
     return ['run', filename].join('-');
 }
 
-function fileRun(shells, filename) {
+function fileRun(events, shells, filename) {
+    // Extract extension from filename (no '.')
+    var ext = path.extname(filename).replace('.', '').toLowerCase();
+
     var _shellId = shellId(filename);
-    var command = runCommand(filename);
+    var command = runCommand(ext, filename);
 
     if (!command) {
         return Q.reject(new Error('No command found to run this file'));
@@ -39,6 +39,11 @@ function fileRun(shells, filename) {
     // Create process
     var shell = shells.createShellCommand(_shellId, command);
 
+    // Emit event
+    events.emit("run.file", {
+        ext: ext
+    });
+
     return Q({
         shellId: _shellId,
         command: command
@@ -49,11 +54,12 @@ function fileRun(shells, filename) {
 function setup(options, imports, register) {
     var workspace = imports.workspace;
     var shells = imports.shells;
+    var events = imports.events;
 
     register(null, {
         "run_file": {
             command: runCommand,
-            run: _.partial(fileRun, shells)
+            run: _.partial(fileRun, events, shells)
         }
     });
 }
