@@ -1,3 +1,13 @@
+2014-01-20  Samy Pessé  <samy.pesse@friendco.de>
+
+    * Bump version to 0.4.11
+    * Add runner for Procfile based applications
+    * Add opening with editor of Makefile, Dockerfile, Vagrantfile, ...
+    * Add list of collaborators to files editor menu
+    * fix terminal reset for nano, vim execution
+    * Fix emacs leaves terminal in underline mode
+    * Add arrow key support for selection and visual mode in terminals
+
 2014-01-18  Samy Pessé  <samy.pesse@friendco.de>
             Cyril MORISSE <cmorisse@boxes3.net>
             Aaron O'Mullan <aaron.omullan@friendco.de>
