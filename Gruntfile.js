@@ -111,7 +111,7 @@ module.exports = function (grunt) {
             ]
         },
         shell: {
-            nwbuildDesktop: {
+            nwbuild: {
                 command: ".tmp/nwbuild.sh",
                 options: {
                     execOptions: {
@@ -179,7 +179,7 @@ module.exports = function (grunt) {
         'build',
         'copy:desktop',
         'copy:desktopPKG',
-        'shell:nwbuildDesktop',
+        'shell:nwbuild',
         'nodewebkit'
     ]);
 
