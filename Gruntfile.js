@@ -90,24 +90,24 @@ module.exports = function (grunt) {
             }
         },
         nodewebkit: {
-        options: {
-            build_dir: './appBuilds',
-            mac: true,
-            win: false,
-            linux32: false,
-            linux64: false,
-            mac_icns: "./desktop/icons/mac.icns",
-            credits: "./desktop/credits.html",
-            version: "0.8.4",
-        },
-        src: [
-            "./**",
+            options: {
+                build_dir: './appBuilds',
+                mac: true,
+                win: false,
+                linux32: false,
+                linux64: false,
+                mac_icns: "./desktop/icons/mac.icns",
+                credits: "./desktop/credits.html",
+                version: "0.8.4",
+            },
+            src: [
+                "./**",
 
-            "!./.git/**",
-            "!./.addons/**",
-            "!./appBuilds/**",
-        ]
-}
+                "!./.git/**",
+                "!./.addons/**",
+                "!./appBuilds/**",
+            ]
+        }
     });
 
     // Build
