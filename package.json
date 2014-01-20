@@ -45,7 +45,8 @@
     },
     "devDependencies": {
         "grunt-node-webkit-builder": "0.1.14",
-        "grunt-contrib-copy": "0.5.0"
+        "grunt-contrib-copy": "0.5.0",
+        "grunt-shell": "0.6.3"
     },
     "bin": {
         "codebox": "./bin/codebox.js"

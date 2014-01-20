@@ -5,6 +5,12 @@ module.exports = function (grunt) {
     // Path to the client src
     var clientPath = path.resolve(__dirname, "client");
 
+    // Load grunt modules
+    grunt.loadNpmTasks('hr.js');
+    grunt.loadNpmTasks('grunt-node-webkit-builder');
+    grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-shell');
+
     // Init GRUNT configuraton
     grunt.initConfig({
         'pkg': grunt.file.readJSON('package.json'),
@@ -96,30 +102,84 @@ module.exports = function (grunt) {
                 win: false,
                 linux32: false,
                 linux64: false,
-                mac_icns: "./desktop/icons/mac.icns",
-                credits: "./desktop/credits.html",
+                mac_icns: "./tmp/desktop/icons/mac.icns",
+                credits: "./tmp/desktop/credits.html",
                 version: "0.8.4",
             },
             src: [
-                "./**",
-
-                "!./.git/**",
-                "!./.addons/**",
-                "!./appBuilds/**",
+                ".tmp/**"
             ]
+        },
+        shell: {
+            nwbuildDesktop: {
+                command: "bash -c 'cd .tmp && ./nwbuild.sh'",
+                options: {
+                    execOptions: {
+                        cwd: '.',
+                        stdout: true,
+                        stderr: true
+                    }
+                }
+            }
+        },
+        copy: {
+            // Copy most files over
+            desktop: {
+                expand: true,
+                dot: false,
+                cwd: './',
+                dest: '.tmp/',
+                src: [
+                    // Most files except the ones below
+                    "./**",
+
+                    // Ignore dev related things
+                    "!./tmp/**",
+                    "!./.git/**",
+                    "!./.addons/**",
+                    "!./appBuilds/**",
+
+                    // Ignore some build time only modules
+                    "!./node_modules/grunt/**",
+                    "!./node_modules/grunt-*/**",
+                    "!./node_modules/hr.js/**"
+                ],
+
+                // Preserve permissions
+                options: {
+                    mode: true
+                }
+            },
+            // Change the package.json to use node-webkit's
+            desktopPKG: {
+                cwd: './',
+                src: '.tmp/desktop/package.json',
+                dest: '.tmp/package.json',
+                options: {
+                    // Change main entry point
+                    process: function (content, srcpath) {
+                        grunt.log.write('processing '+ srcpath + '...\n');
+                        return content.replace(
+                            '"main": "index.html",',
+                            '"main": "desktop/index.html",'
+                        );
+                    }
+                }
+            }
         }
     });
 
     // Build
-    grunt.loadNpmTasks('hr.js');
     grunt.registerTask('build', [
         'hr'
     ]);
 
     // Desktop app generation
-    grunt.loadNpmTasks('grunt-node-webkit-builder');
     grunt.registerTask('buildApps', [
         'build',
+        'copy:desktop',
+        'copy:desktopPKG',
+        'shell:nwbuildDesktop',
         'nodewebkit'
     ]);
 
