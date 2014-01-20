@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NW_VERSION=0.8.0
+NW_VERSION=${NW_VERSION:=0.8.0}
 REBUILD_MODULES=("shux/node_modules/pty.js")
 
 function rebuild_module () {

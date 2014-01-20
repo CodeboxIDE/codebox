@@ -18,3 +18,5 @@ settings.json
 .addons
 
 /.env
+
+/.tmp/

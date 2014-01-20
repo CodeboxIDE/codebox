@@ -117,10 +117,14 @@ $projectList.on("click", ".project", function(e) {
 
 // Start the application
 window.onload = function() {
-    gui.Window.get().show();
+    var win = gui.Window.get();
+
+    // Show then focus
+    win.show();
+    win.focus();
 
     // Start
     if (!updateProjects()) {
         selectPath();
     }
-}
+};
