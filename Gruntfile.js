@@ -5,7 +5,7 @@ module.exports = function (grunt) {
 
     // Path to the client src
     var clientPath = path.resolve(__dirname, "client");
-    
+
     // Constants
     var NW_VERSION = "0.8.4";
 
@@ -106,8 +106,8 @@ module.exports = function (grunt) {
                 win: false,
                 linux32: false,
                 linux64: false,
-                mac_icns: "./tmp/desktop/icons/mac.icns",
-                credits: "./tmp/desktop/credits.html",
+                mac_icns: "./desktop/icons/mac.icns",
+                credits: "./desktop/credits.html",
                 version: NW_VERSION,
             },
             src: [
