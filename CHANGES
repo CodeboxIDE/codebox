@@ -1,5 +1,11 @@
 2014-01-20  Samy Pessé  <samy.pesse@friendco.de>
 
+    * Bump version to 0.4.12
+    * Fix Procfile detection on linux
+    * Fix display of operations in lateral bar
+
+2014-01-20  Samy Pessé  <samy.pesse@friendco.de>
+
     * Bump version to 0.4.11
     * Add runner for Procfile based applications
     * Add opening with editor of Makefile, Dockerfile, Vagrantfile, ...
