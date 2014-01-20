@@ -114,6 +114,7 @@ define([
             ]).menuSection([{
                 'type': "action",
                 'title': "Settings",
+                'offline': false,
                 'action': function() {
                     settings.open("editor");
                 }
