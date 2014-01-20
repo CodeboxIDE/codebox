@@ -1,9 +1,13 @@
 module.exports = function (grunt) {
     var path = require("path");
     var pkg = require("./package.json");
+    var _ = require('underscore');
 
     // Path to the client src
     var clientPath = path.resolve(__dirname, "client");
+    
+    // Constants
+    var NW_VERSION = "0.8.4";
 
     // Load grunt modules
     grunt.loadNpmTasks('hr.js');
@@ -104,7 +108,7 @@ module.exports = function (grunt) {
                 linux64: false,
                 mac_icns: "./tmp/desktop/icons/mac.icns",
                 credits: "./tmp/desktop/credits.html",
-                version: "0.8.4",
+                version: NW_VERSION,
             },
             src: [
                 ".tmp/**"
@@ -117,7 +121,10 @@ module.exports = function (grunt) {
                     execOptions: {
                         cwd: '.tmp/',
                         stdout: true,
-                        stderr: true
+                        stderr: true,
+                        env: _.extend({
+                            NW_VERSION: "0.8.4"
+                        }, process.env)
                     }
                 }
             }
