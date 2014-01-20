@@ -112,7 +112,7 @@ module.exports = function (grunt) {
         },
         shell: {
             nwbuildDesktop: {
-                command: "bash -c 'cd .tmp && ./nwbuild.sh'",
+                command: ".tmp/nwbuild.sh",
                 options: {
                     execOptions: {
                         cwd: '.',
