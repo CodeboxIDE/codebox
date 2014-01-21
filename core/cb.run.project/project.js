@@ -78,7 +78,7 @@ ProjectRunner.prototype.runScript = function(projectType, port) {
         shellId: shellId,
         type: projectType,
         port: port,
-        url: this.urlPattern.replace("%d", port)
+        url: this.getUrl(port)
     };
 };
 
@@ -89,6 +89,10 @@ ProjectRunner.prototype.detect = function() {
 ProjectRunner.prototype.isRunning = function(portId) {
     return _.has(this.run_ports.ports, portId);
 };
+
+ProjectRunner.prototype.getUrl = function(port) {
+    return this.urlPattern.replace("%d", port)
+}
 
 ProjectRunner.prototype.run = function() {
     var self = this;
@@ -105,7 +109,8 @@ ProjectRunner.prototype.run = function() {
         var portId = self.portId(projectType);
 
         if(self.isRunning(portId)) {
-            return Q.reject(new Error("Project is already running"));
+            var _port = self.run_ports.ports[portId];
+            return Q.reject(new Error("Project is already running on "+self.getUrl(_port)));
         }
 
         // Now that we have the type, claim a port
