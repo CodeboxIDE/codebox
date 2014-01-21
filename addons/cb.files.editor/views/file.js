@@ -11,7 +11,7 @@ define([
     var $ = codebox.require("jQuery");
     var hr = codebox.require("hr/hr");
     var Dialogs = codebox.require("utils/dialogs");
-    var FilesBaseView = codebox.require("views/files/base");
+    var FilesTabView = codebox.require("views/files/tab");
     var FileSync = codebox.require("utils/filesync");
     var user = codebox.require("core/user");
     var menu = codebox.require("core/commands/menu");
@@ -24,12 +24,17 @@ define([
     var userSettings = user.settings("editor");
 
 
-    var FileEditorView = FilesBaseView.extend({
+    var FileEditorView = FilesTabView.extend({
         className: "addon-files-aceeditor",
         templateLoader: "text",
         template: templateFile,
         defaults: {},
         events: {},
+        shortcuts: {
+            "mod+s": "saveFile",
+            "mod+r": "runFile",
+            "mod+f": "searchInFile"
+        },
 
         // Constructor
         initialize: function() {
@@ -163,7 +168,7 @@ define([
                 that.sync.updateContent(that.editor.session.getValue());
             });
 
-            // Bind sync -> edito
+            // Bind sync -> editor
             this.sync.on("file:mode", function(mode) {
                 this.setMode(mode)
             }, this);
@@ -403,7 +408,31 @@ define([
          */
         convertIndentation: function(ch, len) {
             aceWhitespace.convertIndentation(this.editor.session, ch, len);
-        } 
+        },
+
+        /*
+         *  Save file
+         */
+        saveFile: function(e) {
+            if (e) e.preventDefault();
+            this.sync.save();
+        },
+
+        /*
+         *  Run this file
+         */
+        runFile: function(e) {
+            if (e) e.preventDefault();
+            this.model.run();
+        },
+
+        /*
+         *  Open search box in code editor
+         */
+        searchInFile: function(e) {
+            if (e) e.preventDefault();
+            this.editor.execCommand("find");
+        }
     });
 
     return FileEditorView;

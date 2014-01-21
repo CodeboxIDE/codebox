@@ -15,13 +15,11 @@ define([
             'notifications': true
         },
         events: {},
+        shortcuts: {},
 
         // Constructor
         initialize: function(options) {
             FilesBaseView.__super__.initialize.apply(this, arguments);
-
-            // Related tab
-            this.tab = this.parent;
 
             // Create base model
             if (this.model == null) this.model = new File({"codebox": box});
@@ -29,6 +27,7 @@ define([
 
             // Load base file
             if (this.options.path != null) this.load(this.options.path);
+
             return this;
         },
 
