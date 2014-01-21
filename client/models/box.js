@@ -256,7 +256,7 @@ define([
          */
         run: function() {
             return rpc.execute("run/project").then(function(runInfos) {
-                Command.run("terminal.open", runInfos.shellId);
+                runInfos.terminal = Command.run("terminal.open", runInfos.shellId);
                 return Q(runInfos);
             });
         },

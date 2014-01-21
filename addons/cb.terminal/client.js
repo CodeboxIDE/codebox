@@ -70,7 +70,7 @@ define([
             "ctrl+shift+T"
         ]
     }, function(shellId) {
-        tabs.add(TerminalTab, {
+        return tabs.add(TerminalTab, {
             'shellId': shellId
         }, {
             'section': "terminals"

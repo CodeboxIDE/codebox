@@ -1,6 +1,7 @@
 define([], function() {
     var _ = codebox.require("underscore");
     var commands = codebox.require("core/commands/toolbar");
+    var operations = codebox.require("core/operations");
     var app = codebox.require("core/app");
     var box = codebox.require("core/box");
     var menu = codebox.require("core/commands/menu");
@@ -18,7 +19,7 @@ define([], function() {
 
     // Update running ports list
     var updatePorts = function() {
-        box.procHttp().then(function(ports) {
+        return box.procHttp().then(function(ports) {
             httpPorts.menu.reset(_.map(ports, function(proc) {
                 return {
                     'title': proc.port,
@@ -31,7 +32,9 @@ define([], function() {
                         }
                     }
                 };
-            }))
+            }));
+
+            return ports;
         });
     };
 
@@ -46,7 +49,29 @@ define([], function() {
         ]
     }, function() {
         return box.run().then(function(runInfo) {
-            alerts.show("Your project is running <a target='_blank' href='"+runInfo.url+"'>on port "+runInfo.port+"</a>", 10000);
+            var op = operations.start("project.run", null, {
+                'title': "Project running on port "+runInfo.port,
+                'icon': "fa-play",
+                'action': function() {
+                    // Open the url
+                    window.open(runInfo.url);
+
+                    // Check that port is still active
+                    updatePorts().then(function(ports) {
+                        var _port = _.find(ports, function(proc) {
+                            return proc.port == runInfo.port;
+                        });
+                        if (!_port) {
+                            op.destroy();
+                        }
+                    });
+                }
+            });
+
+            // Terminal is close: finish the operation
+            runInfo.terminal.on("tab:close", function() {
+                op.destroy();
+            });
             updatePorts();
         }, function(err) {
             dialogs.alert("Error running this project", "An error occurred when trying to run this project: "+(err.message || err));
