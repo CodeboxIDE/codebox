@@ -1,3 +1,13 @@
+2014-01-22  Aaron O'Mullan <aaron.omullan@friendco.de>
+            Samy Pessé  <samy.pesse@friendco.de>
+
+    * Bump version to 0.4.13
+    * Improve dark theme
+    * Better visualization for running project
+    * Fix error when creating a box with a bad auth during git clone
+    * Fix desktop app build
+    * Ctrl-S|F|R can be use when the tab is active but the editor not focus
+
 2014-01-20  Samy Pessé  <samy.pesse@friendco.de>
 
     * Bump version to 0.4.12
