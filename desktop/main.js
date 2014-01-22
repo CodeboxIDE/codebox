@@ -32,7 +32,7 @@ var storageSet = function(key, value) {
 
 // Update list of projects
 var updateProjects = function() {
-    var projects = storageGet("projects");
+    var projects = storageGet("projects", []);
     $projectList.empty();
 
     if (projects.length === 0) {
@@ -69,9 +69,10 @@ var updateProjects = function() {
 
 // Add a path to the projects list
 var addProject = function(path) {
-    var projects = storageGet("projects");
+    var projects = storageGet("projects", []);
 
-    if (projects.indexOf(path) >= 0) return;
+    // Project is already added
+    if (projects.indexOf(path) !== -1) return;
 
     projects.push(path);
     storageSet("projects", projects);
