@@ -11,7 +11,8 @@ define([
     'core/search',
     'utils/dialogs',
     'views/tabs/file',
-    'views/files/base'
+    'views/files/base',
+    'views/files/tab'
 ], function(Q, _, hr, File, Files, user, box, tabs, settings, search, dialogs, FileTab) {
     var logging = hr.Logger.addNamespace("files");
 

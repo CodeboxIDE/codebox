@@ -11,7 +11,7 @@ define([
     var $ = codebox.require("jQuery");
     var hr = codebox.require("hr/hr");
     var Dialogs = codebox.require("utils/dialogs");
-    var FilesBaseView = codebox.require("views/files/base");
+    var FilesTabView = codebox.require("views/files/tab");
     var FileSync = codebox.require("utils/filesync");
     var user = codebox.require("core/user");
     var menu = codebox.require("core/commands/menu");
@@ -24,12 +24,17 @@ define([
     var userSettings = user.settings("editor");
 
 
-    var FileEditorView = FilesBaseView.extend({
+    var FileEditorView = FilesTabView.extend({
         className: "addon-files-aceeditor",
         templateLoader: "text",
         template: templateFile,
         defaults: {},
         events: {},
+        shortcuts: {
+            "mod+s": "saveFile",
+            "mod+r": "runFile",
+            "mod+f": "searchInFile"
+        },
 
         // Constructor
         initialize: function() {
@@ -163,7 +168,7 @@ define([
                 that.sync.updateContent(that.editor.session.getValue());
             });
 
-            // Bind sync -> edito
+            // Bind sync -> editor
             this.sync.on("file:mode", function(mode) {
                 this.setMode(mode)
             }, this);
@@ -238,7 +243,7 @@ define([
                     mac: 'Command-S'
                 },
                 exec: _.bind(function(editor) {
-                    this.sync.save();
+                    this.saveFile();
                 }, this)
             });
             this.editor.commands.addCommand({
@@ -249,7 +254,7 @@ define([
                     mac: 'Command-R'
                 },
                 exec: _.bind(function(editor) {
-                    this.model.run();
+                    this.runFile();
                 }, this)
             });
 
@@ -267,7 +272,7 @@ define([
 
             // Bind editor sync state changements
             this.sync.on("sync:state", function(state) {
-                this.setReadonly(!state)
+                this.editor.setReadOnly(!state);
                 if (!state) {
                     this.tab.setTabState("warning", true);
                 } else {
@@ -321,12 +326,10 @@ define([
                 wraplimitrange: 80,
                 enablesoftwrap: false,
                 keyboard: "textinput",
-                readonly: false,
                 enablesofttabs: true,
                 tabsize: 4
             });
 
-            this.setReadonly(this.options.readonly);
             this.setMode(this.options.mode);
             this.setKeyboardmode(this.options.keyboard);
             this.setTheme(themes.current().editor.theme || "textmate");
@@ -389,21 +392,35 @@ define([
         },
 
         /*
-         *  Set read only mode
-         *  @b : boolean for read only mode
-         */
-        setReadonly: function(b) {
-            this.readonly = b;
-            this.editor.setReadOnly(b);
-            return this;
-        },
-
-        /*
          *  Convert indentations to
          */
         convertIndentation: function(ch, len) {
             aceWhitespace.convertIndentation(this.editor.session, ch, len);
-        } 
+        },
+
+        /*
+         *  Save file
+         */
+        saveFile: function(e) {
+            if (e) e.preventDefault();
+            this.sync.save();
+        },
+
+        /*
+         *  Run this file
+         */
+        runFile: function(e) {
+            if (e) e.preventDefault();
+            this.model.run();
+        },
+
+        /*
+         *  Open search box in code editor
+         */
+        searchInFile: function(e) {
+            if (e) e.preventDefault();
+            this.editor.execCommand("find");
+        }
     });
 
     return FileEditorView;

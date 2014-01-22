@@ -51,8 +51,9 @@ define([
         },
 
         // Define keyboard shortcuts
-        setShortcuts: function(navigations) {
+        setShortcuts: function(navigations, container) {
             var navs = {};
+            container = container || this;
 
             _.each(navigations, function(method, key) {
                 navs[key] = _.bind(function() {
@@ -60,14 +61,14 @@ define([
                     if (!this.isActiveTab()) return;
 
                     // Get method
-                    if (!_.isFunction(method)) method = this[method];
+                    if (!_.isFunction(method)) method = container[method];
 
-                    // Appl method
+                    // Apply method
                     if (!method) return;
-                    method.apply(this, arguments);
+                    method.apply(container, arguments);
                 }, this);
             }, this);
-
+            
             Keyboard.bind(navs);
         },
 

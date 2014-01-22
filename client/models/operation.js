@@ -1,11 +1,14 @@
 define([
     "underscore",
-    "hr/hr"
-], function(_, hr) {
+    "hr/hr",
+    "models/command"
+], function(_, hr, Command) {
     var logging = hr.Logger.addNamespace("operations");
 
-    var Operation = hr.Model.extend({
-        defaults: {
+    var Operation = Command.extend({
+        defaults: _.extend({}, Command.prototype.defaults, {
+            "type": "operation",
+            
             // Id for the operation
             "id": null,
 
@@ -19,8 +22,8 @@ define([
             'icon': "fa-refresh fa-spin",
 
             // State
-            'state': 'running' // 'idle', 'running'
-        },
+            'state': 'running', // 'idle', 'running'
+        }),
 
         // Update progress
         progress: function(p) {
