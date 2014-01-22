@@ -140,6 +140,8 @@ setup_ssh
 setup_netrc
 setup_perm
 setup_git
+# If git clone fails we need to rebuild dir
+setup_workspace
 setup_env
 setup_python
 start_server
