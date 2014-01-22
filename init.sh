@@ -2,6 +2,7 @@
 
 # Constants
 HOME="/home/codebox"
+export TERM='xterm-256color'
 WORKSPACE="${HOME}/workspace/"
 SSH_DIR="${HOME}/.ssh/"
 SERVER_SCRIPT="/opt/codebox/bin/codebox.js"
