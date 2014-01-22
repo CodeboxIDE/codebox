@@ -243,7 +243,7 @@ define([
                     mac: 'Command-S'
                 },
                 exec: _.bind(function(editor) {
-                    this.sync.save();
+                    this.saveFile();
                 }, this)
             });
             this.editor.commands.addCommand({
@@ -254,7 +254,7 @@ define([
                     mac: 'Command-R'
                 },
                 exec: _.bind(function(editor) {
-                    this.model.run();
+                    this.runFile();
                 }, this)
             });
 
@@ -272,7 +272,7 @@ define([
 
             // Bind editor sync state changements
             this.sync.on("sync:state", function(state) {
-                this.setReadonly(!state)
+                this.editor.setReadOnly(!state);
                 if (!state) {
                     this.tab.setTabState("warning", true);
                 } else {
@@ -326,12 +326,10 @@ define([
                 wraplimitrange: 80,
                 enablesoftwrap: false,
                 keyboard: "textinput",
-                readonly: false,
                 enablesofttabs: true,
                 tabsize: 4
             });
 
-            this.setReadonly(this.options.readonly);
             this.setMode(this.options.mode);
             this.setKeyboardmode(this.options.keyboard);
             this.setTheme(themes.current().editor.theme || "textmate");
@@ -390,16 +388,6 @@ define([
             }
             this.editor.setTheme(theme);
             this.trigger("change:theme");
-            return this;
-        },
-
-        /*
-         *  Set read only mode
-         *  @b : boolean for read only mode
-         */
-        setReadonly: function(b) {
-            this.readonly = b;
-            this.editor.setReadOnly(b);
             return this;
         },
 
