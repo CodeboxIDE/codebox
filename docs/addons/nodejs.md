@@ -53,7 +53,7 @@ You can use the object provided by all the moduels from the [core](https://githu
 
 ##### Node side
 
-This module allows your add-on to define api method than can be used by the client. Since all RPC methods should return a promise, the module should depends on **q**.
+This module allows your add-on to define api method than can be used by the client. RPC methods can return a promise (using the **q** module).
 
 Example:
 
@@ -66,9 +66,6 @@ Example:
     "main": "main",
     "consumes": [
         "rpc"
-    ],
-    "dependencies": [
-        "q": "1.0.0"
     ]
 }
 ```
@@ -76,8 +73,6 @@ Example:
 **main.js**:
 
 ```javascript
-var Q = require('q');
-
 var HelloService = function() {
     this.lang = "en";
     this.langs = {
@@ -93,24 +88,24 @@ var HelloService = function() {
 
     this.say = function(args) {
         if (!args.name) {
-            return Q.reject(new Error("Need argument 'name'"));
+            throw new Error("Need argument 'name'");
         }
-        return Q({
+        return {
             'message': this._getMessage(args.name, args.lang);
-        });
+        };
     };
 
     this.lang = function(args) {
         if (!args.lang) {
-            return Q.reject(new Error("Need argument 'lang'"));
+            throw new Error("Need argument 'lang'");
         }
         if (!this.langs[args.lang]) {
-            return Q.reject(new Error("Invalid lang: "+args.lang));
+            throw new Error("Invalid lang: "+args.lang);
         }
         this.lang = args.lang;
-        return Q({
+        return {
             'lang': this.lang
-        });
+        };
     };
 };
 
