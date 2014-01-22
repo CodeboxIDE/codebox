@@ -3,13 +3,13 @@ define([
 ], function(aceTheme) {
     var themes = codebox.require("core/themes");
 
-    var bgDark = "#1a1d24";
-    var colorDark = "#65737d";
+    var bgDark = "#222830";
+    var colorDark = "#64737e";
 
-    var bgNormal = "#2b303b";
+    var bgNormal = "#1c1f25";
     var colorNormal = "#dfe0e6";
 
-    var bgLight = "#343c45";
+    var bgLight = "#2b303b";
     var colorLight = "#dadfe6";
 
     themes.add({
