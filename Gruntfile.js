@@ -109,6 +109,7 @@ module.exports = function (grunt) {
                 mac_icns: "./desktop/icons/mac.icns",
                 credits: "./desktop/credits.html",
                 version: NW_VERSION,
+                zip: false
             },
             src: [
                 ".tmp/**"

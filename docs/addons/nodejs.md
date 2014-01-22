@@ -51,7 +51,9 @@ You can use the object provided by all the moduels from the [core](https://githu
 
 #### RPC
 
-This module allows your add-on to define api method than can be used by the client. 
+##### Node side
+
+This module allows your add-on to define api method than can be used by the client. Since all RPC methods should return a promise, the module should depends on **q**.
 
 Example:
 
@@ -64,6 +66,9 @@ Example:
     "main": "main",
     "consumes": [
         "rpc"
+    ],
+    "dependencies": [
+        "q": "1.0.0"
     ]
 }
 ```
@@ -90,9 +95,9 @@ var HelloService = function() {
         if (!args.name) {
             return Q.reject(new Error("Need argument 'name'"));
         }
-        return {
+        return Q({
             'message': this._getMessage(args.name, args.lang);
-        };
+        });
     };
 
     this.lang = function(args) {
@@ -103,9 +108,9 @@ var HelloService = function() {
             return Q.reject(new Error("Invalid lang: "+args.lang));
         }
         this.lang = args.lang;
-        return {
+        return Q({
             'lang': this.lang
-        }
+        });
     };
 };
 
@@ -128,4 +133,21 @@ You can now in your browser use these rpc methods by accessing: http://localhost
 
 Check out the [Heroku Add-on example](https://github.com/FriendCode/codebox-addon-heroku) for seeing an other example of use of RPC.
 
+##### Client side
 
+To use those methods from your `client.js` file, you just need to require the rpc module and call the `execute` method:
+
+```javascript
+var rpc = codebox.require("core/backends/rpc");
+
+rpc.execute("hello/say", {
+    "lang": "en"
+}).then(function(res) {
+    // Request not rejected, do your work here
+    console.log(res);
+}, function(err) {
+    // Handle error here
+    console.log(err);
+});
+
+```

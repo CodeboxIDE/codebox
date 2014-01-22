@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Constants
-HOME="/home/codebox"
+export TERM='xterm-256color'
+export HOME="/home/codebox"
 WORKSPACE="${HOME}/workspace/"
 SSH_DIR="${HOME}/.ssh/"
 SERVER_SCRIPT="/opt/codebox/bin/codebox.js"
@@ -130,15 +131,17 @@ function start_server () {
     echo "Calling start_server ..."
 
     cd ${WORKSPACE}
-    exec ${SERVER_SCRIPT} run .
+    exec ${SERVER_SCRIPT} run ${WORKSPACE}
 }
 
 # Do all setups
 setup_workspace
 setup_ssh
 setup_netrc
-setup_git
 setup_perm
+setup_git
+# If git clone fails we need to rebuild dir
+setup_workspace
 setup_env
 setup_python
 start_server
