@@ -130,7 +130,7 @@ function start_server () {
     echo "Calling start_server ..."
 
     cd ${WORKSPACE}
-    exec ${SERVER_SCRIPT} run .
+    exec ${SERVER_SCRIPT} run ${WORKSPACE}
 }
 
 # Do all setups
