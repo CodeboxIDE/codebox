@@ -137,8 +137,8 @@ function start_server () {
 setup_workspace
 setup_ssh
 setup_netrc
-setup_git
 setup_perm
+setup_git
 setup_env
 setup_python
 start_server
