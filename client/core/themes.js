@@ -85,7 +85,10 @@ define([
                 'tabs section': ".cb-tabs .section",
                 'tabs header': ".cb-tabs .section .tabs-header",
                 'tabs content': ".cb-tabs .section .tabs-content",
-                'tabs tab': ".component-tab"
+                'tabs tab': ".component-tab",
+
+                // operations
+                'operations operation': ".cb-operations .operation-item"
             },
             base: "body #codebox"
         });

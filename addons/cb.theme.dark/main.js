@@ -57,6 +57,15 @@ define([
                         'color': colorLight
                     }
                 }
+            },
+
+            // Operations
+            operations: {
+                operation: {
+                    'background': bgLight,
+                    'color': "#fff",
+                    'border-color': "transparent"
+                }
             }
         }
     });
