@@ -42,7 +42,9 @@ HttpRPCManager.prototype.methodHandler = function(method, methodUrl, opts) {
             'user': res.user
         };
 
-        return Q(method(args, meta)).then(function(data) {
+        return Q().then(function() {
+            return method(args, meta);
+        }).then(function(data) {
             res.send(200, {
                 'ok': true,
                 'data': wireFriendly(data),
