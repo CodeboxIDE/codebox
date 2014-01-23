@@ -1,3 +1,7 @@
+// Requires
+var Q = require('q');
+
+
 function setup(options, imports, register) {
     // Import
     var server = imports.server.http;
@@ -7,23 +11,19 @@ function setup(options, imports, register) {
     var workspace = imports.workspace;
     var logger = imports.logger.namespace("codebox");
 
+    var d = Q.defer();
+
     // Start server
     server.listen(port, hostname);
 
-    server.on('listening', function() {
-        logger.log("Server is listening on ", hostname+":"+port);
-    });
+    // Success/failure
+    server.on('listening', d.resolve);
+    server.on('error', d.reject);
 
-    watch.init(workspace.root)
+
+    return d.promise
     .then(function() {
-        logger.log("Started Watch");
-    })
-    .fail(function(err) {
-        logger.error("Failed to start Watch because of:");
-        logger.exception(err, false);
-    }).fin(function() {
-        // Register
-        register(null, {});
+        return watch.init(workspace.root);
     });
 }
 
