@@ -57,7 +57,7 @@ function setup(options, imports, register) {
 
     // Get the systems default shell
     // this is memoized to only be called once
-    manager.getDefaultShell = function() {
+    manager.getDefaultShell = _.memoize(function() {
         var cmd = {
             'linux': 'getent passwd $USER | cut -d: -f',
             'darwin': 'finger $USER | grep Shell | cut -d ":" -f3 | cut -d " " -f2'
@@ -67,7 +67,10 @@ function setup(options, imports, register) {
         .then(function(shellCmd) {
             return shellCmd.trim();
         });
-    };
+    });
+
+    // Pre cache call to getDefaultShell
+    manager.getDefaultShell();
 
     // Utility function for connecting emitter to eventbus
     // (converts arguments to data convention)
