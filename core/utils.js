@@ -115,7 +115,7 @@ _.mixin({
 function _execHandler(deffered) {
     return function(error, stdout, stderr) {
         if(error) {
-            return deffered.reject(Error(error));
+            return deffered.reject(error);
         }
         return deffered.resolve({
             stdout: stdout,
