@@ -488,7 +488,6 @@ Terminal.bindPaste = function(document) {
     // even without the contentEditable workaround.
     var window = document.defaultView;
     on(window, 'paste', function(ev) {
-        console.log("!!!!! paste");
         var term = Terminal.focus;
         if (!term) return;
         if (ev.clipboardData) {
@@ -5633,9 +5632,8 @@ function off(el, type, handler, capture) {
 }
 
 function cancel(ev) {
-    if (ev.preventDefault) ev.preventDefault();
-    ev.returnValue = false;
-    if (ev.stopPropagation) ev.stopPropagation();
+    ev.preventDefault();
+    ev.stopPropagation();
     ev.cancelBubble = true;
     return false;
 }
