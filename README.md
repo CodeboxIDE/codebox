@@ -33,6 +33,12 @@ You will also need to install via `npm` using `sudo` with the following:
 sudo npm install -g codebox
 ```
 
+Note: Please be aware that some npm libraries may be outdated and require old binary name ```node```, which you can fix by creating a symlink to ```nodejs``` with:
+
+```
+sudo ln -s /usr/bin/nodejs /usr/bin/node
+```
+
 Desktop binaries for Mac and Linux are **coming soon**.
 
 #### Usage
