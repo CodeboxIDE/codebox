@@ -488,6 +488,7 @@ Terminal.bindPaste = function(document) {
     // even without the contentEditable workaround.
     var window = document.defaultView;
     on(window, 'paste', function(ev) {
+        console.log("!!!!! paste");
         var term = Terminal.focus;
         if (!term) return;
         if (ev.clipboardData) {
@@ -2573,13 +2574,13 @@ Terminal.prototype.keyDown = function(ev) {
                         }
                     }
                     // Ctrl-V
-                    if (this.prefixMode && ev.keyCode === 86) {
-                        this.leavePrefix();
+                    if (ev.keyCode === 86) {
+                        if (this.prefixMode) this.leavePrefix();
                         return true;
                     }
                     // Ctrl-C
-                    if ((this.prefixMode || this.selectMode) && ev.keyCode === 67) {
-                        if (this.visualMode) {
+                    if (ev.keyCode === 67) {
+                        if ((this.prefixMode || this.selectMode) && this.visualMode) {
                             setTimeout(function() {
                                 self.leaveVisual();
                             }, 1);
