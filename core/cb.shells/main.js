@@ -1,7 +1,10 @@
 // Requires
 var _ = require('underscore');
 
+var os = require('os');
 var shux = require('shux');
+
+var utils = require('../utils');
 
 
 function setup(options, imports, register) {
@@ -38,6 +41,19 @@ function setup(options, imports, register) {
         return shell;
     };
 
+    // Get the systems default shell
+    // this is memoized to only be called once
+    manager.getDefaultShell = function() {
+        var cmd = {
+            'linux': 'getent passwd $USER | cut -d: -f',
+            'darwin': 'finger $USER | grep Shell | cut -d ":" -f3 | cut -d " " -f2'
+        }[os.platform()] || 'bash';
+
+        return utils.exec(cmd).get('stdout')
+        .then(function(shellCmd) {
+            return shellCmd.trim();
+        });
+    };
 
     // Utility function for connecting emitter to eventbus
     // (converts arguments to data convention)
