@@ -17,7 +17,7 @@ function Shell(manager, shellId, ptyStream, opts) {
     this.pty = ptyStream;
 
     // PTY options
-    this.opts = opts;
+    this.opts = opts || {};
 
     // PTY
     this.term = null;
@@ -29,15 +29,11 @@ Shell.prototype._getShell = function() {
     var id = this.shellId;
     var manager = this.manager;
 
-    var args = _.extend({
-        command: 'bash'
-     }, this.opts);
-
     // Don't reopen shell if already exists
     if(manager.shells[id]) {
         return Q(manager.attach(id));
     }
-    return manager.createShell(id, args);
+    return manager.createShell(id, this.opts);
 };
 
 Shell.prototype.init = function() {

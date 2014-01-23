@@ -18,9 +18,22 @@ function setup(options, imports, register) {
 
     // Monkey patch createShell
     manager.createShell = function(id, opts) {
-        return Q.fcall(oldCreateShell, id, _.defaults(opts || {}, {
-            cwd: workspace.root
-        }));
+        opts = opts || {};
+        return (
+            (opts.command || opts.args)?
+                Q(opts.command) :
+                manager.getDefaultShell()
+        )
+        .then(function(shellCmd) {
+            // Build opts
+            opts.command = shellCmd;
+            return _.defaults(opts, {
+                cwd: workspace.root
+            });
+        })
+        .then(function(opts) {
+            return oldCreateShell(id, opts);
+        });
     };
 
     // Simplify shell creation
