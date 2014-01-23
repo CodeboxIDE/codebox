@@ -1,4 +1,5 @@
 // Requires
+var Q = require('q');
 var _ = require('underscore');
 
 var os = require('os');
@@ -17,7 +18,7 @@ function setup(options, imports, register) {
 
     // Monkey patch createShell
     manager.createShell = function(id, opts) {
-        return oldCreateShell(id, _.defaults(opts || {}, {
+        return Q.fcall(oldCreateShell, id, _.defaults(opts || {}, {
             cwd: workspace.root
         }));
     };
@@ -25,7 +26,9 @@ function setup(options, imports, register) {
     // Simplify shell creation
     manager.createShellCommand = function(shellId, args, opts) {
         var exitCMD = "read -p  $'####\\n# Press \\e[00;31mENTER\\e[00m to close this shell ...\\n####\\n'";
-        var shell = manager.createShell(_.defaults({}, opts || {}, {
+
+        // Spawn shell
+        return manager.createShell(_.defaults({}, opts || {}, {
             id: shellId,
             command: 'bash',
             arguments: [
@@ -37,8 +40,6 @@ function setup(options, imports, register) {
             ],
             cwd: workspace.root
         }));
-
-        return shell;
     };
 
     // Get the systems default shell

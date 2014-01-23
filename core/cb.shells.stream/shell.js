@@ -35,7 +35,7 @@ Shell.prototype._getShell = function() {
 
     // Don't reopen shell if already exists
     if(manager.shells[id]) {
-        return manager.attach(id);
+        return Q(manager.attach(id));
     }
     return manager.createShell(id, args);
 };
@@ -52,18 +52,18 @@ Shell.prototype.init = function() {
 };
 
 Shell.prototype._initPty = function() {
+    var that = this;
     var pty = this.pty;
 
     // Term object
-    var t = this.term = this._getShell();
+    return this._getShell()
+    .then(function(shell) {
+        // Set term to shell
+        this.term = shell;
 
-    // Pipe
-    pty.pipe(t).pipe(pty);
-
-    // End
-    //t.on('end', pty.end.bind(pty));
-
-    return Q('pty');
+        // Pipe
+        pty.pipe(shell).pipe(pty);
+    });
 };
 
 // Public RPC methods
