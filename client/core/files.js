@@ -31,6 +31,9 @@ define([
         if (recentFiles.size() > 20) recentFiles.shift();
     });
 
+    // Active files
+    var activeFiles = new Files();
+
     // Files handlers map
     var handlers = {};
 
@@ -51,11 +54,15 @@ define([
                 var path = file.path();
                 var uniqueId = handler.id+":"+file.syncEnvId();
 
+                // Add files as open
+                activeFiles.add(file);
+
                 var tab = tabs.getActiveTabByType("directory");
                 if (tab != null && !tabs.checkTabExists(uniqueId) && !file.isNewfile()) {
                     // Change current tab to open the file
                     tab.view.load(path, handler);
                 } else {
+
                     // Add new tab
                     var tab = tabs.add(FileTab, {
                         "model": file,
@@ -66,6 +73,10 @@ define([
                     });
                     tab.on("tab:state", function(state) {
                         if (state) box.setActiveFile(file);
+                    });
+                    tab.on("tab:close", function(state) {
+                        // Remove file
+                        activeFiles.remove(file);
                     });
                 }
             };
@@ -101,9 +112,9 @@ define([
         // Add to recent files
         if (!file.isNewfile()) recentFiles.add(file);
 
-        // Open
-        box.setActiveFile(file);
-        return handler.open(file);
+        return Q(handler.open(file)).then(function() {
+            box.setActiveFile(file);
+        });
     }
 
     // Select to open a file with any handler
@@ -212,6 +223,7 @@ define([
         'getHandlers': getHandlers,
         'open': openFile,
         'openNew': openNew,
-        'recent': recentFiles
+        'recent': recentFiles,
+        'active': activeFiles
     };
 });

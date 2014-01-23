@@ -168,6 +168,8 @@ define([
 
             return that.ready();
         },
+    }, {
+        'Item': FilesTreeViewItem
     });
 
     return FilesTreeView;

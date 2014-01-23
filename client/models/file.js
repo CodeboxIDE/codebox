@@ -31,6 +31,7 @@ define([
             "offline": false,
             "exportUrl": null
         },
+        idAttribute: "href",
 
         /*
          *  Initialize

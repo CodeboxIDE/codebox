@@ -1,11 +1,15 @@
 define([
     "views/tree",
+    "views/list",
     "less!stylesheets/panel.less"
-], function(FilesTreeView) {
+], function(FilesTreeView, FilesListView) {
     var _ = codebox.require("underscore");
     var $ = codebox.require("jQuery");
     var hr = codebox.require("hr/hr");
+    var box = codebox.require("core/box");
+    var files = codebox.require("core/files");
     var search = codebox.require("core/search");
+    var ContextMenu = codebox.require("utils/contextmenu");
     var PanelBaseView = codebox.require("views/panels/base");
 
     var PanelFilesView = PanelBaseView.extend({
@@ -13,6 +17,11 @@ define([
 
         initialize: function() {
             PanelFilesView.__super__.initialize.apply(this, arguments);
+
+            this.treeActive = new FilesListView({
+                collection: files.active
+            });
+
             this.tree = new FilesTreeView({
                 path: "/"
             });
@@ -29,6 +38,13 @@ define([
 
         render: function() {
             this.$el.empty();
+
+            // Context menu
+            ContextMenu.add(this.$el, box.root.contextMenu());
+
+            this.treeActive.$el.appendTo(this.$el);
+            this.treeActive.render();
+
             this.tree.$el.appendTo(this.$el);
             this.tree.render();
             return this.ready();
