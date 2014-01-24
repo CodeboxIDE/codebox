@@ -47,6 +47,10 @@ define([
             throw "Invalid files handler format";
         }
 
+        handler = _.defaults(handler, {
+            'setActive': false
+        });
+
         handler.id = handlerId;
 
         if (handler.View) {
@@ -55,7 +59,7 @@ define([
                 var uniqueId = handler.id+":"+file.syncEnvId();
 
                 // Add files as open
-                activeFiles.add(file);
+                if (handler.setActive) activeFiles.add(file);
 
                 var tab = tabs.getActiveTabByType("directory");
                 if (tab != null && !tabs.checkTabExists(uniqueId) && !file.isNewfile()) {
@@ -79,7 +83,7 @@ define([
 
                     // Close tab -> close active file
                     tab.on("tab:close", function(state) {
-                        activeFiles.remove(file);
+                        if (handler.setActive) activeFiles.remove(file);
                     });
                 }
             };
