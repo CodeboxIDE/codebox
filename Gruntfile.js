@@ -193,7 +193,15 @@ module.exports = function (grunt) {
 
                     // HR.js application
                     '.tmp/client/build/static/application.{js,css}'
-                ]
+                ],
+                filter: function(src) {
+                    try {
+                        // We don't want to gzip tiny files
+                        // Skip files < 10kb
+                        return fs.statSync(src).size > 10*1024;
+                    } catch(err) {}
+                    return false;
+                }
             }
         }
     });
