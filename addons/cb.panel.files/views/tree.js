@@ -1,7 +1,8 @@
 define([
+    "settings",
     "text!templates/item.html",
     "less!stylesheets/files.less"
-], function(templateFile) {
+], function(panelSettings, templateFile) {
     var _ = codebox.require("underscore");
     var $ = codebox.require("jQuery");
     var hr = codebox.require("hr/hr");
@@ -120,6 +121,10 @@ define([
                 that.update();
             });
 
+            panelSettings.user.change(function() {
+                this.update();
+            }, this);
+
             return this;
         },
 
@@ -136,7 +141,10 @@ define([
                 that.countFiles = 0;
 
                 _.each(files, function(file) {
-                    if (file.isGit()) return;
+                    if ((file.isGit() && !panelSettings.user.get("gitfolder"))
+                    || (file.isHidden() && !panelSettings.user.get("hiddenfiles"))) {
+                        return;
+                    }
                     
                     var v = new FilesTreeViewItem({
                         "codebox": that.codebox,

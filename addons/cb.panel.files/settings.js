@@ -7,11 +7,21 @@ define([], function() {
         'namespace': "files-panel",
         'title': "Files Explorer Panel",
         'defaults': {
-            'openfiles': true
+            'openfiles': true,
+            'hiddenfiles': true,
+            'gitfolder': false
         },
         'fields': {
             'openfiles': {
                 'label': "Show Open Files",
+                'type': "checkbox"
+            },
+            'hiddenfiles': {
+                'label': "Show Hidden Files",
+                'type': "checkbox"
+            },
+            'gitfolder': {
+                'label': "Show GIT Folder",
                 'type': "checkbox"
             }
         }
