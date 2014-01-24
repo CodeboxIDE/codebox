@@ -165,7 +165,7 @@ define([
             return openFileWith(file);
         }
 
-        if (_.size(possibleHandlers) == 1 && (options.userChoice != true)) {
+        if (_.size(possibleHandlers) == 1 || (options.userChoice != true)) {
             return Q(openFileHandler(_.first(possibleHandlers), file));
         }
 
