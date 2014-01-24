@@ -2573,19 +2573,27 @@ Terminal.prototype.keyDown = function(ev) {
                         }
                     }
                     // Ctrl-V
-                    if (ev.keyCode === 86) {
-                        if (this.prefixMode) this.leavePrefix();
+                    if (ev.keyCode === 86 && this.prefixMode) {
+                        this.leavePrefix();
                         return true;
                     }
                     // Ctrl-C
-                    if (ev.keyCode === 67) {
-                        if ((this.prefixMode || this.selectMode) && this.visualMode) {
-                            setTimeout(function() {
-                                self.leaveVisual();
-                            }, 1);
-                        }
+                    if (ev.keyCode === 67 && (this.prefixMode || this.selectMode) && this.visualMode) {
+                        setTimeout(function() {
+                            self.leaveVisual();
+                        }, 1);
                         return true;
                     }
+
+                    // Ctrl-Shift-V -> paste
+                    if (ev.keyCode === 86 && ev.shiftKey) {
+                        return true;
+                    }
+                    // Ctrl-Shift-C -> copy
+                    if (ev.keyCode === 67 && ev.shiftKey) {
+                        return true;
+                    }
+
                     key = String.fromCharCode(ev.keyCode - 64);
                 } else if (ev.keyCode === 32) {
                     // NUL
