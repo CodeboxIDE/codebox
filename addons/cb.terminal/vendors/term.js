@@ -1126,7 +1126,7 @@ Terminal.prototype.bindMouse = function() {
 
         if (_d<0) _d = Math.floor(_d);
         else _d = Math.ceil( _d);
-        
+
         self.scrollDisp( _d);
         return cancel(ev);
     });
@@ -2612,7 +2612,8 @@ Terminal.prototype.keyDown = function(ev) {
                     key = String.fromCharCode(29);
                 }
             } else if ((!this.isMac && ev.altKey) || (this.isMac && ev.metaKey)) {
-                if (ev.keyCode === 86) {
+                // CMD+V or CMD+C => (paste or copy)
+                if (ev.keyCode === 86 || ev.keyCode === 67) {
                     return true;
                 } else if (ev.keyCode >= 65 && ev.keyCode <= 90) {
                     key = '\x1b' + String.fromCharCode(ev.keyCode + 32);
