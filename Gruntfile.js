@@ -1,4 +1,5 @@
 module.exports = function (grunt) {
+    var fs = require('fs');
     var path = require("path");
     var pkg = require("./package.json");
     var _ = require('underscore');
@@ -12,6 +13,7 @@ module.exports = function (grunt) {
     // Load grunt modules
     grunt.loadNpmTasks('hr.js');
     grunt.loadNpmTasks('grunt-node-webkit-builder');
+    grunt.loadNpmTasks('grunt-contrib-compress');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-shell');
 
@@ -132,7 +134,7 @@ module.exports = function (grunt) {
         },
         copy: {
             // Copy most files over
-            desktop: {
+            tmp: {
                 expand: true,
                 dot: false,
                 cwd: './',
@@ -174,6 +176,25 @@ module.exports = function (grunt) {
                     }
                 }
             }
+        },
+        compress: {
+            tmp: {
+                options: {
+                  mode: 'gzip',
+                  pretty: true
+                },
+                expand: true,
+                src: [
+                    // Codebox Built addons
+                    '.tmp/addons/*/addon-built.js',
+
+                    // Ace source
+                    '.tmp/addons/cb.files.editor/ace/**',
+
+                    // HR.js application
+                    '.tmp/client/build/static/application.{js,css}'
+                ]
+            }
         }
     });
 
@@ -182,13 +203,23 @@ module.exports = function (grunt) {
         'hr'
     ]);
 
+    // Build tmp directory
+    grunt.registerTask('tmp', [
+        'build',
+        'copy:tmp',
+        'compress:tmp'
+    ]);
+
     // Desktop app generation
     grunt.registerTask('buildApps', [
-        'build',
-        'copy:desktop',
+        'tmp',
         'copy:desktopPKG',
         'shell:nwbuild',
         'nodewebkit'
+    ]);
+
+    grunt.registerTask('publish', [
+        'tmp',
     ]);
 
     // Run
