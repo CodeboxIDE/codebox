@@ -1,9 +1,10 @@
 define([
+    "settings",
     "views/tree",
     "views/list",
     "text!templates/panel.html",
     "less!stylesheets/panel.less"
-], function(FilesTreeView, FilesListView, templateFile) {
+], function(panelSettings, FilesTreeView, FilesListView, templateFile) {
     var _ = codebox.require("underscore");
     var $ = codebox.require("jQuery");
     var hr = codebox.require("hr/hr");
@@ -34,10 +35,16 @@ define([
             }, this);
 
             this.listActive.on("add remove filter", function(item, state) {
-                this.$(".files-section-open").toggle(this.listActive.count() > 0);
+                this.$(".files-section-open").toggle(panelSettings.user.get("openfiles") && this.listActive.count() > 0);
             }, this);
 
+            // Offline
             hr.Offline.on("state", function() {
+                this.update();
+            }, this);
+
+            // Settings update
+            panelSettings.user.change(function() {
                 this.update();
             }, this);
 
@@ -45,11 +52,22 @@ define([
             ContextMenu.add(this.$el, box.root.contextMenu());
         },
 
+        render: function() {
+            this.tree.$el.detach();
+            this.listActive.$el.detach();
+
+            return PanelFilesView.__super__.render.apply(this, arguments);
+        },
+
         finish: function() {
             this.toggle(this.tree.countFiles > 0);
 
-            this.listActive.$el.appendTo(this.$(".files-section-open .section-content"));
-            this.$(".files-section-open").toggle(this.listActive.count() > 0);
+            if (panelSettings.user.get("openfiles")) {
+                this.listActive.$el.appendTo(this.$(".files-section-open .section-content"));
+                this.$(".files-section-open").toggle(this.listActive.count() > 0);
+            } else {
+                this.$(".files-section-open").hide();
+            }
             
             this.tree.$el.appendTo(this.$(".files-section-tree .section-content"));
 
