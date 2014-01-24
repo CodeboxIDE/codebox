@@ -149,6 +149,10 @@ module.exports = function (grunt) {
                     "!./.addons/**",
                     "!./appBuilds/**",
 
+                    // Only take "./client/build"
+                    "!./client/**",
+                    "./client/build/**",
+
                     // Ignore some build time only modules
                     "!./node_modules/grunt/**",
                     "!./node_modules/grunt-*/**",
