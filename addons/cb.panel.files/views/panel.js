@@ -1,8 +1,9 @@
 define([
     "views/tree",
     "views/list",
+    "text!templates/panel.html",
     "less!stylesheets/panel.less"
-], function(FilesTreeView, FilesListView) {
+], function(FilesTreeView, FilesListView, templateFile) {
     var _ = codebox.require("underscore");
     var $ = codebox.require("jQuery");
     var hr = codebox.require("hr/hr");
@@ -14,11 +15,13 @@ define([
 
     var PanelFilesView = PanelBaseView.extend({
         className: "cb-panel-files",
+        templateLoader: "text",
+        template: templateFile,
 
         initialize: function() {
             PanelFilesView.__super__.initialize.apply(this, arguments);
 
-            this.treeActive = new FilesListView({
+            this.listActive = new FilesListView({
                 collection: files.active
             });
 
@@ -33,25 +36,17 @@ define([
             hr.Offline.on("state", function() {
                 this.update();
             }, this);
-        },
-
-
-        render: function() {
-            this.$el.empty();
 
             // Context menu
             ContextMenu.add(this.$el, box.root.contextMenu());
-
-            this.treeActive.$el.appendTo(this.$el);
-            this.treeActive.render();
-
-            this.tree.$el.appendTo(this.$el);
-            this.tree.render();
-            return this.ready();
         },
 
         finish: function() {
             this.toggle(this.tree.countFiles > 0);
+
+            this.listActive.$el.appendTo(this.$(".files-section-open .section-content"));
+            this.tree.$el.appendTo(this.$(".files-section-tree .section-content"));
+
             return PanelFilesView.__super__.finish.apply(this, arguments);
         },
     });

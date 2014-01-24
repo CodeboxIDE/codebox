@@ -71,11 +71,14 @@ define([
                         "uniqueId": uniqueId,
                         "type": "file",
                     });
+
+                    // Focus tab -> set active file
                     tab.on("tab:state", function(state) {
                         if (state) box.setActiveFile(file);
                     });
+
+                    // Close tab -> close active file
                     tab.on("tab:close", function(state) {
-                        // Remove file
                         activeFiles.remove(file);
                     });
                 }

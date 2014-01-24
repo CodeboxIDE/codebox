@@ -10,7 +10,12 @@ define([
         tagName: "ul",
         className: "cb-files-tree",
         
-        Item: FilesTreeView.Item
+        Item: FilesTreeView.Item,
+        defaults: _.extend({}, hr.List.prototype.defaults, {
+            baseFilter: function(model) {
+                return !model.isNewfile();
+            }
+        })
     });
     
 
