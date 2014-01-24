@@ -195,6 +195,17 @@ module.exports = function (grunt) {
                     '.tmp/client/build/static/application.{js,css}'
                 ],
                 filter: function(src) {
+                    // Compressable file formats
+                    if(!_.contains([
+                        'js',
+                        'css',
+                        'svg',
+                        'less',
+                        'html',
+                        'snippets'
+                    ],
+                    path.extname(src).slice(1)
+                    )) return false;
                     try {
                         // We don't want to gzip tiny files
                         // Skip files < 10kb
