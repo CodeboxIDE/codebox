@@ -33,6 +33,10 @@ define([
                 this.toggle(count > 0);
             }, this);
 
+            this.listActive.on("add remove filter", function(item, state) {
+                this.$(".files-section-open").toggle(this.listActive.count() > 0);
+            }, this);
+
             hr.Offline.on("state", function() {
                 this.update();
             }, this);
@@ -45,6 +49,8 @@ define([
             this.toggle(this.tree.countFiles > 0);
 
             this.listActive.$el.appendTo(this.$(".files-section-open .section-content"));
+            this.$(".files-section-open").toggle(this.listActive.count() > 0);
+            
             this.tree.$el.appendTo(this.$(".files-section-tree .section-content"));
 
             return PanelFilesView.__super__.finish.apply(this, arguments);
