@@ -31,6 +31,9 @@ define([
         if (recentFiles.size() > 20) recentFiles.shift();
     });
 
+    // Active files
+    var activeFiles = new Files();
+
     // Files handlers map
     var handlers = {};
 
@@ -44,6 +47,10 @@ define([
             throw "Invalid files handler format";
         }
 
+        handler = _.defaults(handler, {
+            'setActive': false
+        });
+
         handler.id = handlerId;
 
         if (handler.View) {
@@ -51,11 +58,15 @@ define([
                 var path = file.path();
                 var uniqueId = handler.id+":"+file.syncEnvId();
 
+                // Add files as open
+                if (handler.setActive) activeFiles.add(file);
+
                 var tab = tabs.getActiveTabByType("directory");
                 if (tab != null && !tabs.checkTabExists(uniqueId) && !file.isNewfile()) {
                     // Change current tab to open the file
                     tab.view.load(path, handler);
                 } else {
+
                     // Add new tab
                     var tab = tabs.add(FileTab, {
                         "model": file,
@@ -64,8 +75,15 @@ define([
                         "uniqueId": uniqueId,
                         "type": "file",
                     });
+
+                    // Focus tab -> set active file
                     tab.on("tab:state", function(state) {
                         if (state) box.setActiveFile(file);
+                    });
+
+                    // Close tab -> close active file
+                    tab.on("tab:close", function(state) {
+                        if (handler.setActive) activeFiles.remove(file);
                     });
                 }
             };
@@ -101,9 +119,9 @@ define([
         // Add to recent files
         if (!file.isNewfile()) recentFiles.add(file);
 
-        // Open
-        box.setActiveFile(file);
-        return handler.open(file);
+        return Q(handler.open(file)).then(function() {
+            box.setActiveFile(file);
+        });
     }
 
     // Select to open a file with any handler
@@ -151,7 +169,7 @@ define([
             return openFileWith(file);
         }
 
-        if (_.size(possibleHandlers) == 1 && (options.userChoice != true)) {
+        if (_.size(possibleHandlers) == 1 || (options.userChoice != true)) {
             return Q(openFileHandler(_.first(possibleHandlers), file));
         }
 
@@ -212,6 +230,7 @@ define([
         'getHandlers': getHandlers,
         'open': openFile,
         'openNew': openNew,
-        'recent': recentFiles
+        'recent': recentFiles,
+        'active': activeFiles
     };
 });
