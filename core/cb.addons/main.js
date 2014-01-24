@@ -9,6 +9,10 @@ var exec = require('child_process').exec;
 
 var Addon = require("./addon");
 
+// GZIP static middleware
+var gzipStatic = require('connect-gzip-static');
+
+
 function setup(options, imports, register, app) {
     var logger = imports.logger.namespace("addons", false);
     var server = imports.server;
@@ -235,7 +239,7 @@ function setup(options, imports, register, app) {
 
     // Init addons
     server.disableAuth("/static/addons");
-    server.app.use('/static/addons', express.static(configAddonsPath));
+    server.app.use('/static/addons', gzipStatic(configAddonsPath));
 
     // Prepare defaults addons
     return copyDefaultsAddons().then(function() {
