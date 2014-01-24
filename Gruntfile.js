@@ -156,7 +156,10 @@ module.exports = function (grunt) {
                     // Ignore some build time only modules
                     "!./node_modules/grunt/**",
                     "!./node_modules/grunt-*/**",
-                    "!./node_modules/hr.js/**"
+                    "!./node_modules/hr.js/**",
+
+                    // Exclude test directories from node modules
+                    "!./node_modules/**/test/**",
                 ],
 
                 // Preserve permissions
