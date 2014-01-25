@@ -61,7 +61,12 @@ function setup(options, imports, register) {
         var cmd = {
             'linux': 'getent passwd $USER | cut -d: -f7',
             'darwin': 'finger $USER | grep Shell | cut -d ":" -f3 | cut -d " " -f2'
-        }[os.platform()] || 'bash';
+        }[os.platform()];
+
+        // If on unknown platform
+        if(!cmd) {
+            return Q('bash');
+        }
 
         return utils.exec(cmd).get('stdout')
         .then(function(shellCmd) {
