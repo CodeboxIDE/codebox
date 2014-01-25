@@ -1,6 +1,12 @@
 2014-01-25  Samy Pessé  <samy.pesse@friendco.de>
             Aaron O'Mullan <aaron.omullan@friendco.de>
 
+    * Bump version to 0.4.15
+    * Fix use user's default shell
+
+2014-01-25  Samy Pessé  <samy.pesse@friendco.de>
+            Aaron O'Mullan <aaron.omullan@friendco.de>
+
     * Bump version to 0.4.14
     * List open terminals
     * Fix copy/paste for terminal on windows and linux
