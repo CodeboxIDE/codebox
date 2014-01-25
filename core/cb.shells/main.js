@@ -59,13 +59,21 @@ function setup(options, imports, register) {
     // this is memoized to only be called once
     manager.getDefaultShell = _.memoize(function() {
         var cmd = {
-            'linux': 'getent passwd $USER | cut -d: -f',
+            'linux': 'getent passwd $USER | cut -d: -f7',
             'darwin': 'finger $USER | grep Shell | cut -d ":" -f3 | cut -d " " -f2'
-        }[os.platform()] || 'bash';
+        }[os.platform()];
+
+        // If on unknown platform
+        if(!cmd) {
+            return Q('bash');
+        }
 
         return utils.exec(cmd).get('stdout')
         .then(function(shellCmd) {
             return shellCmd.trim();
+        }, function() {
+            // Fallback to bash on failure
+            return 'bash';
         });
     });
 
