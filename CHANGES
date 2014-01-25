@@ -1,3 +1,14 @@
+2014-01-25  Samy Pessé  <samy.pesse@friendco.de>
+            Aaron O'Mullan <aaron.omullan@friendco.de>
+
+    * Bump version to 0.4.14
+    * List open terminals
+    * Fix copy/paste for terminal on windows and linux
+    * Improve settings dialog design
+    * Add list of open files in files panels
+    * Use user's default shell
+    * Improve perfs with hr.js and jquery 2.1.0
+
 2014-01-22  Aaron O'Mullan <aaron.omullan@friendco.de>
             Samy Pessé  <samy.pesse@friendco.de>
 
