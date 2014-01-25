@@ -271,6 +271,13 @@ define([
         },
 
         /*
+         * List shells open
+         */
+        listShells: function() {
+            return rpc.execute("shells/list");
+        },
+
+        /*
          *  Return an http proxy url
          */
         proxyUrl: function(url) {
