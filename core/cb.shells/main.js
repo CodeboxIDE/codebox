@@ -59,7 +59,7 @@ function setup(options, imports, register) {
     // this is memoized to only be called once
     manager.getDefaultShell = _.memoize(function() {
         var cmd = {
-            'linux': 'getent passwd $USER | cut -d: -f',
+            'linux': 'getent passwd $USER | cut -d: -f7',
             'darwin': 'finger $USER | grep Shell | cut -d ":" -f3 | cut -d " " -f2'
         }[os.platform()] || 'bash';
 
