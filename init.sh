@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Constants
+export USER='codebox'
 export TERM='xterm-256color'
 export HOME="/home/codebox"
 WORKSPACE="${HOME}/workspace/"
