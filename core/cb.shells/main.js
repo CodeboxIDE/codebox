@@ -66,6 +66,9 @@ function setup(options, imports, register) {
         return utils.exec(cmd).get('stdout')
         .then(function(shellCmd) {
             return shellCmd.trim();
+        }, function() {
+            // Fallback to bash on failure
+            return 'bash';
         });
     });
 
