@@ -4,43 +4,25 @@
             <div class="modal-body">
                 <nav class="navbar navbar-default navbar-static-top" role="navigation">
                     <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-8">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                        <span class="navbar-brand">Settings</span>
+                        <span class="navbar-brand">Settings <i class="fa fa-angle-right"></i> <span class="settings-title"></span></span>
                     </div>
-
-                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-8">
-                        <ul class="nav navbar-nav">
-                        <% _.each(tabs, function(pair, i) {
-                            if (i > limit) { return; }
-                            var tab = pair[1]; %>
-                            <li><a href="#settings-tab-<%- tab.namespace %>" tabindex="-1" data-toggle="tab"><%- tab.title %></a></li>
-                        <% }); %>
-                        <% if (_.size(tabs) > (limit+1)) { %>
-                            <li class="dropdown">
-                                <a href="#" id="settings-dropdown-plus" class="dropdown-toggle" data-toggle="dropdown"><b class="caret"></b></a>
-                                <ul class="dropdown-menu" role="menu" aria-labelledby="settings-dropdown-plus">
-                                    <% _.each(tabs, function(pair, i) {
-                                        if (i <= limit) { return; }
-                                        var tab = pair[1]; %>
-                                        <li><a href="#settings-tab-<%- tab.namespace %>" tabindex="-1" data-toggle="tab"><%- tab.title %></a></li>
-                                    <% }) %>
-                                </ul>
-                            </li>
-                        <% } %>
-                        </ul>
-                    </div><!-- /.navbar-collapse -->
                 </nav>
 
-                <!-- Tab panes -->
-                <div class="tab-content">
-                <% settings.each(function(tab) { %>
-                    <div class="tab-pane fade settings-basepane" id="settings-tab-<%- tab.namespace %>"></div>
-                <% }) %>
+                <div class="settings-menu">
+                    <ul class="nav nav-pills nav-stacked">
+                    <% _.each(tabs, function(pair, i) {
+                        var tab = pair[1]; %>
+                        <li><a href="#settings-tab-<%- tab.namespace %>" tabindex="-1" data-toggle="tab"><%- tab.title %></a></li>
+                    <% }); %>
+                    </ul>
+                </div>
+
+                <div class="settings-content">
+                    <div class="tab-content">
+                    <% settings.each(function(tab) { %>
+                        <div class="tab-pane fade settings-basepane" id="settings-tab-<%- tab.namespace %>"></div>
+                    <% }) %>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">

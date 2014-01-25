@@ -3,6 +3,7 @@ define([
     "less!stylesheets/dialog.less"
 ], function(templateFile) {
     var _ = codebox.require("underscore");
+    var $ = codebox.require("jQuery");
     var DialogView = codebox.require("views/dialogs/base");
     var settings = codebox.require("core/settings");
 
@@ -11,7 +12,8 @@ define([
         templateLoader: "text",
         template: templateFile,
         events: _.extend({}, DialogView.prototype.events,{
-            "submit form": "submit"
+            "submit form": "submit",
+            "shown.bs.tab a[data-toggle='tab']": "changeTab"
         }),
 
         // Template settings
@@ -32,9 +34,9 @@ define([
             }, this);
             setTimeout(function() { 
                 if (that.options.page) {
-                    that.$(".navbar .navbar-nav a[href='#settings-tab-"+that.options.page+"']").tab('show');
+                    that.$(".settings-menu a[href='#settings-tab-"+that.options.page+"']").tab('show');
                 } else {
-                    that.$(".navbar .navbar-nav a:first").tab('show');
+                    that.$(".settings-menu a:first").tab('show');
                 }
             }, 200);
             return SettingsDialog.__super__.finish.apply(this, arguments);
@@ -52,6 +54,11 @@ define([
             settings.save().fin(function() {
                 that.close();
             });
+        },
+
+        // Change tab
+        changeTab: function(e) {
+            this.$(".settings-title").text($(e.target).text());
         }
     });
 
