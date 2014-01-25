@@ -77,7 +77,6 @@ define([
         }, {
             'section': "terminals"
         });
-        tab.on("tab:close terminal:ready", refreshList);
 
         // Return the tab
         return tab;
@@ -103,7 +102,8 @@ define([
         });
     };
 
-
+    // Reset list when events from shells:
+    box.on("box:shell:open box:shell:destroy", refreshList);
 
     // Add the command to file/tools menu
     menu.getById("file").menuSection([
