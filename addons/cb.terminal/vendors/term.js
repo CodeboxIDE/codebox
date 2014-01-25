@@ -1126,7 +1126,7 @@ Terminal.prototype.bindMouse = function() {
 
         if (_d<0) _d = Math.floor(_d);
         else _d = Math.ceil( _d);
-        
+
         self.scrollDisp( _d);
         return cancel(ev);
     });
@@ -2573,19 +2573,27 @@ Terminal.prototype.keyDown = function(ev) {
                         }
                     }
                     // Ctrl-V
-                    if (this.prefixMode && ev.keyCode === 86) {
+                    if (ev.keyCode === 86 && this.prefixMode) {
                         this.leavePrefix();
                         return true;
                     }
                     // Ctrl-C
-                    if ((this.prefixMode || this.selectMode) && ev.keyCode === 67) {
-                        if (this.visualMode) {
-                            setTimeout(function() {
-                                self.leaveVisual();
-                            }, 1);
-                        }
+                    if (ev.keyCode === 67 && (this.prefixMode || this.selectMode) && this.visualMode) {
+                        setTimeout(function() {
+                            self.leaveVisual();
+                        }, 1);
                         return true;
                     }
+
+                    // Ctrl-Shift-V -> paste
+                    if (ev.keyCode === 86 && ev.shiftKey) {
+                        return true;
+                    }
+                    // Ctrl-Shift-C -> copy
+                    if (ev.keyCode === 67 && ev.shiftKey) {
+                        return true;
+                    }
+
                     key = String.fromCharCode(ev.keyCode - 64);
                 } else if (ev.keyCode === 32) {
                     // NUL
@@ -2604,7 +2612,8 @@ Terminal.prototype.keyDown = function(ev) {
                     key = String.fromCharCode(29);
                 }
             } else if ((!this.isMac && ev.altKey) || (this.isMac && ev.metaKey)) {
-                if (ev.keyCode === 86) {
+                // CMD+V or CMD+C => (paste or copy)
+                if (ev.keyCode === 86 || ev.keyCode === 67) {
                     return true;
                 } else if (ev.keyCode >= 65 && ev.keyCode <= 90) {
                     key = '\x1b' + String.fromCharCode(ev.keyCode + 32);
@@ -5632,9 +5641,8 @@ function off(el, type, handler, capture) {
 }
 
 function cancel(ev) {
-    if (ev.preventDefault) ev.preventDefault();
-    ev.returnValue = false;
-    if (ev.stopPropagation) ev.stopPropagation();
+    ev.preventDefault();
+    ev.stopPropagation();
     ev.cancelBubble = true;
     return false;
 }
