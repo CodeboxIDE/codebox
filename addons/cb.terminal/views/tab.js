@@ -77,7 +77,7 @@ define([
             // Init codebox stream
             this.sessionId = this.options.shellId || _.uniqueId("term");
             this.shell = box.openShell({
-                'shellId': this.options.shellId ? this.sessionId : this.sessionId+"-"+(new Date()).getTime()
+                'shellId': this.options.shellId ? this.sessionId : this.sessionId+"-"+(new Date()).getSeconds()
             });
 
             this.on("tab:close", function() {
