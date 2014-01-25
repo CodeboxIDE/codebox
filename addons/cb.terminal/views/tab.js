@@ -115,6 +115,8 @@ define([
                     that.write(chunk.toString());
                 });
 
+                that.trigger("terminal:ready");
+
                 //this.render();
             }, this);
 

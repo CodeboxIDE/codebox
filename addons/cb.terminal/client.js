@@ -3,6 +3,7 @@ define([
     "views/tab"
 ], function(THEMES, TerminalTab) {
     var commands = codebox.require("core/commands/toolbar");
+    var box = codebox.require("core/box");
     var tabs = codebox.require("core/tabs");
     var settings = codebox.require("core/settings");
     var menu = codebox.require("core/commands/menu");
@@ -70,13 +71,43 @@ define([
             "ctrl+shift+T"
         ]
     }, function(shellId) {
-        return tabs.add(TerminalTab, {
+        // Create trminal tab
+        var tab = tabs.add(TerminalTab, {
             'shellId': shellId
         }, {
             'section': "terminals"
         });
+        tab.on("tab:close terminal:ready", refreshList);
+
+        // Return the tab
+        return tab;
     });
 
+    // List terminals menu
+    var terminalsList = commands.register("terminal.list", {
+        title: "Open Terminals",
+        offline: false,
+        type: "menu"
+    });
+
+    var refreshList = function() {
+        return box.listShells().then(function(shellIds) {
+            terminalsList.menu.reset(_.map(shellIds, function(shellId) {
+                return {
+                    title: shellId,
+                    action: function() {
+                        command.run(shellId)
+                    }
+                }
+            }));
+        });
+    };
+
+
+
     // Add the command to file/tools menu
-    menu.getById("file").menuSection([command]);
+    menu.getById("file").menuSection([
+        command,
+        terminalsList
+    ]);
 });
