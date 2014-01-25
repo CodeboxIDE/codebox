@@ -1,3 +1,8 @@
+2014-01-25  Aaron O'Mullan <aaron.omullan@friendco.de>
+
+    * Bump version to 0.4.16
+    * Export $USER in init.sh, fixes shells on codeboxIO
+
 2014-01-25  Samy Pessé  <samy.pesse@friendco.de>
             Aaron O'Mullan <aaron.omullan@friendco.de>
 
