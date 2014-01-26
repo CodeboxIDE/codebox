@@ -100,6 +100,7 @@ define([
 
         /* Do search */
         doSearch: function(query) {
+            var that = this;
             var $results = this.$(".results");
             
             if (query == this.query) return this;
@@ -130,7 +131,10 @@ define([
                     li = $("<li>", {
                         "class": "result",
                         "data-result": i,
-                        "text": result.text
+                        "text": result.text,
+                        "hover": function() {
+                            that.selectResult(i);
+                        }
                     }).appendTo($cat);
 
                     if (result.image != null) {
