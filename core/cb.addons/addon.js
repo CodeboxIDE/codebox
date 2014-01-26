@@ -87,6 +87,11 @@ var Addon = function(logger, _rootPath, options) {
         return _.size(this.infos.dependencies || {}) > 0;
     };
 
+    // Check if an addon has npm scripts
+    this.hasScripts = function() {
+        return _.size(this.infos.scripts || {}) > 0;
+    };
+
     // Check if the addon is blacklisted
     this.isBlacklisted = function() {
         return _.contains(this.options.blacklist, this.infos.name);
@@ -159,7 +164,7 @@ var Addon = function(logger, _rootPath, options) {
     this.installDependencies = function(force) {
         var that = this;
         if (!force) {
-            if (!this.hasDependencies()) {
+            if (!this.hasDependencies() && !this.hasScripts()) {
                 return Q(this);
             }
         }

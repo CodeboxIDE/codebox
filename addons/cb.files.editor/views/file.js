@@ -1,12 +1,9 @@
 define([
-    "ace/ace",
-    "ace/range",
-    "ace/ext/modelist",
-    "ace/ext/language_tools",
-    "ace/ext/whitespace",
+    "ace",
+    "theme/textmate",
     "text!templates/file.html",
     "less!stylesheets/file.less",
-], function(ace, CRange, aceModes, aceLangs, aceWhitespace, templateFile) {
+], function(ace, aceDefaultTheme, templateFile) {
     var _ = codebox.require("underscore");
     var $ = codebox.require("jQuery");
     var hr = codebox.require("hr/hr");
@@ -22,6 +19,12 @@ define([
 
     var logging = hr.Logger.addNamespace("editor");
     var userSettings = user.settings("editor");
+
+    // Import ace
+    var aceRange =  ace.require("ace/range");
+    var aceModes = ace.require("ace/ext/modelist");
+    var aceLangs = ace.require("ace/ext/language_tools");
+    var aceWhitespace = ace.require("ace/ext/whitespace");
 
 
     var FileEditorView = FilesTabView.extend({
@@ -207,12 +210,12 @@ define([
                 this.editor.getSession().getSelection().selectTo(cursor_lead.y, cursor_lead.x);
             }, this);
             this.sync.on("cursor:move", function(cId, c) {
-                var range = new CRange.Range(c.y, c.x, c.y, c.x+1);
+                var range = new aceRange.Range(c.y, c.x, c.y, c.x+1);
                 if (this.markersC[cId]) this.editor.getSession().removeMarker(this.markersC[cId]);
                 this.markersC[cId] = this.editor.getSession().addMarker(range, "marker-cursor marker-"+c.color.replace("#", ""), "text", true);
             }, this);
             this.sync.on("selection:move", function(cId, c) {
-                var range = new CRange.Range(c.start.y, c.start.x, c.end.y, c.end.x);
+                var range = new aceRange.Range(c.start.y, c.start.x, c.end.y, c.end.x);
                 if (this.markersS[cId]) this.editor.getSession().removeMarker(this.markersS[cId]);
                 this.markersS[cId] = this.editor.getSession().addMarker(range, "marker-selection marker-"+c.color.replace("#", ""), "line", false);
             }, this);
@@ -332,7 +335,7 @@ define([
 
             this.setMode(this.options.mode);
             this.setKeyboardmode(this.options.keyboard);
-            this.setTheme(themes.current().editor.theme || "textmate");
+            this.setTheme(themes.current().editor.theme || aceDefaultTheme);
             this.$editor.css("font-size", this.options.fontsize+"px");
             this.editor.setPrintMarginColumn(this.options.printmargincolumn);
             this.editor.setShowPrintMargin(this.options.showprintmargin);

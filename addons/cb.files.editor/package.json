@@ -18,5 +18,8 @@
         "resources": [
             "ace/**"
         ]
+    },
+    "scripts": {
+        "postinstall": "./build.sh"
     }
 }
