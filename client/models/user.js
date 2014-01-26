@@ -65,6 +65,7 @@ define([
         // Save user settings
         saveSettings: function(data) {
             var that = this;
+            data = data || this.get("settings");
             return loading.show(rpc.execute("auth/settings", data).then(function(settings) {
                 that.set("settings", settings);
             }), "Saving Settings");

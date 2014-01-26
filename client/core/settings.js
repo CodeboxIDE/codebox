@@ -56,7 +56,7 @@ define([
             this.each(function(tab) {
                 data[tab.namespace] = tab.submit();
             });
-            return user.saveSettings(data);
+            return user.saveSettings(_.extend({}, user.get("settings"), data));
         },
 
         /*
