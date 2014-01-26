@@ -37,16 +37,16 @@ function fileRun(events, shells, filename) {
     }
 
     // Create process
-    var shell = shells.createShellCommand(_shellId, command);
+    return shells.createShellCommand(_shellId, command).then(function() {
+        // Emit event
+        events.emit("run.file", {
+            ext: ext
+        });
 
-    // Emit event
-    events.emit("run.file", {
-        ext: ext
-    });
-
-    return Q({
-        shellId: _shellId,
-        command: command
+        return Q({
+            shellId: _shellId,
+            command: command
+        });
     });
 }
 

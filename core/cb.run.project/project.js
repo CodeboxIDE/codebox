@@ -43,7 +43,7 @@ ProjectRunner.prototype.runScript = function(projectType, port) {
     var shellId = this.shellId(projectType, port);
 
     // Spawn the new shell
-    var shell = this.shells.createShellCommand(
+    return this.shells.createShellCommand(
         shellId, [
             // Script itself
             this.scriptPath(projectType),
@@ -59,27 +59,27 @@ ProjectRunner.prototype.runScript = function(projectType, port) {
             PORT: port,
             HTTP_PORT: port
         }, process.env)
+    }).then(function(shell) {
+        // Id of our harbor port (to release)
+        var portId = self.portId(projectType);
+
+        // Free port on shell exit
+        self.shells.shells[shellId].ps.once('exit', function() {
+            self.run_ports.release(portId);
+        });
+
+        // Emit event
+        self.events.emit("run.project", {
+            type: projectType
+        });
+
+        return {
+            shellId: shellId,
+            type: projectType,
+            port: port,
+            url: self.getUrl(port)
+        };
     });
-
-    // Id of our harbor port (to release)
-    var portId = self.portId(projectType);
-
-    // Free port on shell exit
-    self.shells.shells[shellId].ps.once('exit', function() {
-        self.run_ports.release(portId);
-    });
-
-    // Emit event
-    self.events.emit("run.project", {
-        type: projectType
-    });
-
-    return {
-        shellId: shellId,
-        type: projectType,
-        port: port,
-        url: this.getUrl(port)
-    };
 };
 
 ProjectRunner.prototype.detect = function() {
