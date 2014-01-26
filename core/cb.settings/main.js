@@ -13,7 +13,7 @@ function setup(options, imports, register) {
 
     // Return settings
     var getSettings = function(key, def) {
-        return settings[workspace.id][key] || {};
+        return settings[workspace.id][key] || def;
     };
 
     // Set settings
