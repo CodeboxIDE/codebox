@@ -38,9 +38,13 @@ CodeComplete.prototype.addHandler = function(name, handler) {
  *  The populate will be called when necessaray to update a tags idnex used
  *  to return codecompletion results
  */
-CodeComplete.prototype.addIndex = function(name, populate) {
+CodeComplete.prototype.addIndex = function(name, populate, options) {
     var that = this;
     var index = null;
+
+    options = _.defaults({}, options || {}, {
+        'interval': 1*60*1000 // 1 minute
+    })
 
     var populateIndex = function() {
         return Q(populate({
@@ -52,6 +56,13 @@ CodeComplete.prototype.addIndex = function(name, populate) {
             console.log("index failed: ", err);
         });
     };
+
+    // Populate the index when there are changes
+    var throttled = _.throttle(populateIndex, options.interval);
+    this.events.on("watch.change.update", throttled);
+    this.events.on("watch.change.create", throttled);
+    this.events.on("watch.change.delete", throttled);
+    
 
     // Add namespace
     this.addHandler(name, function(options) {
