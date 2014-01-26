@@ -15,7 +15,9 @@ define([
     'core/panels',
     'core/operations',
     'core/localfs',
-    'core/themes'
+    'core/themes',
+    'core/search/files',
+    'core/search/tags'
 ], function (hr, url, dialogs, alerts, loading,
 box, session, addons, box, files, commands, menu, tabs, panels, operations, localfs, themes) {
 

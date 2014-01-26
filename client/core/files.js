@@ -8,12 +8,11 @@ define([
     'core/box',
     'core/tabs',
     'core/settings',
-    'core/search',
     'utils/dialogs',
     'views/tabs/file',
     'views/files/base',
     'views/files/tab'
-], function(Q, _, hr, File, Files, user, box, tabs, settings, search, dialogs, FileTab) {
+], function(Q, _, hr, File, Files, user, box, tabs, settings, dialogs, FileTab) {
     var logging = hr.Logger.addNamespace("files");
 
     // Settings for files manager
@@ -205,25 +204,6 @@ define([
         });
         return openFile(f);
     };
-
-    // Search for files
-    search.handler({
-        'id': "files",
-        'title': "Files"
-    }, function(query) {
-        return box.searchFiles(query).then(function(data) {
-            return Q(_.map(data.files, _.bind(function(path) {
-                var filename = _.last(path.split("/"));
-                if (filename.length == 0) filename = path;
-                return {
-                    "text": filename,
-                    "callback": _.bind(function() {
-                        openFile(path);
-                    }, this)
-                };
-            }, this)));
-        });
-    });
 
     return {
         'addHandler': addHandler,
