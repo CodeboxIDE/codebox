@@ -76,7 +76,7 @@ function init(logger, events, rootPath) {
                     context[key].push(e);
 
                     return context;
-                }, {}).keys();
+                }, {});
 
                 // Refresh each of those changed folders
                 _.each(folderEvents, function(eventList, folder) {
@@ -90,7 +90,7 @@ function init(logger, events, rootPath) {
                     }
 
                     // Few events so send them out individually
-                    eventList.each(function(e) {
+                    _.each(eventList, function(e) {
                         events.emit(
                             // e.change can be any of
                             // ['updated', 'created', 'deleted']
@@ -106,7 +106,7 @@ function init(logger, events, rootPath) {
 
             }, {
                 // Debounce 200ms
-                debounce: 200,
+                debounce: 100,
 
                 // Force processing every 1000 events
                 n: 1000
