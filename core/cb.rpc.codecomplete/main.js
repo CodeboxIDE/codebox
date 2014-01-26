@@ -10,9 +10,7 @@ function setup(options, imports, register) {
     var service = new CodeCompleteRPCService(codecomplete);
 
     // Register RPC
-    rpc.register('/codecomplete', service, {
-        auth: false // just for tetsing: to remove
-    });
+    rpc.register('/codecomplete', service);
 
     // Register
     register(null, {});
