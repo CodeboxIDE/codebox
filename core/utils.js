@@ -260,7 +260,7 @@ function batch(func, processor, options) {
         debounced();
 
         // Force call if queue is getting to big
-        if(options.n && queue.length <= options.n) {
+        if(options.n && queue.length >= options.n) {
             processQueue();
         }
 
