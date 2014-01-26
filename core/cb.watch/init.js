@@ -4,6 +4,8 @@ var _ = require('underscore');
 var path = require('path');
 var watchr = require('watchr');
 
+var batch = require('../utils').batch;
+
 
 function init(logger, events, rootPath) {
     var d = Q.defer();
@@ -49,11 +51,9 @@ function init(logger, events, rootPath) {
 
                 events.emit(emitStr, info);
             },
-            change: function(changeType, filePath, fileCurrentStat, filePreviousStat) {
-                // changeType can be any of
-                // ['updated', 'created', 'deleted']
-                var emitStr = 'watch.change.' + changeType;
-                var info = {
+            change: batch(function(changeType, filePath, fileCurrentStat, filePreviousStat) {
+                // Simply queue the data for our batch processor
+                return {
                     change: changeType,
                     path: normalize(filePath),
                     stats: {
@@ -61,9 +61,56 @@ function init(logger, events, rootPath) {
                         old: filePreviousStat
                     }
                 };
+            }, function process(eventList) {
+                // Aggregate events by folder
+                var folderEvents = _(eventList).reduce(function(context, e) {
+                    // Aggregate by parent folder of changed path
+                    var key = path.dirname(e.path);
 
-                events.emit(emitStr, info);
-            }
+                    // Set list if empty
+                    if(context[key] === undefined) {
+                        context[key] = [];
+                    }
+
+                    // Add event to folder's event list
+                    context[key].push(e);
+
+                    return context;
+                }, {});
+
+                // Refresh each of those changed folders
+                _.each(folderEvents, function(eventList, folder) {
+                    // Many events, so group by folder
+                    if(eventList.length >= 3) {
+                        // Send out aggregated event
+                        return events.emit('watch.change.folder', {
+                            change: 'folder',
+                            path: folder
+                        });
+                    }
+
+                    // Few events so send them out individually
+                    _.each(eventList, function(e) {
+                        events.emit(
+                            // e.change can be any of
+                            // ['updated', 'created', 'deleted']
+                            'watch.change.'+e.change,
+
+                            // Actual event data
+                            e
+                        );
+
+                    });
+                });
+
+
+            }, {
+                // Debounce 200ms
+                debounce: 100,
+
+                // Force processing every 1000 events
+                n: 1000
+            })
         },
         next: function(err, watchers) {
             // Fail building Codebox on error
