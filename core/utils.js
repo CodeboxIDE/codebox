@@ -271,6 +271,7 @@ function batch(func, processor, options) {
 // Exports
 exports.exec = exec;
 exports.qnode = qnode;
+exports.batch = batch;
 exports.execFile = execFile;
 exports.constant = constant;
 exports.methodObj = methodObj;
