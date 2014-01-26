@@ -65,6 +65,9 @@ CodeComplete.prototype.addIndex = function(name, populate) {
         // Filter the index for getting the results
         return prepare.then(function() {
             return _.filter(index, function(tag) {
+                if (options.file && tag.file.indexOf(options.file) != 0) return false
+                if (options.query && tag.name.indexOf(options.query) != 0) return false;
+
                 return true;
             });
         });
@@ -78,12 +81,16 @@ CodeComplete.prototype.addIndex = function(name, populate) {
  */
 CodeComplete.prototype.get = function(options) {
     options = _.defaults({}, options || {}, {
-        'query': "",
+        // Filter name with query
+        'query': null,
+
+        // Filter filepath with file
         'file': null
     });
 
     var results = [];
 
+    // Get all results from all the handlers
     return Q.all(_.map(this.handlers, function(handler, name) {
         return Q(handler(options, name)).then(function(_results) {
             results = results.concat(_results);
