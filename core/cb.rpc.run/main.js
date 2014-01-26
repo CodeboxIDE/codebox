@@ -19,9 +19,7 @@ function setup(options, imports, register) {
     );
 
     // Register RPC
-    rpc.register('/run', service, {
-        auth: false
-    });
+    rpc.register('/run', service);
 
     // Register
     register(null, {});
