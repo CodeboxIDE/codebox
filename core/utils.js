@@ -220,6 +220,54 @@ function startsWith(str, toCheck) {
     return str.indexOf(toCheck) === 0;
 }
 
+
+// Wrap a given function to support batch processing
+function batch(func, processor, options) {
+    // func is optional
+    if(arguments.length < 3) {
+        options = processor;
+        processor = func;
+        func = _.identity;
+    }
+
+    // Parse and default args
+    options = options || {};
+
+    // If no debounce options was passed set n to 1
+    options.n = options.debounce ? options.n : 1;
+
+    // A queue to store the return value of "func"
+    // that will then be processed by "processor"
+    var queue = [];
+
+    var processQueue = function processQueue() {
+        // Let the processor, process all the data in the queue
+        processor(queue);
+
+        // Empty queue
+        queue = [];
+    };
+
+    var debounced = (options.debounce !== undefined) ?
+        _.debounce(processQueue, options.debounce) :
+        processQueue;
+
+    return function() {
+        var value = func.apply(null, arguments);
+        queue.push(value);
+
+        // Call our debounced queue processor
+        debounced();
+
+        // Force call if queue is getting to big
+        if(options.n && queue.length <= options.n) {
+            processQueue();
+        }
+
+        return value;
+    };
+}
+
 // Exports
 exports.exec = exec;
 exports.qnode = qnode;
