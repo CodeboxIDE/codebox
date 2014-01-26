@@ -212,6 +212,9 @@ var start = function(config) {
             "./cb.files.service",
             "./cb.files.sync",
 
+            // Code completion
+            "./cb.codecomplete",
+
             // Git
             "./cb.git",
 
@@ -259,6 +262,7 @@ var start = function(config) {
             "./cb.rpc.addons",
             "./cb.rpc.proc",
             "./cb.rpc.run",
+            "./cb.rpc.codecomplete",
 
             // Now start the damn server
             "./cb.main",
