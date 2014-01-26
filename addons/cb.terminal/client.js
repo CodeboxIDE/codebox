@@ -2,6 +2,7 @@ define([
     "themes",
     "views/tab"
 ], function(THEMES, TerminalTab) {
+    var Command = codebox.require("models/command");
     var commands = codebox.require("core/commands/toolbar");
     var box = codebox.require("core/box");
     var tabs = codebox.require("core/tabs");
@@ -83,7 +84,7 @@ define([
     });
 
     // List terminals menu
-    var terminalsList = commands.register("terminal.list", {
+    var terminalsList = Command.register("terminal.list", {
         title: "Open Terminals",
         offline: false,
         type: "menu"
