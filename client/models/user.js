@@ -42,7 +42,7 @@ define([
                     return that.set("settings."+namespace+"."+key, value);
                 },
                 'save': function() {
-                    return that.saveSettings();
+                    return that.saveSettings({ namespace: that.all({}) });
                 },
                 'change': function(callback, context, keys) {
                     var events = [];
