@@ -1,0 +1,17 @@
+{
+    "name": "cb.rpc.codecomplete",
+    "version": "0.0.1",
+
+    "main": "./main.js",
+    "private": true,
+
+    "plugin": {
+        "provides": [],
+        "consumes": [
+            "rpc",
+            "workspace",
+
+            "codecomplete"
+        ]
+    }
+}

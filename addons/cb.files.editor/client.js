@@ -1,9 +1,10 @@
 define([
     "views/file",
+    "codecomplete",
     "ace/ace",
     "ace/ext/modelist",
     "ace/ext/themelist"
-], function(FileEditorView, ace, aceModes, aceThemes) {
+], function(FileEditorView, codecomplete, ace, aceModes, aceThemes) {
     var $ = codebox.require("jQuery");
     var commands = codebox.require("core/commands/toolbar");
     var settings = codebox.require("core/settings");

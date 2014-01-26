@@ -1,0 +1,15 @@
+{
+    "name": "cb.codecomplete.ctags",
+    "version": "0.0.1",
+
+    "main": "./main.js",
+    "private": true,
+
+    "plugin": {
+        "provides": [],
+        "consumes": [
+            "workspace",
+            "codecomplete"
+        ]
+    }
+}
