@@ -20,6 +20,6 @@
         ]
     },
     "scripts": {
-        "postinstall": "./build.sh"
+        "postinstall": "./download_ace.sh && ./build.sh"
     }
 }
