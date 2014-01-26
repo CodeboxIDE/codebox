@@ -52,10 +52,7 @@ function init(logger, events, rootPath) {
                 events.emit(emitStr, info);
             },
             change: batch(function(changeType, filePath, fileCurrentStat, filePreviousStat) {
-                // changeType can be any of
-                // ['updated', 'created', 'deleted']
-                var emitStr = 'watch.change.' + changeType;
-
+                // Simply queue the data for our batch processor
                 return {
                     change: changeType,
                     path: normalize(filePath),
@@ -65,17 +62,44 @@ function init(logger, events, rootPath) {
                     }
                 };
             }, function process(eventList) {
-                var changedFolders = _(eventList).reduce(function(context, e) {
-                    // Add folder to set
-                    context[path.dirname(e.path)] = null;
+                // Aggregate events by folder
+                var folderEvents = _(eventList).reduce(function(context, e) {
+                    // Aggregate by parent folder of changed path
+                    var key = path.dirname(e.path);
+
+                    // Set list if empty
+                    if(context[key] === undefined) {
+                        context[key] = [];
+                    }
+
+                    // Add event to folder's event list
+                    context[key].push(e);
+
                     return context;
                 }, {}).keys();
 
                 // Refresh each of those changed folders
-                _.each(changedFolders, function(folder) {
-                    events.emit('watch.change.folder', {
-                        change: 'folder',
-                        path: folder
+                _.each(folderEvents, function(eventList, folder) {
+                    // Many events, so group by folder
+                    if(eventList.length >= 3) {
+                        // Send out aggregated event
+                        return events.emit('watch.change.folder', {
+                            change: 'folder',
+                            path: folder
+                        });
+                    }
+
+                    // Few events so send them out individually
+                    eventList.each(function(e) {
+                        events.emit(
+                            // e.change can be any of
+                            // ['updated', 'created', 'deleted']
+                            'watch.change.'+e.change,
+
+                            // Actual event data
+                            e
+                        );
+
                     });
                 });
 
