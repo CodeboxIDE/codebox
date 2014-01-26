@@ -75,12 +75,8 @@ CodeComplete.prototype.addIndex = function(name, populate, options) {
 
         // Filter the index for getting the results
         return prepare.then(function() {
-            return _.filter(index, function(tag) {
-                if (options.file && tag.file.indexOf(options.file) != 0) return false
-                if (options.query && tag.name.indexOf(options.query) != 0) return false;
-
-                return true;
-            });
+            // Filter is done by the 'get'
+            return index;
         });
     });
 }
@@ -107,7 +103,29 @@ CodeComplete.prototype.get = function(options) {
             results = results.concat(_results);
         });
     })).then(function() {
-        return results;
+        return _.chain(results)
+        // Filter results
+        .filter(function(result) {
+            // Check format
+            if (!result.name) return false;
+
+            // Filter the result
+            if (options.file && result.file.indexOf(options.file) != 0) return false
+            if (options.query && result.name.indexOf(options.query) != 0) return false;
+
+            return true;
+        })
+
+        // Remove doublons
+        .uniq(function(result) {
+            return result.name;
+        })
+
+        // Order results
+        .sortBy(function(result) {
+            return result.score;
+        })
+        .value();
     })
 }
 
