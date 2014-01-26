@@ -4,6 +4,8 @@ var _ = require('underscore');
 var path = require('path');
 var watchr = require('watchr');
 
+var batch = require('../utils').batch;
+
 
 function init(logger, events, rootPath) {
     var d = Q.defer();
@@ -49,11 +51,12 @@ function init(logger, events, rootPath) {
 
                 events.emit(emitStr, info);
             },
-            change: function(changeType, filePath, fileCurrentStat, filePreviousStat) {
+            change: batch(function(changeType, filePath, fileCurrentStat, filePreviousStat) {
                 // changeType can be any of
                 // ['updated', 'created', 'deleted']
                 var emitStr = 'watch.change.' + changeType;
-                var info = {
+
+                return {
                     change: changeType,
                     path: normalize(filePath),
                     stats: {
@@ -61,9 +64,29 @@ function init(logger, events, rootPath) {
                         old: filePreviousStat
                     }
                 };
+            }, function process(eventList) {
+                var changedFolders = _(eventList).reduce(function(context, e) {
+                    // Add folder to set
+                    context[path.dirname(e.path)] = null;
+                    return context;
+                }, {}).keys();
 
-                events.emit(emitStr, info);
-            }
+                // Refresh each of those changed folders
+                _.each(changedFolders, function(folder) {
+                    events.emit('watch.change.folder', {
+                        change: 'folder',
+                        path: folder
+                    });
+                });
+
+
+            }, {
+                // Debounce 200ms
+                debounce: 200,
+
+                // Force processing every 1000 events
+                n: 1000
+            })
         },
         next: function(err, watchers) {
             // Fail building Codebox on error
