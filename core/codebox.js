@@ -214,6 +214,7 @@ var start = function(config) {
 
             // Code completion
             "./cb.codecomplete",
+            "./cb.codecomplete.ctags",
 
             // Git
             "./cb.git",

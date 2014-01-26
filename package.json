@@ -41,7 +41,8 @@
         "grunt": "0.4.2",
         "grunt-cli": "0.1.11",
         "harbor": "0.2.0",
-        "qpatch": "0.0.3"
+        "qpatch": "0.0.3",
+        "ctags": "0.8.0"
     },
     "devDependencies": {
         "grunt-node-webkit-builder": "0.1.15",

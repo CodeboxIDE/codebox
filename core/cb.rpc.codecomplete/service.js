@@ -3,22 +3,14 @@ var _ = require('underscore');
 var path = require('path');
 
 
-function CodeCompleteRPCService(workspace, codecomplete) {
-    this.workspace = workspace;
-
+function CodeCompleteRPCService(codecomplete) {
     this.codecomplete = codecomplete;
 
     _.bindAll(this);
 }
 
-CodeCompleteRPCService.prototype.file = function(args, meta) {
-    if(!args.file) {
-        throw new Error('Missing "file" argument');
-    }
-
-    return Q({
-        
-    });
+CodeCompleteRPCService.prototype.get = function(args, meta) {
+    return this.codecomplete.get(args);
 };
 
 // Exports
