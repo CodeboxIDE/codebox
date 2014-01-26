@@ -100,7 +100,6 @@ define([
 
         /* Do search */
         doSearch: function(query) {
-            query = query.toLowerCase();
             var $results = this.$(".results");
             
             if (query == this.query) return this;
