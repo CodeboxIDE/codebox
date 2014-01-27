@@ -126,6 +126,7 @@ module.exports = function (grunt) {
                         cwd: '.tmp/',
                         stdout: true,
                         stderr: true,
+                        failOnError: true,
                         env: _.extend({
                             'NW_VERSION': NW_VERSION
                         }, process.env)
@@ -138,7 +139,8 @@ module.exports = function (grunt) {
                     execOptions: {
                         cwd: '.tmp/',
                         stdout: true,
-                        stderr: true
+                        stderr: true,
+                        failOnError: true
                     }
                 }
             },
@@ -148,7 +150,8 @@ module.exports = function (grunt) {
                     execOptions: {
                         cwd: './addons/cb.files.editor/',
                         stdout: true,
-                        stderr: true
+                        stderr: true,
+                        failOnError: true
                     }
                 }
             },
