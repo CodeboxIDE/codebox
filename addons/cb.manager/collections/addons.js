@@ -1,9 +1,9 @@
 define([
-], function() {
+    "settings"
+], function(managerSettings) {
     var Q = codebox.require("q");
     var hr = codebox.require("hr/hr");
     var _ = codebox.require("underscore");
-    var user = codebox.require("core/user");
     var Addon = codebox.require("models/addon");
     var addons = codebox.require("core/addons");
     var Addons = codebox.require("collections/addons");
@@ -21,20 +21,21 @@ define([
         // Get index
         getIndex: function() {
             var that = this;
+            var indexKey = managerSettings.user.get("registry");
 
-            this._index = hr.Cache.get("addons", "index");
+            this._index = this._index || hr.Cache.get("addons", indexKey);
             if (this._index) {
                 return Q(this._index);
             }
 
-            return hr.Requests.getJSON(box.proxyUrl(user.settings("manager").get("registry")+"/api/addons?limit=1000")).then(function(index) {
+            return hr.Requests.getJSON(box.proxyUrl(managerSettings.user.get("registry")+"/api/addons?limit=1000")).then(function(index) {
                 that._index = index;
                 that._index.addons = _.map(that._index.addons, function(addon) {
                     return _.extend(addon['package'], {
                         'git': addon.git
                     });
                 });
-                hr.Cache.set("addons", user.settings("manager").get("registry"), that._index, 60*60);
+                hr.Cache.set("addons", indexKey, that._index, 60*60);
 
                 return Q(that._index);
             });
