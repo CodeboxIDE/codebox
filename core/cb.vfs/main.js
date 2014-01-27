@@ -6,7 +6,9 @@ function setup(options, imports, register) {
 
     // Initialize local vfs
     var vfs = vfsLocal({
-        'root': workspace.root
+        'root': workspace.root,
+        // -rwxr-xr-x
+        'umask': 0755
     });
 
     register(null, {
