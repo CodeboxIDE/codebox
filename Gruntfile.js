@@ -127,7 +127,7 @@ module.exports = function (grunt) {
                         stdout: true,
                         stderr: true,
                         env: _.extend({
-                            NW_VERSION: "0.8.4"
+                            'NW_VERSION': NW_VERSION
                         }, process.env)
                     }
                 }
