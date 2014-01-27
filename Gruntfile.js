@@ -143,7 +143,7 @@ module.exports = function (grunt) {
                 }
             },
             build_files_editor: {
-                command: "npm script postinstall",
+                command: "npm install",
                 options: {
                     execOptions: {
                         cwd: './addons/cb.files.editor/',
