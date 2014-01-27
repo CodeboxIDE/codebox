@@ -1,7 +1,8 @@
 define([
-    "ace/ext/language_tools"
-], function(langTools) {
+    "ace"
+], function(ace) {
     var rpc = codebox.require("core/backends/rpc");
+    var langTools = ace.require("ace/ext/language_tools");
 
     var normalizeTag = function(tag) {
         return {

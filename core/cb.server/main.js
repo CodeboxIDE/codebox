@@ -3,6 +3,9 @@ var http = require('http');
 var express = require('express');
 var _ = require('underscore');
 
+// GZIP static middleware
+var gzipStatic = require('connect-gzip-static');
+
 function setup(options, imports, register) {
     var workspace = imports.workspace;
     var logger = imports.logger.namespace("web");
@@ -87,8 +90,8 @@ function setup(options, imports, register) {
         }
         return next();
     });
-    app.use('/', express.static(__dirname + '/../../client/build'));
-    app.use('/docs', express.static(__dirname + '/../../docs'));
+    app.use('/', gzipStatic(__dirname + '/../../client/build'));
+    app.use('/docs', gzipStatic(__dirname + '/../../docs'));
 
     // Block queries for unAuthenticated users
     //
@@ -109,7 +112,7 @@ function setup(options, imports, register) {
     // Check if a path need auth
     var needAuth = function(path) {
         return _.find(authorizedPaths, function(authPath) {
-            return path.indexOf(authPath) == 0; 
+            return path.indexOf(authPath) == 0;
         }) != null;
     };
 

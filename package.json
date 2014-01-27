@@ -42,11 +42,14 @@
         "grunt-cli": "0.1.11",
         "harbor": "0.2.0",
         "qpatch": "0.0.3",
-        "ctags": "0.8.0"
+        "ctags": "0.8.0",
+        "connect-gzip-static": "0.1.1"
     },
     "devDependencies": {
         "grunt-node-webkit-builder": "0.1.15",
+        "grunt-contrib-compress": "0.6.0",
         "grunt-contrib-copy": "0.5.0",
+        "grunt-contrib-clean": "0.5.0",
         "grunt-shell": "0.6.2"
     },
     "bin": {
@@ -70,8 +73,7 @@
         }
     ],
     "scripts": {
-        "start": "[ -f .env ] && source .env || echo 'Store your environment config in .env'; ./node_modules/.bin/grunt",
-        "postinstall": "./node_modules/.bin/grunt build"
+        "start": "[ -f .env ] && source .env || echo 'Store your environment config in .env'; ./node_modules/.bin/grunt"
     },
     "main": "index.js"
 }

@@ -1,4 +1,5 @@
 module.exports = function (grunt) {
+    var fs = require('fs');
     var path = require("path");
     var pkg = require("./package.json");
     var _ = require('underscore');
@@ -12,6 +13,8 @@ module.exports = function (grunt) {
     // Load grunt modules
     grunt.loadNpmTasks('hr.js');
     grunt.loadNpmTasks('grunt-node-webkit-builder');
+    grunt.loadNpmTasks('grunt-contrib-compress');
+    grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-shell');
 
@@ -123,16 +126,39 @@ module.exports = function (grunt) {
                         cwd: '.tmp/',
                         stdout: true,
                         stderr: true,
+                        failOnError: true,
                         env: _.extend({
-                            NW_VERSION: "0.8.4"
+                            'NW_VERSION': NW_VERSION
                         }, process.env)
                     }
                 }
-            }
+            },
+            publish: {
+                command: "npm publish",
+                options: {
+                    execOptions: {
+                        cwd: '.tmp/',
+                        stdout: true,
+                        stderr: true,
+                        failOnError: true
+                    }
+                }
+            },
+            build_files_editor: {
+                command: "npm install",
+                options: {
+                    execOptions: {
+                        cwd: './addons/cb.files.editor/',
+                        stdout: true,
+                        stderr: true,
+                        failOnError: true
+                    }
+                }
+            },
         },
         copy: {
             // Copy most files over
-            desktop: {
+            tmp: {
                 expand: true,
                 dot: false,
                 cwd: './',
@@ -147,10 +173,17 @@ module.exports = function (grunt) {
                     "!./.addons/**",
                     "!./appBuilds/**",
 
+                    // Only take "./client/build"
+                    "!./client/**",
+                    "./client/build/**",
+
                     // Ignore some build time only modules
                     "!./node_modules/grunt/**",
                     "!./node_modules/grunt-*/**",
-                    "!./node_modules/hr.js/**"
+                    "!./node_modules/hr.js/**",
+
+                    // Exclude test directories from node modules
+                    "!./node_modules/**/test/**",
                 ],
 
                 // Preserve permissions
@@ -174,21 +207,76 @@ module.exports = function (grunt) {
                     }
                 }
             }
+        },
+        compress: {
+            tmp: {
+                options: {
+                  mode: 'gzip',
+                  pretty: true
+                },
+                expand: true,
+                src: [
+                    // Codebox Built addons
+                    '.tmp/addons/*/addon-built.js',
+
+                    // Ace source
+                    '.tmp/addons/cb.files.editor/ace/**',
+
+                    // HR.js application
+                    '.tmp/client/build/static/application.{js,css}'
+                ],
+                filter: function(src) {
+                    // Compressable file formats
+                    if(!_.contains([
+                        'js',
+                        'css',
+                        'svg',
+                        'less',
+                        'html',
+                        'snippets'
+                    ],
+                    path.extname(src).slice(1)
+                    )) return false;
+                    try {
+                        // We don't want to gzip tiny files
+                        // Skip files < 10kb
+                        return fs.statSync(src).size > 10*1024;
+                    } catch(err) {}
+                    return false;
+                }
+            }
+        },
+        clean: {
+            tmp: ['.tmp/']
         }
     });
 
     // Build
     grunt.registerTask('build', [
-        'hr'
+        'hr',
+        'shell:build_files_editor'
+    ]);
+
+    // Build tmp directory
+    grunt.registerTask('tmp', [
+        'build',
+        'copy:tmp',
+        'compress:tmp'
     ]);
 
     // Desktop app generation
     grunt.registerTask('buildApps', [
-        'build',
-        'copy:desktop',
+        'tmp',
         'copy:desktopPKG',
         'shell:nwbuild',
-        'nodewebkit'
+        'nodewebkit',
+        'clean:tmp'
+    ]);
+
+    grunt.registerTask('publish', [
+        'tmp',
+        'shell:publish',
+        'clean:tmp'
     ]);
 
     // Run
