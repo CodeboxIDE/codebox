@@ -131,6 +131,16 @@ module.exports = function (grunt) {
                         }, process.env)
                     }
                 }
+            },
+            publish: {
+                command: "npm publish",
+                options: {
+                    execOptions: {
+                        cwd: '.tmp/',
+                        stdout: true,
+                        stderr: true
+                    }
+                }
             }
         },
         copy: {
@@ -251,6 +261,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('publish', [
         'tmp',
+        'shell:publish',
         'clean:tmp'
     ]);
 
