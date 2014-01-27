@@ -248,6 +248,8 @@ define([
 
             logging.log("update env with", this.envId, options, hr.Offline.isConnected());
 
+            if (this.file.isNewfile()) options.sync = false;
+
             if (!hr.Offline.isConnected() || !options.sync) {
                 /// Offline sync
                 self.setMode(self.modes.READONLY);
@@ -343,6 +345,8 @@ define([
                     }
                 });
             }
+
+            this.trigger("update:env", options);
         },
 
         /*

@@ -16,6 +16,7 @@ define([
     var Command = codebox.require("models/command");
     var themes = codebox.require("core/themes");
     var box = codebox.require("core/box");
+    var collaborators = codebox.require("core/collaborators");
 
     var logging = hr.Logger.addNamespace("editor");
     var userSettings = user.settings("editor");
@@ -58,6 +59,19 @@ define([
                 }
             }));
 
+            // Toggle collaboration
+            this.collaborationToggle = new Command({}, {
+                'type': "checkbox",
+                'title': "Toggle Collaboration Mode",
+                'flags': this.model.isNewfile() ? "hidden": "",
+                'offline': false,
+                'action': function(state) {
+                    that.sync.updateEnv({
+                        'sync': state
+                    });
+                }
+            });
+
             // Collaborators
             this.collaboratorsMenu = new Command({}, {
                 'title': "Collaborators",
@@ -91,18 +105,7 @@ define([
                     }
                 }
             ]).menuSection([
-                {
-                    'type': "checkbox",
-                    'title': "Toggle Collaboration Mode",
-                    'flags': this.model.isNewfile() ? "hidden": "",
-                    'offline': false,
-                    'action': function(state) {
-                        that.collaboratorsMenu.toggleFlag("disabled", !state);
-                        that.sync.updateEnv({
-                            'sync': state
-                        });
-                    }
-                },
+                this.collaborationToggle,
                 syntaxMenu
             ]).menuSection([
                 {
@@ -130,6 +133,11 @@ define([
 
             // Create sync
             this.sync = new FileSync();
+            this.sync.on("update:env", function(options) {
+                console.log("!!! env ", options);
+                this.collaborationToggle.toggleFlag("active", options.sync);
+                this.collaboratorsMenu.toggleFlag("disabled", !options.sync);
+            }, this);
 
             // Create base ace editor instance
             this.$editor = $("<div>", {
@@ -250,6 +258,17 @@ define([
                 }, this)
             });
             this.editor.commands.addCommand({
+                name: "showSettingsMenu",
+                bindKey: {
+                    win: 'Ctrl-,',
+                    mac: 'Command-,'
+                },
+                exec: function() {
+                    settings.open("editor");
+                },
+                readOnly: true
+            });
+            this.editor.commands.addCommand({
                 name: 'run',
                 readOnly: true,
                 bindKey: {
@@ -296,7 +315,7 @@ define([
 
             // Define file for code editor
             this.sync.setFile(this.model, {
-                'sync': this.options.edition
+                'sync': userSettings.get("autocollaboration") ? collaborators.size() > 1 : false
             });
             this.focus();
         },

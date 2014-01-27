@@ -26,7 +26,7 @@ define([
         'namespace': "themes",
         'title': "Themes",
         'defaults': {
-            'theme': 'default'
+            'theme': 'dark'
         },
         'fields': {}
     });
@@ -111,7 +111,7 @@ define([
     // Default theme
     addTheme({
         id: "default",
-        title: "Default"
+        title: "White"
     });
 
     // Init theming

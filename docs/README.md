@@ -1,4 +1,4 @@
-This documentation contains everything you need to know for using Codebox or running it locally. You can contribute to this documentation with pull-requests on [Github](https://github.com/FriendCode/codebox).
+This documentation contains everything you need to know for using Codebox or running it locally. You can contribute to this documentation with pull-requests on [Github](https://github.com/FriendCode/codebox). A complete list of all the [features is available](features.md).
 
 ---------------------------------------
 
