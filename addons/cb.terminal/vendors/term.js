@@ -2409,6 +2409,10 @@ Terminal.prototype.keyDown = function(ev) {
             if (ev.shiftKey) {
                 key = '\x08'; // ^H
                 break;
+            } else if (ev.altKey) {
+                // Deletes previous word
+                key = '\x17';
+                break;
             }
             key = '\x7f'; // ^?
             break;
@@ -2434,6 +2438,9 @@ Terminal.prototype.keyDown = function(ev) {
                 key = '\x1bOD'; // SS3 as ^[O for 7-bit
                 //key = '\x8fD'; // SS3 as 0x8f for 8-bit
                 break;
+            } else if(ev.altKey) {
+                key = '\x1bb';
+                break
             }
             key = '\x1b[D';
             break;
@@ -2442,6 +2449,9 @@ Terminal.prototype.keyDown = function(ev) {
             if (this.applicationCursor) {
                 key = '\x1bOC';
                 break;
+            } else if(ev.altKey) {
+                key = '\x1bf';
+                break
             }
             key = '\x1b[C';
             break;
