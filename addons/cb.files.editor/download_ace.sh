@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Ace version to pull
-ACE_VERSION="b2f8bf1e745250596afea5b39c70b94421af906d"
-ACE_URL="https://github.com/ajaxorg/ace-builds/archive/${ACE_VERSION}.tar.gz"
+ACE_VERSION="bf11201199bd24f7f939e4c09562a37fb0615abf"
+ACE_URL="https://github.com/FriendCode/ace-builds/archive/${ACE_VERSION}.tar.gz"
 
 # Ace build we want to keep
 ACE_SUB="src-min-noconflict"
