@@ -87,7 +87,7 @@ define([
                 }
             }, register);
 
-            return d.promise;
+            return d.promise.timeout(5000, "This addon took to long to load (> 5seconds)");
         },
 
         // Return version as an int
