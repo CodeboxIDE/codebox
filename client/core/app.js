@@ -121,7 +121,7 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
                 operations.render();
 
                 // Load addons
-                loading.show(addons.loadAll(), "Loading add-ons").then(themes.init, function(err) {
+                loading.show(addons.loadAll(), "Loading add-ons").fail(function(err) {
                     return dialogs.alert("Error loading Add-ons", 
                         "<p>Error when initializing addons." +
                         " Please check addons states using the addons manager and reinstall problematic add-ons.</p>" +
@@ -129,7 +129,9 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
                         _.map(err.addonsError || [], function(error) {
                             return "<p> - <b>"+_.escape(error.addon)+"</b>: "+(error.error.message || error.error)+"</p>";
                         }).join("\n"));
-                }).fin(function() {    
+                })
+                .fin(themes.init)
+                .fin(function() {
                     // Load new addons
                     addons.on("add", function(addon) {
                         addon.load();
