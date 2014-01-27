@@ -134,7 +134,6 @@ define([
             // Create sync
             this.sync = new FileSync();
             this.sync.on("update:env", function(options) {
-                console.log("!!! env ", options);
                 this.collaborationToggle.toggleFlag("active", options.sync);
                 this.collaboratorsMenu.toggleFlag("disabled", !options.sync);
             }, this);
