@@ -1,7 +1,9 @@
 // Requires
 var Q = require('q');
 var _ = require('underscore');
-
+var fs = require('fs');
+var path = require('path');
+var pkg = require('../../package.json');
 
 function BoxRPCService(workspace) {
     this.workspace = workspace;
@@ -11,6 +13,7 @@ function BoxRPCService(workspace) {
 
 BoxRPCService.prototype.status = function(args, meta) {
     return Q({
+        'version': pkg.version,
         'status': "ok",
         'name': this.workspace.name,
         'public': this.workspace.public,
@@ -23,6 +26,18 @@ BoxRPCService.prototype.status = function(args, meta) {
 BoxRPCService.prototype.ping = function(args, meta) {
     return Q({
         'ping': true
+    });
+};
+
+BoxRPCService.prototype.changes = function(args, meta) {
+    var changelogPath = path.resolve(__dirname, "../../CHANGES");
+    return Q.nfapply(fs.readFile, [
+        changelogPath, "utf-8"
+    ]).then(function (text) {
+        return {
+            'version': pkg.version,
+            'content': text
+        }
     });
 };
 

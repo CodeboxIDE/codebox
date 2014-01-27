@@ -32,6 +32,7 @@ define([
 
     // Cached methods
     rpc.addCachedMethod('box/status');
+    rpc.addCachedMethod('box/changes');
     rpc.addCachedMethod('auth/join');
     rpc.addCachedMethod('addons/list');
     rpc.addCachedMethod('users/list');

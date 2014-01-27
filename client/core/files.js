@@ -188,7 +188,7 @@ define([
     };
 
     // Open a new file
-    var openNew = function(name) {
+    var openNew = function(name, content) {
         name = name || "untitled";
 
         // Create a temporary file
@@ -202,6 +202,9 @@ define([
             'href': location.protocol+"//"+location.host+"/vfs/"+name,
             'exists': false
         });
+
+        if (content) f.setCache(content);
+
         return openFile(f);
     };
 
