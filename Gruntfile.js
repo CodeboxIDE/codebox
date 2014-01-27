@@ -14,6 +14,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('hr.js');
     grunt.loadNpmTasks('grunt-node-webkit-builder');
     grunt.loadNpmTasks('grunt-contrib-compress');
+    grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-shell');
 
@@ -221,6 +222,9 @@ module.exports = function (grunt) {
                     return false;
                 }
             }
+        },
+        clean: {
+            tmp: ['.tmp/']
         }
     });
 
@@ -241,11 +245,13 @@ module.exports = function (grunt) {
         'tmp',
         'copy:desktopPKG',
         'shell:nwbuild',
-        'nodewebkit'
+        'nodewebkit',
+        'clean:tmp'
     ]);
 
     grunt.registerTask('publish', [
         'tmp',
+        'clean:tmp'
     ]);
 
     // Run
