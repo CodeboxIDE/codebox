@@ -25,6 +25,7 @@ define([
             'wraplimitrange': 80,
             'enablesoftwrap': false,
             'enablesofttabs': true,
+            'autocollaboration': true,
             'tabsize': 4,
             'keyboard': "textinput"
         },
@@ -58,6 +59,10 @@ define([
                 'min':  0,
                 'max': 1000,
                 'step': 1
+            },
+            'autocollaboration': {
+                'label': "Auto enable realtime collaboration",
+                'type': "checkbox"
             },
             'showprintmargin': {
                 'label': "Show Print Margin",
