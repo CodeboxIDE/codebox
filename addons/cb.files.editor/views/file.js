@@ -250,6 +250,17 @@ define([
                 }, this)
             });
             this.editor.commands.addCommand({
+                name: "showSettingsMenu",
+                bindKey: {
+                    win: 'Ctrl-,',
+                    mac: 'Command-,'
+                },
+                exec: function() {
+                    settings.open("editor");
+                },
+                readOnly: true
+            });
+            this.editor.commands.addCommand({
                 name: 'run',
                 readOnly: true,
                 bindKey: {
