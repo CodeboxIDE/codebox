@@ -1,19 +1,16 @@
 define([
+    "ace",
     "views/file",
-    "codecomplete",
-    "ace/ace",
-    "ace/ext/modelist",
-    "ace/ext/themelist"
-], function(FileEditorView, codecomplete, ace, aceModes, aceThemes) {
+    "codecomplete"
+], function(ace, FileEditorView, codecomplete) {
     var $ = codebox.require("jQuery");
     var commands = codebox.require("core/commands/toolbar");
     var settings = codebox.require("core/settings");
     var files = codebox.require("core/files");
     var languages = codebox.require("utils/languages");
-
-    // Configure ace
+    
     var aceconfig = ace.require("ace/config");
-    aceconfig.set("basePath", "static/addons/editor/ace");
+    aceconfig.set("basePath", "static/addons/cb.files.editor/ace");
 
     // Add settings
     settings.add({

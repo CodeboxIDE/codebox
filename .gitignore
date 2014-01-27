@@ -20,3 +20,5 @@ settings.json
 /.env
 
 /.tmp/
+
+/addons/cb.files.editor/ace/
