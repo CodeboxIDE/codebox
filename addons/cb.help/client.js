@@ -1,4 +1,5 @@
 define(["views/dialog"], function(HelpDialog) {
+    var hr = codebox.require("hr/hr");
     var app = codebox.require("core/app");
     var menu = codebox.require("core/commands/menu");
     var files = codebox.require("core/files");
@@ -9,10 +10,10 @@ define(["views/dialog"], function(HelpDialog) {
     // Command open changelog
     var commandChanges = Command.register({
         'id': "help.changes",
-        'title': "Open Changes",
-        'action': function() {
+        'title': "Open Release Notes",
+        'action': function(title) {
             return rpc.execute("box/changes").then(function(changes) {
-                return files.openNew("CHANGES", changes.content);
+                return files.openNew(title || "Release Notes", changes.content);
             });
         }
     });
@@ -41,5 +42,16 @@ define(["views/dialog"], function(HelpDialog) {
             }
         }
     ]);
+
+    // Open changes if version changes
+    app.once("ready", function() {
+        var currentVersion = hr.configs.args.version;
+        var lastVersion = hr.Storage.get("codeboxVersion");
+
+        if (currentVersion != lastVersion) {
+            commandChanges.run();
+        }
+        hr.Storage.set("codeboxVersion", currentVersion);
+    });
 });
 

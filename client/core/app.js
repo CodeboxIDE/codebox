@@ -135,11 +135,14 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
                         addon.load();
                     });
 
-                    // Open root files
-                    files.openNew();
-
                     // Check update
                     hr.Offline.checkUpdate();
+
+                    // Trigger event that app is ready
+                    that.trigger("ready");
+
+                    // Open new file if not files opened by addons
+                    if (files.active.size() == 0) files.openNew();
                 });
             }
             return Application.__super__.finish.apply(this, arguments);
