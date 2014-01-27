@@ -141,7 +141,17 @@ module.exports = function (grunt) {
                         stderr: true
                     }
                 }
-            }
+            },
+            build_files_editor: {
+                command: "npm script postinstall",
+                options: {
+                    execOptions: {
+                        cwd: './addons/cb.files.editor/',
+                        stdout: true,
+                        stderr: true
+                    }
+                }
+            },
         },
         copy: {
             // Copy most files over
@@ -240,7 +250,8 @@ module.exports = function (grunt) {
 
     // Build
     grunt.registerTask('build', [
-        'hr'
+        'hr',
+        'shell:build_files_editor'
     ]);
 
     // Build tmp directory
