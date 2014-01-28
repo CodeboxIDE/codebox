@@ -285,9 +285,13 @@ define([
             this.focus();
 
             var $input = this.editor.textInput.getElement();
-            $input.addEventListener('keypress', keyboard.handleKeyEvent, false);
-            $input.addEventListener('keydown', keyboard.handleKeyEvent, false);
-            $input.addEventListener('keyup', keyboard.handleKeyEvent, false);
+            var handleKeyEvent = function(e) {
+                if (!e.altKey && !e.ctrlKey && !e.metaKey) return;
+                keyboard.handleKeyEvent(e);
+            };
+            $input.addEventListener('keypress', handleKeyEvent, false);
+            $input.addEventListener('keydown', handleKeyEvent, false);
+            $input.addEventListener('keyup', handleKeyEvent, false);
         },
 
         // Finish rendering
