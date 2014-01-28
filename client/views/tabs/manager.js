@@ -236,24 +236,31 @@ define([
         },
 
         getPreviousTab: function(tab) {
-            // We're not closing the active tab
-            // So keep the current tab as active
-            if(tab.tabid !== this.activeTab) return this.activeTab;
+            if (!tab) tab = this.tabs[this.activeTab];
 
             var selectTab = function(tabs) {
+                if(tabs.length == 1) return null;
                 var index = tabs.indexOf(tab);
-
-                // Get all other tabs except the current one
-                var otherTabs = _.filter(tabs, function (t) {
-                    return t.tabid !== tab.tabid;
-                });
-
-                // No other tabs
-                if(!otherTabs.length) {
-                    return null;
-                }
+                return tabs[_.max([0, index-1])].tabid;
 
                 return otherTabs[_.max([0, index - 1])].tabid;
+            }
+
+            var tabs = this.getSectionTabs(tab.tab.section);
+            
+            var pTab = selectTab(tabs);
+            if (!pTab) pTab = selectTab(_.values(this.tabs));
+
+            return pTab;
+        },
+
+        getNextTab: function(tab) {
+            if (!tab) tab = this.tabs[this.activeTab];
+
+            var selectTab = function(tabs) {
+                if(tabs.length == 1) return null;
+                var index = tabs.indexOf(tab);
+                return tabs[_.min([tabs.length-1, index+1])].tabid;
             }
 
             var tabs = this.getSectionTabs(tab.tab.section);
@@ -333,7 +340,7 @@ define([
 
         // Close a tab by tabid
         close: function(tabid, force) {
-            var that = this;
+            var previousTabId, that = this;
 
             if (this.tabs[tabid] == null) return this;
 
@@ -341,7 +348,13 @@ define([
                 if (state == false && !force) return;
 
                 // Get previous tab (will set as active)
-                var previousTabId = that.getPreviousTab(that.tabs[tabid]);
+                // We're not closing the active tab
+                // So keep the current tab as active
+                if(tabid !== that.activeTab) {
+                    previousTabId = that.activeTab;
+                } else {
+                    previousTabId = that.getPreviousTab(that.tabs[tabid]);
+                }
 
                 // Triger in tab
                 that.tabs[tabid].view.trigger("tab:close");
