@@ -9,6 +9,7 @@ define([
          */
         initialize: function() {
             this.bindings = {};
+            this.handleKeyEvent = Mousetrap.handleKeyEvent;
             return this;
         },
 

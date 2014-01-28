@@ -17,6 +17,7 @@ define([
     var themes = codebox.require("core/themes");
     var box = codebox.require("core/box");
     var collaborators = codebox.require("core/collaborators");
+    var keyboard = codebox.require("utils/keyboard");
 
     var logging = hr.Logger.addNamespace("editor");
     var userSettings = user.settings("editor");
@@ -244,41 +245,6 @@ define([
                 }));
             }, this);
 
-            // Commands
-            this.editor.commands.addCommand({
-                name: 'save',
-                readOnly: true,
-                bindKey: {
-                    win: 'Ctrl-S',
-                    mac: 'Command-S'
-                },
-                exec: _.bind(function(editor) {
-                    this.saveFile();
-                }, this)
-            });
-            this.editor.commands.addCommand({
-                name: "showSettingsMenu",
-                bindKey: {
-                    win: 'Ctrl-,',
-                    mac: 'Command-,'
-                },
-                exec: function() {
-                    settings.open("editor");
-                },
-                readOnly: true
-            });
-            this.editor.commands.addCommand({
-                name: 'run',
-                readOnly: true,
-                bindKey: {
-                    win: 'Ctrl-R',
-                    mac: 'Command-R'
-                },
-                exec: _.bind(function(editor) {
-                    this.runFile();
-                }, this)
-            });
-
             // Parent tab
             this.tab.on("tab:layout", function() {
                 this.editor.resize();
@@ -317,6 +283,15 @@ define([
                 'sync': userSettings.get("autocollaboration") ? collaborators.size() > 1 : false
             });
             this.focus();
+
+            var $input = this.editor.textInput.getElement();
+            var keyboardShortcutsFollow = function(e) {
+                e.mousetrap = true;
+                keyboard.handleKeyEvent(e);
+            };
+            $input.addEventListener('keypress', keyboardShortcutsFollow, false);
+            $input.addEventListener('keydown', keyboardShortcutsFollow, false);
+            $input.addEventListener('keyup', keyboardShortcutsFollow, false);
         },
 
         // Finish rendering

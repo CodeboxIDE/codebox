@@ -16,7 +16,9 @@ define([
 
         // Keyboard shortcuts inside the tab
         shortcuts: {
-            "mod+shift+c": "closeTab"
+            "mod+shift+c": "closeTab",
+            "mod+shift+left": "tabGotoPrevious",
+            "mod+shift+right": "tabGotoNext"
         },
 
         // Menu title
@@ -126,6 +128,16 @@ define([
         // Check that tab can be closed
         tabCanBeClosed: function() {
             return true;
+        },
+
+        // Goto
+        tabGotoPrevious: function(e) {
+            if (e) e.preventDefault();
+            alert("prev!");
+        },
+        tabGotoNext: function(e) {
+            if (e) e.preventDefault();
+            alert("next!");
         }
     });
 
