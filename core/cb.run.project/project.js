@@ -21,6 +21,15 @@ function ProjectRunner(events, workspace, shells, run_ports, project_detect, url
 
     this.urlPattern = urlPattern;
 
+    // Map
+    // projectType => shellId
+    this.projects = {
+        //'php': 'project-php-2000-xyz'
+    };
+
+    // Self incrimenting unique id
+    this.projectCount = 0;
+
     _.bindAll(this);
 }
 
@@ -29,7 +38,7 @@ ProjectRunner.prototype.scriptPath = function(projectType) {
 };
 
 ProjectRunner.prototype.shellId = function(projectType, port) {
-    return [this.id, projectType, port].join('-');
+    return [this.id, projectType, port, this.projectCount++].join('-');
 };
 
 ProjectRunner.prototype.portId = function(projectType) {
@@ -63,9 +72,14 @@ ProjectRunner.prototype.runScript = function(projectType, port) {
         // Id of our harbor port (to release)
         var portId = self.portId(projectType);
 
+        // Register project
+        self.projects[projectType] = shellId;
+
         // Free port on shell exit
         self.shells.shells[shellId].ps.once('exit', function() {
             self.run_ports.release(portId);
+            // Delete the project
+            delete self.projects[projectType];
         });
 
         // Emit event
@@ -91,8 +105,24 @@ ProjectRunner.prototype.isRunning = function(portId) {
 };
 
 ProjectRunner.prototype.getUrl = function(port) {
-    return this.urlPattern.replace("%d", port)
-}
+    return this.urlPattern.replace("%d", port);
+};
+
+ProjectRunner.prototype.killProject = function(projectType) {
+    var d = Q.defer();
+
+    var shellId = this.projects[projectType];
+    var shell = shellId ? this.shells.shells[shellId] : null;
+    if(!shellId || !shell) {
+        return Q.reject('No project shell to kill for: '+projectType);
+    }
+
+    shell.ps.once('exit', d.resolve);
+
+    shell.ps.destroy();
+
+    return d.promise;
+};
 
 ProjectRunner.prototype.run = function() {
     var self = this;
@@ -104,6 +134,13 @@ ProjectRunner.prototype.run = function() {
             return Q.reject(new Error("The project has no supported type"));
         }
         return projectType;
+    })
+    .then(function(projectType) {
+        if(!self.projects[projectType]) return projectType;
+
+        // Kill the current project to launch a new one
+        return self.killProject(projectType)
+        .then(utils.constant(projectType));
     })
     .then(function(projectType) {
         var portId = self.portId(projectType);
