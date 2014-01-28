@@ -13,6 +13,14 @@ define([
         },
 
         /*
+         *  Handle manually a keyboard event
+         */
+        handleKeyEvent: function(e) {
+            e.mousetrap = true;
+            return Mousetrap.handleKeyEvent(e);
+        },
+
+        /*
          *  Bind keyboard shortcuts to callback
          *  @keys : shortcut or list of shortcuts
          *  @callback : function to call
