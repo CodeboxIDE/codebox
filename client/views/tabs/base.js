@@ -16,9 +16,9 @@ define([
 
         // Keyboard shortcuts inside the tab
         shortcuts: {
-            "mod+shift+c": "closeTab",
-            "ctrl+alt+left": "tabGotoPrevious",
-            "ctrl+alt+right": "tabGotoNext"
+            "alt+w": "closeTab",
+            "alt+shift+tab": "tabGotoPrevious",
+            "alt+tab": "tabGotoNext"
         },
 
         // Menu title
@@ -133,17 +133,17 @@ define([
         // Goto
         tabGotoPrevious: function(e) {
             if (e) e.preventDefault();
-             var that = this;
-            _.defer(function() {
-                that.tabs.open(that.tabs.getPreviousTab());
-            });
+            var that = this;
+            setTimeout(function() {
+                that.tabs.open(that.tabs.getPreviousTab(that.tabid));
+            }, 0);
         },
         tabGotoNext: function(e) {
             if (e) e.preventDefault();
             var that = this;
-            _.defer(function() {
-                that.tabs.open(that.tabs.getNextTab());
-            });
+            setTimeout(function() {
+                that.tabs.open(that.tabs.getNextTab(that.tabid));
+            }, 0);
         }
     });
 

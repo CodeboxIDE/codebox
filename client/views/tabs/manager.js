@@ -236,14 +236,13 @@ define([
         },
 
         getPreviousTab: function(tab) {
+            if (_.isString(tab)) tab = this.tabs[tab];
             if (!tab) tab = this.tabs[this.activeTab];
 
             var selectTab = function(tabs) {
                 if(tabs.length == 1) return null;
                 var index = tabs.indexOf(tab);
                 return tabs[_.max([0, index-1])].tabid;
-
-                return otherTabs[_.max([0, index - 1])].tabid;
             }
 
             var tabs = this.getSectionTabs(tab.tab.section);
@@ -255,6 +254,7 @@ define([
         },
 
         getNextTab: function(tab) {
+            if (_.isString(tab)) tab = this.tabs[tab];
             if (!tab) tab = this.tabs[this.activeTab];
 
             var selectTab = function(tabs) {
