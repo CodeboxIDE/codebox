@@ -18,7 +18,7 @@ define([
         icon: "folder-o",
         position: 2,
         shortcuts: [
-            "f"
+            "alt+f"
         ]
     }));
 

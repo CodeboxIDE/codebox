@@ -35,7 +35,7 @@ define([
     }).menuSection([{
         'id': "quit",
         'title': "Quit",
-        'shortcuts': ["mod+q"],
+        'shortcuts': ["alt+q"],
         'action': session.exit
     }], {
         'position': 1000

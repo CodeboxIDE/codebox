@@ -45,7 +45,7 @@ define([], function() {
         offline: false,
         position: 1,
         shortcuts: [
-            "r"
+            "alt+r"
         ]
     }, function() {
         return box.run().then(function(runInfo) {
