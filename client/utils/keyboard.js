@@ -13,6 +13,13 @@ define([
         },
 
         /*
+         *  Enable key event
+         */
+        enableKeyEvent: function(e) {
+            e.mousetrap = true;
+        },
+
+        /*
          *  Handle manually a keyboard event
          */
         handleKeyEvent: function(e) {

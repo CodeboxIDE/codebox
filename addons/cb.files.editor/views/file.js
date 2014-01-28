@@ -287,7 +287,7 @@ define([
             var $input = this.editor.textInput.getElement();
             var handleKeyEvent = function(e) {
                 if (!e.altKey && !e.ctrlKey && !e.metaKey) return;
-                keyboard.handleKeyEvent(e);
+                keyboard.enableKeyEvent(e);
             };
             $input.addEventListener('keypress', handleKeyEvent, false);
             $input.addEventListener('keydown', handleKeyEvent, false);
