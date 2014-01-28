@@ -6,9 +6,10 @@
 | PC (Windows/Linux)             | Mac                            | action                         |
 |-------------------------------|-------------------------------|-------------------------------|
 | ? | ? | Open help dialog |
-| /, s | /, s | Display search lateral bar |
-| t | t | Open a new terminal tab |
+| Alt-T | Alt-T | Open a new terminal tab |
 | Ctrl-, | Command-, | Show the settings dialog |
+| Alt-Shift-N | Alt-Shift-N | Open a new file |
+| Alt-Shift-F | Alt-Shift-F | Create a new folder |
 
 ---------------------------------------
 
@@ -17,10 +18,20 @@
 
 | PC (Windows/Linux)             | Mac                            | action                         |
 |-------------------------------|-------------------------------|-------------------------------|
-| Ctrl-Shift-C | Command-Shift-C | Close the current tab |
+| Alt-W | Alt-W | Close the current tab |
+| Alt-Tab | Alt-Tab | Next tab |
+| Alt-Shift-Tab | Alt-Shift-Tab | Previous tab |
 
 ---------------------------------------
 
+### Lateral Panels
+
+
+| PC (Windows/Linux)             | Mac                            | action                         |
+|-------------------------------|-------------------------------|-------------------------------|
+| Alt-F | Alt-F | Open files panel |
+| / | / | Open search panel |
+---------------------------------------
 
 ### Code Editor (ace)
 
@@ -28,8 +39,7 @@
 | PC (Windows/Linux)             | Mac                            | action                         |
 |-------------------------------|-------------------------------|-------------------------------|
 | Ctrl-S | Command-S | Save the file |
-| Ctrl-, | Command-, | Show the settings menu |
-| Ctrl-Space | Ctrl-Space | Show autocomplete popup |
+| Ctrl-R | Command-R | Run the file |
 | Ctrl-Alt-Up | Ctrl-Option-Up | add multi-cursor above |
 | Ctrl-Alt-Down | Ctrl-Option-Down | add multi-cursor below |
 | Ctrl-Alt-Right | Ctrl-Option-Right | add next occurrence to multi-selection |
