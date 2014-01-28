@@ -235,40 +235,36 @@ define([
             });
         },
 
-        getPreviousTab: function(tab) {
+        // Get the 'n'th tab relative to tab
+        getNthTab: function(tab, n) {
             if (_.isString(tab)) tab = this.tabs[tab];
             if (!tab) tab = this.tabs[this.activeTab];
 
             var selectTab = function(tabs) {
-                if(tabs.length == 1) return null;
+                var length = tabs.length;
+                if(length === 1) return null;
+
+                // Index of current tab
                 var index = tabs.indexOf(tab);
-                return tabs[_.max([0, index-1])].tabid;
-            }
+
+                // Normalize with a modulo
+                var m = (index + n) % length;
+                var newIndex = m < 0 ? length + m : m;
+
+                return tabs[newIndex].tabid;
+            };
 
             var tabs = this.getSectionTabs(tab.tab.section);
-            
-            var pTab = selectTab(tabs);
-            if (!pTab) pTab = selectTab(_.values(this.tabs));
 
-            return pTab;
+            return selectTab(tabs) || selectTab(_.values(this.tabs));
+        },
+
+        getPreviousTab: function(tab) {
+            return this.getNthTab(tab, -1);
         },
 
         getNextTab: function(tab) {
-            if (_.isString(tab)) tab = this.tabs[tab];
-            if (!tab) tab = this.tabs[this.activeTab];
-
-            var selectTab = function(tabs) {
-                if(tabs.length == 1) return null;
-                var index = tabs.indexOf(tab);
-                return tabs[_.min([tabs.length-1, index+1])].tabid;
-            }
-
-            var tabs = this.getSectionTabs(tab.tab.section);
-            
-            var pTab = selectTab(tabs);
-            if (!pTab) pTab = selectTab(_.values(this.tabs));
-
-            return pTab;
+            return this.getNthTab(tab, 1);
         },
 
         // Return active tab for a section
