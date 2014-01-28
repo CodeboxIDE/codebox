@@ -1,7 +1,7 @@
 #!/bin/bash
 
 NW_VERSION=${NW_VERSION:=0.8.0}
-REBUILD_MODULES=("shux/node_modules/pty.js")
+REBUILD_MODULES=("shux/node_modules/pty.js", "ctags")
 
 function rebuild_module () {
   bash -c "cd $1 && nw-gyp rebuild --target=$NW_VERSION"
