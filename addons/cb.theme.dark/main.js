@@ -66,6 +66,15 @@ define([
                     'color': "#fff",
                     'border-color': "transparent"
                 }
+            },
+
+            // Alerts
+            alerts: {
+                alert: {
+                    'background': bgLight,
+                    'color': colorLight,
+                    'border-color': "transparent"
+                }
             }
         }
     });

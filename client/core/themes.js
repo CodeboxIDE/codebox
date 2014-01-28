@@ -88,7 +88,11 @@ define([
                 'tabs tab': ".component-tab",
 
                 // operations
-                'operations operation': ".cb-operations .operation-item"
+                'operations operation': ".cb-operations .operation-item",
+
+                // alerts
+                'alerts': ".cb-alerts",
+                'alerts alert': ".cb-alerts .cb-alert"
             },
             base: "body #codebox"
         });
