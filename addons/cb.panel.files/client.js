@@ -46,7 +46,7 @@ define([
             'id': "file.new",
             'type': "action",
             'title': "New File",
-            'shortcuts': ["ctrl+shift+N"],
+            'shortcuts': ["alt+shift+n"],
             'action': function() {
                 files.openNew()
             }
@@ -54,7 +54,7 @@ define([
             'id': "folder.create",
             'type': "action",
             'title': "New Folder",
-            'shortcuts': ["ctrl+shift+F"],
+            'shortcuts': ["alt+shift+f"],
             'action': function() {
                 box.root.actionMkdir();
             }
