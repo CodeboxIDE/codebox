@@ -65,14 +65,22 @@ define([
             if (_.isArray(shortcut)) shortcut = _.first(shortcut);
             if (!shortcut) return null;
 
+            var isMac = /Mac|iPod|iPhone|iPad/.test(navigator.platform);
+
             // Replace mod by equivalent for mac or windows
-            shortcut = shortcut.replace("mod", /Mac|iPod|iPhone|iPad/.test(navigator.platform) ? '&#8984;' : 'ctrl');
+            shortcut = shortcut.replace("mod", isMac ? '&#8984;' : 'ctrl');
 
             // Replace ctrl
             shortcut = shortcut.replace("ctrl", "⌃");
 
             // Replace shift
             shortcut = shortcut.replace("shift", "⇧");
+
+            if (isMac) {
+                shortcut = shortcut.replace("alt", "⌥");
+            } else {
+                shortcut = shortcut.replace("alt", "⎇");
+            }
 
             // Replace +
             shortcut = shortcut.replace(/\+/g, " ");
