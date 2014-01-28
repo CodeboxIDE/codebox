@@ -9,8 +9,15 @@ define([
          */
         initialize: function() {
             this.bindings = {};
-            this.handleKeyEvent = Mousetrap.handleKeyEvent;
             return this;
+        },
+
+        /*
+         *  Handle manually a keyboard event
+         */
+        handleKeyEvent: function(e) {
+            e.mousetrap = true;
+            return Mousetrap.handleKeyEvent(e);
         },
 
         /*

@@ -285,13 +285,9 @@ define([
             this.focus();
 
             var $input = this.editor.textInput.getElement();
-            var keyboardShortcutsFollow = function(e) {
-                e.mousetrap = true;
-                keyboard.handleKeyEvent(e);
-            };
-            $input.addEventListener('keypress', keyboardShortcutsFollow, false);
-            $input.addEventListener('keydown', keyboardShortcutsFollow, false);
-            $input.addEventListener('keyup', keyboardShortcutsFollow, false);
+            $input.addEventListener('keypress', keyboard.handleKeyEvent, false);
+            $input.addEventListener('keydown', keyboard.handleKeyEvent, false);
+            $input.addEventListener('keyup', keyboard.handleKeyEvent, false);
         },
 
         // Finish rendering
