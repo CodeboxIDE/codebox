@@ -69,7 +69,7 @@ define([
         icon: "terminal",
         offline: false,
         shortcuts: [
-            "ctrl+shift+T"
+            "alt+t"
         ]
     }, function(shellId) {
         // Create trminal tab
