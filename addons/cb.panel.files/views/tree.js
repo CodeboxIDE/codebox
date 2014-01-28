@@ -112,15 +112,7 @@ define([
 
             this.countFiles = 0;
             this.paddingLeft = this.options.paddingLeft || 10;
-
-            this.model.on("loading:action", function(state, action) {
-                if (!_.contains([
-                    "mkdir",
-                    "create"
-                ], action)) return;
-                that.update();
-            });
-
+            
             panelSettings.user.change(function() {
                 this.update();
             }, this);
@@ -153,14 +145,6 @@ define([
                     });
                     v.update();
                     v.$el.appendTo(that.$el);
-
-                    file.on("loading:action", function(state, action) {
-                        if (!_.contains([
-                            "rename",
-                            "remove"
-                        ], action)) return;
-                        that.update();
-                    });
 
                     that.countFiles = that.countFiles + 1;
                 });

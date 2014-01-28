@@ -11,6 +11,18 @@ define([
         prefix: "vfs"
     });
 
+    // Emulate a vfs event
+    var triggerWatchEvent = function(name, path, data) {
+        var eventName = "watch.change."+name;
+        vfs.trigger("event:"+eventName, {
+            'event': eventName,
+            'data': _.extend({}, {
+                'path': path,
+                'change': name
+            }, data)
+        });
+    };
+
     // Map vfs method -> http request method
     var methodsMap = {
         "listdir": "getJSON",
@@ -31,6 +43,27 @@ define([
 
             logger.log(method+": "+options.url);
             return hr.Requests[methodsMap[method]](options.url, args, options);
+        },
+        after: function(args, results, options, method) {
+            var path = localfs.urlToPath(options.url);
+            switch (method) {
+                case "remove":
+                    triggerWatchEvent("delete", path);
+                    break;
+                case "rename":
+                    triggerWatchEvent("delete", args.renameFrom);
+                    triggerWatchEvent("create", path);
+                    break;
+                case "create":
+                    triggerWatchEvent("create", path);
+                    break;
+                case "mkdir":
+                    triggerWatchEvent("create", path);
+                    break;
+                case "write":
+                    triggerWatchEvent("update", path);
+                    break;
+            }
         }
     });
 

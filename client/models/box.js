@@ -2,12 +2,13 @@ define([
     'hr/hr',
     'vendors/socket.io',
     'core/backends/rpc',
+    'core/backends/vfs',
     'models/file',
     'models/shell',
     'models/user',
     'models/command',
     'core/operations'
-], function (hr, io, rpc, File, Shell, User, Command, operations) {
+], function (hr, io, rpc, vfs, File, Shell, User, Command, operations) {
     var logging = hr.Logger.addNamespace("codebox");
 
     var Codebox = hr.Model.extend({
@@ -50,6 +51,11 @@ define([
          */
         listenEvents: function() {
             var that = this;
+
+            vfs.on("event", function(data) {
+                var eventName = "box:"+data.event.replace(/\./g, ":");
+                that.trigger(eventName, data);
+            });
 
             this.socket("events").then(function(socket) {
                 socket.on('event', function(data) {

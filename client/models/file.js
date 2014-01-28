@@ -88,13 +88,13 @@ define([
         /*
          *  Set loading state
          */
-        loading: function(state, action) {
+        loading: function(state) {
             var that = this;
 
             if (Q.isPromise(state)) {
-                that.loading(true, action);
+                that.loading(true);
                 state.fin(function() {
-                    that.loading(false, action);
+                    that.loading(false);
                 });
                 return state;
             }
@@ -103,10 +103,6 @@ define([
             if (this._loading == state) return;
             this._loading = state;
             this.trigger("loading", this._loading);
-
-            if (!state && action) {
-                this.trigger("loading:action:"+action, state, action);
-            }
         },
 
         /*
@@ -512,7 +508,7 @@ define([
          *  @name : name of the file to create
          */
         createFile: function(name) {
-            return this.loading(this.vfsRequest("create", this.vfsUrl(null, true)+"/"+name), "create");
+            return this.loading(this.vfsRequest("create", this.vfsUrl(null, true)+"/"+name));
         },
 
         /*
@@ -521,14 +517,15 @@ define([
          *  @name : name of the directory to create
          */
         mkdir: function(name) {
-            return this.loading(this.vfsRequest("mkdir", this.vfsUrl(null, true)+"/"+name+"/"), "mkdir");
+            return this.loading(this.vfsRequest("mkdir", this.vfsUrl(null, true)+"/"+name+"/"));
         },
 
         /*
          *  Remove the file or directory
          */
         remove: function() {
-            return this.loading(this.vfsRequest("remove", this.vfsUrl(null)), "remove");
+            var that = this;
+            return this.loading(this.vfsRequest("remove", this.vfsUrl(null)));
         },
 
         /*
@@ -541,7 +538,7 @@ define([
             var newPath = parentPath+"/"+name;
             return this.loading(this.vfsRequest("rename", this.vfsUrl(newPath), {
                 "renameFrom": this.path()
-            }), "rename");
+            }));
         },
 
         /*
