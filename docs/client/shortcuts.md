@@ -30,7 +30,7 @@
 | PC (Windows/Linux)             | Mac                            | action                         |
 |-------------------------------|-------------------------------|-------------------------------|
 | Alt-F | Alt-F | Open files panel |
-| / | / | Open search panel |
+| Alt-S | Alt-S | Open search panel |
 ---------------------------------------
 
 ### Code Editor (ace)

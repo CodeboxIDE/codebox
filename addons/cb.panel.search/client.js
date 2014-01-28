@@ -14,7 +14,7 @@ define([
         icon: "search",
         position: 0,
         shortcuts: [
-            "/"
+            "alt+s"
         ]
     });
     panel.connectCommand(command);
