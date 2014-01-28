@@ -1,3 +1,25 @@
+2014-01-28  Aaron O'Mullan <aaron.omullan@friendco.de>
+            Samy Pessé  <samy.pesse@friendco.de>
+            Julien LEICHER <jleicher@gmail.com>
+
+    * Bump version to 0.5.0
+    * Set dark theme by default
+    * Improve performance: gzip, ace files
+    * Allow to re running projects
+    * Live Autocomplete
+    * Autocomplete multi source: current file, ctags (project level)
+    * Improve keyboard shortcuts for tabs in code editor
+    * Use Alt-Tab and Alt-Shift-Tab to cycle trough tabs
+    * Auto enable realtime collaboration when more than one active collaborators
+    * Keyboard navigation in terminal (alt+left/right, fn+left/right)
+    * Fix Copy/Paste to and from terminals for windows
+    * List open files on top of workspace tree
+    * Fix addons manager invalid http request and use of cache
+    * Fix error handling for addons at boot
+    * Fix files permissions by setting umask for vfs to 0755
+    * Fix box logout when git auto-login is on
+    * Open release notes after every updates
+
 2014-01-25  Aaron O'Mullan <aaron.omullan@friendco.de>
 
     * Bump version to 0.4.16
