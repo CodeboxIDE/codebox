@@ -10,7 +10,7 @@
             "project"
         ],
         "consumes": [
-            "workspace", "project_detect"
+            "workspace"
         ]
     }
 }

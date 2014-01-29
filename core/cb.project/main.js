@@ -5,11 +5,24 @@ var _ = require('underscore');
 var path = require('path');
 var utils = require('../utils');
 
-var Project = require('./project').Project;
+var ProjectType = require('./project').ProjectType;
 
-// Supported project ids
+// Supported project types
 var SUPPORTED = [
-    require("./nodejs")
+    require("./nodejs"),
+    require("./go"),
+    require("./d"),
+    require("./clojure"),
+    require("./gradle"),
+    require("./grails"),
+    require("./java"),
+    require("./logo"),
+    require("./php"),
+    require("./play"),
+    require("./python"),
+    require("./ruby"),
+    require("./scala"),
+    require("./static")
 ];
 
 // Returns true if lang is supported otherwise false
@@ -20,7 +33,6 @@ function supports(projectDir, projectType) {
     }
 
     // Detection script
-    console.log("run ", projectType.detector, projectDir);
     return utils.execFile(projectType.detector, [projectDir])
     .then(
         utils.constant(true),
@@ -53,7 +65,7 @@ var detectProjects = function(workspace) {
     return detectProjectTypes(workspace.root).then(function(_types) {
         if (!_.size(_types)) return Q.reject(new Error("No project detected for this workspace"));
         return _.map(_types, function(_type) {
-            return new Project(workspace, _type);
+            return new ProjectType(workspace, _type);
         });
     })
 };
@@ -71,10 +83,7 @@ function setup(options, imports, register) {
     register(null, {
         "project": {
             // Return project associated with this workspace
-            detect: detect,
-
-            // List of supported types
-            SUPPORTED: SUPPORTED
+            detect: detect
         }
     });
 }

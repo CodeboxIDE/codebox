@@ -34,7 +34,7 @@ BoxRPCService.prototype.ping = function(args, meta) {
 
 BoxRPCService.prototype.detect = function(args, meta) {
     return this.project.detect().then(function(project) {
-        return project.type.id;
+        return project.id;
     });
 };
 

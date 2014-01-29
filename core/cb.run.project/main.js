@@ -9,7 +9,7 @@ function setup(options, imports, register) {
         imports.workspace,
         imports.shells,
         imports.run_ports,
-        imports.project_detect,
+        imports.project,
         options.urlPattern
     );
 
