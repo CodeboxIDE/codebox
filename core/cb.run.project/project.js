@@ -126,7 +126,7 @@ ProjectRunner.prototype.run = function() {
     // Check if project has a specific type
     return this.detect()
     .then(function(projectType) {
-        if (!projectType.runner) return Q.reject('No runner for project: '+projectType.id);
+        if (!projectType.runner) return Q.reject(new Error('No runner for project: '+projectType.id));
         return projectType;
     })
     .then(function(projectType) {
