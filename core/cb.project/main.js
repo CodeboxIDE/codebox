@@ -9,15 +9,15 @@ var ProjectType = require('./project').ProjectType;
 
 // Supported project types
 var SUPPORTED = [
-    require("./nodejs"),
-    require("./go"),
     require("./d"),
+    require("./go"),
     require("./clojure"),
     require("./gradle"),
     require("./grails"),
     require("./java"),
     require("./logo"),
     require("./php"),
+    require("./nodejs"),
     require("./play"),
     require("./python"),
     require("./ruby"),
