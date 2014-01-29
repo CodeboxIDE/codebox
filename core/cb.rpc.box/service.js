@@ -5,8 +5,11 @@ var fs = require('fs');
 var path = require('path');
 var pkg = require('../../package.json');
 
-function BoxRPCService(workspace) {
+function BoxRPCService(workspace, project) {
     this.workspace = workspace;
+    this.project = project;
+
+    console.log(this.project);
 
     _.bindAll(this);
 }
@@ -26,6 +29,12 @@ BoxRPCService.prototype.status = function(args, meta) {
 BoxRPCService.prototype.ping = function(args, meta) {
     return Q({
         'ping': true
+    });
+};
+
+BoxRPCService.prototype.detect = function(args, meta) {
+    return this.project.detect().then(function(project) {
+        return project.type.id;
     });
 };
 

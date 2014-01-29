@@ -1,15 +1,16 @@
 {
-    "name": "cb.rpc.status",
+    "name": "cb.project",
     "version": "0.0.1",
 
     "main": "./main.js",
     "private": true,
 
     "plugin": {
-        "consumes": [
-            "rpc",
-            "workspace",
+        "provides": [
             "project"
+        ],
+        "consumes": [
+            "workspace", "project_detect"
         ]
     }
 }
