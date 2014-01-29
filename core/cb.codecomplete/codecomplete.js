@@ -104,13 +104,17 @@ CodeComplete.prototype.get = function(options) {
 
     options = _.defaults({}, options || {}, {
         // Filter name with query
-        'query': null,
+        'query': "",
 
         // Filter filepath with file
         'file': null
     });
 
     var results = [];
+
+    if (!options.query) {
+        return Q.reject(new Error("Cannot get codecomplete results with not query"));
+    }
 
     // Get all results from all the handlers
     return Q.allSettled(_.map(this.handlers, function(handler, i) {
