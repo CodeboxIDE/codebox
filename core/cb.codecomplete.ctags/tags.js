@@ -7,7 +7,10 @@ var exec = require("../utils").exec;
 
 
 var execCTags = function(folder, output) {
-    return exec('ctags -f '+output+' -R '+folder);
+    return exec(
+        'find '+folder+' | grep -v "/node_modules/" | grep -v "/\\.git/" | ' +
+         'ctags --filter > '+output
+    );
 };
 
 var getTags = function(folder) {
