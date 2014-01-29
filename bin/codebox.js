@@ -98,6 +98,8 @@ cli.command('run [folder]')
 });
 
 cli.on('--help', function(){
+    console.log('  Version: %s', pkg.version);
+    console.log('');
     console.log('  Examples:');
     console.log('');
     console.log('    $ codebox run');
