@@ -8,7 +8,9 @@ var utils = require('../utils');
 var ProjectType = require('./project').ProjectType;
 
 // Supported project types
+// This list is ordered
 var SUPPORTED = [
+    require("./procfile"),
     require("./d"),
     require("./go"),
     require("./clojure"),
@@ -60,18 +62,17 @@ var detectProjectTypes = function(projectDir) {
     .fail(utils.constant([null]));
 };
 
-// Return list of projects associated to a workspace
-var detectProjects = function(workspace) {
+
+// Merge into one project type
+var detectProject = function(workspace) {
     return detectProjectTypes(workspace.root).then(function(_types) {
         if (!_.size(_types)) return Q.reject(new Error("No project detected for this workspace"));
-        return _.map(_types, function(_type) {
-            return new ProjectType(workspace, _type);
-        });
-    })
-};
 
-var detectProject = function(workspace) {
-    return detectProjects(workspace).get(0);
+        var project = new ProjectType(workspace);
+
+        _.each(_types.reverse(), project.merge, project);
+        return project;
+    })
 };
 
 

@@ -5,7 +5,41 @@ var utils = require('../utils');
 
 function ProjectType(workspace, type) {
     this.workspace = workspace;
-    _.extend(this, type, {
+    
+    // Unique project type id
+    this.id = null;
+
+    // Name associated to the project type
+    this.name = null;
+
+    // List of run and build scripts
+    this.runner = [];
+
+    // List of merged project types id
+    this.types = [];
+
+    // Rules of files to ignore
+    this.ignoreRules = [];
+
+    // List of files with rules
+    this.ignoreRulesFiles = [
+        ".ignore",
+        ".gitignore"
+    ];
+
+    if (type) this.mergeType(type);
+
+    _.bindAll(this);
+};
+
+/*
+ *  Merge a new project type
+ */
+ProjectType.prototype.merge = function(type) {
+    type = _.defaults({}, type, {
+
+        // Runner list
+        runner: [],
 
         // Rules of glob to ignore
         ignoreRules: [],
@@ -14,13 +48,54 @@ function ProjectType(workspace, type) {
         ignoreRulesFiles: []
     });
 
-    // Add .gitignore
-    this.ignoreRulesFiles = this.ignoreRulesFiles.concat([
-        ".ignore",
-        ".gitignore"
-    ]);
+    // First type merged define the project name
+    if (!this.id) {
+        this.id = type.id;
+        this.name = type.name;
+    }
 
-    _.bindAll(this);
+    // Add Runner
+    this.runner = _.chain(this.runner)
+        .concat(
+            _.map(type.runner, function(runner) {
+                if (!runner.script || !runner.id) return null;
+                var _id =type.id+":"+runner.id;
+                return {
+                    'id': _id,
+                    'script': runner.script,
+                    'name': runner.name || _id,
+                    'score': runner.score || 1,
+                    'type': runner.type || "run"
+                };
+            })
+        )
+        .compact()
+        .sortBy(function(runner) {
+            return -runner.score;
+        })
+        .value();
+
+    // Ignore rules
+    this.ignoreRules = this.ignoreRules.concat(type.ignoreRules);
+
+    // Ignore rules file
+    this.ignoreRulesFiles = this.ignoreRulesFiles.concat(type.ignoreRulesFiles);
+
+    this.types.push(type.id);
+};
+
+/*
+ *  Return a representation for this project type
+ */
+ProjectType.prototype.reprData = function() {
+    return {
+        'id': this.id,
+        'name': this.name,
+        'types': this.types,
+        'runner': this.runner,
+        'ignoreRules': this.ignoreRules,
+        'ignoreRulesFiles': this.ignoreRulesFiles
+    };
 };
 
 /*
@@ -28,7 +103,29 @@ function ProjectType(workspace, type) {
  */
 ProjectType.prototype.getIgnoreRules = function() {
     // todo: read this.ignoreRulesFiles
-    return Q(this.ignoreRules)
+    return Q(this.ignoreRules);
+};
+
+/*
+ *  Return run script
+ */
+ProjectType.prototype.getRunner = function(options) {
+    options = _.defaults({}, options, {
+        // Filter runner by name
+        'name': null,
+
+        // Filter type
+        'type': null
+    });
+
+    return _.chain(this.runner)
+    .filter(function(runner) {
+        if (options.name && options.name != runner.name) return false; 
+        if (options.type && options.type != runner.type) return false;
+        return true;
+    })
+    .first()
+    .value();
 };
 
 

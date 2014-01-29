@@ -41,17 +41,17 @@ ProjectRunner.prototype.portId = function(projectTypeId) {
     return [this.id, projectTypeId].join('-');
 };
 
-ProjectRunner.prototype.runScript = function(projectType, port) {
+ProjectRunner.prototype.runScript = function(runner, port) {
     var self = this;
 
     // Id of our shell
-    var shellId = this.shellId(projectType.id, port);
+    var shellId = this.shellId(runner.id, port);
 
     // Spawn the new shell
     return this.shells.createShellCommand(
         shellId, [
             // Script itself
-            projectType.runner,
+            runner.script,
 
             // Path to project folder
             this.workspace.root,
@@ -66,26 +66,26 @@ ProjectRunner.prototype.runScript = function(projectType, port) {
         }, process.env)
     }).then(function(shell) {
         // Id of our harbor port (to release)
-        var portId = self.portId(projectType.id);
+        var portId = self.portId(runner.id);
 
         // Register project
-        self.projects[projectType.id] = shellId;
+        self.projects[runner.id] = shellId;
 
         // Free port on shell exit
         self.shells.shells[shellId].ps.once('exit', function() {
             self.run_ports.release(portId);
             // Delete the project
-            delete self.projects[projectType.id];
+            delete self.projects[runner.id];
         });
 
         // Emit event
         self.events.emit("run.project", {
-            type: projectType.id
+            type: runner.id
         });
 
         return {
             shellId: shellId,
-            type: projectType.id,
+            type: runner.id,
             port: port,
             url: self.getUrl(port)
         };
@@ -120,24 +120,26 @@ ProjectRunner.prototype.killProject = function(projectTypeId) {
     return d.promise;
 };
 
-ProjectRunner.prototype.run = function() {
+ProjectRunner.prototype.run = function(options) {
     var self = this;
+    var runner = null;
 
     // Check if project has a specific type
     return this.detect()
     .then(function(projectType) {
-        if (!projectType.runner) return Q.reject(new Error('No runner for project: '+projectType.id));
-        return projectType;
+        runner = projectType.getRunner(options);
+        if (!runner) return Q.reject(new Error('No runner for project: '+projectType.id));
+        return runner;
     })
-    .then(function(projectType) {
-        if(!self.projects[projectType.id]) return projectType;
+    .then(function(runner) {
+        if(!self.projects[runner.id]) return runner;
 
         // Kill the current project to launch a new one
-        return self.killProject(projectType.id)
-        .then(utils.constant(projectType));
+        return self.killProject(runner.id)
+        .then(utils.constant(runner));
     })
-    .then(function(projectType) {
-        var portId = self.portId(projectType.id);
+    .then(function(runner) {
+        var portId = self.portId(runner.id);
 
         if(self.isRunning(portId)) {
             var _port = self.run_ports.ports[portId];
@@ -147,15 +149,15 @@ ProjectRunner.prototype.run = function() {
         // Now that we have the type, claim a port
         // then run the script
         return Q.all([
-            projectType,
+            runner,
 
             // Get a new port
             self.run_ports.claim(portId)
         ])
-        .spread(function(projectType, port) {
+        .spread(function(runner, port) {
             // Run the script in a new shell and return
             // a object describing the run
-            return self.runScript(projectType, port);
+            return self.runScript(runner, port);
         });
     });
 };

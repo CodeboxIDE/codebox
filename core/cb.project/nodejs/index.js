@@ -5,7 +5,12 @@ module.exports = {
     name: "Node.JS",
 
     detector: path.resolve(__dirname, "detector.sh"),
-    runner: path.resolve(__dirname, "run.sh"),
+    runner: [
+        {
+            id: "run",
+            script: path.resolve(__dirname, "run.sh")
+        }
+    ],
 
     ignoreRules: [
         "/node_modules"

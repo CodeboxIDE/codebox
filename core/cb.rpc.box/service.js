@@ -7,7 +7,7 @@ var pkg = require('../../package.json');
 
 function BoxRPCService(workspace, project) {
     this.workspace = workspace;
-    this.project = project;
+    this.projectDetector = project;
 
     console.log(this.project);
 
@@ -32,9 +32,9 @@ BoxRPCService.prototype.ping = function(args, meta) {
     });
 };
 
-BoxRPCService.prototype.detect = function(args, meta) {
-    return this.project.detect().then(function(project) {
-        return project.id;
+BoxRPCService.prototype.project = function(args, meta) {
+    return this.projectDetector.detect().then(function(project) {
+        return project.reprData();
     });
 };
 
