@@ -8,8 +8,8 @@ var exec = require("../utils").exec;
 
 var execCTags = function(folder, output) {
     return exec(
-        'find '+folder+' | grep -v "/node_modules/" | grep -v "/\\.git/" | ' +
-         'ctags --filter > '+output
+        '((git ls-files ; git ls-files --others --exclude-standard) || find . -type f) | ' +
+        'ctags --filter > '+output
     );
 };
 
