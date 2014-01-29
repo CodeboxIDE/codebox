@@ -662,7 +662,7 @@ define([
                 operations.start("files.upload", function(op) {
                     return uploader.upload(e.currentTarget.files).progress(function(p) {
                         that.trigger("uploadProgress", p);
-                        op.progress(p);
+                        op.progress(p.percent);
                     }).fin(function() {
                         $f.remove();
                     });
