@@ -22,7 +22,9 @@ function setup(options, imports, register) {
     };
 
     // Create codecomplete index
-    codecomplete.addIndex("ctags", populate)
+    codecomplete.addIndex("ctags", populate, {
+        interval: 10*60*1000
+    })
 
     register(null, {});
 }
