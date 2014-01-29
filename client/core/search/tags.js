@@ -22,8 +22,8 @@ define([
     }, function(query) {
         return rpc.execute("codecomplete/get", {
             'query': query
-        }).then(function(results) {
-            return _.map(results, normalizeTag);
+        }).then(function(data) {
+            return _.map(data.results, normalizeTag);
         });
     });
 });

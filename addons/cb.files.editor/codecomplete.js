@@ -19,8 +19,8 @@ define([
 
             rpc.execute("codecomplete/get", {
                 'query': prefix
-            }).then(function(results) {
-                callback(null, _.map(results, normalizeTag));
+            }).then(function(data) {
+                callback(null, _.map(data.results, normalizeTag));
             }, function(err) {
                 callback(err);
             });
