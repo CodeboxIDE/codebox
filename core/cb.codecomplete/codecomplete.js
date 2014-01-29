@@ -7,10 +7,10 @@ var utils = require('../utils');
 function CodeComplete(events, workspace) {
     this.events = events;
     this.workspace = workspace;
-    this.handlers = {};
+    this.handlers = [];
 
     _.bindAll(this);
-}
+};
 
 /*
  *  Add a handler for codecompletion
@@ -25,10 +25,16 @@ function CodeComplete(events, workspace) {
  *  }
  */
 CodeComplete.prototype.addHandler = function(name, handler) {
-    if (this.handlers[name]) {
+    var _handler = _.find(this.handlers, function(h) {
+        return h.name == name;
+    })
+    if (_handler) {
         return Q.reject(new Error("Handler already exists"));
     }
-    this.handlers[name] = handler;
+    this.handlers.push({
+        'name': name,
+        'handler': handler
+    });
     return Q();
 }
 
@@ -41,20 +47,27 @@ CodeComplete.prototype.addHandler = function(name, handler) {
 CodeComplete.prototype.addIndex = function(name, populate, options) {
     var that = this;
     var index = null;
+    var _isPopulating = false;
 
     options = _.defaults({}, options || {}, {
         'interval': 1*60*1000 // 1 minute
     })
 
     var populateIndex = function() {
+        if (_isPopulating) {
+            return Q.reject(new Error(name+": Already working on populating the index"));
+        }
+        _isPopulating = true;
         return Q(populate({
             'root': that.workspace.root
         })).then(function(items) {
             index = items;
         }, function(err) {
             index = null;
-            console.log("index failed: ", err);
-        });
+            return Q.reject(err);
+        }).fin(function() {
+            _isPopulating = false;
+        })
     };
 
     // Populate the index when there are changes
@@ -87,6 +100,8 @@ CodeComplete.prototype.addIndex = function(name, populate, options) {
  *  Option can be used to filter by file, query, ...
  */
 CodeComplete.prototype.get = function(options) {
+    var that = this;
+
     options = _.defaults({}, options || {}, {
         // Filter name with query
         'query': null,
@@ -98,12 +113,13 @@ CodeComplete.prototype.get = function(options) {
     var results = [];
 
     // Get all results from all the handlers
-    return Q.all(_.map(this.handlers, function(handler, name) {
-        return Q(handler(options, name)).then(function(_results) {
+    return Q.allSettled(_.map(this.handlers, function(handler, i) {
+        return Q(handler.handler(options, handler.name)).then(function(_results) {
             results = results.concat(_results);
         });
-    })).then(function() {
-        return _.chain(results)
+    })).then(function(handlerStates) {
+
+        results = _.chain(results)
         // Filter results
         .filter(function(result) {
             // Check format
@@ -126,6 +142,20 @@ CodeComplete.prototype.get = function(options) {
             return result.score;
         })
         .value();
+
+        return {
+            // List of results
+            'results': results,
+
+            // State of handlers
+            'handlers': _.map(that.handlers, function(handler, i) {
+                return {
+                    'handler': handler.name,
+                    'state': handlerStates[i].state,
+                    'error': handlerStates[i].reason ? handlerStates[i].reason.message : undefined
+                };
+            })
+        };
     })
 }
 
