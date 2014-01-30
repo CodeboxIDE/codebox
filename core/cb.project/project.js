@@ -1,19 +1,22 @@
 var Q = require('q');
 var _ = require('underscore');
+
+var os = require('os');
 var path = require('path');
+
 var utils = require('../utils');
 
 function ProjectType(workspace, events, logger) {
     this.workspace = workspace;
     this.events = events;
     this.logger = logger;
-    
+
     this.clear();
 
     _.bindAll(this);
 
      this.logger.log("project is ready");
-};
+}
 
 /*
  *  Clear project informations
@@ -138,26 +141,20 @@ ProjectType.prototype.reprData = function() {
 };
 
 /*
- *  Return a list of all ignored directories
+ *  Return a list of all workspace files
+ *  that are not ignored by git ...
  */
 ProjectType.prototype.getValidFiles = function() {
-    var Ignore = require("fstream-ignore");
-    var d = Q.defer();
-    var results = [];
-
-    var ig = Ignore({
-        path: this.workspace.root,
-        ignoreFiles: [".ignore", ".gitignore"]
+    return utils.exec(
+        '((git ls-files ; git ls-files --others --exclude-standard) || find . -type f)',
+        {
+            cwd: this.workspace.root
+        }
+    )
+    .get('stdout')
+    .then(function(stdout) {
+        return stdout.split(os.EOL);
     });
-    ig.addIgnoreRules(this.ignoreRules);
-    ig.on("child", function (c) {
-        results.push(c.path.substr(c.root.path.length + 1));
-    }).on("end", function() {
-        d.resolve(results);
-    }).on("error", function(err) {
-        d.reject(err);
-    })
-    return d.promise;
 };
 
 /*
@@ -177,10 +174,10 @@ ProjectType.prototype.getRunner = function(options) {
 
     var c = _.chain(this.runner)
     .filter(function(runner) {
-        if (options.id && options.id != runner.id) return false; 
+        if (options.id && options.id != runner.id) return false;
         if (options.type && options.type != runner.type) return false;
         return true;
-    }); 
+    });
 
     if (options.pick) c = c.first();
 
