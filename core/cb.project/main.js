@@ -97,7 +97,13 @@ function setup(options, imports, register) {
     events.on("watch.watching.success", throttled);
 
     register(null, {
-        "project": project
+        "project": project,
+        "projectTypes": {
+            'add': function addProjectType(module) {
+                SUPPORTED.push(module);
+                return project.detect();
+            }
+        }
     });
 }
 

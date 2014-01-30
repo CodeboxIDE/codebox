@@ -7,7 +7,7 @@
 
     "plugin": {
         "provides": [
-            "project"
+            "project", "projectTypes"
         ],
         "consumes": [
             "workspace",
