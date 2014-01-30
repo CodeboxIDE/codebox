@@ -12,8 +12,8 @@ define([
     var Command = codebox.require("models/command");
 
     // Add menu
-    menu.register("run", {
-        title: "Run"
+    menu.register("project", {
+        title: "Project"
     }).menuSection([
         runner.command
     ]).menuSection([

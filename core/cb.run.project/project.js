@@ -22,9 +22,9 @@ function ProjectRunner(events, workspace, shells, run_ports, project, urlPattern
     this.urlPattern = urlPattern;
 
     // Map
-    // projectType => shellId
+    // runnerId => shellId
     this.projects = {
-        //'php': 'project-php-2000-xyz'
+        //'php:run': 'project-php-2000-xyz'
     };
 
     // Self incrimenting unique id
@@ -33,12 +33,12 @@ function ProjectRunner(events, workspace, shells, run_ports, project, urlPattern
     _.bindAll(this);
 }
 
-ProjectRunner.prototype.shellId = function(projectTypeId, port) {
-    return [this.id, projectTypeId, port, this.projectCount++].join('-');
+ProjectRunner.prototype.shellId = function(runnerId, port) {
+    return [this.id, runnerId, port, this.projectCount++].join('-');
 };
 
-ProjectRunner.prototype.portId = function(projectTypeId) {
-    return [this.id, projectTypeId].join('-');
+ProjectRunner.prototype.portId = function(runnerId) {
+    return [this.id, runnerId].join('-');
 };
 
 ProjectRunner.prototype.runScript = function(runner, port) {
@@ -84,8 +84,10 @@ ProjectRunner.prototype.runScript = function(runner, port) {
         });
 
         return {
+            id: runner.id,
+            name: runner.name,
             shellId: shellId,
-            type: runner.id,
+            type: runner.type,
             port: port,
             url: self.getUrl(port)
         };
@@ -104,13 +106,13 @@ ProjectRunner.prototype.getUrl = function(port) {
     return this.urlPattern.replace("%d", port);
 };
 
-ProjectRunner.prototype.killProject = function(projectTypeId) {
+ProjectRunner.prototype.killProject = function(runnerId) {
     var d = Q.defer();
 
-    var shellId = this.projects[projectTypeId];
+    var shellId = this.projects[runnerId];
     var shell = shellId ? this.shells.shells[shellId] : null;
     if(!shellId || !shell) {
-        return Q.reject('No project shell to kill for: '+projectTypeId);
+        return Q.reject('No project shell to kill for: '+runnerId);
     }
 
     shell.ps.once('exit', d.resolve);

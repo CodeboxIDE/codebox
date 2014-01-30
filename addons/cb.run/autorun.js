@@ -9,9 +9,16 @@ define([
     var alerts = codebox.require("utils/alerts");
     var Command = codebox.require("models/command");
 
+    // Map type -> icon
+    var typeIcons = {
+        'run': "fa-play",
+        'build': "fa-cog fa-spin",
+        'clean': "fa-eraser"
+    };
+
     // Run command
     var runCommand = commands.register("run.workspace", {
-        title: "Run Project",
+        title: "Run",
         icon: "play",
         offline: false,
         position: 1,
@@ -19,10 +26,11 @@ define([
             "alt+r"
         ]
     }, function(options) {
+        options = options || {};
         return box.run(options).then(function(runInfo) {
-            var op = operations.start("project.run", null, {
-                'title': "Project running on port "+runInfo.port,
-                'icon': "fa-play",
+            var op = operations.start("project.run."+runInfo.shellId, null, {
+                'title': runInfo.name+" running on port "+runInfo.port,
+                'icon':  typeIcons[runInfo.type] || "fa-play",
                 'action': function() {
                     // Open the url
                     window.open(runInfo.url);
