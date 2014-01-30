@@ -53,6 +53,11 @@ define([
         ports.command
     ]);
 
+    // Auto-updates
+    box.on("box:project:define", function() {
+        runner.update();
+    });
+
     // Updates list
     runner.update();
     ports.update();
