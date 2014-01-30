@@ -195,6 +195,13 @@ menu.append(new gui.MenuItem({
         updateCodeboxIOAccount();
     }
 }));
+menu.append(new gui.MenuItem({
+    label: 'Reset data',
+    click: function() {
+        localStorage.clear();
+        updateProjects();
+    }
+}));
 menu.append(new gui.MenuItem({ type: 'separator' }));
 menu.append(new gui.MenuItem({
     label: 'Quit',
@@ -207,7 +214,7 @@ menu.append(new gui.MenuItem({
 $directorySelector.change(function handleFileSelect(evt) {
     var path = $(this).val();
     addProject(path);
-    runCodebox(path);
+    runLocalCodebox(path);
 });
 $btnOpen.click(function(e) {
     e.preventDefault();
@@ -232,12 +239,6 @@ window.onload = function() {
     // Show then focus
     win.show();
     win.focus();
-
-    // Open files
-    gui.App.on('open', function(path) {
-        addProject(path);
-        runCodebox(path);
-    });
 
     // Start
     !updateRemote();
