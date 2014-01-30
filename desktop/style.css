@@ -85,14 +85,18 @@ body {
     display: block;
 }
 
-#open-new {
+#footer {
     position: fixed;
     bottom: 0px;
     right: 0px;
     left: 0px;
+    text-align: center;
+}
+
+#footer .btn {
     margin: 10px;
-    display: block;
-    padding: 12px 50px;
+    display: inline-block;
+    padding: 12px 10px;
     text-align: center;
     font-size: 30px;
     line-height: 30px;
@@ -104,4 +108,12 @@ body {
     text-decoration: none;
     font-weight: bold;
     color: #555;
+}
+
+#footer #open-new {
+    width: 62%;
+}
+
+#footer #open-menu {
+    width: 20%;
 }
