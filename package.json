@@ -44,7 +44,8 @@
         "qpatch": "0.0.3",
         "ctags": "0.8.0",
         "connect-gzip-static": "0.1.1",
-        "minimatch": "0.2.14"
+        "minimatch": "0.2.14",
+        "codebox-io": "0.3.1"
     },
     "devDependencies": {
         "grunt-node-webkit-builder": "0.1.16",

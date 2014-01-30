@@ -4,9 +4,21 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
+        <!-- Folder selector -->
         <input style="display:none;" type="file" nwdirectory id="directory-selector"/>
-        <ul id="projects"></ul>
-        <a href="#" id="open-new">+</a>
+
+        <div id="body">
+            <div class="alert" style="display:none;">Connect your <b>CodeboxIO</b> account to open your cloud boxes from this application.</div>
+
+            <!-- List of projects -->
+            <ul id="projects"></ul>
+        </div>
+
+        <!-- Footer -->
+        <div id="footer">
+            <a href="#" class="btn" id="open-new">+</a>
+            <a href="#" class="btn" id="open-menu">...</a>
+        </div>
     </body>
     <script src="./jquery.js"></script>
     <script src="./main.js"></script>

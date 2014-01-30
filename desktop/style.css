@@ -12,17 +12,32 @@ body {
     padding: 0px;
 }
 
-#projects {
+/* Body */
+#body {
     position: fixed;
     top: 0px;
     bottom: 76px;
     right: 0px;
     left: 0px;
     padding: 5px 10px;
-    list-style: none;
     overflow-y: auto;
     background: #EDEDED;
     border-bottom: 1px solid #959595;
+}
+
+/* Alert */
+.alert {
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+    border: 1px solid #eadbbc;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+/* List of projects */
+#projects {
+    list-style: none;
 }
 #projects .empty-message {
     text-transform: uppercase;;
@@ -34,7 +49,6 @@ body {
 
 #projects .project {
     display: block;
-    float: left;
     background: #f5f5f5;
     box-shadow: 0px 1px #fff inset;
     border: 1px solid #ccc;
@@ -61,16 +75,28 @@ body {
 #projects .project .project-icon {
     float: left;
     margin: 9px 10px 0px 2px;
+    width: 32px;
+    -webkit-filter: grayscale(1);
+}
+#projects hr {
+    margin: 20px 10px;
+    border: 0px;
+    border-bottom: 1px solid #d8d8d8;
+    display: block;
 }
 
-#open-new {
+#footer {
     position: fixed;
     bottom: 0px;
     right: 0px;
     left: 0px;
+    text-align: center;
+}
+
+#footer .btn {
     margin: 10px;
-    display: block;
-    padding: 12px 50px;
+    display: inline-block;
+    padding: 12px 10px;
     text-align: center;
     font-size: 30px;
     line-height: 30px;
@@ -82,4 +108,12 @@ body {
     text-decoration: none;
     font-weight: bold;
     color: #555;
+}
+
+#footer #open-new {
+    width: 62%;
+}
+
+#footer #open-menu {
+    width: 20%;
 }
