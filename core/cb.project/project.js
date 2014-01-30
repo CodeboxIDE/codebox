@@ -138,8 +138,8 @@ ProjectType.prototype.getIgnoreRules = function() {
  */
 ProjectType.prototype.getRunner = function(options) {
     options = _.defaults({}, options, {
-        // Filter runner by name
-        'name': null,
+        // Filter runner by id
+        'id': null,
 
         // Filter type
         'type': null,
@@ -150,7 +150,7 @@ ProjectType.prototype.getRunner = function(options) {
 
     var c = _.chain(this.runner)
     .filter(function(runner) {
-        if (options.name && options.name != runner.name) return false; 
+        if (options.id && options.id != runner.id) return false; 
         if (options.type && options.type != runner.type) return false;
         return true;
     }); 

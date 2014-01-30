@@ -258,10 +258,17 @@ define([
         },
 
         /*
+         * Get a runner
+         */
+        runner: function(options) {
+            return rpc.execute("run/list", options);
+        },
+
+        /*
          * Run the project
          */
-        run: function() {
-            return rpc.execute("run/project").then(function(runInfos) {
+        run: function(options) {
+            return rpc.execute("run/project", options).then(function(runInfos) {
                 runInfos.terminal = Command.run("terminal.open", runInfos.shellId);
                 return Q(runInfos);
             });

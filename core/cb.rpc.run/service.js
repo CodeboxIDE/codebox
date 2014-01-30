@@ -7,7 +7,7 @@ var path = require('path');
 
 function RunRPCService(workspace, run_file, run_project, run_ports, project) {
     this.workspace = workspace;
-    this.project = project;
+    this.projectType = project;
 
     this.run_file = run_file;
     this.run_project = run_project;
@@ -17,7 +17,7 @@ function RunRPCService(workspace, run_file, run_project, run_ports, project) {
 }
 
 RunRPCService.prototype.project = function(args, meta) {
-    return Q(this.run_project.run());
+    return Q(this.run_project.run(args));
 };
 
 RunRPCService.prototype.file = function(args, meta) {
@@ -37,7 +37,7 @@ RunRPCService.prototype.ports = function(args, meta) {
 };
 
 RunRPCService.prototype.list = function(args, meta) {
-    return this.project.detect().then(function(project) {
+    return this.projectType.detect().then(function(project) {
         return project.getRunner(args);
     })
 };
