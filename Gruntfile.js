@@ -260,6 +260,7 @@ module.exports = function (grunt) {
     // Build tmp directory
     grunt.registerTask('tmp', [
         'build',
+        'clean:tmp',
         'copy:tmp',
         'compress:tmp'
     ]);
@@ -273,6 +274,14 @@ module.exports = function (grunt) {
         'clean:tmp'
     ]);
 
+    // Desktop app test
+    grunt.registerTask('testApps', [
+        'tmp',
+        'copy:desktopPKG',
+        'shell:nwbuild'
+    ]);
+
+    // Publish to NPM
     grunt.registerTask('publish', [
         'tmp',
         'shell:publish',
