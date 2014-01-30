@@ -45,6 +45,8 @@ ProjectType.prototype.clear = function() {
  *  Merge a new project type
  */
 ProjectType.prototype.merge = function(type) {
+    var that = this;
+
     type = _.defaults({}, type, {
 
         // Runner list
@@ -63,10 +65,13 @@ ProjectType.prototype.merge = function(type) {
         this.name = type.name;
     }
 
-    // Add Runner
-    this.runner = _.chain(this.runner)
+    return Q().then(function() {
+        return Q(_.result(type, 'runner'));
+    }).then(function(_runner) {
+        // Add runner
+        that.runner = _.chain(that.runner)
         .concat(
-            _.map(type.runner, function(runner) {
+            _.map(_runner, function(runner) {
                 if (!runner.script || !runner.id) return null;
                 var _id =type.id+":"+runner.id;
                 return {
@@ -83,32 +88,36 @@ ProjectType.prototype.merge = function(type) {
             return -runner.score;
         })
         .value();
+    }).then(function() {
+        // Ignore rules
+        that.ignoreRules = that.ignoreRules.concat(type.ignoreRules);
 
-    // Ignore rules
-    this.ignoreRules = this.ignoreRules.concat(type.ignoreRules);
+        // Ignore rules file
+        that.ignoreRulesFiles = that.ignoreRulesFiles.concat(type.ignoreRulesFiles);
 
-    // Ignore rules file
-    this.ignoreRulesFiles = this.ignoreRulesFiles.concat(type.ignoreRulesFiles);
-
-    this.types.push(type.id);
+        that.types.push(type.id);
+    });
 };
 
 /*
  *  Define a project
  */
 ProjectType.prototype.define = function(types) {
-    var typeIds;
+    var typeIds, that = this;
 
     // Clear current infos
     this.clear();
 
     // Merge new infos
-    _.each(types.reverse(), this.merge, this);
-
-    // Signal
-    typeIds = _.pluck(types, "id");
-    this.logger.log("define", typeIds);
-    this.events.emit('project.define', typeIds);
+    return _.reduce(types.reverse(), function(prev, type) {
+        return prev.then(function() {
+            return that.merge(type);
+        });
+    }, Q()).then(function() {
+        typeIds = _.pluck(types, "id");
+        that.logger.log("define", typeIds);
+        that.events.emit('project.define', typeIds);
+    });
 };
 
 /*
