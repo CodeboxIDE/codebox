@@ -10,7 +10,9 @@
             "project"
         ],
         "consumes": [
-            "workspace"
+            "workspace",
+            "events",
+            "logger"
         ]
     }
 }

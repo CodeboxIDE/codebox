@@ -10,6 +10,7 @@ var ProjectType = require('./project').ProjectType;
 // Supported project types
 // This list is ordered
 var SUPPORTED = [
+    require("./makefile"),
     require("./procfile"),
     require("./d"),
     require("./go"),
@@ -64,13 +65,10 @@ var detectProjectTypes = function(projectDir) {
 
 
 // Merge into one project type
-var detectProject = function(workspace) {
+var detectProject = function(workspace, project) {
     return detectProjectTypes(workspace.root).then(function(_types) {
+        project.define(_types);
         if (!_.size(_types)) return Q.reject(new Error("No project detected for this workspace"));
-
-        var project = new ProjectType(workspace);
-
-        _.each(_types.reverse(), project.merge, project);
         return project;
     })
 };
@@ -78,14 +76,24 @@ var detectProject = function(workspace) {
 
 function setup(options, imports, register) {
     var workspace = imports.workspace;
+    var events = imports.events;
+    var logger = imports.logger.namespace("project");
 
-    var detect = _.partial(detectProject, workspace);
+    // Create the project type
+    var project = new ProjectType(workspace, events, logger);
+
+    // Do the project detection manually
+    project.detect = _.partial(detectProject, workspace, project);
+
+    // Detect the project when the fs change
+    var throttled = _.throttle(project.detect, 5*60*1000);
+    events.on("watch.change.update", throttled);
+    events.on("watch.change.create", throttled);
+    events.on("watch.change.delete", throttled);
+    events.on("watch.watching.success", throttled);
 
     register(null, {
-        "project": {
-            // Return project associated with this workspace
-            detect: detect
-        }
+        "project": project
     });
 }
 

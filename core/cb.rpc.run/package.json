@@ -10,6 +10,7 @@
         "consumes": [
             "rpc",
             "workspace",
+            "project",
 
             "run_file",
             "run_project",

@@ -5,8 +5,9 @@ var _ = require('underscore');
 var path = require('path');
 
 
-function RunRPCService(workspace, run_file, run_project, run_ports) {
+function RunRPCService(workspace, run_file, run_project, run_ports, project) {
     this.workspace = workspace;
+    this.project = project;
 
     this.run_file = run_file;
     this.run_project = run_project;
@@ -33,6 +34,10 @@ RunRPCService.prototype.file = function(args, meta) {
 
 RunRPCService.prototype.ports = function(args, meta) {
     return Q(this.run_ports.ports);
+};
+
+RunRPCService.prototype.runner = function(args, meta) {
+    return Q(this.project.runner);
 };
 
 // Exports

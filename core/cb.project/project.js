@@ -3,9 +3,22 @@ var _ = require('underscore');
 var path = require('path');
 var utils = require('../utils');
 
-function ProjectType(workspace, type) {
+function ProjectType(workspace, events, logger) {
     this.workspace = workspace;
+    this.events = events;
+    this.logger = logger;
     
+    this.clear();
+
+    _.bindAll(this);
+
+     this.logger.log("project is ready");
+};
+
+/*
+ *  Clear project informations
+ */
+ProjectType.prototype.clear = function() {
     // Unique project type id
     this.id = null;
 
@@ -26,10 +39,6 @@ function ProjectType(workspace, type) {
         ".ignore",
         ".gitignore"
     ];
-
-    if (type) this.mergeType(type);
-
-    _.bindAll(this);
 };
 
 /*
@@ -82,6 +91,24 @@ ProjectType.prototype.merge = function(type) {
     this.ignoreRulesFiles = this.ignoreRulesFiles.concat(type.ignoreRulesFiles);
 
     this.types.push(type.id);
+};
+
+/*
+ *  Define a project
+ */
+ProjectType.prototype.define = function(types) {
+    var typeIds;
+
+    // Clear current infos
+    this.clear();
+
+    // Merge new infos
+    _.each(types.reverse(), this.merge, this);
+
+    // Signal
+    typeIds = _.pluck(types, "id");
+    this.logger.log("define", typeIds);
+    this.events.emit('project.define', typeIds);
 };
 
 /*

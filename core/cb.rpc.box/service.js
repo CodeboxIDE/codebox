@@ -9,8 +9,6 @@ function BoxRPCService(workspace, project) {
     this.workspace = workspace;
     this.projectDetector = project;
 
-    console.log(this.project);
-
     _.bindAll(this);
 }
 
