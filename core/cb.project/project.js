@@ -3,6 +3,7 @@ var _ = require('underscore');
 
 var os = require('os');
 var path = require('path');
+var Minimatch = require("minimatch").Minimatch
 
 var utils = require('../utils');
 
@@ -36,14 +37,8 @@ ProjectType.prototype.clear = function() {
 
     // Rules of files to ignore
     this.ignoreRules = [
-        /^\.git\//,
-        /\.DS_Store$/,
-    ];
-
-    // List of files with rules
-    this.ignoreRulesFiles = [
-        ".ignore",
-        ".gitignore"
+        ".git",
+        ".DS_Store",
     ];
 };
 
@@ -59,10 +54,7 @@ ProjectType.prototype.merge = function(type) {
         runner: [],
 
         // Rules of glob to ignore
-        ignoreRules: [],
-
-        // List of files with rules
-        ignoreRulesFiles: []
+        ignoreRules: []
     });
 
     // First type merged define the project name
@@ -98,9 +90,6 @@ ProjectType.prototype.merge = function(type) {
         // Ignore rules
         that.ignoreRules = that.ignoreRules.concat(type.ignoreRules);
 
-        // Ignore rules file
-        that.ignoreRulesFiles = that.ignoreRulesFiles.concat(type.ignoreRulesFiles);
-
         that.types.push(type.id);
     });
 };
@@ -135,8 +124,7 @@ ProjectType.prototype.reprData = function() {
         'name': this.name,
         'types': this.types,
         'runner': this.runner,
-        'ignoreRules': this.ignoreRules,
-        'ignoreRulesFiles': this.ignoreRulesFiles
+        'ignoreRules': this.ignoreRules
     };
 };
 
@@ -153,7 +141,7 @@ ProjectType.prototype.getBaseFiles = function() {
     )
     .get('stdout')
     .then(function(stdout) {
-        return stdout.split(os.EOL);
+        return _.compact(stdout.split(os.EOL));
     });
 };
 
@@ -161,8 +149,11 @@ ProjectType.prototype.getBaseFiles = function() {
  *  Is a file currently ignored by our 'ignoreRules'
  */
 ProjectType.prototype.isIgnored = function(file) {
+    if (file[0] != "/") file = "/"+file;
+
     return _.any(_.map(this.ignoreRules, function(rule) {
-        return file.match(rule);
+        var mm = new Minimatch(rule, { matchBase: true, dot: true, flipNegate: true })
+        return mm.match(file);
     }));
 };
 
@@ -180,7 +171,9 @@ ProjectType.prototype.filterFiles = function(files) {
  */
 ProjectType.prototype.getValidFiles = function() {
     return this.getBaseFiles()
-    .then(this.filterFiles);
+    .then(this.filterFiles).then(function(files) {
+        return files;
+    });
 };
 
 /*
