@@ -36,8 +36,8 @@ ProjectType.prototype.clear = function() {
 
     // Rules of files to ignore
     this.ignoreRules = [
-        ".git",
-        ".DS_Store"
+        /^\.git\//,
+        /\.DS_Store$/,
     ];
 
     // List of files with rules
@@ -144,7 +144,7 @@ ProjectType.prototype.reprData = function() {
  *  Return a list of all workspace files
  *  that are not ignored by git ...
  */
-ProjectType.prototype.getValidFiles = function() {
+ProjectType.prototype.getBaseFiles = function() {
     return utils.exec(
         '((git ls-files ; git ls-files --others --exclude-standard) || find . -type f)',
         {
@@ -155,6 +155,32 @@ ProjectType.prototype.getValidFiles = function() {
     .then(function(stdout) {
         return stdout.split(os.EOL);
     });
+};
+
+/*
+ *  Is a file currently ignored by our 'ignoreRules'
+ */
+ProjectType.prototype.isIgnored = function(file) {
+    return _.any(_.map(this.ignoreRules, function(rule) {
+        return file.match(rule);
+    }));
+};
+
+ProjectType.prototype.filterFiles = function(files) {
+    var that = this;
+
+    return _.filter(files, function(file) {
+        return !that.isIgnored(file);
+    });
+};
+
+/*
+ *
+ *
+ */
+ProjectType.prototype.getValidFiles = function() {
+    return this.getBaseFiles()
+    .then(this.filterFiles);
 };
 
 /*

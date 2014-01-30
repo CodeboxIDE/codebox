@@ -14,6 +14,6 @@ module.exports = {
     ],
 
     ignoreRules: [
-        "/node_modules"
+        /node_modules\//,
     ]
 };
