@@ -16,7 +16,7 @@
             "shells",
 
             "run_ports",
-            "project_detect"
+            "project"
         ]
     }
 }

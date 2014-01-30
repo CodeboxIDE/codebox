@@ -187,7 +187,7 @@ var start = function(config) {
             "./cb.shells.stream",
 
             // Detect project types
-            "./cb.project.detect",
+            "./cb.project",
 
             // Running code/projects
             {

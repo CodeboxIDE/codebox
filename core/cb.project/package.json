@@ -1,5 +1,5 @@
 {
-    "name": "cb.project.detect",
+    "name": "cb.project",
     "version": "0.0.1",
 
     "main": "./main.js",
@@ -7,10 +7,12 @@
 
     "plugin": {
         "provides": [
-            "project_detect"
+            "project", "projectTypes"
         ],
         "consumes": [
-            "workspace"
+            "workspace",
+            "events",
+            "logger"
         ]
     }
 }

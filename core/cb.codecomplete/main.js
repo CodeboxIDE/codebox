@@ -6,7 +6,8 @@ function setup(options, imports, register) {
     // Construct
     var codecomplete = new CodeComplete(
         imports.events,
-        imports.workspace
+        imports.workspace,
+        imports.project
     );
 
     register(null, {

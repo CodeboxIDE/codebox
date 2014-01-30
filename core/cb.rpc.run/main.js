@@ -10,12 +10,14 @@ function setup(options, imports, register) {
     var run_file = imports.run_file;
     var run_project = imports.run_project;
     var run_ports = imports.run_ports;
+    var project = imports.project;
 
     var service = new RunRPCService(
         workspace,
         run_file,
         run_project,
-        run_ports
+        run_ports,
+        project
     );
 
     // Register RPC

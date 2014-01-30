@@ -8,7 +8,8 @@
     "plugin": {
         "consumes": [
             "rpc",
-            "workspace"
+            "workspace",
+            "project"
         ]
     }
 }
