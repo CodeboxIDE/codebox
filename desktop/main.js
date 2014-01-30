@@ -1,10 +1,11 @@
 // Requires
 var gui = require('nw.gui');
 var path = require('path');
-var CodeboxIO = require('codebox-io').Client;
-
 var Q = require('q');
 var _ = require('underscore');
+var querystring = require("querystring");
+var CodeboxIO = require('codebox-io').Client;
+
 
 // Port allocation
 var qClass = require('qpatch').qClass;
@@ -46,7 +47,10 @@ var updateRemote = function() {
     var client = new CodeboxIO({
         'token': token
     });
-    client.boxes().then(function(_boxes) {
+    client.account().then(function(account) {
+        storageSet("email", account.email);
+        return client.boxes()
+    }).then(function(_boxes) {
         boxes = _.map(_boxes, function(box) {
             return _.pick(box, "name", "url", "stack", "id", "public", "permissions");
         });
@@ -86,7 +90,7 @@ var updateProjects = function() {
     var boxes = storageGet("remoteBoxes", []);
     boxes.forEach(function(box) {
         addProjectItem(box.name, "remote - "+box.stack, "icons/128.png", function() {
-            alert("test");
+            runRemoveCodebox(box);
         });
     });
     if (boxes.length > 0) {
@@ -101,7 +105,7 @@ var updateProjects = function() {
     }
     projects.reverse().forEach(function(path) {
         addProjectItem(path.split("/").pop(), path, "icons/folder.png", function() {
-            runCodebox(path);
+            runLocalCodebox(path);
         });
     });
 
@@ -141,7 +145,9 @@ var selectPath = function() {
     $directorySelector.click();
 };
 
-var runCodebox = function(path) {
+
+// Start the local ide for a path
+var runLocalCodebox = function(path) {
     var win = gui.Window.open("./ide.html?"+path, {
         'title': "Codebox",
         'position': 'center',
@@ -153,6 +159,28 @@ var runCodebox = function(path) {
         'toolbar': false,
         'frame': true,
         'new-instance': true    // Because new isntance, we can't access the win object
+    });
+    win.maximize();
+    return win;
+};
+
+// Open the remote ide for a box
+var runRemoveCodebox = function(box) {
+    var options = {
+        'email': storageGet("email"),
+        'token': storageGet("token")
+    };
+    var win = gui.Window.open(box.url+"?"+querystring.stringify(options), {
+        'title': "Codebox",
+        'position': 'center',
+        'width': 1024,
+        'height': 768,
+        'min_height': 400,
+        'min_width': 400,
+        'show': true,
+        'toolbar': false,
+        'frame': true,
+        'new-instance': false    // Because new isntance, we can't access the win object
     });
     win.maximize();
     return win;
