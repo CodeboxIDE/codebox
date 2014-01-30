@@ -1,7 +1,8 @@
 define([
     'runner',
     'ports',
-], function(runner, ports) {
+    'autorun'
+], function(runner, ports, autorun) {
     var _ = codebox.require("underscore");
     var operations = codebox.require("core/operations");
     var app = codebox.require("core/app");
@@ -15,7 +16,33 @@ define([
     menu.register("project", {
         title: "Project"
     }).menuSection([
+        autorun.command,
         runner.command
+    ]).menuSection([
+        Command.register("project.build", {
+            'title': "Build",
+            'offline': false,
+            'action': function() {
+                return autorun.command.run({
+                    'type': "build"
+                });
+            },
+            'shortcuts': [
+                "mod+b"
+            ]
+        }),
+        Command.register("project.clean", {
+            'title': "Clean",
+            'offline': false,
+            'action': function() {
+                return autorun.command.run({
+                    'type': "clean"
+                });
+            },
+            'shortcuts': [
+                "mod+shift+k"
+            ]
+        })
     ]).menuSection([
         {
             'type': "action",

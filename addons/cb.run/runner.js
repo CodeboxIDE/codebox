@@ -10,14 +10,10 @@ define([
 
     // Run commands
     var runCommands = new Command({}, {
-        'id': "run.commands",
-        'title': "Run Project",
+        'id': "project.action",
+        'title': "Perform Action",
         'type': "menu",
-        'offline': false,
-        'position': 1,
-        'shortcuts': [
-            "alt+r"
-        ]
+        'offline': false
     });
 
     // Update runner list

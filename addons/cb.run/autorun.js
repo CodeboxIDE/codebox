@@ -17,7 +17,7 @@ define([
     };
 
     // Run command
-    var runCommand = commands.register("run.workspace", {
+    var runCommand = commands.register("project.run", {
         title: "Run",
         icon: "play",
         offline: false,
