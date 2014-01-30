@@ -8,8 +8,8 @@
         "height": 500,
         "position": "center",
         "min_height": 400,
-        "min_width": 450,
-        "max_width": 450,
+        "min_width": 400,
+        "max_width": 400,
         "show": false,
         "toolbar": false,
         "frame": true
