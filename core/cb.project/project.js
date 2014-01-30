@@ -40,6 +40,8 @@ ProjectType.prototype.clear = function() {
         ".git",
         ".DS_Store",
     ];
+
+    this._ignoreRules = [];
 };
 
 /*
@@ -89,6 +91,15 @@ ProjectType.prototype.merge = function(type) {
     }).then(function() {
         // Ignore rules
         that.ignoreRules = that.ignoreRules.concat(type.ignoreRules);
+
+        // Map rules
+        that._ignoreRules = _.map(that._ignoreRules, function(rule) {
+            return new Minimatch(rule, {
+                matchBase: true,
+                dot: true,
+                flipNegate: true
+            });
+        })
 
         that.types.push(type.id);
     });
@@ -151,9 +162,8 @@ ProjectType.prototype.getBaseFiles = function() {
 ProjectType.prototype.isIgnored = function(file) {
     if (file[0] != "/") file = "/"+file;
 
-    return _.any(_.map(this.ignoreRules, function(rule) {
-        var mm = new Minimatch(rule, { matchBase: true, dot: true, flipNegate: true })
-        return mm.match(file);
+    return _.any(_.map(this._ignoreRules, function(rule) {
+        return rule.match(file);
     }));
 };
 
@@ -171,9 +181,7 @@ ProjectType.prototype.filterFiles = function(files) {
  */
 ProjectType.prototype.getValidFiles = function() {
     return this.getBaseFiles()
-    .then(this.filterFiles).then(function(files) {
-        return files;
-    });
+    .then(this.filterFiles);
 };
 
 /*
