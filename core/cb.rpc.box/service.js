@@ -30,12 +30,6 @@ BoxRPCService.prototype.ping = function(args, meta) {
     });
 };
 
-BoxRPCService.prototype.project = function(args, meta) {
-    return this.projectDetector.detect().then(function(project) {
-        return project.getValidFiles();
-    });
-};
-
 BoxRPCService.prototype.changes = function(args, meta) {
     var changelogPath = path.resolve(__dirname, "../../CHANGES");
     return Q.nfapply(fs.readFile, [
