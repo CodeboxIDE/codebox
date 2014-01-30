@@ -36,8 +36,10 @@ RunRPCService.prototype.ports = function(args, meta) {
     return Q(this.run_ports.ports);
 };
 
-RunRPCService.prototype.runner = function(args, meta) {
-    return Q(this.project.runner);
+RunRPCService.prototype.list = function(args, meta) {
+    return this.project.detect().then(function(project) {
+        return project.getRunner(args);
+    })
 };
 
 // Exports

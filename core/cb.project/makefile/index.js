@@ -8,6 +8,7 @@ module.exports = {
     runner: [
         {
             id: "all",
+            type: "build",
             script: path.resolve(__dirname, "run_all.sh"),
 
             // Prioritize procfile execution

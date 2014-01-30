@@ -142,17 +142,22 @@ ProjectType.prototype.getRunner = function(options) {
         'name': null,
 
         // Filter type
-        'type': null
+        'type': null,
+
+        // Pick only one
+        'pick': false
     });
 
-    return _.chain(this.runner)
+    var c = _.chain(this.runner)
     .filter(function(runner) {
         if (options.name && options.name != runner.name) return false; 
         if (options.type && options.type != runner.type) return false;
         return true;
-    })
-    .first()
-    .value();
+    }); 
+
+    if (options.pick) c = c.first();
+
+    return c.value();
 };
 
 
