@@ -4,9 +4,10 @@ var path = require('path');
 var utils = require('../utils');
 
 
-function CodeComplete(events, workspace) {
+function CodeComplete(events, workspace, project) {
     this.events = events;
     this.workspace = workspace;
+    this.project = project;
     this.handlers = [];
 
     _.bindAll(this);
@@ -59,7 +60,8 @@ CodeComplete.prototype.addIndex = function(name, populate, options) {
         }
         _isPopulating = true;
         return Q(populate({
-            'root': that.workspace.root
+            'root': that.workspace.root,
+            'project': that.project
         })).then(function(items) {
             index = items;
         }, function(err) {

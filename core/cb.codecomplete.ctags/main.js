@@ -16,7 +16,11 @@ function setup(options, imports, register) {
 
     // Populate the tags index
     var populate = function(options) {
-        return tags.get(options.root).then(function(_tags) {
+        // get list of files to index
+        return options.project.getValidFiles().then(function(files) {
+            // get tags
+            return tags.get(options.root, files)
+        }).then(function(_tags) {
             return _.map(_tags, normalizeTag);
         })
     };

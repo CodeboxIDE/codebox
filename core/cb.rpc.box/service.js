@@ -5,8 +5,9 @@ var fs = require('fs');
 var path = require('path');
 var pkg = require('../../package.json');
 
-function BoxRPCService(workspace) {
+function BoxRPCService(workspace, project) {
     this.workspace = workspace;
+    this.projectDetector = project;
 
     _.bindAll(this);
 }
