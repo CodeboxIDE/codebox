@@ -11,7 +11,7 @@
         "min_width": 400,
         "max_width": 400,
         "show": false,
-        "toolbar": false,
+        "toolbar": true,
         "frame": true
     }
 }

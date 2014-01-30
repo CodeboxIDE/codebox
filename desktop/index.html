@@ -4,8 +4,17 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
+        <!-- Folder selector -->
         <input style="display:none;" type="file" nwdirectory id="directory-selector"/>
-        <ul id="projects"></ul>
+
+        <div id="body">
+            <div class="alert" style="display:none;">Connect your CodeboxIO account to open your cloud boxes</div>
+
+            <!-- List of projects -->
+            <ul id="projects"></ul>
+        </div>
+
+        <!-- Button add new -->
         <a href="#" id="open-new">+</a>
     </body>
     <script src="./jquery.js"></script>
