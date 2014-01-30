@@ -43,7 +43,8 @@
         "harbor": "0.2.0",
         "qpatch": "0.0.3",
         "ctags": "0.8.0",
-        "connect-gzip-static": "0.1.1"
+        "connect-gzip-static": "0.1.1",
+        "fstream-ignore": "0.0.7"
     },
     "devDependencies": {
         "grunt-node-webkit-builder": "0.1.15",

@@ -6,20 +6,21 @@ var fs = require("fs");
 var exec = require("../utils").exec;
 
 
-var execCTags = function(folder, output) {
+var execCTags = function(folder, files, output) {
     return exec(
-        'find '+folder+' | grep -v "/node_modules/" | grep -v "/\\.git/" | ' +
-         'ctags --filter > '+output
+        'echo "'+files.join("\n")+'" | ctags --filter > '+output, {
+            cwd: folder
+        }
     );
 };
 
-var getTags = function(folder) {
+var getTags = function(folder, files) {
     var _tags, tempFile;
 
     tempFile = path.join(os.tmpDir(), "ctags"+Date.now());
 
     // Get tags using ctags
-    return execCTags(folder, tempFile).then(function() {
+    return execCTags(folder, files, tempFile).then(function() {
         _tags = ctags.getTags(tempFile);
 
         // Remove temp file

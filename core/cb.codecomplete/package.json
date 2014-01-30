@@ -12,7 +12,8 @@
         "consumes": [
             "logger",
             "workspace",
-            "events"
+            "events",
+            "project"
         ]
     }
 }

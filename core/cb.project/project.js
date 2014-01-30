@@ -32,7 +32,10 @@ ProjectType.prototype.clear = function() {
     this.types = [];
 
     // Rules of files to ignore
-    this.ignoreRules = [];
+    this.ignoreRules = [
+        ".git",
+        ".DS_Store"
+    ];
 
     // List of files with rules
     this.ignoreRulesFiles = [
@@ -137,9 +140,24 @@ ProjectType.prototype.reprData = function() {
 /*
  *  Return a list of all ignored directories
  */
-ProjectType.prototype.getIgnoreRules = function() {
-    // todo: read this.ignoreRulesFiles
-    return Q(this.ignoreRules);
+ProjectType.prototype.getValidFiles = function() {
+    var Ignore = require("fstream-ignore");
+    var d = Q.defer();
+    var results = [];
+
+    var ig = Ignore({
+        path: this.workspace.root,
+        ignoreFiles: [".ignore", ".gitignore"]
+    });
+    ig.addIgnoreRules(this.ignoreRules);
+    ig.on("child", function (c) {
+        results.push(c.path.substr(c.root.path.length + 1));
+    }).on("end", function() {
+        d.resolve(results);
+    }).on("error", function(err) {
+        d.reject(err);
+    })
+    return d.promise;
 };
 
 /*

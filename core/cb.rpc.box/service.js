@@ -32,7 +32,7 @@ BoxRPCService.prototype.ping = function(args, meta) {
 
 BoxRPCService.prototype.project = function(args, meta) {
     return this.projectDetector.detect().then(function(project) {
-        return project.reprData();
+        return project.getValidFiles();
     });
 };
 
