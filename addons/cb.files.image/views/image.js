@@ -2,7 +2,7 @@ define([
     "text!templates/image.html",
     "less!stylesheets/image.less"
 ], function(templateFile) {
-    var _ = codebox.require("underscore");
+    var _ = codebox.require("lodash");
     var $ = codebox.require("jQuery");
     var hr = codebox.require("hr/hr");
     var Dialogs = codebox.require("utils/dialogs");

@@ -2,7 +2,7 @@
 var gui = require('nw.gui');
 var path = require('path');
 var Q = require('q');
-var _ = require('underscore');
+var _ = require('lodash');
 var querystring = require("querystring");
 var CodeboxIO = require('codebox-io').Client;
 

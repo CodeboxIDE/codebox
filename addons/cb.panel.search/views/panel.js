@@ -2,7 +2,7 @@ define([
     "text!templates/panel.html",
     "less!stylesheets/panel.less"
 ], function(templateFile) {
-    var _ = codebox.require("underscore");
+    var _ = codebox.require("lodash");
     var $ = codebox.require("jQuery");
     var hr = codebox.require("hr/hr");
     var search = codebox.require("core/search");

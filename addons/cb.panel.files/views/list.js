@@ -1,7 +1,7 @@
 define([
     "views/tree"
 ], function(FilesTreeView) {
-    var _ = codebox.require("underscore");
+    var _ = codebox.require("lodash");
     var $ = codebox.require("jQuery");
     var hr = codebox.require("hr/hr");
 

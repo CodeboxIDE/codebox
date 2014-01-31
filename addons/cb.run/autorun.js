@@ -1,7 +1,7 @@
 define([
     'ports'
 ], function(ports) {
-    var _ = codebox.require("underscore");
+    var _ = codebox.require("lodash");
     var commands = codebox.require("core/commands/toolbar");
     var operations = codebox.require("core/operations");
     var box = codebox.require("core/box");

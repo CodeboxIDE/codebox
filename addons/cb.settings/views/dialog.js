@@ -2,7 +2,7 @@ define([
     "text!templates/dialog.html",
     "less!stylesheets/dialog.less"
 ], function(templateFile) {
-    var _ = codebox.require("underscore");
+    var _ = codebox.require("lodash");
     var $ = codebox.require("jQuery");
     var DialogView = codebox.require("views/dialogs/base");
     var settings = codebox.require("core/settings");
