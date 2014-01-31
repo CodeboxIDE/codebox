@@ -29,16 +29,15 @@ Include /etc/apache2/conf.d/
 "
 elif [[ $platform == 'Darwin' ]]; then
     EXTRA_CONF="
-ServerRoot /usr
-
 # Modules
-$(cat /etc/apache2/httpd.conf | grep LoadModule)
-LoadModule php5_module libexec/apache2/libphp5.so
+$(cat /etc/apache2/httpd.conf | grep LoadModule | sed 's/libexec/\/usr\/libexec/g')
+LoadModule php5_module /usr/libexec/apache2/libphp5.so
 "
 fi
 
-# Create the folder
+# Create the necessary folders
 mkdir -p ${FOLDER}
+mkdir -p "${FOLDER}/logs"
 
 # Generate the apache config
 cat  <<EOF > "${FOLDER}/${CONF}"
