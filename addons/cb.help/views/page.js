@@ -5,7 +5,7 @@ define([
     "less!stylesheets/page.less"
 ], function(Showdown) {
     var hr = codebox.require("hr/hr");
-    var _ = codebox.require("underscore");
+    var _ = codebox.require("lodash");
     var $ = codebox.require("jQuery");
     var URL = codebox.require("utils/url");
 

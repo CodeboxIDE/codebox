@@ -3,7 +3,7 @@ define([
     'ports',
     'autorun'
 ], function(runner, ports, autorun) {
-    var _ = codebox.require("underscore");
+    var _ = codebox.require("lodash");
     var operations = codebox.require("core/operations");
     var app = codebox.require("core/app");
     var box = codebox.require("core/box");

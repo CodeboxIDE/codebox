@@ -1,4 +1,4 @@
-var _ = require("underscore");
+var _ = require("lodash");
 
 function setup(options, imports, register) {
 	var events = imports.events;

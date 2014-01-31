@@ -1,5 +1,5 @@
 // Requires
-var _ = require('underscore');
+var _ = require('lodash');
 
 var Gittle = require('gittle');
 

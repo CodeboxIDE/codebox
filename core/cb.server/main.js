@@ -1,7 +1,7 @@
 // Requires
 var http = require('http');
 var express = require('express');
-var _ = require('underscore');
+var _ = require('lodash');
 
 // GZIP static middleware
 var gzipStatic = require('connect-gzip-static');

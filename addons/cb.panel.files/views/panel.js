@@ -5,7 +5,7 @@ define([
     "text!templates/panel.html",
     "less!stylesheets/panel.less"
 ], function(panelSettings, FilesTreeView, FilesListView, templateFile) {
-    var _ = codebox.require("underscore");
+    var _ = codebox.require("lodash");
     var $ = codebox.require("jQuery");
     var hr = codebox.require("hr/hr");
     var box = codebox.require("core/box");
