@@ -4,6 +4,10 @@ We like to encourage you to contribute to the repository.
 This should be as easy as possible for you but there are a few things to consider when contributing.
 The following guidelines for contribution should be followed if you want to submit a pull request.
 
+## Contributor License Agreement
+
+Please also sign the [Codebox contributor license agreement](https://www.codebox.io/cla) so we can accept your pull requests. It is easy, you can do it using your CodeboxIO account.
+
 ## How to prepare
 
 * You need a [GitHub account](https://github.com/signup/free)
