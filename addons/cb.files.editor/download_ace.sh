@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Ace version to pull
-ACE_VERSION="c912523906d38b7c6d544075a1b5913a23507f3d"
+ACE_VERSION="9f9cb41981ece8d5180423807cbd8aa62ae3349e"
 ACE_URL="https://github.com/FriendCode/ace-builds/archive/${ACE_VERSION}.tar.gz"
 
 # Ace build we want to keep
