@@ -8,7 +8,7 @@ PORT=$2
 if [[ ! -z "$(which hhvm)" ]]; then
     bash -c "cd ${WORKSPACE} && hhvm -m server -p ${PORT}"
 # Use Apache2 if it is installed
-elif [[ ! -z "$(which apache2ctl)" ]]; then
+elif [[ ! -z "$(which apachectl)" ]]; then
     exec ./_run_apache.sh ${WORKSPACE} ${PORT}
 # Fallback to builtin PHP server
 else
