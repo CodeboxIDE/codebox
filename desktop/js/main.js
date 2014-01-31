@@ -121,7 +121,7 @@ var updateCodeboxIOAccount = function() {
             token = "";
         }
     } else {
-        token = prompt("Please enter your CodeboxIO Account Token to connect it to this desktop");
+        token = prompt("Please enter your CodeboxIO Account Token to connect it to this desktop, this token can be found on your codebox.io account settings:");
     }
     
     storageSet("token", token);
@@ -170,7 +170,12 @@ var runRemoveCodebox = function(box) {
         'email': storageGet("email"),
         'token': storageGet("token")
     };
-    var win = gui.Window.open(box.url+"?"+querystring.stringify(options), {
+
+    var url = box.url;
+    if (navigator.onLine) url = "https://www.codebox.io/boot/"+box.id;
+    url = url+"?"+querystring.stringify(options);
+
+    var win = gui.Window.open(url, {
         'title': "Codebox",
         'position': 'center',
         'width': 1024,
@@ -180,7 +185,8 @@ var runRemoveCodebox = function(box) {
         'show': true,
         'toolbar': false,
         'frame': true,
-        'new-instance': false    // Because new isntance, we can't access the win object
+        'nodejs': false,
+        'new-instance': false
     });
     win.maximize();
     return win;
@@ -199,7 +205,7 @@ menu.append(new gui.MenuItem({
     label: 'Reset data',
     click: function() {
         localStorage.clear();
-        updateProjects();
+        updateRemote();
     }
 }));
 menu.append(new gui.MenuItem({ type: 'separator' }));
