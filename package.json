@@ -45,9 +45,9 @@
         "ctags": "0.8.0",
         "connect-gzip-static": "0.1.1",
         "minimatch": "0.2.14",
-        "codebox-io": "0.3.1"
     },
     "devDependencies": {
+        "codebox-io": "https://github.com/FriendCode/codebox-client.git#0.3.1",
         "grunt-node-webkit-builder": "0.1.16",
         "grunt-contrib-compress": "0.6.0",
         "grunt-contrib-copy": "0.5.0",
