@@ -1,3 +1,15 @@
+2014-02-01  Samy Pessé  <samy.pesse@friendco.de>
+            Aaron O'Mullan <aaron.omullan@friendco.de>
+
+    * Bump version to 0.5.1
+    * Improve codecomplete ctags by filtering files to index
+    * Improve client side autocomplete
+    * New project detection
+    * Multi-run solutions for project types
+    * Build and clean solution in "Project" menu
+    * Desktop manager now shows up CodeboxIO boxes list
+    * Support LAMP stack and running apache2 in "php" runner
+
 2014-01-28  Aaron O'Mullan <aaron.omullan@friendco.de>
             Samy Pessé  <samy.pesse@friendco.de>
             Julien LEICHER <jleicher@gmail.com>
