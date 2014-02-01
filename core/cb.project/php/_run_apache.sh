@@ -23,9 +23,6 @@ if [[ $platform == 'Linux' ]]; then
 # Include module configuration:
 Include /etc/apache2/mods-enabled/*.load
 Include /etc/apache2/mods-enabled/*.conf
-
-# Include generic snippets of statements
-Include /etc/apache2/conf.d/
 "
 elif [[ $platform == 'Darwin' ]]; then
     EXTRA_CONF="
