@@ -46,6 +46,11 @@ Listen ${PORT}
 PidFile ${FOLDER}/httpd.pid
 LockFile ${FOLDER}/accept.lock
 
+# Start only one server
+StartServers 1
+MinSpareServers 1
+MaxSpareServers 1
+
 # Serve our workspace
 DocumentRoot "${WORKSPACE}"
 <Directory />
