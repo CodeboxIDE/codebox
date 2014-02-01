@@ -32,6 +32,13 @@ LoadModule php5_module /usr/libexec/apache2/libphp5.so
 "
 fi
 
+# Include phpmyadmin only if there
+if [[ -f "/etc/apache2/conf.d/phpmyadmin.conf" ]]; then
+  EXTRA_CONF+="
+Include /etc/apache2/conf.d/phpmyadmin.conf
+"
+fi
+
 # Create the necessary folders
 mkdir -p ${FOLDER}
 mkdir -p "${FOLDER}/logs"
@@ -80,5 +87,3 @@ trap cleanup EXIT INT
 # Run apache process in foreground
 echo "Running apache2 on ${WORKSPACE} (${FOLDER})"
 apachectl -d ${FOLDER} -f ${CONF} -e info -D FOREGROUND
-
-
