@@ -1,4 +1,11 @@
 2014-02-01  Aaron O'Mullan <aaron.omullan@friendco.de>
+            Samy Pessé  <samy.pesse@friendco.de>
+
+    * Bump version to 0.5.4
+    * Improve: Split _run_apache.sh into it's separate runner
+    * Fix event project.define circular call
+
+2014-02-01  Aaron O'Mullan <aaron.omullan@friendco.de>
 
     * Bump version to 0.5.2
     * Fix make PHPMyAdmin include in _run_apache.sh optional
