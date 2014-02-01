@@ -44,7 +44,7 @@
         "qpatch": "0.0.3",
         "ctags": "0.8.0",
         "connect-gzip-static": "0.1.1",
-        "minimatch": "0.2.14",
+        "minimatch": "0.2.14"
     },
     "devDependencies": {
         "codebox-io": "git+https://github.com/FriendCode/codebox-client.git#0.3.1",
