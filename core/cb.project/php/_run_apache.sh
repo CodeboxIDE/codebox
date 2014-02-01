@@ -1,0 +1,69 @@
+#!/bin/bash
+
+WORKSPACE=$1
+PORT=$2
+
+# Detect current platform
+# We need this to customize configuration differently for OS X and Linux
+platform="$(uname)"
+
+# 2 byte random number in hexadecimal (0xffff)
+RAND_ID=$(openssl rand 2 -hex)
+
+# Folder to store our config and other stuff
+FOLDER="/tmp/apache-${RAND_ID}"
+
+# Name of conf file
+CONF="apache2.conf"
+
+# Platform specific apache extras
+EXTRA_CONF=''
+if [[ $platform == 'Linux' ]]; then
+    EXTRA_CONF="
+# Include module configuration:
+Include /etc/apache2/mods-enabled/*.load
+Include /etc/apache2/mods-enabled/*.conf
+
+# Include generic snippets of statements
+Include /etc/apache2/conf.d/
+"
+elif [[ $platform == 'Darwin' ]]; then
+    EXTRA_CONF="
+# Modules
+$(cat /etc/apache2/httpd.conf | grep LoadModule | sed 's/libexec/\/usr\/libexec/g')
+LoadModule php5_module /usr/libexec/apache2/libphp5.so
+"
+fi
+
+# Create the necessary folders
+mkdir -p ${FOLDER}
+mkdir -p "${FOLDER}/logs"
+
+# Generate the apache config
+cat  <<EOF > "${FOLDER}/${CONF}"
+ServerName localhost
+Listen ${PORT}
+PidFile ${FOLDER}/httpd.pid
+LockFile ${FOLDER}/accept.lock
+
+# Serve our workspace
+DocumentRoot "${WORKSPACE}"
+<Directory />
+  AllowOverride all
+  Order allow,deny
+  Allow from all
+</Directory>
+
+AddType application/x-httpd-php .php
+DirectoryIndex index.html index.php
+
+# Platform specific extra configuration
+${EXTRA_CONF}
+
+EOF
+
+# Run apache process in foreground
+apachectl -d ${FOLDER} -f ${CONF} -e info -DFOREGROUND
+
+# Remove folder on exit
+rm -rf ${FOLDER}
