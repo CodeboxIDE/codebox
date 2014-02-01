@@ -47,7 +47,7 @@
         "minimatch": "0.2.14",
     },
     "devDependencies": {
-        "codebox-io": "https://github.com/FriendCode/codebox-client.git#0.3.1",
+        "codebox-io": "git+https://github.com/FriendCode/codebox-client.git#0.3.1",
         "grunt-node-webkit-builder": "0.1.16",
         "grunt-contrib-compress": "0.6.0",
         "grunt-contrib-copy": "0.5.0",
