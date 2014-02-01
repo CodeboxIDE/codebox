@@ -110,6 +110,7 @@ ProjectType.prototype.merge = function(type) {
  */
 ProjectType.prototype.define = function(types) {
     var typeIds, that = this;
+    var oldTypes = _.clone(that.types);
 
     // Clear current infos
     this.clear();
@@ -121,8 +122,9 @@ ProjectType.prototype.define = function(types) {
         });
     }, Q()).then(function() {
         typeIds = _.pluck(types, "id");
-        that.logger.log("define", typeIds);
-        that.events.emit('project.define', typeIds);
+
+        var diff = !(_.difference(oldTypes, typeIds).length == 0 && oldTypes.length == typeIds.length);
+        if (diff) that.events.emit('project.define', typeIds);
     });
 };
 

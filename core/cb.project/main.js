@@ -67,9 +67,11 @@ var detectProjectTypes = function(projectDir) {
 // Merge into one project type
 var detectProject = function(workspace, project) {
     return detectProjectTypes(workspace.root).then(function(_types) {
-        project.clear();
-        if (!_.size(_types)) return Q.reject(new Error("No project detected for this workspace"));
-
+        if (!_.size(_types)) {
+            project.clear();
+            return Q.reject(new Error("No project detected for this workspace"));
+        }
+        
         // Define new project
         return project.define(_types);
     }).then(function() {
