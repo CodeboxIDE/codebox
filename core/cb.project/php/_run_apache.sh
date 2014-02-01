@@ -62,8 +62,19 @@ ${EXTRA_CONF}
 
 EOF
 
+function cleanup {
+    if [[ -f "${FOLDER}/http.pid" ]]; then
+        echo "Killed process"
+        kill -s KILL $(cat "${FOLDER}/http.pid")
+    fi
+    # Remove folder on exit
+    echo "Cleaning up ${FOLDER}"
+    rm -rf ${FOLDER}
+}
+
+# Cleanup when killed
+trap cleanup EXIT INT
+
 # Run apache process in foreground
 apachectl -d ${FOLDER} -f ${CONF} -e info -DFOREGROUND
 
-# Remove folder on exit
-rm -rf ${FOLDER}
