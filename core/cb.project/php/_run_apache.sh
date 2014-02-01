@@ -76,5 +76,7 @@ function cleanup {
 trap cleanup EXIT INT
 
 # Run apache process in foreground
-apachectl -d ${FOLDER} -f ${CONF} -e info -DFOREGROUND
+echo "Running apache2 on ${WORKSPACE} (${FOLDER})"
+apachectl -d ${FOLDER} -f ${CONF} -e info -D FOREGROUND
+
 
