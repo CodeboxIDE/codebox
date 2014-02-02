@@ -86,4 +86,4 @@ trap cleanup EXIT INT
 
 # Run apache process in foreground
 echo "Running apache2 on ${WORKSPACE} (${FOLDER})"
-apachectl -d ${FOLDER} -f ${CONF} -e info -D FOREGROUND
+/usr/sbin/apachectl -d ${FOLDER} -f ${CONF} -e info -D FOREGROUND
