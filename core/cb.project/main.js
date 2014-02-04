@@ -21,6 +21,7 @@ var SUPPORTED = [
     require("./logo"),
     require("./php"),
     require("./nodejs"),
+    require("./meteor"),
     require("./play"),
     require("./python"),
     require("./ruby"),
@@ -71,7 +72,7 @@ var detectProject = function(workspace, project) {
             project.clear();
             return Q.reject(new Error("No project detected for this workspace"));
         }
-        
+
         // Define new project
         return project.define(_types);
     }).then(function() {
