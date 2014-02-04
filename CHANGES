@@ -1,3 +1,10 @@
+2014-02-04  Aaron O'Mullan <aaron.omullan@friendco.de>
+
+    * Bump version to 0.5.5
+    * Improve: Autocomplete dialog and HTML autocompletion
+    * Add support for meteor projects
+    * A few minor fixes on run_apache.sh
+
 2014-02-01  Aaron O'Mullan <aaron.omullan@friendco.de>
             Samy Pessé  <samy.pesse@friendco.de>
 
