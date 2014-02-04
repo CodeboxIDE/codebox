@@ -16,6 +16,11 @@ module.exports = {
             id: "update",
             script: path.resolve(__dirname, "mrt_update.sh")
         },
+        {
+            name: "meteorite install",
+            id: "install",
+            script: path.resolve(__dirname, "mrt_install.sh")
+        },
     ],
 
     ignoreRules: [
