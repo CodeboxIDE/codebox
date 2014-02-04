@@ -10,7 +10,12 @@ module.exports = {
             name: "meteor run",
             id: "run",
             script: path.resolve(__dirname, "run.sh")
-        }
+        },
+        {
+            name: "meteorite update",
+            id: "update",
+            script: path.resolve(__dirname, "mrt_update.sh")
+        },
     ],
 
     ignoreRules: [
