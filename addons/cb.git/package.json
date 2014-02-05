@@ -12,5 +12,17 @@
     },
     "client": {
         "main": "client"
+    },
+    "main": "./node/main",
+    "plugin": {
+        "provides": [
+            "git",
+            "git_rpc"
+        ],
+        "consumes": [
+            "rpc",
+            "events",
+            "workspace"
+        ]
     }
 }
