@@ -216,9 +216,6 @@ var start = function(config) {
             "./cb.codecomplete",
             "./cb.codecomplete.ctags",
 
-            // Git
-            "./cb.git",
-
             // Export
             "./cb.export",
 
@@ -257,7 +254,6 @@ var start = function(config) {
             "./cb.rpc.users",
             "./cb.rpc.box",
             "./cb.rpc.shells",
-            "./cb.rpc.git",
             "./cb.rpc.auth",
             "./cb.rpc.search",
             "./cb.rpc.addons",
