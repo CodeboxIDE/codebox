@@ -35,6 +35,11 @@ do
     PSED "s/,?${lang}\:\"\w+\"//gi" ace/ext-modelist.js
 done
 
+# Cleanup our previous replaces
+# Remove any bad comas left over from modelist
+PSED "s/\{,/{/gi" ace/ext-modelist.js
+PSED "s/,\}/{/gi" ace/ext-modelist.js
+
 # Detect empty snippets
 # using the value of their 'snippetText' variable
 S1='snippetText=""'
