@@ -29,6 +29,17 @@ do
     perl -C -e 'use utf8;' -i -pe "s/,?${lang}\:\"\w+\"//gi" ace/ext-modelist.js
 done
 
+# Detect empty snippets
+# using the value of their 'snippetText' variable
+S1='snippetText=""'
+S2="snippetText=''"
+
+# Remove empty snippet files
+find ./ace/snippets -name "*.js" -print | \
+xargs -I{} bash -c \
+'grep -e "${S1}" -e "${S2}" {} > /dev/null && echo {}' | \
+xargs rm -f
+
 
 # Remove useless themes
 echo "Removes themes"
