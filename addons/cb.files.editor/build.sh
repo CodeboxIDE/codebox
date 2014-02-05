@@ -16,7 +16,17 @@ done
 for lang in ${RM_LANG[*]}
 do
     echo "Remove language $lang"
+
+    # Remove the files
     rm -f "ace/mode-$lang.js" "ace/snippets/$lang.js" "ace/worker-$lang.js"
+
+    # Remove any references in ext-modelist
+
+    # Remove extension mapping
+    perl -C -e 'use utf8;' -i -pe "s/,?${lang}\:\[\"[^\"]+?\"\]//gi" ace/ext-modelist.js
+
+    # Remove readable name mapping
+    perl -C -e 'use utf8;' -i -pe "s/,?${lang}\:\"\w+\"//gi" ace/ext-modelist.js
 done
 
 
