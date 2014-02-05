@@ -5,6 +5,12 @@
 RM_EXTENSIONS=(elastic_tabstops_lite chromevox statusbar emmet error_marker keybinding_menu old_ie textarea themelist static_highlight split spellcheck settings_menu)
 RM_LANG=(jsoniq xquery abap cobol forth mushcode vbscript tcl velocity pascal)
 
+# Sed like command using perl
+# We need this because on OS X, sed does not support ignoring case
+function PSED {
+    perl -C -e 'use utf8;' -i -pe $1 $2
+}
+
 # Remove useless extensions
 for ext in ${RM_EXTENSIONS[*]}
 do
@@ -23,10 +29,10 @@ do
     # Remove any references in ext-modelist
 
     # Remove extension mapping
-    perl -C -e 'use utf8;' -i -pe "s/,?${lang}\:\[\"[^\"]+?\"\]//gi" ace/ext-modelist.js
+    PSED "s/,?${lang}\:\[\"[^\"]+?\"\]//gi" ace/ext-modelist.js
 
     # Remove readable name mapping
-    perl -C -e 'use utf8;' -i -pe "s/,?${lang}\:\"\w+\"//gi" ace/ext-modelist.js
+    PSED "s/,?${lang}\:\"\w+\"//gi" ace/ext-modelist.js
 done
 
 # Detect empty snippets
