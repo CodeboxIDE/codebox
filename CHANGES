@@ -1,3 +1,11 @@
+2014-02-06  Aaron O'Mullan <aaron.omullan@friendco.de>
+
+    * Bump version to 0.5.6
+    * Improve: Use lighter build of ace (with "useless portions removed")
+    * Fix event overload (100% CPU usage) when removing thousands of files
+    * Fix unhandled error when running unknown projects
+    * Fix installing addons on java stacks (clojure, scala as well)
+
 2014-02-04  Aaron O'Mullan <aaron.omullan@friendco.de>
 
     * Bump version to 0.5.5
