@@ -37,7 +37,9 @@ function init(logger, events, rootPath) {
                 */
             },
             error: function(err) {
-                events.emit('watch.error', err);
+                if(err) {
+                    events.emit('watch.error', err);
+                }
             },
             watching: function(err, watcherInstance, isWatching) {
                 var emitStr = 'watch.watching.' + (err ? 'error' : 'success');
