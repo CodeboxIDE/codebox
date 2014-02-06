@@ -99,6 +99,9 @@ function setup_perm () {
     chown ${USER} -R ${HOME}
     chmod +x ${SSH_DIR}
     chmod 600 ${SSH_DIR}*
+
+    # Ensure /tmp's permissions
+    sudo chmod 777 /tmp
 }
 
 
