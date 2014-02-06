@@ -3,7 +3,7 @@
 # This script will prepare ace for running properly
 
 RM_EXTENSIONS=(elastic_tabstops_lite chromevox statusbar emmet error_marker keybinding_menu old_ie textarea themelist static_highlight split spellcheck settings_menu)
-RM_LANG=(jsoniq xquery abap cobol forth mushcode vbscript tcl velocity pascal powershell asciidoc apache_conf ada soy_template verilog vhdl autohotkey batchfile c9search)
+RM_LANG=(abap cobol forth mushcode vbscript tcl velocity pascal powershell asciidoc apache_conf ada soy_template verilog vhdl autohotkey batchfile c9search)
 
 # Sed like command using perl
 # We need this because on OS X, sed does not support ignoring case
