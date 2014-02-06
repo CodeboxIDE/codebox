@@ -61,7 +61,7 @@ var detectProjectTypes = function(projectDir) {
             return supported_list[idx];
         });
     })
-    .fail(utils.constant([null]));
+    .fail(utils.constant([]));
 };
 
 
