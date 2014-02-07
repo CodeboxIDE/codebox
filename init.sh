@@ -112,6 +112,21 @@ function setup_hg () {
     hg clone -b ${HG_BRANCH} ${HG_URL} ${WORKSPACE}
 }
 
+# Sets up git or mercurial
+function setup_repo () {
+    echo "Calling setup_repo ..."
+
+    # Check if we should setup either
+    # git or mercurial based on env variables provided
+    if [ -n "$GIT_URL" ]; then
+        setup_hg
+        return
+    elif [ -n "$HG_URL" ];then
+        setup_git
+        return
+    fi
+}
+
 function setup_perm () {
     echo "Calling setup_perm ..."
 
@@ -162,7 +177,7 @@ setup_workspace
 setup_ssh
 setup_netrc
 setup_perm
-setup_git
+setup_repo
 # If git clone fails we need to rebuild dir
 setup_workspace
 setup_env
