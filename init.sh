@@ -116,6 +116,12 @@ function setup_hg () {
 function setup_repo () {
     echo "Calling setup_repo ..."
 
+    # Check if workspace directory already contains stuff
+    if [ -n "$(ls -A ${WORKSPACE})" ]; then
+        echo "Skipping setup_repo because workspace folder is not empty"
+        return
+    fi
+
     # Check if we should setup either
     # git or mercurial based on env variables provided
     if [ -n "$GIT_URL" ]; then
