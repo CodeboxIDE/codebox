@@ -92,6 +92,25 @@ function setup_git () {
     git clone -b ${GIT_BRANCH} ${GIT_URL} ${WORKSPACE}
 }
 
+function setup_hg () {
+    echo "Calling setup_hg ..."
+
+    # Skip if git directory exists
+    if [ -d "$WORKSPACE.hg" ]; then
+        "Skipping setup_hg because WORKSPACE is already setup ..."
+        return
+    fi
+
+    if [ ! "$HG_URL" ]; then
+        echo "Skipping setup_hg because no HG_URL given ..."
+        echo "Init empty hg repository in workspace ..."
+        hg init ${WORKSPACE}
+        return
+    fi
+
+    # Do cloning
+    hg clone -b ${HG_BRANCH} ${HG_URL} ${WORKSPACE}
+}
 
 function setup_perm () {
     echo "Calling setup_perm ..."
