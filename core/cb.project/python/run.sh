@@ -14,7 +14,7 @@ WORKSPACE=$1
 PORT=$2
 
 # Get plausible entry point
-entry_point=$(${FGREP} "__main__" -R . | tr ':' '\n' | grep ".py" | head -n 1)
+entry_point=$(${FGREP} "__main__" -R ${WORKSPACE} | tr ':' '\n' | grep ".py" | head -n 1)
 
 # No entry point found
 # default to main.go
