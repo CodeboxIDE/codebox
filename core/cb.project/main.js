@@ -1,10 +1,10 @@
 // Requires
 var Q = require('q');
 var _ = require('underscore');
-
+var wrench = require('wrench');
 var path = require('path');
-var utils = require('../utils');
 
+var utils = require('../utils');
 var ProjectType = require('./project').ProjectType;
 
 // Supported project types
@@ -80,11 +80,32 @@ var detectProject = function(workspace, project) {
     });
 };
 
+// Get project type info by id
+var getProjectType = function(typeId) {
+    return _.find(SUPPORTED, function(pType) {
+        return pType.id == typeId;
+    });
+};
+
+// Set project sample
+// Tke a project type id and replace workspace content with it
+var setProjectSample = function(root, typeId) {
+    var pType = getProjectType(typeId);
+    if (!pType) return Q.reject(new Error("Invalid project type id"));
+    if (!pType.sample) return Q.reject(new Error("This project type has no sample"));
+    return Q.nfcall(wrench.copyDirRecursive, pType.sample, root, {
+        'forceDelete': true
+    }).then(function() {
+        return pType;
+    });
+};
+
 
 function setup(options, imports, register) {
     var workspace = imports.workspace;
     var events = imports.events;
     var logger = imports.logger.namespace("project");
+    var prev = Q();
 
     // Create the project type
     var project = new ProjectType(workspace, events, logger);
@@ -99,12 +120,21 @@ function setup(options, imports, register) {
     events.on("watch.change.delete", throttled);
     events.on("watch.watching.success", throttled);
 
-    register(null, {
-        "project": project,
-        "projectTypes": {
-            'add': function addProjectType(module) {
-                SUPPORTED.push(module);
-                return project.detect();
+    return Q().then(function() {
+        if (!options.forceProjectSample) return;
+        logger.log("set workspace content with sample", options.forceProjectSample)
+        return setProjectSample(workspace.root, options.forceProjectSample);
+    })
+    .then(function() {
+        return {
+            "project": project,
+            "projectTypes": {
+                "SUPPORTED": SUPPORTED,
+                'add': function addProjectType(module) {
+                    SUPPORTED.push(module);
+                    return project.detect();
+                },
+                'setSample': _.partial(setProjectSample, workspace.root)
             }
         }
     });
