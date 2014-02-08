@@ -51,7 +51,7 @@ define([
             }, this);
 
             // Change in subfiles
-            this.on("files:change:create files:change:delete files:change:folder", function() {
+            this.on("files:change:create files:change:delete file:change:folder", function() {
                 logging.log("file updated in "+this.path());
                 this.refresh();
             }, this);
