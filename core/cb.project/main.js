@@ -139,7 +139,13 @@ function setup(options, imports, register) {
                     SUPPORTED.push(module);
                     return project.detect();
                 },
-                'useSample': _.partial(useProjectSample, workspace.root)
+                'useSample': function(typeId) {
+                    return useProjectSample(workspace.root, typeId).then(function(pType) {
+                        // Update project type
+                        project.detect();
+                        return pType;
+                    });
+                }
             }
         }
     });
