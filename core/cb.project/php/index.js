@@ -5,6 +5,7 @@ module.exports = {
     otherIds: ["hhvm"],
     name: "PHP",
 
+    sample: path.resolve(__dirname, "sample"),
     detector: path.resolve(__dirname, "detector.sh"),
     runner: [
         {
