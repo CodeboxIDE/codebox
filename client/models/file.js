@@ -701,7 +701,7 @@ define([
                         'type': "action",
                         'title': "Rename...",
                         'action': function() {
-                            that.actionRename();
+                            return that.actionRename();
                         }
                     });
                     menu.push({
@@ -709,7 +709,7 @@ define([
                         'type': "action",
                         'title': "Remove",
                         'action': function() {
-                            that.actionRemove();
+                            return that.actionRemove();
                         }
                     });
                     menu.push({ 'type': "divider" });
@@ -722,7 +722,7 @@ define([
                         'type': "action",
                         'title': "New file",
                         'action': function() {
-                            that.actionCreate();
+                            return that.actionCreate();
                         }
                     });
                     menu.push({
@@ -730,7 +730,7 @@ define([
                         'type': "action",
                         'title': "New folder",
                         'action': function() {
-                            that.actionMkdir();
+                            return that.actionMkdir();
                         }
                     });
                     menu.push({
@@ -738,7 +738,7 @@ define([
                         'type': "action",
                         'title': "Refresh",
                         'action': function() {
-                            that.actionRefresh();
+                            return that.actionRefresh();
                         }
                     });
                     menu.push({

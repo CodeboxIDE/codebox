@@ -27,8 +27,9 @@ define([
             });
 
             this.tree = new FilesTreeView({
-                path: "/"
+                model: box.root
             });
+            this.tree.update();
 
             this.tree.on("count", function(count) {
                 this.toggle(count > 0);

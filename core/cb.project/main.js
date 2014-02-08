@@ -96,6 +96,8 @@ var useProjectSample = function(root, typeId) {
     var pType = getProjectType(typeId);
     if (!pType) return Q.reject(new Error("Invalid project type id"));
     if (!pType.sample) return Q.reject(new Error("This project type has no sample"));
+
+    // todo: improve this copy to not delete the directory and recreate it after
     return Q.nfcall(wrench.copyDirRecursive, pType.sample, root, {
         'forceDelete': true
     }).then(function() {
