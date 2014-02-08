@@ -102,6 +102,7 @@ ProjectType.prototype.merge = function(type) {
         })
 
         that.types.push(type.id);
+        that.types = that.types.concat(type.otherIds || [])
     });
 };
 

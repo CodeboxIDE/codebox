@@ -12,7 +12,9 @@ var ProjectType = require('./project').ProjectType;
 var SUPPORTED = [
     require("./makefile"),
     require("./procfile"),
+    require("./c"),
     require("./d"),
+    require("./dart"),
     require("./go"),
     require("./clojure"),
     require("./gradle"),
@@ -20,12 +22,13 @@ var SUPPORTED = [
     require("./java"),
     require("./logo"),
     require("./php"),
-    require("./nodejs"),
+    require("./node"),
     require("./meteor"),
     require("./play"),
     require("./python"),
     require("./ruby"),
     require("./scala"),
+    require("./lua"),
     require("./static")
 ];
 
@@ -83,7 +86,7 @@ var detectProject = function(workspace, project) {
 // Get project type info by id
 var getProjectType = function(typeId) {
     return _.find(SUPPORTED, function(pType) {
-        return pType.id == typeId;
+        return pType.id == typeId || _.contains(pType.otherIds, typeId);
     });
 };
 

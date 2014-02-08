@@ -1,7 +1,7 @@
 var path = require("path");
 
 module.exports = {
-    id: "nodejs",
+    id: "node",
     name: "Node.JS",
 
     sample: path.resolve(__dirname, "sample"),
