@@ -1,8 +1,9 @@
 define([
     'runner',
     'ports',
-    'autorun'
-], function(runner, ports, autorun) {
+    'autorun',
+    'samples'
+], function(runner, ports, autorun, samples) {
     var _ = codebox.require("underscore");
     var operations = codebox.require("core/operations");
     var app = codebox.require("core/app");
@@ -11,6 +12,11 @@ define([
     var dialogs = codebox.require("utils/dialogs");
     var alerts = codebox.require("utils/alerts");
     var Command = codebox.require("models/command");
+
+    // Add samples submenu
+    menu.getById("file").menuSection([
+        samples.command
+    ])
 
     // Add menu
     menu.register("project", {
@@ -61,4 +67,5 @@ define([
     // Updates list
     runner.update();
     ports.update();
+    samples.update();
 });

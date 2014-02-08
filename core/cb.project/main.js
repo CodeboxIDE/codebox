@@ -92,7 +92,7 @@ var getProjectType = function(typeId) {
 
 // Set project sample
 // Tke a project type id and replace workspace content with it
-var setProjectSample = function(root, typeId) {
+var useProjectSample = function(root, typeId) {
     var pType = getProjectType(typeId);
     if (!pType) return Q.reject(new Error("Invalid project type id"));
     if (!pType.sample) return Q.reject(new Error("This project type has no sample"));
@@ -126,7 +126,7 @@ function setup(options, imports, register) {
     return Q().then(function() {
         if (!options.forceProjectSample) return;
         logger.log("set workspace content with sample", options.forceProjectSample)
-        return setProjectSample(workspace.root, options.forceProjectSample);
+        return useProjectSample(workspace.root, options.forceProjectSample);
     })
     .then(function() {
         return {
@@ -137,7 +137,7 @@ function setup(options, imports, register) {
                     SUPPORTED.push(module);
                     return project.detect();
                 },
-                'setSample': _.partial(setProjectSample, workspace.root)
+                'useSample': _.partial(useProjectSample, workspace.root)
             }
         }
     });

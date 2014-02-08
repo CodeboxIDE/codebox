@@ -266,6 +266,7 @@ var start = function(config) {
             "./cb.rpc.search",
             "./cb.rpc.addons",
             "./cb.rpc.proc",
+            "./cb.rpc.project",
             "./cb.rpc.run",
             "./cb.rpc.codecomplete",
 
