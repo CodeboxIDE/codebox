@@ -1,0 +1,13 @@
+{
+    "name": "node-js-sample",
+    "version": "0.0.1",
+    "description": "a sample node.js app for Codebox",
+    "main": "web.js",
+    "scripts": {
+        "start": "node ./web.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "dependencies": {
+        "express": "~3.4.x"
+    }
+}
