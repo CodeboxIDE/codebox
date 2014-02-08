@@ -17,6 +17,12 @@ ProjectRPCService.prototype._reprProjectType = function(projectType) {
     };
 };
 
+ProjectRPCService.prototype.detect = function(args) {
+    return this.project.detect().then(function(p) {
+        return p.reprData();
+    });
+};
+
 ProjectRPCService.prototype.supported = function(args) {
     return _.map(this.projectTypes.SUPPORTED, this._reprProjectType, this)
 };
