@@ -6,7 +6,7 @@ define([], function() {
 
     // HTTP Ports
     var samplesMenu = new Command({}, {
-        'title': "Sample Projects",
+        'title': "Use Sample Project",
         'type': "menu",
         'offline': false
     });
