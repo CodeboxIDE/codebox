@@ -100,24 +100,25 @@ function setup(options, imports, register) {
     // Block queries for unAuthenticated users
     //
     var authorizedPaths = [];
-    app.use(function(req, res, next) {
-        if(needAuth(req.path) || res.user) {
+    app.all("*", function(req, res, next) {
+        if(!needAuth(req.path) || res.user) {
             return next();
         }
         // Unauthorized
         return res.send(403, {
             ok: false,
             data: {},
-            error: "Could not run API request because user has not authenticated",
+            error: "Could not run API request because user was not authenticated",
             method: req.path,
         });
     });
 
     // Check if a path need auth
     var needAuth = function(path) {
+        if (path == "/") return false;
         return _.find(authorizedPaths, function(authPath) {
             return path.indexOf(authPath) == 0;
-        }) != null;
+        }) == null;
     };
 
     // Disable auth for a path
@@ -125,6 +126,8 @@ function setup(options, imports, register) {
         logger.log("disable auth for", path);
         authorizedPaths.push(path);
     };
+    disableAuth("/static");
+    disableAuth("/docs");
 
     // Http Server
     var server = http.createServer(app);
