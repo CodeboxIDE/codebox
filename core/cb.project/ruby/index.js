@@ -4,6 +4,7 @@ module.exports = {
     id: "ruby",
     name: "Ruby",
 
+    sample: path.resolve(__dirname, "sample"),
     detector: path.resolve(__dirname, "detector.sh"),
     runner: [
         {

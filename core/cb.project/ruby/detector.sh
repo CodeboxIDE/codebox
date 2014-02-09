@@ -1,12 +1,8 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env bash
+# bin/use <build-dir>
 
-$:.unshift File.expand_path("../../lib", __FILE__)
-require "language_pack"
-
-if pack = LanguagePack.detect(ARGV.first)
-  puts pack.name
-  exit 0
+if [ -f $1/Gemfile ]; then
+   echo "Ruby" && exit 0
 else
-  puts "no"
-  exit 1
-end
+  echo "no" && exit 1
+fi
