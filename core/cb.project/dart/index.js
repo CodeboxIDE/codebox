@@ -4,5 +4,22 @@ module.exports = {
     id: "dart",
     name: "Dart",
     
-    detector: path.resolve(__dirname, "detector.sh")
+    sample: path.resolve(__dirname, "sample"),
+    detector: path.resolve(__dirname, "detector.sh"),
+    runner: [
+        {
+            id: "pub:serve",
+            type: "run",
+            script: path.resolve(__dirname, "run_serve.sh")
+        },
+        {
+            id: "pub:build",
+            type: "build",
+            script: path.resolve(__dirname, "run_build.sh")
+        }
+    ],
+
+    ignoreRules: [
+        "build",
+    ]
 };
