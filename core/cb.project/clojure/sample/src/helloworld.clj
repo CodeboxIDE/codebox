@@ -1,8 +1,13 @@
 (ns helloworld
-  (:gen-class))
+  (:require [ring.adapter.jetty :as jetty]
+            [compojure.core :refer [defroutes GET]]))
 
+(defroutes handler
+  (GET "/" []
+       {:headers {"Content-type" "text/plain; charset=UTF-8"}
+        :body "Hello world!"}))
 
 (defn -main []
-  (println "Hello World")
-)
-
+  (jetty/run-jetty handler
+                   {:port (Integer. (or (System/getenv "PORT") "8080"))
+                    :join? false}))

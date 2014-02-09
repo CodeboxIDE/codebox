@@ -1,8 +1,8 @@
-(defproject hello-world "0.1.0-SNAPSHOT"
-  :description "FIXME: write description"
-  :url "http://example.com/FIXME"
+(defproject hello-world "1.0.0"
+  :description "Hello World Clojure Web App"
   :dependencies [
-    [org.clojure/clojure "1.5.1"]
+        [org.clojure/clojure "1.4.0"]
+        [compojure "1.1.1"]
+        [ring/ring-jetty-adapter "1.1.2"]
   ]
-  :main helloworld
-)
+  :main helloworld)
