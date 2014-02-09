@@ -128,7 +128,10 @@ function setup(options, imports, register) {
     return Q().then(function() {
         if (!options.forceProjectSample) return;
         logger.log("set workspace content with sample", options.forceProjectSample)
-        return useProjectSample(workspace.root, options.forceProjectSample);
+        return useProjectSample(workspace.root, options.forceProjectSample).fail(function(err) {
+            logger.exception(err, false);
+            return Q();
+        })
     })
     .then(function() {
         return {
