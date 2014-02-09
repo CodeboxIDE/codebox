@@ -6,7 +6,8 @@ export TERM='xterm-256color'
 export HOME="/home/codebox"
 WORKSPACE="${HOME}/workspace/"
 SSH_DIR="${HOME}/.ssh/"
-SERVER_SCRIPT="/opt/codebox/bin/codebox.js"
+CODEBOX_DIR="/opt/codebox"
+SERVER_SCRIPT="${CODEBOX_DIR}/bin/codebox.js"
 PYTHON_ACTIVATE="/opt/virtualenv/bin/activate"
 
 ## Variables provided by environment
@@ -112,6 +113,16 @@ function setup_hg () {
     hg clone -b ${HG_BRANCH} ${HG_URL} ${WORKSPACE}
 }
 
+# Sets up a codebox sample if one exists
+function setup_sample () {
+    local stack="${CODEBOXIO_STACK}"
+    local sample_dir="${CODEBOX_DIR}/core/cb.project/${stack}/sample/"
+
+    if [ -d "${sample_dir}" ]; then
+        cp -R "${sample_dir}" "${WORKSPACE}"
+    fi
+}
+
 # Sets up git or mercurial
 function setup_repo () {
     echo "Calling setup_repo ..."
@@ -130,6 +141,8 @@ function setup_repo () {
     elif [ -n "$HG_URL" ];then
         setup_git
         return
+    elif [ -n "$CODEBOXIO_STACK" ]; then
+        setup_sample
     fi
 }
 
