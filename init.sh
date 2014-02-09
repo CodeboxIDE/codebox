@@ -9,6 +9,8 @@ SSH_DIR="${HOME}/.ssh/"
 CODEBOX_DIR="/opt/codebox"
 SERVER_SCRIPT="${CODEBOX_DIR}/bin/codebox.js"
 PYTHON_ACTIVATE="/opt/virtualenv/bin/activate"
+# Extra flags for the codebox server
+CBFLAGS=""
 
 ## Variables provided by environment
 # RSA_PRIVATE, RSA_PUBLIC
@@ -115,12 +117,7 @@ function setup_hg () {
 
 # Sets up a codebox sample if one exists
 function setup_sample () {
-    local stack="${CODEBOXIO_STACK}"
-    local sample_dir="${CODEBOX_DIR}/core/cb.project/${stack}/sample/"
-
-    if [ -d "${sample_dir}" ]; then
-        cp -R "${sample_dir}" "${WORKSPACE}"
-    fi
+    CBFLAGS="${CBFLAGS} --sample ${CODEBOXIO_STACK}"
 }
 
 # Sets up git or mercurial
@@ -188,7 +185,7 @@ function start_server () {
     echo "Calling start_server ..."
 
     cd ${WORKSPACE}
-    exec ${SERVER_SCRIPT} run ${WORKSPACE}
+    exec ${SERVER_SCRIPT} run ${WORKSPACE} ${CBFLAGS}
 }
 
 # Do all setups
