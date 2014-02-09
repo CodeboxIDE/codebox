@@ -29,7 +29,6 @@
                             <textarea class="form-control" rows="2" placeholder="Commit summary"></textarea>
                         </div>
                         <button type="submit" class="btn btn-default">Commit</button>
-                        <button type="button" class="btn btn-git-sync btn-default" data-toggle="button"><i class="fa fa-refresh"></i></button>
                     </form>
                     <ul class="git-changes-files">
                     <% _.each(git.files || {}, function(file, path) { %>

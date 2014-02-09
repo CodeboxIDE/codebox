@@ -4,6 +4,8 @@ define([
 ], function(templateFile) {
     var DialogView = codebox.require("views/dialogs/base");
     var box = codebox.require("core/box");
+    var rpc = codebox.require("core/backends/rpc");
+    var operations = codebox.require("core/operations");
 
     var GitDialog = DialogView.extend({
         className: "addon-git-dialog modal fade",
@@ -20,7 +22,7 @@ define([
 
             that.git = null;
 
-            box.gitStatus().then(function(status) {
+            rpc.execute("git/status").then(function(status) {
                 that.git = status;
                 that.render();
             });
@@ -57,10 +59,12 @@ define([
                 return;
             }
 
-            box.commit({
-                'message': message
-            }).then(function() {
-                if (sync) return box.sync();
+            operations.start("git.commit", function(op) {
+                return rpc.execute("git/commit", {
+                    'message': message
+                });
+            }, {
+                title: "Commiting"
             }).then(function() {
                 that.close();
             })

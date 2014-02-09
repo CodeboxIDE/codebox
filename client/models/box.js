@@ -144,116 +144,11 @@ define([
         },
 
         /*
-         *  Get git status
-         */
-        gitStatus: function() {
-            return rpc.execute("git/status");
-        },
-
-        /*
-         *  Get git push
-         */
-        gitPush: function() {
-            return operations.start("git.push", function(op) {
-                return rpc.execute("git/push")
-            }, {
-                title: "Pushing"
-            });
-        },
-
-        /*
-         *  Checkout a referance
-         */
-        gitCheckout: function(ref) {
-            return operations.start("git.checkout", function(op) {
-                return rpc.execute("git/checkout", {
-                    'ref': ref
-                })
-            }, {
-                title: "Checkout '"+ref+"'"
-            });
-        },
-
-        /*
-         *  Create a branch
-         */
-        gitBranchCreate: function(name) {
-            return operations.start("git.branch.create", function(op) {
-                return rpc.execute("git/branch_create", {
-                    'name': name
-                })
-            }, {
-                title: "Creating branch '"+name+"'"
-            });
-        },
-
-        /*
-         *  Delete a branch
-         */
-        gitBranchDelete: function(name) {
-            return operations.start("git.branch.delete", function(op) {
-                return rpc.execute("git/branch_delete", {
-                    'name': name
-                })
-            }, {
-                title: "Deleting branch '"+name+"'"
-            });
-        },
-
-        /*
-         *  List branches
-         */
-        gitBranches: function(name) {
-            return rpc.execute("git/branches");
-        },
-
-        /*
-         *  Get git pull
-         */
-        gitPull: function() {
-            return operations.start("git.pull", function(op) {
-                return rpc.execute("git/pull")
-            }, {
-                title: "Pulling"
-            });
-        },
-
-        /*
-         *  Get commits chages
-         */
-        commitsPending: function() {
-            return rpc.execute("git/commits_pending");
-        },
-
-        /*
          *  Search files
          */
         searchFiles: function(q) {
             return rpc.execute("search/files", {
                 "query": q
-            });
-        },
-
-        /*
-         *  Commit to the git workspace
-         */
-        commit: function(args) {
-            args = _.extend(args || {});
-            return operations.start("git.commit", function(op) {
-                return rpc.execute("git/commit", args)
-            }, {
-                title: "Commiting"
-            });
-        },
-
-        /*
-         *  Sync (pull & push) the git workspace
-         */
-        sync: function() {
-            return operations.start("git.sync", function(op) {
-                return rpc.execute("git/sync")
-            }, {
-                title: "Synchronization"
             });
         },
 
