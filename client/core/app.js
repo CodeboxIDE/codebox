@@ -121,7 +121,7 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
                 operations.render();
 
                 // Load addons
-                loading.show(addons.loadAll(), "Loading add-ons").fail(function(err) {
+                loading.show(addons.loadAll()).fail(function(err) {
                     return dialogs.alert("Error loading Add-ons", 
                         "<p>Error when initializing addons." +
                         " Please check addons states using the addons manager and reinstall problematic add-ons.</p>" +

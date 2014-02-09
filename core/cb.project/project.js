@@ -102,6 +102,7 @@ ProjectType.prototype.merge = function(type) {
         })
 
         that.types.push(type.id);
+        that.types = that.types.concat(type.otherIds || [])
     });
 };
 
@@ -121,7 +122,7 @@ ProjectType.prototype.define = function(types) {
             return that.merge(type);
         });
     }, Q()).then(function() {
-        typeIds = _.pluck(types, "id");
+        typeIds = that.types;
 
         var diff = !(_.difference(oldTypes, typeIds).length == 0 && oldTypes.length == typeIds.length);
         if (diff) that.events.emit('project.define', typeIds);

@@ -14,7 +14,7 @@ WORKSPACE=$1
 PORT=$2
 
 # Get plausible entry point
-entry_point=$(${FGREP} "package main" -R . | tr ':' '\n' | grep ".go" | head -n 1)
+entry_point=$(${FGREP} "package main" -R ${WORKSPACE} | tr ':' '\n' | grep ".go" | head -n 1)
 
 # No entry point found
 # default to main.go

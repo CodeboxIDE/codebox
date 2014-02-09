@@ -14,7 +14,7 @@ WORKSPACE=$1
 PORT=$2
 
 # Get plausible entry point
-entry_point=$(${FGREP} "[int|void] main\(" -R . | tr ':' '\n' | grep ".d" | head -n 1)
+entry_point=$(${FGREP} "[int|void] main\(" -R ${WORKSPACE} | tr ':' '\n' | grep ".d" | head -n 1)
 
 # No entry point found
 # default to main.d

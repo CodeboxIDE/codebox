@@ -14,7 +14,7 @@ WORKSPACE=$1
 PORT=$2
 
 # Get plausible entry point
-entry_point=$(${FGREP} "if $0 == __FILE__" -R . | tr ':' '\n' | grep ".rb" | head -n 1)
+entry_point=$(${FGREP} "if $0 == __FILE__" -R ${WORKSPACE} | tr ':' '\n' | grep ".rb" | head -n 1)
 
 # No entry point found
 # default to main.go

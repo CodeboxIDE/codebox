@@ -1,8 +1,8 @@
 {
-    "name": "cb.run",
+    "name": "cb.project",
     "version": "0.1.0",
-    "title": "Run",
-    "description": "Auto-run command and active ports listing",
+    "title": "Project",
+    "description": "Project types manager: autorun, sample",
     "homepage": "https://github.com/FriendCode/codebox",
     "license": "Apache",
     "author": {

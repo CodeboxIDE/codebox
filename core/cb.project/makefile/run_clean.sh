@@ -3,4 +3,4 @@
 # Script args
 WORKSPACE=$1
 
-cd $WORKSPACE && make all
+cd $WORKSPACE && make clean

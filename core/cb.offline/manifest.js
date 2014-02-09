@@ -29,7 +29,7 @@ var Manifest = function() {
     };
 
     // Add a directory in cache
-    this.addFolder = function(folder, root, globR) {
+    this.addFolder = function(folder, root, globR, except) {
         var that = this;
         root = root || "/";
         globR = globR || "**/*";
@@ -41,7 +41,7 @@ var Manifest = function() {
             _.each(
                 // Ignore diretcories
                 _.filter(files, function(file) {
-                    return file.substr(-1) != "/";
+                    return file.substr(-1) != "/" && !_.contains(except, path.join(root,file));
                 }),
                 function(file) {
                     that.add("CACHE", path.join(root,file));

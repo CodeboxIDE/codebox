@@ -76,6 +76,9 @@ var start = function(config) {
         },
         'settings': {
             'path': path.join(LOCAL_SETTINGS_DIR, 'settings.json')
+        },
+        'project': {
+            'forceSample': null
         }
     }, config || {});
 
@@ -187,7 +190,12 @@ var start = function(config) {
             "./cb.shells.stream",
 
             // Detect project types
-            "./cb.project",
+            {
+                packagePath: "./cb.project",
+
+                // Force workspace content to a be sample
+                forceProjectSample: config.project.forceSample
+            },
 
             // Running code/projects
             {
@@ -258,6 +266,7 @@ var start = function(config) {
             "./cb.rpc.search",
             "./cb.rpc.addons",
             "./cb.rpc.proc",
+            "./cb.rpc.project",
             "./cb.rpc.run",
             "./cb.rpc.codecomplete",
 

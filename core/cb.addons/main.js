@@ -238,7 +238,6 @@ function setup(options, imports, register, app) {
     };
 
     // Init addons
-    server.disableAuth("/static/addons");
     server.app.use('/static/addons', gzipStatic(configAddonsPath));
 
     // Prepare defaults addons

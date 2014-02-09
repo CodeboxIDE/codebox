@@ -1,10 +1,10 @@
 // Requires
 var Q = require('q');
 var _ = require('underscore');
-
+var wrench = require('wrench');
 var path = require('path');
-var utils = require('../utils');
 
+var utils = require('../utils');
 var ProjectType = require('./project').ProjectType;
 
 // Supported project types
@@ -12,7 +12,9 @@ var ProjectType = require('./project').ProjectType;
 var SUPPORTED = [
     require("./makefile"),
     require("./procfile"),
+    require("./c"),
     require("./d"),
+    require("./dart"),
     require("./go"),
     require("./clojure"),
     require("./gradle"),
@@ -20,12 +22,13 @@ var SUPPORTED = [
     require("./java"),
     require("./logo"),
     require("./php"),
-    require("./nodejs"),
+    require("./node"),
     require("./meteor"),
     require("./play"),
     require("./python"),
     require("./ruby"),
     require("./scala"),
+    require("./lua"),
     require("./static")
 ];
 
@@ -80,11 +83,34 @@ var detectProject = function(workspace, project) {
     });
 };
 
+// Get project type info by id
+var getProjectType = function(typeId) {
+    return _.find(SUPPORTED, function(pType) {
+        return pType.id == typeId || _.contains(pType.otherIds, typeId);
+    });
+};
+
+// Set project sample
+// Tke a project type id and replace workspace content with it
+var useProjectSample = function(root, typeId) {
+    var pType = getProjectType(typeId);
+    if (!pType) return Q.reject(new Error("Invalid project type id"));
+    if (!pType.sample) return Q.reject(new Error("This project type has no sample"));
+
+    // todo: improve this copy to not delete the directory and recreate it after
+    return Q.nfcall(wrench.copyDirRecursive, pType.sample, root, {
+        'forceDelete': true
+    }).then(function() {
+        return pType;
+    });
+};
+
 
 function setup(options, imports, register) {
     var workspace = imports.workspace;
     var events = imports.events;
     var logger = imports.logger.namespace("project");
+    var prev = Q();
 
     // Create the project type
     var project = new ProjectType(workspace, events, logger);
@@ -99,12 +125,30 @@ function setup(options, imports, register) {
     events.on("watch.change.delete", throttled);
     events.on("watch.watching.success", throttled);
 
-    register(null, {
-        "project": project,
-        "projectTypes": {
-            'add': function addProjectType(module) {
-                SUPPORTED.push(module);
-                return project.detect();
+    return Q().then(function() {
+        if (!options.forceProjectSample) return;
+        logger.log("set workspace content with sample", options.forceProjectSample)
+        return useProjectSample(workspace.root, options.forceProjectSample).fail(function(err) {
+            logger.exception(err, false);
+            return Q();
+        })
+    })
+    .then(function() {
+        return {
+            "project": project,
+            "projectTypes": {
+                "SUPPORTED": SUPPORTED,
+                'add': function addProjectType(module) {
+                    SUPPORTED.push(module);
+                    return project.detect();
+                },
+                'useSample': function(typeId) {
+                    return useProjectSample(workspace.root, typeId).then(function(pType) {
+                        // Update project type
+                        project.detect();
+                        return pType;
+                    });
+                }
             }
         }
     });

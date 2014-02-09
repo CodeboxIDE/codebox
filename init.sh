@@ -6,8 +6,11 @@ export TERM='xterm-256color'
 export HOME="/home/codebox"
 WORKSPACE="${HOME}/workspace/"
 SSH_DIR="${HOME}/.ssh/"
-SERVER_SCRIPT="/opt/codebox/bin/codebox.js"
+CODEBOX_DIR="/opt/codebox"
+SERVER_SCRIPT="${CODEBOX_DIR}/bin/codebox.js"
 PYTHON_ACTIVATE="/opt/virtualenv/bin/activate"
+# Extra flags for the codebox server
+CBFLAGS=""
 
 ## Variables provided by environment
 # RSA_PRIVATE, RSA_PUBLIC
@@ -112,9 +115,20 @@ function setup_hg () {
     hg clone -b ${HG_BRANCH} ${HG_URL} ${WORKSPACE}
 }
 
+# Sets up a codebox sample if one exists
+function setup_sample () {
+    CBFLAGS="${CBFLAGS} --sample ${CODEBOXIO_STACK}"
+}
+
 # Sets up git or mercurial
 function setup_repo () {
     echo "Calling setup_repo ..."
+
+    # Check if workspace directory already contains stuff
+    if [ -n "$(ls -A ${WORKSPACE})" ]; then
+        echo "Skipping setup_repo because workspace folder is not empty"
+        return
+    fi
 
     # Check if we should setup either
     # git or mercurial based on env variables provided
@@ -124,6 +138,8 @@ function setup_repo () {
     elif [ -n "$HG_URL" ];then
         setup_git
         return
+    elif [ -n "$CODEBOXIO_STACK" ]; then
+        setup_sample
     fi
 }
 
@@ -169,7 +185,7 @@ function start_server () {
     echo "Calling start_server ..."
 
     cd ${WORKSPACE}
-    exec ${SERVER_SCRIPT} run ${WORKSPACE}
+    exec ${SERVER_SCRIPT} run ${WORKSPACE} ${CBFLAGS}
 }
 
 # Do all setups

@@ -1,19 +1,15 @@
 var path = require("path");
 
 module.exports = {
-    id: "nodejs",
-    name: "Node.JS",
-
+    id: "lua",
+    name: "Lua",
+    
+    sample: path.resolve(__dirname, "sample"),
     detector: path.resolve(__dirname, "detector.sh"),
     runner: [
         {
-            name: "npm start",
             id: "run",
             script: path.resolve(__dirname, "run.sh")
         }
-    ],
-
-    ignoreRules: [
-        "node_modules",
     ]
 };
