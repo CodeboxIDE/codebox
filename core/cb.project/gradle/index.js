@@ -8,7 +8,6 @@ module.exports = {
     detector: path.resolve(__dirname, "detector.sh"),
     runner: [
         {
-            name: "gradle defaults",
             id: "defaults",
             script: path.resolve(__dirname, "run.sh")
         }
