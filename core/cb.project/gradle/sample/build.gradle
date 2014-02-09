@@ -1,0 +1,13 @@
+defaultTasks 'clean', 'run'
+
+task clean << {
+    println 'Default Cleaning!'
+}
+
+task build << {
+    println 'Default Build!'
+}
+
+task run << {
+    println 'Default Running!'
+}

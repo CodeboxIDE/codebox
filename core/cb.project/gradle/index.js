@@ -4,5 +4,13 @@ module.exports = {
     id: "gradle",
     name: "Gradle",
 
-    detector: path.resolve(__dirname, "detector.sh")
+    sample: path.resolve(__dirname, "sample"),
+    detector: path.resolve(__dirname, "detector.sh"),
+    runner: [
+        {
+            name: "gradle defaults",
+            id: "defaults",
+            script: path.resolve(__dirname, "run.sh")
+        }
+    ]
 };
