@@ -419,6 +419,7 @@ define([
             },
             "Dart":{
                 "primary_extension":".dart",
+                "ace_mode": "dart",
                 "color":"#98BAD6",
                 "type":"programming"
             },
