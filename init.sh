@@ -133,10 +133,10 @@ function setup_repo () {
     # Check if we should setup either
     # git or mercurial based on env variables provided
     if [ -n "$GIT_URL" ]; then
-        setup_hg
+        setup_git
         return
     elif [ -n "$HG_URL" ];then
-        setup_git
+        setup_hg
         return
     elif [ -n "$CODEBOXIO_STACK" ]; then
         setup_sample
