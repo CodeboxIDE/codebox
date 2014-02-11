@@ -1,3 +1,12 @@
+2014-02-11  Samy Pessé  <samy.pesse@friendco.de>
+            Aaron O'Mullan <aaron.omullan@friendco.de>
+
+    * Bump version to 0.5.7
+    * Add sample for each project types
+    * Add mercurial support in init for codebox.io
+    * Add syntax highlighter for .dart files
+    * Add runner for clojure, lua, meteor and dart
+
 2014-02-06  Aaron O'Mullan <aaron.omullan@friendco.de>
 
     * Bump version to 0.5.6
