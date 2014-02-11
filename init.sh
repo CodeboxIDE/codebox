@@ -15,7 +15,7 @@ CBFLAGS=""
 ## Variables provided by environment
 # RSA_PRIVATE, RSA_PUBLIC
 # EMAIL, NAME, USERNAME
-# GIT_URL, GIT_BRANCH, GIT_USER, GIT_PASSWD (some private token)
+# GIT_URL, GIT_USER, GIT_PASSWD (some private token)
 # GIT_HOST, WEBHOOK_URL
 
 
@@ -92,7 +92,7 @@ function setup_git () {
     fi
 
     # Do cloning
-    git clone -b ${GIT_BRANCH} ${GIT_URL} ${WORKSPACE}
+    git clone ${GIT_URL} ${WORKSPACE}
 }
 
 function setup_hg () {
@@ -112,7 +112,7 @@ function setup_hg () {
     fi
 
     # Do cloning
-    hg clone -b ${HG_BRANCH} ${HG_URL} ${WORKSPACE}
+    hg clone ${HG_URL} ${WORKSPACE}
 }
 
 # Sets up a codebox sample if one exists
