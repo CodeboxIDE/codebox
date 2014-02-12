@@ -29,12 +29,13 @@ define([
 
             // Lateral bar panels
             lateralbar: {
+                'background': bgDark,
+
                 commands: {
                     'background': bgDark,
                     'color': colorLight
                 },
                 body: {
-                    'background': bgDark,
                     'color': colorDark
                 }
             },

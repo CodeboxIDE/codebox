@@ -78,6 +78,7 @@ define([
                 'menubar': ".cb-menubar",
 
                 // lateral bar
+                'lateralbar': ".cb-lateralbar",
                 'lateralbar commands': ".cb-lateralbar .lateral-commands",
                 'lateralbar body': ".cb-lateralbar .lateral-body",
 

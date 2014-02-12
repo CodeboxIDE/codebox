@@ -119,6 +119,11 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
                 // Add operations
                 operations.$el.appendTo(this.$(".lateral-operations"));
                 operations.render();
+                operations.on("add remove reset", function() {
+                    setTimeout(function() {
+                        that.$(".lateral-body").css("bottom", operations.$el.height());
+                    }, 200);
+                });
 
                 // Load addons
                 loading.show(addons.loadAll()).fail(function(err) {
