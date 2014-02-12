@@ -1,5 +1,6 @@
 define([], function() {
     var _ = codebox.require("underscore");
+    var dialogs = codebox.require("utils/dialogs");
     var box = codebox.require("core/box");
     var rpc = codebox.require("core/backends/rpc");
     var Command = codebox.require("models/command");
@@ -22,9 +23,12 @@ define([], function() {
                     return {
                         'title': projectType.name,
                         'action': function() {
-                            return rpc.execute("project/useSample", {
-                                'sample': projectType.id
-                            });
+                            dialogs.confirm("Replace workspace contents with "+projectType.name+" sample?",
+                            "WARNING: Using a sample will erase the current contents of your workspace. Use only if your workspace is empty or if you want to wipe it").then(function() {
+                                return rpc.execute("project/useSample", {
+                                    'sample': projectType.id
+                                });  
+                            }); 
                         }
                     };
                 })
