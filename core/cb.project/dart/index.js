@@ -16,6 +16,11 @@ module.exports = {
             id: "pub:build",
             type: "build",
             script: path.resolve(__dirname, "run_build.sh")
+        },
+        {
+            id: "clean",
+            type: "clean",
+            script: path.resolve(__dirname, "run_clean.sh")
         }
     ],
 
