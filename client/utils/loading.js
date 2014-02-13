@@ -17,6 +17,8 @@ define([
 
             if (p) {
                 p.fin(function() {
+                    return Q.delay(300);
+                }).fin(function() {
                     $(".cb-loading-alert").hide();
                     $(".cb-loading-alert .cb-loading-message").html("");
                 });
