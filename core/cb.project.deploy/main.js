@@ -24,7 +24,7 @@ function setup(options, imports, register) {
         _.each(solution, function(_sol) {
             SUPPORTED.push(new DeploymentSolution(workspace, events, logger, _sol));
         });
-    }
+    };
 
 
     // Add basic solutions
@@ -36,7 +36,8 @@ function setup(options, imports, register) {
     register(null, {
         'projectDeploy': {
             'SUPPORTED': SUPPORTED,
-            'get': getSolution
+            'get': getSolution,
+            'add': addSolution
         }
     });
 }
