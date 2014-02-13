@@ -9,7 +9,7 @@
             <% _.each(options.fields, function(field, key) { 
                 var field_name = key;
                 var field_selector = key;
-                var field_value = field.default;
+                var field_value = options.values[field_selector] || field.default;
             %>
             <div class="form-group">
                 <label class="col-lg-3 control-label" for="<%- field_name %>"><%- field.label %></label>

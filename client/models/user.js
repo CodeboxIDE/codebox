@@ -29,8 +29,18 @@ define([
         },
 
         // Return a settings namespace
-        settings: function(namespace) {
+        settings: function(namespace, options) {
             var that = this;
+            options = _.defaults(options || {}, {
+                prepare: true
+            });
+
+            // Prepare settings namespace
+            if (options.prepare) {
+                var current = that.get("settings."+namespace);
+                if (!current) that.set("settings."+namespace, {});
+            }
+
             return {
                 'all': function(def) {
                     return that.get("settings."+namespace, def);

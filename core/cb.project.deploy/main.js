@@ -29,7 +29,8 @@ function setup(options, imports, register) {
 
     // Add basic solutions
     addSolution([
-        require("./ghpages")
+        require("./ghpages"),
+        require("./heroku")
     ])
 
     // Register

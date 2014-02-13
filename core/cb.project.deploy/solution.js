@@ -19,7 +19,8 @@ function DeploymentSolution(workspace, events, logger, infos) {
 DeploymentSolution.prototype.reprData = function() {
     return {
         'id': this.infos.id,
-        'name': this.infos.name
+        'name': this.infos.name,
+        'settings': this.infos.settings || {}
     }
 };
 

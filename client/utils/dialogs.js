@@ -31,10 +31,11 @@ define([
          *  Open a dialog window with fields
          *  @fields: map of fields (standard with settings fields)
          */
-        fields: function(title, fields) {
+        fields: function(title, fields, values) {
             return Dialogs.open(null, {
                 "title": title,
                 "fields": fields,
+                "values": values || {},
                 "dialog": "fields",
                 "autoFocus": true,
                 "valueSelector": function(that) {
