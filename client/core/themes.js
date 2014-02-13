@@ -76,6 +76,7 @@ define([
             namespace: {
                 // menu bar
                 'menubar': ".cb-menubar",
+                'menubar button': ".cb-menubar .cb-commands-menubar .menu-command-item>.btn",
 
                 // lateral bar
                 'lateralbar': ".cb-lateralbar",

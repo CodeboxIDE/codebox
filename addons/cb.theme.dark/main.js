@@ -24,7 +24,12 @@ define([
             menubar: {
                 'background': bgNormal,
                 'color': colorNormal,
-                'border-color': "#111"
+                'border-color': "#111",
+
+                button: {
+                    'border-color': bgNormal,
+                    'border-bottom-color': "transparent"
+                }
             },
 
             // Lateral bar panels
