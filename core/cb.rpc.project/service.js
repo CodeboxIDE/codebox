@@ -36,8 +36,15 @@ ProjectRPCService.prototype.useSample = function(args) {
     });
 };
 
+// Return all deployment solution
+ProjectRPCService.prototype.deployment_solutions = function(args) {
+    return _.map(this.projectDeploy.SUPPORTED, function(solution) {
+        return solution.reprData();
+    });
+};
+
+// Return a specific solution
 ProjectRPCService.prototype.deployment_solution = function(args) {
-    var that = this;
     if (!args.solution) throw "Need 'solution' argument";
     var solution = this.projectDeploy.get(args.solution);
     if (!solution) throw "Invalid solution";
