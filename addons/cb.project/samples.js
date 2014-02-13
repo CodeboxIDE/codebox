@@ -12,7 +12,7 @@ define([], function() {
         'offline': false
     });
 
-    // Update running ports list
+    // Update samples list
     var updateSamples = function() {
         return rpc.execute("project/supported").then(function(projectTypes) {
             samplesMenu.menu.reset(

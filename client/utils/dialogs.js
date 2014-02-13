@@ -28,6 +28,37 @@ define([
         },
 
         /*
+         *  Open a dialog window with fields
+         *  @fields: map of fields (standard with settings fields)
+         */
+        fields: function(title, fields) {
+            return Dialogs.open(null, {
+                "title": title,
+                "fields": fields,
+                "dialog": "fields",
+                "autoFocus": true,
+                "valueSelector": function(that) {
+                    var data = {};
+
+                    var selectors = {
+                        'text': function(el) { return el.val(); },
+                        'textarea': function(el) { return el.val(); },
+                        'number': function(el) { return el.val(); },
+                        'select': function(el) { return el.val(); },
+                        'checkbox': function(el) { return el.is(":checked"); },
+                        'action': function(el)  { return null; }
+                    };
+
+                    _.each(that.options.fields, function(field, key) {
+                        var v = selectors[field.type](that.$("*[name='"+ key+"']"));
+                        if (v !== null) data[key] = v;
+                    });
+                    return data;
+                }
+            });
+        },
+
+        /*
          *  Open a promt dialog window
          *  @message : message to print
          *  @defaultmsg : default value
