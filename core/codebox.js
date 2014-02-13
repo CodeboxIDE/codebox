@@ -197,6 +197,11 @@ var start = function(config) {
                 forceProjectSample: config.project.forceSample
             },
 
+            // Deployment solution
+            {
+                packagePath: "./cb.project.deploy"
+            },
+
             // Running code/projects
             {
                 packagePath: "./cb.run.ports",

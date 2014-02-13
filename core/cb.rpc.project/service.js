@@ -2,9 +2,10 @@
 var Q = require('q');
 var _ = require('underscore');
 
-function ProjectRPCService(project, projectTypes) {
+function ProjectRPCService(project, projectTypes, projectDeploy) {
     this.project = project;
     this.projectTypes = projectTypes;
+    this.projectDeploy = projectDeploy;
 
     _.bindAll(this);
 }
@@ -33,6 +34,14 @@ ProjectRPCService.prototype.useSample = function(args) {
     return this.projectTypes.useSample(args.sample).then(function(projectType) {
         return that._reprProjectType(projectType);
     });
+};
+
+ProjectRPCService.prototype.deployment_solution = function(args) {
+    var that = this;
+    if (!args.solution) throw "Need 'solution' argument";
+    var solution = this.projectDeploy.get(args.solution);
+    if (!solution) throw "Invalid solution";
+    return solution.reprData();
 };
 
 // Exports

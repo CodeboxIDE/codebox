@@ -1,0 +1,16 @@
+{
+    "name": "cb.project.deploy",
+    "version": "0.0.1",
+    "main": "./main",
+    "plugin": {
+        "provides": [
+            "projectDeploy"
+        ],
+        "consumes": [
+            "logger",
+            "project",
+            "events",
+            "workspace"
+        ]
+    }
+}
