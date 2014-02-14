@@ -120,13 +120,26 @@ define([], function() {
         // Add all solutions
         var solutions = settings.get("solutions", {});
         deployMenu.menuSection(_.map(solutions, function(solution) {
-            return {
+            var command = Command.register({
                 title: solution.name,
+                type: "menu",
                 offline: false,
                 action: function() {
                     openSettings(solutionId(solution.name));
                 }
-            };
+            });
+
+            command.menuSection([
+                {
+                    title: "Configure",
+                    offline: false,
+                    action: function() {
+                        openSettings(solutionId(solution.name));
+                    }
+                }
+            ]);
+
+            return command;
         }));
 
         return;
