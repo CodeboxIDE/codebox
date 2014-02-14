@@ -1,4 +1,5 @@
 define([], function() {
+    var Q = codebox.require("q");
     var _ = codebox.require("underscore");
     var dialogs = codebox.require("utils/dialogs");
     var box = codebox.require("core/box");
@@ -37,7 +38,7 @@ define([], function() {
     var addSolution = function(name, solution) {
         var solutions = settings.get("solutions", {});
         var id = solutionId(name);
-        if (solutions[id]) return null;
+        if (solutions[id]) return Q.reject("Solution already exists");
         solutions[id] = {
             'name': name,
             'type': solution,
@@ -45,16 +46,19 @@ define([], function() {
         };
         settings.set("solutions", solutions);
         updateSolutions();
-        return solutions[id];
+        return settings.save().then(function() {
+            return solutions[id];
+        });
     };
 
     // Remove a solution
     var removeSolution = function(id) {
         var solutions = settings.get("solutions", {});
-        if (!solutions[id]) return null;
+        if (!solutions[id]) return Q.reject("Invalid solution");
         delete solutions[id];
         settings.set("solutions", solutions);
         updateSolutions();
+        return settings.save();
     };
 
     // Return solution informations by its id
@@ -73,7 +77,7 @@ define([], function() {
     var openSettings = function(id) {
         var solution = getSolution(id);
         return getSolutionType(solution.type).then(function(_type) {
-            return dialogs.fields("Configuration for "+solution.name, _type.settings, solution.settings);
+            return dialogs.fields("Configuration for "+_.escape(solution.name), _type.settings, solution.settings);
         })
         .then(function(newSettings) {
             setSolutionSettings(id, newSettings);
@@ -82,7 +86,7 @@ define([], function() {
     };
 
     // Command to add a new deployment solution
-    var addCommand = Command.register("deploy.configure", {
+    var addCommand = Command.register("deploy.solutions.add", {
         title: "Add Solution",
         offline: false,
         action: function(page) {
@@ -106,10 +110,27 @@ define([], function() {
             })
             .then(function(data) {
                 if (!data.name || !data.solution) throw "Need 'name' and 'solution'";
-                var solution = addSolution(data.name, data.solution);
-                if (!solution) throw "Cannot add this solution";
+                return addSolution(data.name, data.solution);
+            })
+            .then(function(solution) {
                 return openSettings(solutionId(solution.name));
             });
+        }
+    });
+
+    // Command to remove a solution
+    var removeCommand = Command.register("deploy.solutions.remove", {
+        title: "Remove Solution",
+        offline: false,
+        action: function() {
+            dialogs.select("Remove Deployment Dolution",
+            "Select a solution, this solution and its configuration will be removed from your settings.",
+            _.chain(settings.get("solutions", {}))
+            .map(function(solution, id) {
+                return [id, solution.name]
+            })
+            .object()
+            .value()).then(removeSolution);
         }
     });
 
@@ -122,15 +143,18 @@ define([], function() {
     // Update list of solutions
     var updateSolutions = function() {
         return getSolutionTypes().then(function(_types) {
+            var solutions = settings.get("solutions", {});
+
             deployMenu.clearMenu();
 
             // Add command to create new solutions
-            deployMenu.menuSection([
-                addCommand
-            ]);
+            deployMenu.menuSection(_.compact([
+                addCommand,
+                _.size(solutions) > 0 ? removeCommand : null
+            ]));
 
             // Add all solutions
-            var solutions = settings.get("solutions", {});
+            if (_.size(solutions) == 0) return;
             deployMenu.menuSection(
                 _.chain(solutions)
                 .map(function(solution) {
@@ -166,13 +190,6 @@ define([], function() {
                             offline: false,
                             action: function() {
                                 openSettings(solutionId(solution.name));
-                            }
-                        },
-                        {
-                            title: "Remove",
-                            offline: false,
-                            action: function() {
-                                removeSolution(solutionId(solution.name));
                             }
                         }
                     ]);
