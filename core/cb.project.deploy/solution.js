@@ -20,7 +20,13 @@ DeploymentSolution.prototype.reprData = function() {
     return {
         'id': this.infos.id,
         'name': this.infos.name,
-        'settings': this.infos.settings || {}
+        'settings': this.infos.settings || {},
+        'actions': _.map(this.infos.actions || [], function(action) {
+            return {
+                'id': action.id,
+                'name': action.name
+            };
+        })
     }
 };
 

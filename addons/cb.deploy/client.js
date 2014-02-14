@@ -44,7 +44,17 @@ define([], function() {
             'settings': {}
         };
         settings.set("solutions", solutions);
+        updateSolutions();
         return solutions[id];
+    };
+
+    // Remove a solution
+    var removeSolution = function(id) {
+        var solutions = settings.get("solutions", {});
+        if (!solutions[id]) return null;
+        delete solutions[id];
+        settings.set("solutions", solutions);
+        updateSolutions();
     };
 
     // Return solution informations by its id
@@ -105,44 +115,75 @@ define([], function() {
 
     // Deploy Menu
     var deployMenu = menu.register("deploy", {
-        title: "Deploy"
+        title: "Deploy",
+        position: 90
     });
 
     // Update list of solutions
     var updateSolutions = function() {
-        deployMenu.clearMenu();
+        return getSolutionTypes().then(function(_types) {
+            deployMenu.clearMenu();
 
-        // Add command to create new solutions
-        deployMenu.menuSection([
-            addCommand
-        ]);
-
-        // Add all solutions
-        var solutions = settings.get("solutions", {});
-        deployMenu.menuSection(_.map(solutions, function(solution) {
-            var command = Command.register({
-                title: solution.name,
-                type: "menu",
-                offline: false,
-                action: function() {
-                    openSettings(solutionId(solution.name));
-                }
-            });
-
-            command.menuSection([
-                {
-                    title: "Configure",
-                    offline: false,
-                    action: function() {
-                        openSettings(solutionId(solution.name));
-                    }
-                }
+            // Add command to create new solutions
+            deployMenu.menuSection([
+                addCommand
             ]);
 
-            return command;
-        }));
+            // Add all solutions
+            var solutions = settings.get("solutions", {});
+            deployMenu.menuSection(
+                _.chain(solutions)
+                .map(function(solution) {
+                    var solutionType = _.find(_types, function(_type) {
+                        return _type.id == solution.type;
+                    });
+                    if (!solutionType) return null;
 
-        return;
+                    var command = Command.register({
+                        title: solution.name,
+                        type: "menu",
+                        offline: false,
+                        action: function() {
+                            openSettings(solutionId(solution.name));
+                        }
+                    });
+
+                    command.menuSection(
+                        _.map(solutionType.actions, function(action) {
+                            return {
+                                title: action.name,
+                                offline: false,
+                                action: function() {
+                                    alert("do "+action.id);
+                                }
+                            };
+                        })
+                    );
+
+                    command.menuSection([
+                        {
+                            title: "Configure",
+                            offline: false,
+                            action: function() {
+                                openSettings(solutionId(solution.name));
+                            }
+                        },
+                        {
+                            title: "Remove",
+                            offline: false,
+                            action: function() {
+                                removeSolution(solutionId(solution.name));
+                            }
+                        }
+                    ]);
+
+                    return command;
+                })
+                .compact()
+                .value()
+            );
+        });
+        
     };
 
     updateSolutions();

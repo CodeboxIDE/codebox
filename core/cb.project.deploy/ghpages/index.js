@@ -2,11 +2,13 @@ module.exports = {
     id: "ghpages",
     name: "GitHub Pages",
 
-    configurations: [
+    actions: [
         {
             id: "push",
             name: "Push",
-            deploy: "git push origin gh-pages"
+            action: function() {
+                
+            }
         }
     ]
 };

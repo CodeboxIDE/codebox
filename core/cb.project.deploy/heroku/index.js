@@ -3,6 +3,11 @@ module.exports = {
     name: "Heroku",
 
     settings: {
+        name: {
+            label: "Name",
+            type: "text",
+            help: "Application name from your heroku account."
+        },
         key: {
             label: "Key",
             type: "text",
@@ -10,7 +15,20 @@ module.exports = {
         }
     },
 
-    configurations: function() {
-        return [];
-    }
+    actions: [
+        {
+            id: "push:key",
+            name: "Deploy Public Key",
+            action: function() {
+                
+            }
+        },
+        {
+            id: "push",
+            name: "Push",
+            action: function() {
+                
+            }
+        }
+    ]
 };
