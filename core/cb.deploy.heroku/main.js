@@ -22,7 +22,7 @@ function setup(options, imports, register) {
                 help: "Application name from your heroku account."
             },
             key: {
-                label: "Key",
+                label: "API Key",
                 type: "text",
                 help: "You can find your API key in your settings Heroku."
             }
