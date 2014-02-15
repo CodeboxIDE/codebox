@@ -80,7 +80,7 @@ define([], function() {
                 });
             }
         }, function(err) {
-            dialog.alert("Error with "+_.escape(solution.name), err.message || err);
+            dialogs.alert("Error with "+_.escape(solution.name), err.message || err);
         });
     };
 

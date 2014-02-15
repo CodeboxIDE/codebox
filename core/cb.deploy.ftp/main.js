@@ -46,7 +46,7 @@ function setup(options, imports, register) {
                     var shellId = "ftp:upload";
 
                     var localPath = path.resolve(workspace.root, config.localBase || "./");
-                    if (localPath.length < workspace.root.length) {
+                    if (localPath.indexOf(workspace.root) !== 0) {
                         throw "Invalid local path";
                     }
 
