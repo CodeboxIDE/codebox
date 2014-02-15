@@ -160,11 +160,35 @@ define([
         },
 
         /*
+         *  Open a shell
+         */
+        openTerminal: function(shellId, _op) {
+            var terminal = Command.run("terminal.open", shellId);
+
+            if (_op) {
+                // Associate to an operation
+                var op = operations.start(_op.id, null, _.defaults(_op, {
+                    'action': function() {
+                        terminal.openTab();
+                    }
+                }));
+
+                // Terminal is close: finish the operation
+                terminal.on("tab:close", function() {
+                    op.destroy();
+                });
+            }
+
+            return terminal;
+        },
+
+        /*
          * Run the project
          */
         run: function(options) {
+            var that = this;
             return rpc.execute("run/project", options).then(function(runInfos) {
-                runInfos.terminal = Command.run("terminal.open", runInfos.shellId);
+                runInfos.terminal = that.openTerminal(runInfos.shellId);
                 return Q(runInfos);
             });
         },

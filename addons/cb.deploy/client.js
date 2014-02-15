@@ -63,15 +63,22 @@ define([], function() {
 
     // Run a solution
     var runSolution = function(solution, actionId) {
-        if (_.isString(solution)) solution = getSolution(id);
+        if (_.isString(solution)) solution = getSolution(solution);
 
         return rpc.execute("deploy/run", {
             'solution': solution.type,
             'action': actionId,
             'config': solution.settings
         })
-        .then(function() {
-
+        .then(function(data) {
+            // Handle shells
+            if (data.shellId) {
+                box.openTerminal(data.shellId, {
+                    id: "deploy."+solutionId(solution.name)+"."+actionId,
+                    title: data.title || "Deployment to "+solution.name+" ("+actionId+")",
+                    icon: "fa-cloud-upload"
+                });
+            }
         }, function(err) {
             dialog.alert("Error with "+_.escape(solution.name), err.message || err);
         });

@@ -8,6 +8,8 @@ var api = require("./api");
 
 function setup(options, imports, register) {
     var deploy = imports.deploy;
+    var shells = imports.shells;
+    var workspace = imports.workspace;
 
     deploy.add({
         id: "heroku",
@@ -51,8 +53,17 @@ function setup(options, imports, register) {
             {
                 id: "push",
                 name: "Push",
-                action: function() {
-                    
+                action: function(config) {
+                    var shellId = "heroku:deploy";
+
+                    return shells.createShellCommand(
+                        shellId, ["git", "push", "heroku", "master"], {
+                        cwd: workspace.root
+                    }).then(function(shell) {
+                        return {
+                            'shellId': shellId
+                        };
+                    });
                 }
             }
         ]
