@@ -10,7 +10,7 @@ var method = function(key, httpMethod, endpoint, options) {
         json: true,
         headers: {
             "Accept": "application/vnd.heroku+json; version=3",
-            "Authorization": new Buffer(":" + key).toString('base64')
+            "Authorization": "Basic "+(new Buffer(":" + key).toString('base64'))
         }
     }, options || {}),
     function(error, response, body) {
