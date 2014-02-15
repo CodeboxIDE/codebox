@@ -200,6 +200,7 @@ var start = function(config) {
             // Deployment solution
             "./cb.deploy",
             "./cb.deploy.heroku",
+            "./cb.deploy.appengine",
             "./cb.deploy.ghpages",
 
             // Running code/projects
