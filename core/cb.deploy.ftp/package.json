@@ -1,10 +1,10 @@
 {
-    "name": "cb.deploy.appengine",
+    "name": "cb.deploy.ftp",
     "version": "0.0.1",
     "main": "./main",
     "plugin": {
         "consumes": [
-            "deploy", "shells"
+            "deploy", "shells", "workspace"
         ]
     }
 }

@@ -201,6 +201,7 @@ var start = function(config) {
             "./cb.deploy",
             "./cb.deploy.heroku",
             "./cb.deploy.appengine",
+            "./cb.deploy.ftp",
             "./cb.deploy.ghpages",
 
             // Running code/projects
