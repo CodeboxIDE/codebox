@@ -52,7 +52,7 @@ function setup(options, imports, register) {
 
                     return shells.createShellCommand(
                         shellId,
-                        [scriptUpload, config.host, config.remote || "/", config.username, localPath]
+                        [scriptUpload, config.host, config.remoteBase || "/", config.username, localPath]
                     ).then(function(shell) {
                         return {
                             'shellId': shellId
