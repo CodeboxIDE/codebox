@@ -10,6 +10,7 @@ var ProjectType = require('./project').ProjectType;
 // Supported project types
 // This list is ordered
 var SUPPORTED = [
+    require("./appengine"),
     require("./makefile"),
     require("./procfile"),
     require("./c"),
