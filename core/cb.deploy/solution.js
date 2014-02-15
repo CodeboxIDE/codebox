@@ -30,5 +30,11 @@ DeploymentSolution.prototype.reprData = function() {
     }
 };
 
+DeploymentSolution.prototype.action = function(id) {
+    return _.find(this.infos.actions || [], function(action) {
+        return action.id == id;
+    });
+};
+
 // Exports
 exports.DeploymentSolution = DeploymentSolution;

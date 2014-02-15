@@ -1,10 +1,10 @@
 {
-    "name": "cb.project.deploy",
+    "name": "cb.deploy",
     "version": "0.0.1",
     "main": "./main",
     "plugin": {
         "provides": [
-            "projectDeploy"
+            "deploy"
         ],
         "consumes": [
             "logger",

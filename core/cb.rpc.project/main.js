@@ -6,11 +6,10 @@ function setup(options, imports, register) {
     // Import
     var project = imports.project;
     var projectTypes = imports.projectTypes;
-    var projectDeploy = imports.projectDeploy;
     var rpc = imports.rpc;
 
     // Service
-    var service = new ProjectRPCService(project, projectTypes, projectDeploy);
+    var service = new ProjectRPCService(project, projectTypes);
 
     // Register RPC
     rpc.register('project', service);

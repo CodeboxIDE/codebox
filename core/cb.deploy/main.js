@@ -13,8 +13,8 @@ function setup(options, imports, register) {
 
     // Return a specific solution
     var getSolution = function(solutionId) {
-        return _.find(SOLUTIONS, function(solution) {
-            return solution.id == solutionId;
+        return _.find(SUPPORTED, function(solution) {
+            return solution.infos.id == solutionId;
         });
     };
 
@@ -26,16 +26,9 @@ function setup(options, imports, register) {
         });
     };
 
-
-    // Add basic solutions
-    addSolution([
-        require("./ghpages"),
-        require("./heroku")
-    ])
-
     // Register
     register(null, {
-        'projectDeploy': {
+        'deploy': {
             'SUPPORTED': SUPPORTED,
             'get': getSolution,
             'add': addSolution

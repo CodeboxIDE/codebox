@@ -15,7 +15,7 @@ define([], function() {
 
     // Return list of solutions
     var getSolutionTypes = function() {
-        return rpc.execute("project/deployment/solutions");
+        return rpc.execute("deploy/solutions");
     };
 
     // Return infos for a specific solution type
@@ -59,6 +59,22 @@ define([], function() {
         settings.set("solutions", solutions);
         updateSolutions();
         return settings.save();
+    };
+
+    // Run a solution
+    var runSolution = function(solution, actionId) {
+        if (_.isString(solution)) solution = getSolution(id);
+
+        return rpc.execute("deploy/run", {
+            'solution': solution.type,
+            'action': actionId,
+            'config': solution.settings
+        })
+        .then(function() {
+
+        }, function(err) {
+            dialog.alert("Error with "+_.escape(solution.name), err.message || err);
+        });
     };
 
     // Return solution informations by its id
@@ -157,7 +173,7 @@ define([], function() {
             if (_.size(solutions) == 0) return;
             deployMenu.menuSection(
                 _.chain(solutions)
-                .map(function(solution) {
+                .map(function(solution, solutionId) {
                     var solutionType = _.find(_types, function(_type) {
                         return _type.id == solution.type;
                     });
@@ -178,7 +194,7 @@ define([], function() {
                                 title: action.name,
                                 offline: false,
                                 action: function() {
-                                    alert("do "+action.id);
+                                    return runSolution(solution, action.id);
                                 }
                             };
                         })
@@ -189,7 +205,7 @@ define([], function() {
                             title: "Configure",
                             offline: false,
                             action: function() {
-                                openSettings(solutionId(solution.name));
+                                openSettings(solutionId);
                             }
                         }
                     ]);

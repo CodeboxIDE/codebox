@@ -198,9 +198,8 @@ var start = function(config) {
             },
 
             // Deployment solution
-            {
-                packagePath: "./cb.project.deploy"
-            },
+            "./cb.deploy",
+            "./cb.deploy.heroku",
 
             // Running code/projects
             {
@@ -270,6 +269,7 @@ var start = function(config) {
             "./cb.rpc.auth",
             "./cb.rpc.search",
             "./cb.rpc.addons",
+            "./cb.rpc.deploy",
             "./cb.rpc.proc",
             "./cb.rpc.project",
             "./cb.rpc.run",
