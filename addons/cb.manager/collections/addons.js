@@ -82,19 +82,20 @@ define([
 
         // Return installed addons
         allInstalled: function(options) {
-            return this.getFromIndex(options, function(index) {
-                return _.filter(index, function(addon) {
-                    return addons.isInstalled(addon.name);
-                });
+            this.reset(addons.filter(function(model) {
+                return !addons.isDefault(model.get("name"));
+            }), {
+                totalCount: true
             });
-            this.reset(addons.models);
         },
 
         // Return defaults addons
         allDefaults: function(options) {
             this.reset(addons.filter(function(model) {
                 return addons.isDefault(model.get("name"));
-            }));
+            }), {
+                totalCount: true
+            });
         },
 
         // Return non installed addons
