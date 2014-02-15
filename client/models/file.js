@@ -398,7 +398,10 @@ define([
          *  Refresh infos
          */
         refresh: function() {
-            return this.getByPath(this.path());
+            var that = this;
+            return this.getByPath(this.path()).then(function() {
+                that.trigger("refresh");
+            });
         },
 
         /*
@@ -565,7 +568,7 @@ define([
         // (action) Refresh files list
         actionRefresh: function(e) {
             if (e) e.preventDefault();
-            return this.getByPath(this.path());  
+            return this.refresh();  
         },
 
         // (action) Create a new file
