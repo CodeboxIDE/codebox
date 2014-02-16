@@ -12,7 +12,7 @@ define([
         templateLoader: "text",
         template: templateFile,
         events: _.extend({}, DialogView.prototype.events,{
-            "submit .git-commit": "submit"
+            "submit form": "submit"
         }),
 
         // Constructor

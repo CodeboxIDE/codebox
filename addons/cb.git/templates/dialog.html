@@ -1,35 +1,15 @@
 <div class="modal-dialog">
-    <div class="modal-content">
-        <div class="modal-body">
-            <nav class="navbar navbar-default navbar-static-top" role="navigation">
-                <!-- Brand and toggle get grouped for better mobile display -->
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-8">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <span class="navbar-brand">Git</span>
-                </div>
-
-                <!-- Collect the nav links, forms, and other content for toggling -->
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-8">
-                    <ul class="nav navbar-nav">
-                        <li class="active"><a href="#git-tab-changes" tabindex="-1" data-toggle="tab">Changes</a></li>
-                    </ul>
-                </div><!-- /.navbar-collapse -->
-            </nav>
-
-            <!-- Tab panes -->
-            <div class="tab-content">
-                <div class="git-changes tab-pane fade in active" id="git-tab-changes">
-                    <form class="git-commit">
-                        <div class="form-group">
-                            <textarea class="form-control" rows="2" placeholder="Commit summary"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-default">Commit</button>
-                    </form>
+    <form>
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Commit Changes</h4>
+            </div>
+            <div class="modal-body">
+                <div class="git-changes">
+                    <div class="git-commit form-group">
+                        <textarea class="form-control" rows="2" placeholder="Commit summary"></textarea>
+                    </div>
                     <ul class="git-changes-files">
                     <% _.each(git.files || {}, function(file, path) { %>
                         <li class="file">
@@ -40,9 +20,9 @@
                     </ul>
                 </div>
             </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-default">Commit</button>
+            </div>
         </div>
-        <div class="modal-footer">
-            <button class="btn btn-default action-close">Close</button>
-        </div>
-    </div>
+    </form>
 </div>
