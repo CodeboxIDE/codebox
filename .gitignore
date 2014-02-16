@@ -23,3 +23,5 @@ settings.json
 
 /addons/cb.files.editor/ace/
 **/addon-built.js
+/extras/
+
