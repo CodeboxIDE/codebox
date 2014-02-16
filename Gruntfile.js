@@ -286,6 +286,7 @@ module.exports = function (grunt) {
         'tmp',
         'copy:desktopPKG',
         'shell:nwbuild',
+        'shell:build_extras',
         'nodewebkit',
         'clean:tmp'
     ]);
