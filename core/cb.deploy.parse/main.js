@@ -47,7 +47,7 @@ function setup(options, imports, register) {
 
                     return shells.createShellCommand(
                         shellId,
-                        ["parse", "logs", config.app]
+                        ["parse", "log", config.app, "-f"]
                     ).then(function(shell) {
                         return {
                             'shellId': shellId,
