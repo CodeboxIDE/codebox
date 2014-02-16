@@ -167,6 +167,9 @@ module.exports = function (grunt) {
                     // Most files except the ones below
                     "./**",
 
+                    // Ignore gitignore
+                    "!.gitignore",
+
                     // Ignore dev related things
                     "!./tmp/**",
                     "!./.git/**",
