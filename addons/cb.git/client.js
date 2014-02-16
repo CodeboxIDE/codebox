@@ -91,6 +91,15 @@ define(["views/dialog"], function(GitDialog) {
         } else {
             gitMenu.menuSection([
                 {
+                    'title': "Commit",
+                    'shortcuts': ["mod+shift+C"],
+                    'offline': false,
+                    'action': function() {
+                        dialogs.open(GitDialog);
+                    }
+                }
+            ]).menuSection([
+                {
                     'title': "Synchronize",
                     'shortcuts': ["mod+S"],
                     'offline': false,
@@ -101,17 +110,7 @@ define(["views/dialog"], function(GitDialog) {
                             title: "Pushing & Pulling"
                         });
                     }
-                }
-            ]).menuSection([
-                {
-                    'title': "Commit",
-                    'shortcuts': ["mod+shift+C"],
-                    'offline': false,
-                    'action': function() {
-                        dialogs.open(GitDialog);
-                    }
-                }
-            ]).menuSection([
+                },
                 {
                     'title': "Push",
                     'shortcuts': ["mod+P"],
