@@ -203,6 +203,7 @@ var start = function(config) {
             "./cb.deploy.appengine",
             "./cb.deploy.ftp",
             "./cb.deploy.ghpages",
+            "./cb.deploy.parse",
 
             // Running code/projects
             {

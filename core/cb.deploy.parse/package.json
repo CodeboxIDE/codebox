@@ -1,0 +1,10 @@
+{
+    "name": "cb.deploy.parse",
+    "version": "0.0.1",
+    "main": "./main",
+    "plugin": {
+        "consumes": [
+            "deploy", "shells"
+        ]
+    }
+}
