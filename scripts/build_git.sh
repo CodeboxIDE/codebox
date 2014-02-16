@@ -4,7 +4,7 @@
 GIT_VERSION="v1.9.0"
 
 # Architecture to build for
-TARGET_ARCH="32"
+TARGET_ARCH="64"
 
 SRC_DIR="/tmp/git-src-${GIT_VERSION}"
 DEST_DIR="${PWD}/extras/git"
