@@ -32,10 +32,14 @@ var exec = function(command, options) {
     return deferred.promise;
 }
 
-var Addon = function(logger, _rootPath, options) {
+var Addon = function(_rootPath, options) {
     this.root = _rootPath;
     this.infos = {};
-    this.options = options;
+    this.options = _.defaults(options || {}, {
+        blacklist: [],
+        logger: console
+    });
+    var logger = this.options.logger;
 
     // Load addon infos from an addon's directory
     this.load = Q.fbind(function(addonDir) {
@@ -185,7 +189,7 @@ var Addon = function(logger, _rootPath, options) {
 
         var addonPath = path.join(newRoot, this.infos.name);
         return Q.nfcall(wrench.copyDirRecursive, this.root, addonPath, options).then(function() {
-            var addon = new Addon(logger, addonPath, that.options);
+            var addon = new Addon(addonPath, that.options);
             return addon.load();
         });
     };
@@ -195,7 +199,7 @@ var Addon = function(logger, _rootPath, options) {
         var that = this;
         var addonPath = path.join(newRoot, this.infos.name);
         return Q.nfcall(fs.symlink, this.root, addonPath, 'dir').then(function() {
-            var addon = new Addon(logger, addonPath, that.options);
+            var addon = new Addon(addonPath, that.options);
             return addon.load();
         });
     };

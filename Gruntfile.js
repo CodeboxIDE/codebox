@@ -248,8 +248,16 @@ module.exports = function (grunt) {
         },
         clean: {
             tmp: ['.tmp/']
+        },
+        buildAddons: {
+            tmp: {
+                addonsFolder: ".tmp/addons/"
+            }
         }
     });
+
+    // Load in any and all tasks in the `tasks` folder
+    grunt.loadTasks('tasks');
 
     // Build
     grunt.registerTask('build', [
