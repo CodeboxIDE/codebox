@@ -1,7 +1,7 @@
 define([
     "views/image"
 ], function(FileImageView) {
-    var _ = codebox.require("underscore");
+    var _ = codebox.require("hr/utils");
     var files = codebox.require("core/files");
 
     var imageExts = [

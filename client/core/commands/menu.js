@@ -1,5 +1,5 @@
 define([
-    'underscore',
+    'hr/utils',
     'hr/hr',
     'views/commands/menubar',
     'core/box',

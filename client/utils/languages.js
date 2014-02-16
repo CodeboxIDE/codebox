@@ -1,5 +1,5 @@
 define([
-    'underscore'
+    'hr/utils'
 ], function (_) {
     var Languages = {
         /* Initialize */

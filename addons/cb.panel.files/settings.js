@@ -1,5 +1,5 @@
 define([], function() {
-    var $ = codebox.require("jQuery");
+    var $ = codebox.require("hr/dom");
     var settings = codebox.require("core/settings");
 
     // Add settings

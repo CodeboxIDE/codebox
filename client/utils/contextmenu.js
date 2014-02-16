@@ -1,6 +1,6 @@
 define([
-    'jQuery',
-    'underscore',
+    'hr/dom',
+    'hr/utils',
     'views/commands/menu'
 ], function ($, _, MenuView) {
 

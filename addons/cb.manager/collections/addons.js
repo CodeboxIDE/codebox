@@ -1,9 +1,9 @@
 define([
     "settings"
 ], function(managerSettings) {
-    var Q = codebox.require("q");
+    var Q = codebox.require("hr/promise");
     var hr = codebox.require("hr/hr");
-    var _ = codebox.require("underscore");
+    var _ = codebox.require("hr/utils");
     var Addon = codebox.require("models/addon");
     var addons = codebox.require("core/addons");
     var Addons = codebox.require("collections/addons");

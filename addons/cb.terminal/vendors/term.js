@@ -2151,7 +2151,7 @@ Terminal.prototype.write = function(data) {
                     // CSI Ps q  Load LEDs (DECLL).
                     // CSI Ps SP q
                     // CSI Ps " q
-                    // case 'q':
+                    // case 'hr/promise':
                     //   if (this.postfix === ' ') {
                     //     this.setCursorStyle(this.params);
                     //     break;
@@ -5116,7 +5116,7 @@ Terminal.prototype.keySelect = function(ev, key) {
         return;
     }
 
-    if (key === 'q') {
+    if (key === 'hr/promise') {
         if (this.visualMode) {
             this.leaveVisual();
         } else {
@@ -5608,7 +5608,7 @@ Terminal.charsets.SCLD = { // (0
     'n': '\u253c', // '┼'
     'o': '\u23ba', // '⎺'
     'p': '\u23bb', // '⎻'
-    'q': '\u2500', // '─'
+    'hr/promise': '\u2500', // '─'
     'r': '\u23bc', // '⎼'
     's': '\u23bd', // '⎽'
     't': '\u251c', // '├'

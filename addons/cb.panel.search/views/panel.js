@@ -2,8 +2,8 @@ define([
     "text!templates/panel.html",
     "less!stylesheets/panel.less"
 ], function(templateFile) {
-    var _ = codebox.require("underscore");
-    var $ = codebox.require("jQuery");
+    var _ = codebox.require("hr/utils");
+    var $ = codebox.require("hr/dom");
     var hr = codebox.require("hr/hr");
     var search = codebox.require("core/search");
     var PanelBaseView = codebox.require("views/panels/base");

@@ -1,6 +1,6 @@
 define([
     'hr/hr',
-    'underscore',
+    'hr/utils',
     'vendors/crypto'
 ], function (hr, _, CryptoJS) {
     return {

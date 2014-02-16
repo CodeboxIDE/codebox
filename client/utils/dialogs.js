@@ -1,6 +1,6 @@
 define([
-    "q",
-    "jQuery",
+    "hr/promise",
+    "hr/dom",
     "hr/hr",
     "views/dialogs/base"
 ], function (Q, $, hr, DialogView) {

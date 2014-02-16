@@ -1,5 +1,5 @@
 define([
-    "underscore",
+    "hr/utils",
     "hr/hr",
     "models/file"
 ], function(_, hr, File) {

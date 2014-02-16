@@ -2,7 +2,7 @@ define([
     "views/addons",
     "text!templates/dialog.html"
 ], function(AddonsList, templateFile) {
-    var $ = codebox.require("jQuery");
+    var $ = codebox.require("hr/dom");
     var DialogView = codebox.require("views/dialogs/base");
     var dialogs = codebox.require("utils/dialogs");
     var addons = codebox.require("core/addons");

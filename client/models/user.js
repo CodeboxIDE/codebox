@@ -1,5 +1,5 @@
 define([
-    "underscore",
+    "hr/utils",
     "hr/hr",
     "utils/gravatar",
     'utils/loading',

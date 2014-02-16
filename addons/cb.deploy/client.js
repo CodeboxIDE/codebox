@@ -1,6 +1,6 @@
 define([], function() {
-    var Q = codebox.require("q");
-    var _ = codebox.require("underscore");
+    var Q = codebox.require("hr/promise");
+    var _ = codebox.require("hr/utils");
     var dialogs = codebox.require("utils/dialogs");
     var box = codebox.require("core/box");
     var rpc = codebox.require("core/backends/rpc");

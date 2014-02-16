@@ -1,6 +1,6 @@
 define([
-    "underscore",
-    "jQuery",
+    "hr/utils",
+    "hr/dom",
     "hr/hr"
 ], function(_, $, hr) {
     var DialogView = hr.View.extend({

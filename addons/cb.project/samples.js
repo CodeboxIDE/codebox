@@ -1,5 +1,5 @@
 define([], function() {
-    var _ = codebox.require("underscore");
+    var _ = codebox.require("hr/utils");
     var dialogs = codebox.require("utils/dialogs");
     var box = codebox.require("core/box");
     var rpc = codebox.require("core/backends/rpc");

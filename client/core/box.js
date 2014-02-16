@@ -1,5 +1,5 @@
 define([
-    'q',
+    'hr/promise',
     'hr/hr',
     'models/box',
     'core/search',

@@ -1,6 +1,6 @@
 define([
-    "q",
-    "underscore",
+    "hr/promise",
+    "hr/utils",
     "hr/hr",
     'core/backends/rpc',
     "core/backends/vfs",

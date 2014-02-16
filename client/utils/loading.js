@@ -1,6 +1,6 @@
 define([
-    'jQuery',
-    'underscore'
+    'hr/dom',
+    'hr/utils'
 ], function ($, _) {
     return {
         show: function(p, message) {

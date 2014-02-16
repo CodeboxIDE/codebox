@@ -1,6 +1,6 @@
 define([
-    "underscore",
-    "jQuery",
+    "hr/utils",
+    "hr/dom",
     "hr/hr",
     "utils/dragdrop",
     "utils/keyboard",
@@ -100,7 +100,7 @@ define([
             if (value) {
                 states.push(state);
             } else {
-                states.remove(state);
+                states = _.without(states, state);
             }
             this.tabs.tabs[this.tabid].state = _.uniq(states).join(" ");
             this.tabs.tabs[this.tabid].tab.update();

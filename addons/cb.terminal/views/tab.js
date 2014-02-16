@@ -3,8 +3,8 @@ define([
     "vendors/term",
     "less!stylesheets/tab.less"
 ], function(THEMES) {
-    var _ = codebox.require("underscore");
-    var $ = codebox.require("jQuery");
+    var _ = codebox.require("hr/utils");
+    var $ = codebox.require("hr/dom");
     var hr = codebox.require("hr/hr");
     var Tab = codebox.require("views/tabs/base");
     var box = codebox.require("core/box");
