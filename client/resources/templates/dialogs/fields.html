@@ -16,6 +16,8 @@
                 <div class="col-lg-9">
                     <% if (field.type == "text") { %>
                     <input class="form-control" type="text" name="<%- field_name %>" value="<%- field_value %>" />
+                    <% } else if (field.type == "password") { %>
+                    <input class="form-control" type="password" name="<%- field_name %>" value="<%- field_value %>" />
                     <% } else if (field.type == "number") { %>
                     <input class="form-control" type="number" name="<%- field_name %>" step="<%- field.step || 1 %>" min="<%- field.min || 0 %>" max="<%- field.max || 10 %>" value="<%- field_value %>" />
                     <% } else if (field.type == "checkbox") { %>

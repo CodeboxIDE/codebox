@@ -43,6 +43,7 @@ define([
 
                     var selectors = {
                         'text': function(el) { return el.val(); },
+                        'password': function(el) { return el.val(); },
                         'textarea': function(el) { return el.val(); },
                         'number': function(el) { return el.val(); },
                         'select': function(el) { return el.val(); },

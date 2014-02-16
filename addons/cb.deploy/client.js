@@ -45,7 +45,6 @@ define([], function() {
             'settings': {}
         };
         settings.set("solutions", solutions);
-        updateSolutions();
         return settings.save().then(function() {
             return solutions[id];
         });
@@ -57,7 +56,6 @@ define([], function() {
         if (!solutions[id]) return Q.reject("Invalid solution");
         delete solutions[id];
         settings.set("solutions", solutions);
-        updateSolutions();
         return settings.save();
     };
 
@@ -227,4 +225,5 @@ define([], function() {
     };
 
     updateSolutions();
+    settings.change(updateSolutions);
 });

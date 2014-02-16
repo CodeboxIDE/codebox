@@ -18,7 +18,7 @@ function setup(options, imports, register) {
             url: {
                 label: "Email",
                 type: "text",
-                help: "Google Account email to auth you during application upload."
+                help: "Google Account email to use for auth during application upload."
             }
         },
 
