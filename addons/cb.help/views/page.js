@@ -5,8 +5,8 @@ define([
     "less!stylesheets/page.less"
 ], function(Showdown) {
     var hr = codebox.require("hr/hr");
-    var _ = codebox.require("underscore");
-    var $ = codebox.require("jQuery");
+    var _ = codebox.require("hr/utils");
+    var $ = codebox.require("hr/dom");
     var URL = codebox.require("utils/url");
 
     var PageView = hr.View.extend({

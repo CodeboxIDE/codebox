@@ -1,6 +1,6 @@
 define([
-    'q',
-    'underscore',
+    'hr/promise',
+    'hr/utils',
     'hr/hr',
     'models/file',
     'collections/files',

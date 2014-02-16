@@ -1,6 +1,6 @@
 define([
     'hr/hr',
-    'jQuery'
+    'hr/dom'
 ], function (hr, $) {
     return _.bindAll({
         /*

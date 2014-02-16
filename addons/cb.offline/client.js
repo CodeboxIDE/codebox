@@ -2,8 +2,8 @@ define([
     "settings",
     "menus"
 ], function(settings, menus) {
-    var $ = codebox.require("jQuery");
-    var Q = codebox.require("q");
+    var $ = codebox.require("hr/dom");
+    var Q = codebox.require("hr/promise");
     var app = codebox.require("core/app");
     var box = codebox.require("core/box");
     var menu = codebox.require("core/commands/menu");

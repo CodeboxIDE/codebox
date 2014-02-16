@@ -3,7 +3,7 @@ define([
     "views/file",
     "codecomplete"
 ], function(ace, FileEditorView, codecomplete) {
-    var $ = codebox.require("jQuery");
+    var $ = codebox.require("hr/dom");
     var commands = codebox.require("core/commands/toolbar");
     var settings = codebox.require("core/settings");
     var files = codebox.require("core/files");

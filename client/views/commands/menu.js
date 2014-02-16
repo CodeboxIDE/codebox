@@ -1,6 +1,6 @@
 define([
-    'underscore',
-    'jQuery',
+    'hr/utils',
+    'hr/dom',
     'hr/hr',
     'views/commands/manager'
 ], function(_, $, hr, CommandsView) {
@@ -49,11 +49,6 @@ define([
                     'html': this.model.label(),
                     'class': "menu-label"
                 }).appendTo($a);
-            }
-
-            // Active checkbox
-            if (that.model.hasFlag("active")) {
-                itemIcon = "check";
             }
 
             // Active checkbox

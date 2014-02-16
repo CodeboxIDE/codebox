@@ -1,5 +1,5 @@
 define([
-    'underscore',
+    'hr/utils',
     'hr/hr',
     'collections/users'
 ], function (_, hr, Users) {

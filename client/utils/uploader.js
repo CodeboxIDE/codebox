@@ -1,8 +1,8 @@
 define([
     'hr/hr',
-    'q',
-    'jQuery',
-    'underscore'
+    'hr/promise',
+    'hr/dom',
+    'hr/utils'
 ],function(hr, Q, $, _) {
     var logging = hr.Logger.addNamespace("uploader");
 

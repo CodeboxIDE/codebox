@@ -5,8 +5,8 @@ define([
     "text!templates/panel.html",
     "less!stylesheets/panel.less"
 ], function(panelSettings, FilesTreeView, FilesListView, templateFile) {
-    var _ = codebox.require("underscore");
-    var $ = codebox.require("jQuery");
+    var _ = codebox.require("hr/utils");
+    var $ = codebox.require("hr/dom");
     var hr = codebox.require("hr/hr");
     var box = codebox.require("core/box");
     var files = codebox.require("core/files");

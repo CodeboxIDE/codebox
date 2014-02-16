@@ -3,8 +3,8 @@ define([
     "text!templates/item.html",
     "less!stylesheets/files.less"
 ], function(panelSettings, templateFile) {
-    var _ = codebox.require("underscore");
-    var $ = codebox.require("jQuery");
+    var _ = codebox.require("hr/utils");
+    var $ = codebox.require("hr/dom");
     var hr = codebox.require("hr/hr");
     var box = codebox.require("core/box");
     var ContextMenu = codebox.require("utils/contextmenu");

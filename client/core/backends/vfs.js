@@ -1,5 +1,5 @@
 define([
-    'underscore',
+    'hr/utils',
     'hr/hr',
     'utils/url',
     'core/localfs'
@@ -22,6 +22,11 @@ define([
             }, data)
         });
     };
+
+    // Refresh all vfs when offlien change
+    hr.Offline.on("state", function() {
+        triggerWatchEvent("folder", "/");
+    });
 
     // Map vfs method -> http request method
     var methodsMap = {

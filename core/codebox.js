@@ -197,6 +197,13 @@ var start = function(config) {
                 forceProjectSample: config.project.forceSample
             },
 
+            // Deployment solution
+            "./cb.deploy",
+            "./cb.deploy.heroku",
+            "./cb.deploy.appengine",
+            "./cb.deploy.ftp",
+            "./cb.deploy.ghpages",
+
             // Running code/projects
             {
                 packagePath: "./cb.run.ports",
@@ -265,6 +272,7 @@ var start = function(config) {
             "./cb.rpc.auth",
             "./cb.rpc.search",
             "./cb.rpc.addons",
+            "./cb.rpc.deploy",
             "./cb.rpc.proc",
             "./cb.rpc.project",
             "./cb.rpc.run",

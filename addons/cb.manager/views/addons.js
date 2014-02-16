@@ -4,7 +4,7 @@ define([
     'less!stylesheets/addons'
 ], function(Addons, templateFile) {
     var hr = codebox.require("hr/hr");
-    var _ = codebox.require("underscore");
+    var _ = codebox.require("hr/utils");
     var addons = codebox.require("core/addons");
 
     // Collections of addons

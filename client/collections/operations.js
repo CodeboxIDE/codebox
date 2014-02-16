@@ -1,7 +1,7 @@
 define([
-    "underscore",
+    "hr/utils",
     "hr/hr",
-    "q",
+    "hr/promise",
     "models/operation",
     "utils/dialogs"
 ], function(_, hr, Q, Operation, dialogs) {

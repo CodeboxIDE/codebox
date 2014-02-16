@@ -1,9 +1,9 @@
 define([
     "settings"
 ], function(managerSettings) {
-    var Q = codebox.require("q");
+    var Q = codebox.require("hr/promise");
     var hr = codebox.require("hr/hr");
-    var _ = codebox.require("underscore");
+    var _ = codebox.require("hr/utils");
     var Addon = codebox.require("models/addon");
     var addons = codebox.require("core/addons");
     var Addons = codebox.require("collections/addons");
@@ -82,19 +82,20 @@ define([
 
         // Return installed addons
         allInstalled: function(options) {
-            return this.getFromIndex(options, function(index) {
-                return _.filter(index, function(addon) {
-                    return addons.isInstalled(addon.name);
-                });
+            this.reset(addons.filter(function(model) {
+                return !addons.isDefault(model.get("name"));
+            }), {
+                totalCount: true
             });
-            this.reset(addons.models);
         },
 
         // Return defaults addons
         allDefaults: function(options) {
             this.reset(addons.filter(function(model) {
                 return addons.isDefault(model.get("name"));
-            }));
+            }), {
+                totalCount: true
+            });
         },
 
         // Return non installed addons

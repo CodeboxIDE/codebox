@@ -1,6 +1,6 @@
 define([
-    'underscore',
-    'jQuery',
+    'hr/utils',
+    'hr/dom',
     'hr/hr',
     'views/files/base'
 ], function(_, $, hr, FilesBaseView) {

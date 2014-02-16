@@ -1,6 +1,6 @@
 define([
-    "underscore",
-    "jQuery",
+    "hr/utils",
+    "hr/dom",
     "hr/hr"
 ], function(_, $, hr) {
     var SettingsPageView = hr.View.extend({
@@ -65,6 +65,7 @@ define([
 
             var selectors = {
                 'text': function(el) { return el.val(); },
+                'password': function(el) { return el.val(); },
                 'textarea': function(el) { return el.val(); },
                 'number': function(el) { return el.val(); },
                 'select': function(el) { return el.val(); },

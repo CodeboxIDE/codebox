@@ -1,7 +1,7 @@
 define([
-    "q",
-    "underscore",
-    "jQuery",
+    "hr/promise",
+    "hr/utils",
+    "hr/dom",
     "hr/hr",
 
     // addons dependencies

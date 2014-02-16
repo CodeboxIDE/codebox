@@ -1,8 +1,6 @@
 // Requires
 var _ = require('underscore');
-
 var Gittle = require('gittle');
-
 var GitRPCService = require('./service').GitRPCService;
 
 

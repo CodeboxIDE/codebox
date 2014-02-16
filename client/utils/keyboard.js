@@ -1,6 +1,6 @@
 define([
     'hr/hr',
-    'underscore',
+    'hr/utils',
     'vendors/mousetrap'
 ], function (hr, _, Mousetrap) {
     var Keyboard = new (hr.Class.extend({

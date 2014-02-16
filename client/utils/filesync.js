@@ -1,5 +1,5 @@
 define([
-    "q",
+    "hr/promise",
     "hr/hr",
     "vendors/diff_match_patch",
     "vendors/crypto",

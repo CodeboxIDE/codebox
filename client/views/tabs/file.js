@@ -1,7 +1,7 @@
 define([
-    'underscore',
-    'jQuery',
-    'q',
+    'hr/utils',
+    'hr/dom',
+    'hr/promise',
     'hr/hr',
     'views/tabs/base',
     'utils/dialogs'

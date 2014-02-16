@@ -4,8 +4,8 @@ define([
     "text!templates/file.html",
     "less!stylesheets/file.less",
 ], function(ace, aceDefaultTheme, templateFile) {
-    var _ = codebox.require("underscore");
-    var $ = codebox.require("jQuery");
+    var _ = codebox.require("hr/utils");
+    var $ = codebox.require("hr/dom");
     var hr = codebox.require("hr/hr");
     var Dialogs = codebox.require("utils/dialogs");
     var FilesTabView = codebox.require("views/files/tab");

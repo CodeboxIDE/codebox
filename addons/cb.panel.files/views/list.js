@@ -1,8 +1,8 @@
 define([
     "views/tree"
 ], function(FilesTreeView) {
-    var _ = codebox.require("underscore");
-    var $ = codebox.require("jQuery");
+    var _ = codebox.require("hr/utils");
+    var $ = codebox.require("hr/dom");
     var hr = codebox.require("hr/hr");
 
     // Commands list

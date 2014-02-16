@@ -1,0 +1,10 @@
+{
+    "name": "cb.deploy.appengine",
+    "version": "0.0.1",
+    "main": "./main",
+    "plugin": {
+        "consumes": [
+            "deploy", "shells"
+        ]
+    }
+}

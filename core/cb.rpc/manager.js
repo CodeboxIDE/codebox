@@ -24,7 +24,7 @@ function HttpRPCManager(server, baseUrl, logger) {
 }
 
 HttpRPCManager.prototype.urlFor = function(serviceName, methodName) {
-    return path.normalize(path.join(this.baseUrl, serviceName, methodName));
+    return path.normalize(path.join(this.baseUrl, serviceName, methodName).replace(/_/g, '/'));
 };
 
 // Build a handler to handle requests for this specific request
@@ -54,7 +54,7 @@ HttpRPCManager.prototype.methodHandler = function(method, methodUrl, opts) {
             // Error response
             res.send(500, {
                 'ok': false,
-                'error': err ? err.message : err,
+                'error': err.message || err,
                 'method': methodUrl,
             });
 

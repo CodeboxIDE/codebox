@@ -1,6 +1,6 @@
 define([
-    'underscore',
-    'jQuery',
+    'hr/utils',
+    'hr/dom',
     'hr/hr',
     'models/command',
     'views/panels/base'

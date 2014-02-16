@@ -1,6 +1,6 @@
 define([
-    'jQuery',
-    'underscore'
+    'hr/dom',
+    'hr/utils'
 ], function ($, _) {
     return {
         show: function(p, message) {
@@ -17,6 +17,8 @@ define([
 
             if (p) {
                 p.fin(function() {
+                    return Q.delay(300);
+                }).fin(function() {
                     $(".cb-loading-alert").hide();
                     $(".cb-loading-alert .cb-loading-message").html("");
                 });

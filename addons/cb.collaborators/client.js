@@ -1,5 +1,5 @@
 define([], function() {
-    var $ = codebox.require("jQuery");
+    var $ = codebox.require("hr/dom");
     var collaborators = codebox.require("core/collaborators");
     var search = codebox.require("core/search");
     var box = codebox.require("core/box");

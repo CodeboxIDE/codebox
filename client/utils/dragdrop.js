@@ -1,5 +1,5 @@
 define([
-    'jQuery'
+    'hr/dom'
 ], function ($) {
     var DragDrop = {
         /*

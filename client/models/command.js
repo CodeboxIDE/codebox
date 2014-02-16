@@ -1,19 +1,9 @@
 define([
-    "underscore",
+    "hr/utils",
     "hr/hr",
     "utils/keyboard"
 ], function(_, hr, Keyboard) {
     var logging = hr.Logger.addNamespace("command");
-
-    Array.prototype.remove = function(val) {
-        for (var i = 0; i < this.length; i++) {
-            if (this[i] === val) {
-                this.splice(i, 1);
-                i--;
-            }
-        }
-        return this;
-    };
 
     var Command = hr.Model.extend({
         defaults: {
@@ -107,7 +97,7 @@ define([
             if (state) {
                 flags.push(flag);
             } else {
-                flags.remove(flag);
+                flags = _.without(flags, flag);
             }
             this.set("flags", _.uniq(flags).join(" "));
         },

@@ -1,0 +1,54 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title"><%- options.title || "Input" %></h4>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal">
+            <% _.each(options.fields, function(field, key) { 
+                var field_name = key;
+                var field_selector = key;
+                var field_value = options.values[field_selector] || field.default;
+            %>
+            <div class="form-group">
+                <label class="col-lg-3 control-label" for="<%- field_name %>"><%- field.label %></label>
+                <div class="col-lg-9">
+                    <% if (field.type == "text") { %>
+                    <input class="form-control" type="text" name="<%- field_name %>" value="<%- field_value %>" />
+                    <% } else if (field.type == "password") { %>
+                    <input class="form-control" type="password" name="<%- field_name %>" value="<%- field_value %>" />
+                    <% } else if (field.type == "number") { %>
+                    <input class="form-control" type="number" name="<%- field_name %>" step="<%- field.step || 1 %>" min="<%- field.min || 0 %>" max="<%- field.max || 10 %>" value="<%- field_value %>" />
+                    <% } else if (field.type == "checkbox") { %>
+                    <input type="checkbox" name="<%- field_name %>" <% if(field_value) { %>checked<% } %> />
+                    <% } else if (field.type == "action") { %>
+                    <button class="btn btn-default" data-settings-action="<%- key %>"><%= field.content %></button>
+                    <% } else if (field.type == "textarea") { %>
+                    <textarea class="form-control" name="<%- field_name %>" rows="<%- field.rows || 3 %>"><%- field_value %></textarea>
+                    <% } else if (field.type == "select") { %>
+                    <select class="form-control" name="<%- field_name %>">
+                        <% _.each(field.options, function(opname, opkey) { %>
+                            <option
+                                value="<%- opkey %>"
+                                <% if (field_value == opkey) { %>
+                                    selected
+                                <% } %>
+                                ><%- opname %></option>
+                        <% }) %>
+                    </select>
+                    <% } %>
+
+                    <% if (field.help) { %>
+                    <p class="help-block"><%= field.help %></p>
+                    <% } %>
+                </div>
+            </div>
+            <% }) %>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-default action-confirm">OK</button>
+        </div>
+    </div>
+</div>
