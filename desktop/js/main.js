@@ -188,7 +188,9 @@ var importExtra = function(_path) {
 
 // Start the local ide for a path
 var runLocalCodebox = function(path) {
-    var win = gui.Window.open("./ide.html?"+path, {
+    path = encodeURIComponent(path);
+    var env = encodeURIComponent(JSON.stringify(process.env));
+    var win = gui.Window.open("./ide.html?path="+path+"&env="+env, {
         'title': "Codebox",
         'position': 'center',
         'width': 1024,
