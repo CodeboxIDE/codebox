@@ -23,6 +23,11 @@ define([
         });
     };
 
+    // Refresh all vfs when offlien change
+    hr.Offline.on("state", function() {
+        triggerWatchEvent("folder", "/");
+    });
+
     // Map vfs method -> http request method
     var methodsMap = {
         "listdir": "getJSON",
