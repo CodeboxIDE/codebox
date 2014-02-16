@@ -8,6 +8,7 @@ var wrench = require('wrench');
 var exec = require('child_process').exec;
 
 var Addon = require("./addon");
+var manager = require("./manager");
 
 // GZIP static middleware
 var gzipStatic = require('connect-gzip-static');
@@ -28,6 +29,12 @@ function setup(options, imports, register, app) {
     // Directory for temporary storage
     var configTempPath = options.tempPath ? path.resolve(options.tempPath) : null;
 
+    // Options for addons
+    var addonsOptions = {
+        'blacklist': options.blacklist,
+        'logger': logger
+    };
+
     // Build the directory for stroign addons
     if (!fs.existsSync(configAddonsPath)) {
         wrench.mkdirSyncRecursive(configAddonsPath);
@@ -39,91 +46,27 @@ function setup(options, imports, register, app) {
         return fs.existsSync(path.join(configDefaultsPath, addon));
     };
 
-    // Load addons list from a directory return as a map name -> addon
+    // Loader
     var loadAddonsInfos = function(addonsRoot, _options) {
-        // Diretcory to explore
-        addonsRoot = addonsRoot || configAddonsPath;
-
-        // Options
-        _options = _.defaults({}, _options || {}, {
-            ignoreError: false
+        return manager.loadAddonsInfos(addonsOptions, addonsRoot || configAddonsPath, _options)
+        .then(function(addons) {
+            return _.chain(addons)
+            .map(function(addon, name) {
+                addon.infos.default = isDefaultAddon(addon);
+                return [
+                    name, addon
+                ];
+            })
+            .object()
+            .value()
         });
-
-        return Q.nfcall(fs.readdir, addonsRoot).then(function(dirs) {
-            return _.reduce(dirs, function(previous, dir) {
-                return previous.then(function(addons) {
-                    if (dir.indexOf('.') == 0) return Q(addons);
-
-                    var addonPath = path.join(addonsRoot, dir);
-                    var addon = new Addon(logger, addonPath, options);
-                    return addon.load().then(function() {
-                        addon.infos.default = isDefaultAddon(addon);
-                        addons[addon.infos.name] = addon;
-                        return Q(addons);
-                    }, function(err) {
-                        logger.error("error", err);
-                        if (_options.ignoreError) {
-                            //  When ignoring error
-                            //  it will check that the addon is not a symlink
-                            //  and unlink invalid ones
-                            logger.error("ignore invalid addon", addonPath);
-                            return addon.isSymlink().then(function(symlink) {
-                                if (symlink) {
-                                    logger.error("unlink invalid addon:", addon.root);
-                                    return addon.unlink();
-                                }
-                            }).then(function() {
-                                return Q(addons);
-                            }, function() {
-                                return Q(addons);
-                            });
-                        }
-                        return Q.reject(err);
-                    });
-                });
-            }, Q({}));
-        });
-    };
-
-    // Run an operation for a collection fo addons
-    var runAddonsOperation = function(operation, options) {
-        options = _.defaults(options || {}, {
-            failOnError: true
-        });
-
-        var failedAddons = [];
-
-        return function(addons) {
-            return Q.all(_.map(addons, function(addon) {
-                return operation(addon).then(function() {
-                    return addon;
-                }, function(err) {
-                    if (options.failOnError) {
-                        return Q.reject(err);
-                    } else {
-                        logger.error("ignore error", err);
-                        failedAddons.push(addon.infos.name);
-                        return Q();
-                    }
-                });
-            })).then(function() {
-                return Q(_.omit(addons, failedAddons));
-            });
-        };
     };
 
     // Copy defaults addons
     var copyDefaultsAddons = function() {
         var first = loadAddonsInfos(configDefaultsPath);
 
-        if (options.dev) {
-            logger.log("Optmize defaults addons for production");
-            first = first.then(runAddonsOperation(function(addon) {
-                return addon.optimizeClient(true);
-            }));
-        }
-
-        return first.then(runAddonsOperation(function(addon) {
+        return first.then(manager.runAddonsOperation(function(addon) {
             logger.log("Adding default addon", addon.infos.name);
 
             // Path to addon
@@ -175,6 +118,7 @@ function setup(options, imports, register, app) {
         logger.log("Install add-on", git, "ref="+gitRef);
 
         tempDir = path.join(configTempPath, "t"+Date.now());
+        console.log(tempDir);
 
         // Create temporary dir
         return Q.nfcall(fs.mkdir, tempDir).then(function() {
@@ -185,7 +129,7 @@ function setup(options, imports, register, app) {
             return repo.checkout(gitRef);
         }).then(function() {
             // Load addon
-            addon = new Addon(logger, tempDir, options);
+            addon = new Addon(tempDir, addonsOptions);
             return addon.load();
         }).then(function() {
             // Blacklist
@@ -241,31 +185,36 @@ function setup(options, imports, register, app) {
     server.app.use('/static/addons', gzipStatic(configAddonsPath));
 
     // Prepare defaults addons
-    return copyDefaultsAddons().then(function() {
+    return copyDefaultsAddons()
+    .then(function() {
         // Load collection of addons
-        return loadAddonsInfos(null, {
+        return loadAddonsInfos(configAddonsPath, {
             ignoreError: true
         });
-    }).then(runAddonsOperation(function(addon) {
+    })
+    .then(manager.runAddonsOperation(function(addon) {
         // Install node dependencies
         return addon.installDependencies();
     }, {
         failOnError: false
-    })).then(runAddonsOperation(function(addon) {
-        // Optimized addons
-        return addon.optimizeClient(options.dev);
+    }))
+    .then(manager.runAddonsOperation(function(addon) {
+        // Build non optimized addons
+        return addon.optimizeClient();
     }, {
         failOnError: false
-    })).then(runAddonsOperation(function(addon) {
+    }))
+    .then(manager.runAddonsOperation(function(addon) {
         // Start addons
         return addon.start(app);
     }, {
         failOnError: false
-    })).then(function() {
+    }))
+    .then(function() {
         logger.log("Addons are ready");
         return {
             'addons': {
-                'list': loadAddonsInfos,
+                'list': _.partial(loadAddonsInfos, configAddonsPath),
                 'install': installAddon,
                 'uninstall': uninstallAddon
             }

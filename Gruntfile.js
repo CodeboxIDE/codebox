@@ -167,6 +167,9 @@ module.exports = function (grunt) {
                     // Most files except the ones below
                     "./**",
 
+                    // Ignore gitignore
+                    "!.gitignore",
+
                     // Ignore dev related things
                     "!./tmp/**",
                     "!./.git/**",
@@ -248,8 +251,20 @@ module.exports = function (grunt) {
         },
         clean: {
             tmp: ['.tmp/']
+        },
+        buildAddons: {
+            tmp: {
+                addonsFolder: ".tmp/addons/"
+            },
+            dev: {
+                addonsFolder: "./addons/",
+                force: false
+            }
         }
     });
+
+    // Load in any and all tasks in the `tasks` folder
+    grunt.loadTasks('tasks');
 
     // Build
     grunt.registerTask('build', [
@@ -262,6 +277,7 @@ module.exports = function (grunt) {
         'build',
         'clean:tmp',
         'copy:tmp',
+        'buildAddons:tmp',
         'compress:tmp'
     ]);
 
@@ -305,6 +321,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('default', [
         'build',
+        'buildAddons:dev',
         'run'
     ]);
 };

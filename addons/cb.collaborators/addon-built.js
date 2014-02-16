@@ -1,1 +1,0 @@
-define("client",[],function(){var e=codebox.require("hr/dom"),t=codebox.require("core/collaborators"),n=codebox.require("core/search"),r=codebox.require("core/box"),i=codebox.require("core/user"),s=codebox.require("core/commands/menu")})
