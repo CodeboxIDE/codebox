@@ -10,11 +10,8 @@ function setup(options, imports, register) {
     var events = imports.events;
     var workspace = imports.workspace;
 
-    // Construct
-    var repo = new Gittle(workspace.root);
-
     // Service
-    var service = new GitRPCService(repo, events);
+    var service = new GitRPCService(workspace, events);
 
     // Register RPC
     rpc.register('git', service);
@@ -22,7 +19,7 @@ function setup(options, imports, register) {
     // Register
     register(null, {
         "git": {
-            repo: repo,
+            repo: service.repo,
         },
         "git_rpc": service
     });

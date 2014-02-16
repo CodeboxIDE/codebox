@@ -1,14 +1,42 @@
 // Requires
 var Q = require('q');
 var _ = require('underscore');
+var Gittle = require('gittle');
 
-
-function GitRPCService(repo, events) {
-    this.repo = repo;
+function GitRPCService(workspace, events) {
+    this.workspace = workspace;
     this.events = events;
+
+    this.repo = new Gittle(workspace.root);
 
     _.bindAll(this);
 }
+
+GitRPCService.prototype.init = function(args, meta) {
+    var that = this;
+    return Gittle.init(this.workspace.root).then(function(repo) {
+        that.events.emit('git.init', {
+            userId: meta.user.userId
+        });
+
+        that.repo = repo;
+        return that.repo.status();
+    });
+};
+
+GitRPCService.prototype.clone = function(args, meta) {
+    var that = this;
+    if (!args.url) throw "Need an url for cloning a repository";
+    return Gittle.clone(args.url, this.workspace.root).then(function(repo) {
+        that.events.emit('git.clone', {
+            userId: meta.user.userId,
+            url: args.url
+        });
+
+        that.repo = repo;
+        return that.repo.status();
+    });
+};
 
 GitRPCService.prototype.status = function() {
     return this.repo.status();

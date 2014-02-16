@@ -81,7 +81,12 @@ define(["views/dialog"], function(GitDialog) {
                     'offline': false,
                     'action': function() {
                         return operations.start("git.clone", function(op) {
-                            return rpc.execute("git/clone")
+                            return dialogs.prompt("Clone Repository", "Remote repository URI:").then(function(url) {
+                                if (!url) return;
+                                return rpc.execute("git/clone", {
+                                    'url': url
+                                });
+                            });
                         }, {
                             title: "Cloning GIT repository"
                         });
