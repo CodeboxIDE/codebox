@@ -1,6 +1,7 @@
 define(["views/dialog"], function(GitDialog) {
     var commands = codebox.require("core/commands/toolbar");
     var app = codebox.require("core/app");
+    var box = codebox.require("core/box");
     var dialogs = codebox.require("utils/dialogs");
     var menu = codebox.require("core/commands/menu");
     var box = codebox.require("core/box");
@@ -20,7 +21,7 @@ define(["views/dialog"], function(GitDialog) {
     };
 
     // Branches menu
-    var branchesMenu = Command.register("git.branches", {
+    var branchesMenu = Command.register({
         'title': "Switch To Branch",
         'type': "menu",
         'offline': false
@@ -65,7 +66,6 @@ define(["views/dialog"], function(GitDialog) {
                     'iconMenu': "warning"
                 },
                 {
-                    'id': "git.init",
                     'title': "Initialize Repository",
                     'offline': false,
                     'action': function() {
@@ -77,7 +77,6 @@ define(["views/dialog"], function(GitDialog) {
                     }
                 },
                 {
-                    'id': "git.clone",
                     'title': "Clone Repository",
                     'offline': false,
                     'action': function() {
@@ -92,7 +91,6 @@ define(["views/dialog"], function(GitDialog) {
         } else {
             gitMenu.menuSection([
                 {
-                    'id': "git.sync",
                     'title': "Synchronize",
                     'shortcuts': ["mod+S"],
                     'offline': false,
@@ -106,18 +104,15 @@ define(["views/dialog"], function(GitDialog) {
                 }
             ]).menuSection([
                 {
-                    'id': "git.commit",
                     'title': "Commit",
                     'shortcuts': ["mod+shift+C"],
                     'offline': false,
                     'action': function() {
-                        dialogs.open(GitDialog)
-                        .then(updateStatus);
+                        dialogs.open(GitDialog);
                     }
                 }
             ]).menuSection([
                 {
-                    'id': "git.push",
                     'title': "Push",
                     'shortcuts': ["mod+P"],
                     'offline': false,
@@ -130,7 +125,6 @@ define(["views/dialog"], function(GitDialog) {
                     }
                 },
                 {
-                    'id': "git.pull",
                     'title': "Pull",
                     'shortcuts': ["shift+mod+P"],
                     'offline': false,
@@ -145,14 +139,12 @@ define(["views/dialog"], function(GitDialog) {
             ]).menuSection([
                 branchesMenu,
                 {
-                    'id': "git.branches.refresh",
                     'title': "Refresh branches",
                     'offline': false,
                     'action': updateBranchesMenu,
                 }
             ]).menuSection([
                 {
-                    'id': "git.branch.create",
                     'title': "Create a branch",
                     'offline': false,
                     'action': function() {
@@ -169,7 +161,6 @@ define(["views/dialog"], function(GitDialog) {
                     }
                 },
                 {
-                    'id': "git.branch.delete",
                     'title': "Delete a branch",
                     'offline': false,
                     'action': function() {
@@ -189,6 +180,9 @@ define(["views/dialog"], function(GitDialog) {
         }
     };
 
+    box.on("box:git", function() {
+        updateStatus();
+    });
     updateStatus();
 });
 
