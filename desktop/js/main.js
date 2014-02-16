@@ -1,9 +1,13 @@
 // Requires
 var gui = require('nw.gui');
-var path = require('path');
+
 var Q = require('q');
 var _ = require('underscore');
+
+var fs = require('fs');
+var path = require('path');
 var querystring = require("querystring");
+
 var CodeboxIO = require('codebox-io').Client;
 
 
@@ -123,7 +127,7 @@ var updateCodeboxIOAccount = function() {
     } else {
         token = prompt("Please enter your CodeboxIO Account Token to connect it to this desktop, this token can be found on your codebox.io account settings:");
     }
-    
+
     storageSet("token", token);
     updateRemote();
 }
@@ -145,6 +149,42 @@ var selectPath = function() {
     $directorySelector.click();
 };
 
+/*
+    Extras support
+*/
+
+var addToPATH = function(binPath) {
+    process.env.PATH = [binPath, process.env.PATH].join(':');
+};
+
+// Detect modules of extras folder and modify envs accordingly
+var importExtras = function() {
+    var extrasDir = path.resolve(path.join(
+        require('./js/dirname').dirname, '..', '..', 'extras'
+    ));
+
+    // Skip if extras dir doesn't exist
+    if(!fs.existsSync(extrasDir)) {
+        return;
+    }
+
+    // Try importing each module
+    fs.readdirSync(extrasDir).forEach(function(subDir) {
+        return importExtra(path.join(extrasDir, subDir));
+    });
+};
+
+// Import a specifc extra module
+// (add bin subfolder to PATH, etc ...)
+var importExtra = function(_path) {
+    // Folder containing extra binaries
+    var binPath = path.join(_path, 'bin');
+
+    // Add it
+    if(fs.existsSync(binPath)) {
+        addToPATH(binPath);
+    }
+};
 
 // Start the local ide for a path
 var runLocalCodebox = function(path) {
@@ -251,4 +291,7 @@ window.onload = function() {
     if (!updateProjects()) {
         selectPath();
     }
+
+    // Import extra modules
+    importExtras();
 };
