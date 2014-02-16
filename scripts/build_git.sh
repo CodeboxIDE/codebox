@@ -30,9 +30,12 @@ echo "Building ..."
 bash -c "
     cd "${SRC_DIR}" &&
     make configure &&
-    ./configure --prefix="${DEST_DIR}" CC='gcc -m${TARGET_ARCH}' &&
+    export NO_INSTALL_HARDLINKS='true'; ./configure --prefix="${DEST_DIR}" CC='gcc -m${TARGET_ARCH}' &&
     make &&
     make install
 "
 
 # done
+
+# Package
+# tar -czvf /tmp/git-v1.9.0-darwin-x64.tgz -C ./extras/git .
