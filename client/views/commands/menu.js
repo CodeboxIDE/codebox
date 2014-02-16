@@ -74,6 +74,7 @@ define([
             var that = this;
             var itemType = this.model.get("type");
             var itemText = this.model.get("title");
+            var itemIcon = this.model.get("iconMenu", "");
 
             var $li = this.$el;
             $li.empty();
@@ -93,6 +94,13 @@ define([
             } else if (itemType == "label") {
                 $li.addClass("dropdown-header");
                 $li.text(itemText);
+
+                // Icon
+                if (itemIcon) {
+                    $("<i>", {
+                        "class": "menu-icon fa fa-"+itemIcon
+                    }).prependTo($li);
+                }
             } else if (itemType == "menu") {
                 $li.addClass("dropdown-submenu");
                 $li.one("mouseenter", function() {

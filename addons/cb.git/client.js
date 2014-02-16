@@ -8,6 +8,13 @@ define(["views/dialog"], function(GitDialog) {
     var rpc = codebox.require("core/backends/rpc");
     var operations = codebox.require("core/operations");
 
+    // Error label
+    var errorLabel = Command.register({
+        'title': "Invalid GIT repository",
+        'type': "label",
+        'iconMenu': "warning"
+    });
+
     // Branches menu
     var branchesMenu = Command.register("git.branches", {
         'title': "Switch To Branch",
@@ -15,7 +22,9 @@ define(["views/dialog"], function(GitDialog) {
         'offline': false
     });
     var updateBranchesMenu = function() {
-        return rpc.execute("git/branches").then(function(branches) {
+        return rpc.execute("git/branches")
+        .then(function(branches) {
+            updateMenu(true);
             branchesMenu.menu.reset(_.map(branches, function(branch) {
                 return {
                     'title': branch.name,
@@ -32,107 +41,147 @@ define(["views/dialog"], function(GitDialog) {
                     }
                 }
             }));
+        }, function(err) {
+            updateMenu(false);
         });
     };
 
     // Add menu
-    menu.register("git", {
+    var gitMenu = menu.register("git", {
         title: "Repository"
-    }).menuSection([
-        {
-            'id': "git.sync",
-            'title': "Synchronize",
-            'shortcuts': ["mod+S"],
-            'offline': false,
-            'action': function() {
-                return operations.start("git.sync", function(op) {
-                    return rpc.execute("git/sync")
-                }, {
-                    title: "Pushing & Pulling"
-                });
-            }
+    });
+
+    var updateMenu = function(state) {
+        // Clear menu
+        gitMenu.clearMenu();
+
+        // Invalid repository
+        if (!state) {
+            gitMenu.menuSection([
+                errorLabel,
+                {
+                    'id': "git.init",
+                    'title': "Initialize Repository",
+                    'offline': false,
+                    'action': function() {
+                        return operations.start("git.init", function(op) {
+                            return rpc.execute("git/init")
+                        }, {
+                            title: "Initializing GIT repository"
+                        });
+                    }
+                },
+                {
+                    'id': "git.clone",
+                    'title': "Clone Repository",
+                    'offline': false,
+                    'action': function() {
+                        return operations.start("git.clone", function(op) {
+                            return rpc.execute("git/clone")
+                        }, {
+                            title: "Cloning GIT repository"
+                        });
+                    }
+                }
+            ]);
+        } else {
+            gitMenu.menuSection([
+                {
+                    'id': "git.sync",
+                    'title': "Synchronize",
+                    'shortcuts': ["mod+S"],
+                    'offline': false,
+                    'action': function() {
+                        return operations.start("git.sync", function(op) {
+                            return rpc.execute("git/sync")
+                        }, {
+                            title: "Pushing & Pulling"
+                        });
+                    }
+                }
+            ]).menuSection([
+                {
+                    'id': "git.commit",
+                    'title': "Commit",
+                    'shortcuts': ["mod+shift+C"],
+                    'offline': false,
+                    'action': function() {
+                        dialogs.open(GitDialog);
+                    }
+                }
+            ]).menuSection([
+                {
+                    'id': "git.push",
+                    'title': "Push",
+                    'shortcuts': ["mod+P"],
+                    'offline': false,
+                    'action': function() {
+                        return operations.start("git.push", function(op) {
+                            return rpc.execute("git/push")
+                        }, {
+                            title: "Pushing"
+                        });
+                    }
+                },
+                {
+                    'id': "git.pull",
+                    'title': "Pull",
+                    'shortcuts': ["shift+mod+P"],
+                    'offline': false,
+                    'action': function() {
+                        return operations.start("git.pull", function(op) {
+                            return rpc.execute("git/pull")
+                        }, {
+                            title: "Pulling"
+                        });
+                    }
+                }
+            ]).menuSection([
+                branchesMenu,
+                {
+                    'id': "git.branches.refresh",
+                    'title': "Refresh branches",
+                    'offline': false,
+                    'action': updateBranchesMenu,
+                }
+            ]).menuSection([
+                {
+                    'id': "git.branch.create",
+                    'title': "Create a branch",
+                    'offline': false,
+                    'action': function() {
+                        dialogs.prompt("Create a branch", "Enter the name for the new branch:").then(function(name) {
+                            if (!name) return;
+                            operations.start("git.branch.create", function(op) {
+                                return rpc.execute("git/branch_create", {
+                                    'name': name
+                                })
+                            }, {
+                                title: "Creating branch '"+name+"'"
+                            }).then(updateBranchesMenu);
+                        });
+                    }
+                },
+                {
+                    'id': "git.branch.delete",
+                    'title': "Delete a branch",
+                    'offline': false,
+                    'action': function() {
+                        dialogs.prompt("Delete a branch", "Enter the name of the branch you want to delete:").then(function(name) {
+                            if (!name) return;
+                            operations.start("git.branch.delete", function(op) {
+                                return rpc.execute("git/branch_delete", {
+                                    'name': name
+                                })
+                            }, {
+                                title: "Deleting branch '"+name+"'"
+                            }).then(updateBranchesMenu);
+                        });
+                    }
+                }
+            ]);
         }
-    ]).menuSection([
-        {
-            'id': "git.commit",
-            'title': "Commit",
-            'shortcuts': ["mod+shift+C"],
-            'offline': false,
-            'action': function() {
-                dialogs.open(GitDialog);
-            }
-        }
-    ]).menuSection([
-        {
-            'id': "git.push",
-            'title': "Push",
-            'shortcuts': ["mod+P"],
-            'offline': false,
-            'action': function() {
-                return operations.start("git.push", function(op) {
-                    return rpc.execute("git/push")
-                }, {
-                    title: "Pushing"
-                });
-            }
-        },
-        {
-            'id': "git.pull",
-            'title': "Pull",
-            'shortcuts': ["shift+mod+P"],
-            'offline': false,
-            'action': function() {
-                return operations.start("git.pull", function(op) {
-                    return rpc.execute("git/pull")
-                }, {
-                    title: "Pulling"
-                });
-            }
-        }
-    ]).menuSection([
-        branchesMenu,
-        {
-            'id': "git.branches.refresh",
-            'title': "Refresh branches",
-            'offline': false,
-            'action': updateBranchesMenu
-        }
-    ]).menuSection([
-        {
-            'id': "git.branch.create",
-            'title': "Create a branch",
-            'offline': false,
-            'action': function() {
-                dialogs.prompt("Create a branch", "Enter the name for the new branch:").then(function(name) {
-                    if (!name) return;
-                    operations.start("git.branch.create", function(op) {
-                        return rpc.execute("git/branch_create", {
-                            'name': name
-                        })
-                    }, {
-                        title: "Creating branch '"+name+"'"
-                    }).then(updateBranchesMenu);
-                });
-            }
-        },
-        {
-            'id': "git.branch.delete",
-            'title': "Delete a branch",
-            'offline': false,
-            'action': function() {
-                dialogs.prompt("Delete a branch", "Enter the name of the branch you want to delete:").then(function(name) {
-                    if (!name) return;
-                    operations.start("git.branch.delete", function(op) {
-                        return rpc.execute("git/branch_delete", {
-                            'name': name
-                        })
-                    }, {
-                        title: "Deleting branch '"+name+"'"
-                    }).then(updateBranchesMenu);
-                });
-            }
-        }
-    ]);
+    };
 
     updateBranchesMenu();
 });
