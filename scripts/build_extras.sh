@@ -28,6 +28,10 @@ trap cleanup INT
 
 # Download and decompress tar.gz
 function download_to {
+    if [ -d "${2}" ]; then
+        echo "Skipping ${2}, because it appears to already exist ..."
+        return
+    fi
     mkdir -p ${2}
     curl ${1} | tar -xzv -C "${2}" --strip-components=1
 }
