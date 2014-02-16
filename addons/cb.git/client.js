@@ -8,12 +8,16 @@ define(["views/dialog"], function(GitDialog) {
     var rpc = codebox.require("core/backends/rpc");
     var operations = codebox.require("core/operations");
 
-    // Error label
-    var errorLabel = Command.register({
-        'title': "Invalid GIT repository",
-        'type': "label",
-        'iconMenu': "warning"
-    });
+    // Check git status
+    var updateStatus = function() {
+        return rpc.execute("git/status")
+        .then(function() {
+            updateMenu(true);
+            return updateBranchesMenu();
+        }, function(err) {
+            updateMenu(false);
+        })
+    };
 
     // Branches menu
     var branchesMenu = Command.register("git.branches", {
@@ -24,7 +28,6 @@ define(["views/dialog"], function(GitDialog) {
     var updateBranchesMenu = function() {
         return rpc.execute("git/branches")
         .then(function(branches) {
-            updateMenu(true);
             branchesMenu.menu.reset(_.map(branches, function(branch) {
                 return {
                     'title': branch.name,
@@ -41,8 +44,6 @@ define(["views/dialog"], function(GitDialog) {
                     }
                 }
             }));
-        }, function(err) {
-            updateMenu(false);
         });
     };
 
@@ -58,7 +59,11 @@ define(["views/dialog"], function(GitDialog) {
         // Invalid repository
         if (!state) {
             gitMenu.menuSection([
-                errorLabel,
+                {
+                    'title': "Invalid GIT repository",
+                    'type': "label",
+                    'iconMenu': "warning"
+                },
                 {
                     'id': "git.init",
                     'title': "Initialize Repository",
@@ -106,7 +111,8 @@ define(["views/dialog"], function(GitDialog) {
                     'shortcuts': ["mod+shift+C"],
                     'offline': false,
                     'action': function() {
-                        dialogs.open(GitDialog);
+                        dialogs.open(GitDialog)
+                        .then(updateStatus);
                     }
                 }
             ]).menuSection([
@@ -153,12 +159,12 @@ define(["views/dialog"], function(GitDialog) {
                         dialogs.prompt("Create a branch", "Enter the name for the new branch:").then(function(name) {
                             if (!name) return;
                             operations.start("git.branch.create", function(op) {
-                                return rpc.execute("git/branch_create", {
+                                return rpc.execute("git/branch/create", {
                                     'name': name
                                 })
                             }, {
                                 title: "Creating branch '"+name+"'"
-                            }).then(updateBranchesMenu);
+                            });
                         });
                     }
                 },
@@ -170,7 +176,7 @@ define(["views/dialog"], function(GitDialog) {
                         dialogs.prompt("Delete a branch", "Enter the name of the branch you want to delete:").then(function(name) {
                             if (!name) return;
                             operations.start("git.branch.delete", function(op) {
-                                return rpc.execute("git/branch_delete", {
+                                return rpc.execute("git/branch/delete", {
                                     'name': name
                                 })
                             }, {
@@ -183,6 +189,6 @@ define(["views/dialog"], function(GitDialog) {
         }
     };
 
-    updateBranchesMenu();
+    updateStatus();
 });
 
