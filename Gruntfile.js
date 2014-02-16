@@ -131,7 +131,18 @@ module.exports = function (grunt) {
                             'NW_VERSION': NW_VERSION
                         }, process.env)
                     }
-                }
+                },
+            },
+            build_extras: {
+                command: "./scripts/build_extras.sh",
+                options: {
+                    execOptions: {
+                        cwd: '.tmp/',
+                        stdout: true,
+                        stderr: true,
+                        failOnError: true
+                    }
+                },
             },
             publish: {
                 command: "npm publish",
