@@ -66,13 +66,6 @@ function setup(options, imports, register, app) {
     var copyDefaultsAddons = function() {
         var first = loadAddonsInfos(configDefaultsPath);
 
-        if (options.dev) {
-            logger.log("Optmize defaults addons for production");
-            first = first.then(manager.runAddonsOperation(function(addon) {
-                return addon.optimizeClient(true);
-            }));
-        }
-
         return first.then(manager.runAddonsOperation(function(addon) {
             logger.log("Adding default addon", addon.infos.name);
 
@@ -206,8 +199,8 @@ function setup(options, imports, register, app) {
         failOnError: false
     }))
     .then(manager.runAddonsOperation(function(addon) {
-        // Optimized addons
-        return addon.optimizeClient(options.dev);
+        // Build non optimized addons
+        return addon.optimizeClient();
     }, {
         failOnError: false
     }))

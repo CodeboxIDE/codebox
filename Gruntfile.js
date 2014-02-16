@@ -252,6 +252,10 @@ module.exports = function (grunt) {
         buildAddons: {
             tmp: {
                 addonsFolder: ".tmp/addons/"
+            },
+            dev: {
+                addonsFolder: "./addons/",
+                force: false
             }
         }
     });
@@ -313,6 +317,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('default', [
         'build',
+        'buildAddons:dev',
         'run'
     ]);
 };
