@@ -15,7 +15,7 @@ module.exports = function(grunt) {
         var folder = this.data.addonsFolder;
         var force = this.data.force;
 
-        grunt.log.writeln("Building addons in "+folder);
+        grunt.log.writeln("Building addons in "+folder+" (force="+force+")");
 
         addonsManager.loadAddonsInfos({}, folder)
         .then(addonsManager.runAddonsOperation(function(addon) {
