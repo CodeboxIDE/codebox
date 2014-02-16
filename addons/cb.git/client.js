@@ -61,12 +61,12 @@ define(["views/dialog"], function(GitDialog) {
         if (!state) {
             gitMenu.menuSection([
                 {
-                    'title': "Invalid GIT repository",
+                    'title': "No GIT Repository detected",
                     'type': "label",
                     'iconMenu': "warning"
                 },
                 {
-                    'title': "Initialize Repository",
+                    'title': "Initialize Local Repository",
                     'offline': false,
                     'action': function() {
                         return operations.start("git.init", function(op) {
@@ -77,7 +77,7 @@ define(["views/dialog"], function(GitDialog) {
                     }
                 },
                 {
-                    'title': "Clone Repository",
+                    'title': "Clone Remote Repository",
                     'offline': false,
                     'action': function() {
                         return operations.start("git.clone", function(op) {
