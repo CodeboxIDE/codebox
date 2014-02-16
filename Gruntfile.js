@@ -120,7 +120,7 @@ module.exports = function (grunt) {
         },
         shell: {
             nwbuild: {
-                command: "./nwbuild.sh",
+                command: "./scripts/nwbuild.sh",
                 options: {
                     execOptions: {
                         cwd: '.tmp/',
