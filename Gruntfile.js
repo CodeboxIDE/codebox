@@ -274,6 +274,7 @@ module.exports = function (grunt) {
         'build',
         'clean:tmp',
         'copy:tmp',
+        'buildAddons:tmp',
         'compress:tmp'
     ]);
 
