@@ -115,7 +115,11 @@ module.exports = function (grunt) {
                 zip: false
             },
             src: [
-                ".tmp/**"
+                ".tmp/**",
+
+                // grunt.file.copy duplicates symbolic and hard links
+                // so we need to copy it with the shell
+                "!.tmp/extras/**",
             ]
         },
         shell: {
@@ -166,6 +170,18 @@ module.exports = function (grunt) {
                     }
                 }
             },
+            copy_extras: {
+                // Copy and preserve symbolic links
+                command: "mv .tmp/extras ./appBuilds/releases/Codebox/mac/Codebox.app/Contents/Resources/app.nw/extras",
+                options: {
+                    execOptions: {
+                        cwd: '.',
+                    },
+                    stdout: true,
+                    stderr: true,
+                    failOnError: true
+                }
+            }
         },
         copy: {
             // Copy most files over
@@ -186,6 +202,10 @@ module.exports = function (grunt) {
                     "!./.git/**",
                     "!./.addons/**",
                     "!./appBuilds/**",
+
+                    // grunt.file.copy duplicates symbolic and hard links
+                    // so we need to copy it with the shell
+                    "!./extras/**",
 
                     // Only take "./client/build"
                     "!./client/**",
@@ -299,6 +319,7 @@ module.exports = function (grunt) {
         'shell:nwbuild',
         'shell:build_extras',
         'nodewebkit',
+        'shell:copy_extras',
         'clean:tmp'
     ]);
 
