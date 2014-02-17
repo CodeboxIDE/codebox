@@ -94,7 +94,7 @@ var updateProjects = function() {
     var boxes = storageGet("remoteBoxes", []);
     boxes.forEach(function(box) {
         addProjectItem(box.name, "remote - "+box.stack, "icons/128.png", function() {
-            runRemoveCodebox(box);
+            runRemoteCodebox(box);
         });
     });
     if (boxes.length > 0) {
@@ -207,7 +207,7 @@ var runLocalCodebox = function(path) {
 };
 
 // Open the remote ide for a box
-var runRemoveCodebox = function(box) {
+var runRemoteCodebox = function(box) {
     var options = {
         'email': storageGet("email"),
         'token': storageGet("token")
