@@ -9,7 +9,8 @@
         "provides": [],
         "consumes": [
             "deploy",
-            "rpc"
+            "rpc",
+            "events"
         ]
     }
 }

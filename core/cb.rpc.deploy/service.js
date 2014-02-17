@@ -2,8 +2,9 @@
 var Q = require('q');
 var _ = require('underscore');
 
-function DeployRPCService(deploy) {
+function DeployRPCService(deploy, events) {
     this.deploy = deploy;
+    this.events = events;
 
     _.bindAll(this);
 }
@@ -17,7 +18,7 @@ DeployRPCService.prototype.solutions = function(args) {
 };
 
 // Run deployment
-DeployRPCService.prototype.run = function(args) {
+DeployRPCService.prototype.run = function(args, meta) {
     if (!args.solution
     || !args.config
     || !args.action) throw "Need 'solution', 'action' and 'config' arguments";
@@ -27,6 +28,11 @@ DeployRPCService.prototype.run = function(args) {
 
     var action = solution.action(args.action);
     if (!action) throw "Invalid action: '"+args.action+"'";
+
+    this.events.emit("deploy.run", {
+        'userId': meta.user.userId,
+        'solution': args.solution
+    });
 
     return Q()
     .then(function() {
