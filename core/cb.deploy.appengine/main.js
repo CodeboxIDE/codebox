@@ -12,7 +12,7 @@ function setup(options, imports, register) {
 
     deploy.add({
         id: "appengine",
-        name: "Google AppEngine",
+        name: "App Engine",
 
         settings: {
             url: {
