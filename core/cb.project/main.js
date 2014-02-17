@@ -30,7 +30,8 @@ var SUPPORTED = [
     require("./ruby"),
     require("./scala"),
     require("./lua"),
-    require("./static")
+    require("./static"),
+    require("./parse")
 ];
 
 // Returns true if lang is supported otherwise false

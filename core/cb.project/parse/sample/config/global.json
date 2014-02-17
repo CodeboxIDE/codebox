@@ -1,0 +1,11 @@
+{
+    "applications": {
+        "_default": {
+            "link": "your app name"
+        }, 
+        "test": {
+            "applicationId": "your app id", 
+            "masterKey": "your app master key"
+        }
+    }
+}
