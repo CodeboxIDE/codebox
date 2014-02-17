@@ -18,7 +18,7 @@ function setup(options, imports, register) {
             app: {
                 label: "Application",
                 type: "text",
-                help: "(optional) Name of your Parse Cloud Code application."
+                help: "(optional) Name of your Parse Cloud Code application. If empty, it will use the configuration file config/global.json."
             }
         },
 
