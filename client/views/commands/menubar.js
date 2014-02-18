@@ -22,7 +22,18 @@ define([
                 'data-toggle': "dropdown"
             }).appendTo(this.$el);
 
-            $btn.one("click", function() {
+            $btn.on("click", function(e) {
+                if (that.model.hasFlag("disabled")) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    that.$el.removeClass("open");
+                    return;
+                }
+            });
+
+            $btn.one("click", function(e) {
+                if (that.model.hasFlag("disabled")) return;
+
                 if (!that.menu) {
                     that.menu = new MenuView({
                         'collection': that.model.menu

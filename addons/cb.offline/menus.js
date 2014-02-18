@@ -64,15 +64,6 @@ define([], function() {
         menuListChanges
     ]);
 
-    // Add menu when offline
-    menu.register("offline", {
-        title: "Offline",
-        position: 90,
-        offline: true
-    }).menuSection([
-        checkConnection
-    ]);
-
     // Changes update
     localfs.changes.on("add remove reset", function() {
         menuListChanges.toggleFlag("disabled", localfs.changes.size() == 0);

@@ -70,7 +70,8 @@ define(["views/dialog"], function(GitDialog) {
 
     // Add menu
     var gitMenu = menu.register("git", {
-        title: "Repository"
+        title: "Repository",
+        offline: false
     });
 
     var updateMenu = function(state) {

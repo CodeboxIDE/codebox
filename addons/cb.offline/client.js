@@ -54,7 +54,7 @@ define([
         localfs.setIgnoredFiles(settings.user.get("syncIgnore", "").split("\n"));
 
         // Toggle menu
-        menus.sync.toggleFlag("disabled", !enabled);
+        menus.sync.toggleFlag("hidden", !enabled);
         
         // Run sync every 10min
         _syncInterval = setInterval(function() {

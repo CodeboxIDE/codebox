@@ -158,7 +158,8 @@ define([], function() {
     // Deploy Menu
     var deployMenu = menu.register("deploy", {
         title: "Deploy",
-        position: 90
+        position: 90,
+        offline: false
     });
 
     // Update list of solutions

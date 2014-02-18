@@ -20,7 +20,8 @@ define([
 
     // Add menu
     menu.register("project", {
-        title: "Project"
+        title: "Project",
+        offline: false
     }).menuSection([
         autorun.command,
         runner.command
