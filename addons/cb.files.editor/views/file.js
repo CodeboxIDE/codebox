@@ -157,13 +157,15 @@ define([
             });
 
             // Bind settings changement
-            userSettings.change(function() {
+            var update = function() {
                 var ops = _.extend({}, {
                     "mode": this.options.mode,
                     "readonly": this.options.readonly
                 });
                 this.setOptions(ops);
-            }, this);
+            };
+            userSettings.change(update, this);
+            user.settings("themes").change(update, this);
 
             // Bind editor changement -> sync
             this.editor.getSession().selection.on('changeSelection', function(){
