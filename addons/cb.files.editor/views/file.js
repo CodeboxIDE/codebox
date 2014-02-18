@@ -186,7 +186,7 @@ define([
                 this.setMode(mode)
             }, this);
             this.sync.on("content", function(content, oldcontent, patches) {
-                var selection, cursor_lead, cursor_anchor, scroll_y;
+                var selection, cursor_lead, cursor_anchor, scroll_y, operations;
 
                 // Do some operations on selection to preserve selection
                 selection = this.editor.getSession().getSelection();
@@ -207,7 +207,26 @@ define([
 
                 // Set editor content
                 this._op_set = true;
-                this.editor.session.setValue(content);
+                if (patches) {
+                    operations = this.sync.patchesToOps(patches);
+
+                    for (var i in operations) {
+                        var op = operations[i];
+                        var opStart = this.posFromIndex(op.index);
+                        var opEnd = this.posFromIndex(op.index + op.content.length);
+
+                        console.log("operation: ", i, op, op.type, op.index, op.content);
+                        if (op.type == "insert") {
+                            this.editor.session.doc.insert(opStart, op.content);
+                        }
+
+                        if (op.type == "delete") {
+                            this.editor.session.doc.remove(aceRange.Range.fromPoints(opStart, opEnd));
+                        }
+                    }
+                } else {
+                    this.editor.session.setValue(content);
+                }
                 this._op_set = false;
 
                 // Move cursors
@@ -340,6 +359,22 @@ define([
             this.editor.getSession().setUseSoftTabs(this.options.enablesofttabs);
             this.editor.getSession().setTabSize(this.options.tabsize);
             return this;
+        },
+
+        posFromIndex: function(index) {
+            var row = 0;
+            var lines = this.editor.session.doc.$lines;
+            for (row in lines) {
+                var line = lines[row];
+                if (index <= (line.length +1)) break;
+                index = index - (line.length + 1);
+            }
+
+            console.log("index", index, row, index);
+            return {
+                'row': row,
+                'column': index
+            };
         },
 
         /*

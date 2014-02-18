@@ -190,6 +190,7 @@ define([
          *  Apply patch to content
          */
         patchContent: function(patch_data) {
+            var that = this;
             // Check old hash
             if (this.hash_value_t1 == patch_data.hashs.after)
             {
@@ -219,6 +220,35 @@ define([
             // Set editor content
             this.setContent(newtext, patches);
             return true;
+        },
+
+        /*
+         *  Convert patch to operations
+         */
+        patchesToOps: function(patches) {
+            return _.chain(patches)
+                .map(function(change, i) {
+                    var diffIndex = change.start1;
+
+                    return _.map(change.diffs, function(diff, a) {
+                        var content = diff[1];
+                        var diffType = diff[0];
+
+                        diffIndex = diffIndex + content.length;
+
+                        if (diffType == 0) return;
+
+                        diffType = diffType > 0 ? "insert" : "delete";
+                        return {
+                            'type': diffType,
+                            'content': content,
+                            'index': diffIndex
+                        };
+                    });
+                })
+                .flatten()
+                .compact()
+                .value();
         },
 
         /*
@@ -283,7 +313,7 @@ define([
                         logging.log("socket connecting ...");
                     });
                     socket.on('message', function(data) {
-                        logging.log("socket receive packet ", data);
+                        //logging.log("socket receive packet ", data);
                         self.ping = true;
 
                         // Calid data
@@ -636,7 +666,7 @@ define([
                     'environment': this.envId
                 });
 
-                logging.log("send packet", data);
+                //logging.log("send packet", data);
                 this.socket().then(function(socket) {
                     socket.json.send(data);
                 })
