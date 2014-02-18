@@ -55,6 +55,7 @@ HttpRPCManager.prototype.methodHandler = function(method, methodUrl, opts) {
             res.send(500, {
                 'ok': false,
                 'error': err.message || err,
+                'code': err.code || 500,
                 'method': methodUrl,
             });
 

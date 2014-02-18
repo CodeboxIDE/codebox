@@ -48,6 +48,26 @@ define(["views/dialog"], function(GitDialog) {
         });
     };
 
+    // Handle http auth
+    var handleHttpAuth = function(method) {
+        return Q(method())
+        .fail(function(err) {
+            if (err.code == 401) {
+                return dialogs.fields("Need authentication:", {
+                    username: {
+                        type: "text",
+                        label: "Username"
+                    },
+                    password: {
+                        type: "password",
+                        label: "Password"
+                    }
+                })
+                .then(method);
+            }
+        })
+    };
+
     // Add menu
     var gitMenu = menu.register("git", {
         title: "Repository"
@@ -83,8 +103,11 @@ define(["views/dialog"], function(GitDialog) {
                         return operations.start("git.clone", function(op) {
                             return dialogs.prompt("Clone Remote Repository", "Remote repository URI:").then(function(url) {
                                 if (!url) return;
-                                return rpc.execute("git/clone", {
-                                    'url': url
+                                return handleHttpAuth(function(creds) {
+                                    return rpc.execute("git/clone", {
+                                        'url': url,
+                                        'auth': creds || {}
+                                    });
                                 });
                             });
                         }, {
@@ -110,7 +133,11 @@ define(["views/dialog"], function(GitDialog) {
                     'offline': false,
                     'action': function() {
                         return operations.start("git.sync", function(op) {
-                            return rpc.execute("git/sync")
+                            return handleHttpAuth(function(creds) {
+                                return rpc.execute("git/sync", {
+                                    'auth': creds || {}
+                                });
+                            });
                         }, {
                             title: "Pushing & Pulling"
                         });
@@ -122,7 +149,11 @@ define(["views/dialog"], function(GitDialog) {
                     'offline': false,
                     'action': function() {
                         return operations.start("git.push", function(op) {
-                            return rpc.execute("git/push")
+                            return handleHttpAuth(function(creds) {
+                                return rpc.execute("git/push", {
+                                    'auth': creds || {}
+                                });
+                            });
                         }, {
                             title: "Pushing"
                         });
@@ -134,7 +165,11 @@ define(["views/dialog"], function(GitDialog) {
                     'offline': false,
                     'action': function() {
                         return operations.start("git.pull", function(op) {
-                            return rpc.execute("git/pull")
+                            return handleHttpAuth(function(creds) {
+                                return rpc.execute("git/pull", {
+                                    'auth': creds || {}
+                                });
+                            });
                         }, {
                             title: "Pulling"
                         });

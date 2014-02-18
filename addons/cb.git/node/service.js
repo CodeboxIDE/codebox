@@ -27,7 +27,7 @@ GitRPCService.prototype.init = function(args, meta) {
 GitRPCService.prototype.clone = function(args, meta) {
     var that = this;
     if (!args.url) throw "Need an url for cloning a repository";
-    return Gittle.clone(args.url, this.workspace.root).then(function(repo) {
+    return Gittle.clone(args.url, this.workspace.root, args.auth || {}).then(function(repo) {
         that.events.emit('git.clone', {
             userId: meta.user.userId,
             url: args.url
@@ -44,7 +44,7 @@ GitRPCService.prototype.status = function() {
 
 GitRPCService.prototype.sync = function(args, meta) {
     var that = this;
-    return this.repo.sync()
+    return this.repo.sync(null, null, args.auth || {})
     .then(function() {
         that.events.emit('git.sync', {
             userId: meta.user.userId
@@ -54,7 +54,7 @@ GitRPCService.prototype.sync = function(args, meta) {
 
 GitRPCService.prototype.push = function(args, meta) {
     var that = this;
-    return this.repo.push()
+    return this.repo.push(null, null, args.auth || {})
     .then(function() {
         that.events.emit('git.push', {
             userId: meta.user.userId
@@ -64,7 +64,7 @@ GitRPCService.prototype.push = function(args, meta) {
 
 GitRPCService.prototype.pull = function(args, meta) {
     var that = this;
-    return this.repo.pull()
+    return this.repo.pull(null, null, args.auth || {})
     .then(function() {
         that.events.emit('git.pull', {
             userId: meta.user.userId

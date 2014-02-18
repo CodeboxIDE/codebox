@@ -22,7 +22,9 @@ define([
             }, function(err) {
                 try {
                     var errContent = JSON.parse(err.httpRes);
-                    return Q.reject(new Error(errContent.error || err.message));
+                    var e = new Error(errContent.error || err.message);
+                    e.code = errContent.code || err.status || 500;
+                    return Q.reject(e);
                 } catch(e) {
                     return Q.reject(err);
                 }
