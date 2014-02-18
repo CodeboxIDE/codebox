@@ -212,16 +212,22 @@ define([
 
                     for (var i in operations) {
                         var op = operations[i];
-                        var opStart = this.posFromIndex(op.index);
-                        var opEnd = this.posFromIndex(op.index + op.content.length);
 
                         console.log("operation: ", i, op, op.type, op.index, op.content);
                         if (op.type == "insert") {
-                            this.editor.session.doc.insert(opStart, op.content);
+                            this.editor.session.doc.insert(
+                                this.posFromIndex(op.index),
+                                op.content
+                            );
                         }
 
                         if (op.type == "delete") {
-                            this.editor.session.doc.remove(aceRange.Range.fromPoints(opStart, opEnd));
+                            this.editor.session.doc.remove(
+                                aceRange.Range.fromPoints(
+                                this.posFromIndex(op.index - op.content.length),
+                                this.posFromIndex(op.index)
+                                )
+                            );
                         }
                     }
                 } else {
