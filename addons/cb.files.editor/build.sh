@@ -46,8 +46,7 @@ SREGEX="snippetText=(\"\"|\'\')"
 
 # Remove empty snippet files
 find ./ace/snippets -name "*.js" -print | \
-xargs grep -E ${SREGEX} | \
-cut -d':' -f1 | \
+xargs grep -E ${SREGEX} -l | \
 xargs rm -f
 
 
