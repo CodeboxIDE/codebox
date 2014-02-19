@@ -378,7 +378,7 @@ define([
             lines = this.editor.session.doc.getAllLines();
             for (row = 0; row < lines.length; row++) {
                 var line = lines[row];
-                if (index <= (line.length +1)) break;
+                if (index <= (line.length)) break;
                 index = index - (line.length + 1);
             }
 
