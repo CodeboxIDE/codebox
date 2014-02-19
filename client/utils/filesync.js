@@ -651,7 +651,7 @@ define([
             .value();
 
             this.participantIds = _.pluck(participants, "userId");
-            logging.log("update participants", this.participantIds, _.keys(this.cursors), _.keys(this.selections));
+            logging.log("update participants", this.participantIds);
 
             // Signal participant update
             this.trigger("participants");
