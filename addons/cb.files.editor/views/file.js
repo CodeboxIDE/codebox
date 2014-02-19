@@ -233,7 +233,7 @@ define([
                             });
                         }
 
-                        if (op.type == "delete") {
+                        if (op.type == "remove") {
                             deltas.push({
                                 action: "removeText",
                                 range: aceRange.Range.fromPoints(

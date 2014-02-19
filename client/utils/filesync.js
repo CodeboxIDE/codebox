@@ -122,24 +122,23 @@ define([
 
             if (!value) return;
 
-            // old content
+            // Old content hash
             this.hash_value_t0 = this.hash_value_t1;
 
-            // new content
+            // New content hash
             this.content_value_t1 = value;
             this.hash_value_t1 = _hash(this.content_value_t1);
 
-            // create patch
+            // Create patch
             var diff_data = this.diff.diff_main(this.content_value_t0, this.content_value_t1, true);
             var patch_list = this.diff.patch_make(this.content_value_t0, this.content_value_t1, diff_data);
             var patch_text = this.diff.patch_toText(patch_list);
              
-            // update value
+            // Update value
             this.content_value_t0 = this.content_value_t1;
 
-            // send patch
+            // Send patch
             this.sendPatch(patch_text, this.hash_value_t0, this.hash_value_t1);
-            if (this.file) this.file.setCache(this.content_value_t1);
         },
 
 
@@ -194,10 +193,10 @@ define([
 
             // Trigger event to signal we have new content
             this.trigger("content", content, oldcontent, patches);
-            if (this.file != null) {
-                this.file.setCache(content);
-            }
+
+            // Return to previous sync mode
             this.sync = oldmode_sync;
+
             return this;
         },
 
@@ -205,10 +204,8 @@ define([
          *  Apply patch to content
          */
         patchContent: function(patch_data) {
-            var that = this;
             // Check old hash
-            if (this.hash_value_t1 == patch_data.hashs.after)
-            {
+            if (this.hash_value_t1 == patch_data.hashs.after) {
                 // Same content
                 return false;
             }
@@ -217,7 +214,9 @@ define([
             var patches = this.diff.patch_fromText(patch_data['patch']);
             var results = this.diff.patch_apply(patches, this.content_value_t0);
 
-            if (results.length < 2 || results[1][0] == false) {
+            // Test patch application (results[1] contains a list of boolean for patch results)
+            if (results.length < 2 || 
+            _.compact(results[1]).length != results[1].length) {
                 this.sendSync();
                 return false;
             }
@@ -226,8 +225,7 @@ define([
             var newtext_hash = _hash(newtext);
 
             // Check new hash
-            if (newtext_hash != patch_data.hashs.after)
-            {
+            if (newtext_hash != patch_data.hashs.after) {
                 this.sendSync();
                 return false;
             }
@@ -238,7 +236,13 @@ define([
         },
 
         /*
-         *  Convert patch to operations
+         *  Convert patch to a list of operations
+         *  Format for an operation:
+         *  {
+         *      type: "insert" or "remove",
+         *      content: "operation content",
+         *      index: (int) position for this operation in the file
+         *  }
          */
         patchesToOps: function(patches) {
             return _.chain(patches)
@@ -250,7 +254,7 @@ define([
                         var diffType = diff[0];
 
                         diffType = diffType > 0 ? "insert" : 
-                            (diffType == 0 ? null : "delete");
+                            (diffType == 0 ? null : "remove");
 
                         var op = !diffType? null : {
                             'type': diffType,
@@ -272,7 +276,7 @@ define([
         },
 
         /*
-         *  Update current file
+         *  Update synchronization environement
          */
         updateEnv: function(envId, options) {
             var self = this;
@@ -400,7 +404,7 @@ define([
         },
 
         /*
-         *  Set file to the editor
+         *  Set file for the synschronization
          */
         setFile: function(file, options) {
             options = _.defaults({}, options || {}, {
@@ -418,7 +422,6 @@ define([
             this.file = file;
 
             if (this.file != null) {
-                
                 this.file.on("set", _.partial(this.setFile, this.file, options), this);
                 this.file.on("modified", this.trigger.bind(this, "sync:modified"));
                 this.file.on("loading", this.trigger.bind(this, "sync:loading"));
@@ -434,7 +437,9 @@ define([
             }
         },
 
-        /* Socket for the connection */
+        /*
+         *  Return a socket for this connexion
+         */
         socket: function() {
             var that = this;
 
@@ -451,7 +456,9 @@ define([
             }
         },
 
-        /* Close sync socket */
+        /*
+         *  Close connexion with the server
+         */
         closeSocket: function() {
             var that = this;
             if (!this._socket) return;
@@ -619,17 +626,34 @@ define([
         /*
          *  Set lists of participants
          */
-        setParticipants: function(parts) {
-            this.participants = _.compact(_.map(parts, function(participant, i) {
+        setParticipants: function(participants) {
+            this.participants = _.chain(participants)
+            .map(function(participant, i) {
                 participant.user = collaborators.getById(participant.userId);
                 if (!participant.user) {
                     logging.error("participant non user:", participant.userId);
                     return null;
                 }
+
+                // Color for this participant
                 participant.color = this.options.colors[i % this.options.colors.length];
+
                 return participant;
-            }, this));
+            }, this)
+            .compact()
+            .value();
+
+            // Signal participant update
             this.trigger("participants");
+
+            // Update all participants cursor/selection
+            _.each(this.participants, function(participant) {
+                this.cursorMove(participant.userId, participant.cursor.x, participant.cursor.y);
+                this.selectionMove(participant.userId,
+                    participant.selection.start.x, participant.selection.start.y,
+                    participant.selection.end.x, participant.selection.end.y);
+            }, this);
+            
             return this;
         },
 
