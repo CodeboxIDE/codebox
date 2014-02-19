@@ -598,7 +598,7 @@ define([
                     // Before operations -> ignore
                 } else {
                     diff = (op.type == "insert") ? 1 : -1;
-                    cursorIndex = cursorIndex + diff;
+                    cursorIndex = cursorIndex + diff * op.content.length;
                 }
             }
 
