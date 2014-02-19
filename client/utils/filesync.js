@@ -7,31 +7,12 @@ define([
     "core/collaborators",
     "utils/dialogs"
 ], function(Q, hr, diff_match_patch, hash, user, collaborators, dialogs) {
+    var logging = hr.Logger.addNamespace("filesync");
 
-    /*
-    FileSync let you easily sync text content in files and access 
-    collaborative data (participants, cursors, selections).
-
-    var sync = new FileSync({
-        'file': myfile
-    });
-
-    // Content is updated
-    sync.on("content", function(newcontent) {
-        // display the content to the user
-    });
-
-    // Update content
-    sync.updateContent(mycontent);
-    sync.updateUserCursor(x, y);
-    sync.updateUserSelection(x, y);
-    */
-
+    // hash method for patch
     var _hash = function(s) {
         return hash.hex32(hash.crc32(s));
     };
-
-    var logging = hr.Logger.addNamespace("filesync");
 
     var FileSync = hr.Class.extend({
         defaults: {
@@ -57,21 +38,46 @@ define([
         initialize: function() {
             FileSync.__super__.initialize.apply(this, arguments);
 
+            // Diff/Patch calculoator
             this.diff = new diff_match_patch();
+
+            // Current selections
             this.selections = {};
+
+            // Current cursors
             this.cursors = {};
             this.synced = false;
+
+            // File model for this sync
             this.file = null;
+
+            // Environment id used for sync
             this.envId = null;
             this.envOptions = null;
+
+            // Mode for edition
             this.mode = this.modes.SYNC;
-            this.ping = false;  // ping
-            this.participants = []; // participants list
-            this.syncState = false; // sync connection state
+
+            // Ping has been received
+            this.ping = false;
+
+            // List of participants
+            this.participants = [];
+
+            // Synchronization state
+            this.syncState = false;
+
+            // Modified state
             this.modified = false;
 
             // Add timer for ping
             this.timer = setInterval(_.bind(this._intervalPing, this), 15*1000);
+
+            // Patch queue
+            this.patchQueue = new hr.Queue({
+                task: this.patchContent,
+                context: this
+            });
 
             // Init file
             if (this.options.file) {
@@ -178,10 +184,15 @@ define([
 
             // Stop sync and update content
             this.sync = false;
+
+            // Calcul new hash
             this.hash_value_t1 = _hash(content);
+
             oldcontent = this.content_value_t0;
             this.content_value_t0 = content;
             this.content_value_t1 = content;
+
+            // Trigger event to signal we have new content
             this.trigger("content", content, oldcontent, patches);
             if (this.file != null) {
                 this.file.setCache(content);
@@ -365,7 +376,7 @@ define([
                                 break;
                             case "patch":
                                 if (data.patch != null) {
-                                    self.patchContent(data);
+                                    self.patchQueue.defer(data);
                                 }
                                 break;
                             case "modified":
