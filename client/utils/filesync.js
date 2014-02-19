@@ -66,6 +66,7 @@ define([
 
             // Synchronization state
             this.syncState = false;
+            this.timeOfLastLocalChange = Date.now();
 
             // Modified state
             this.modified = false;
@@ -116,11 +117,12 @@ define([
             return this.sendSelection(sx, sy, ex, ey);
         },
 
-        // Update content
+        /*
+         *  Update content of the document (for all collaborators)
+         *  Call this method when you detec a change in the editor, ...
+         */
         updateContent: function(value) {
-            if (this.isReadonly()) return this;
-
-            if (!value) return;
+            if (!value || this.isReadonly()) return;
 
             // Old content hash
             this.hash_value_t0 = this.hash_value_t1;
@@ -130,14 +132,14 @@ define([
             this.hash_value_t1 = _hash(this.content_value_t1);
 
             // Create patch
-            var diff_data = this.diff.diff_main(this.content_value_t0, this.content_value_t1, true);
-            var patch_list = this.diff.patch_make(this.content_value_t0, this.content_value_t1, diff_data);
+            var patch_list = this.diff.patch_make(this.content_value_t0, this.content_value_t1);
             var patch_text = this.diff.patch_toText(patch_list);
              
             // Update value
             this.content_value_t0 = this.content_value_t1;
 
             // Send patch
+            this.timeOfLastLocalChange = Date.now();
             this.sendPatch(patch_text, this.hash_value_t0, this.hash_value_t1);
         },
 
@@ -178,11 +180,14 @@ define([
         /*
          *  Define file content
          */
-        setContent: function(content, patches) {
+        setContent: function(content) {
             var oldcontent, oldmode_sync = this.sync;
 
             // Stop sync and update content
             this.sync = false;
+
+            // Calcul patches
+            var patches = this.diff.patch_make(this.content_value_t0 || "", content);
 
             // Calcul new hash
             this.hash_value_t1 = _hash(content);
@@ -204,6 +209,17 @@ define([
          *  Apply patch to content
          */
         patchContent: function(patch_data) {
+            logging.log("receive patch ", patch_data);
+
+            // Check patch
+            if (!patch_data
+            || !patch_data.patch
+            || !patch_data.hashs.before
+            || !patch_data.hashs.after) {
+                logging.error("Invalid patch data");
+                return false;
+            }
+
             // Check old hash
             if (this.hash_value_t1 == patch_data.hashs.after) {
                 // Same content
@@ -211,29 +227,30 @@ define([
             }
 
             // Apply on text
-            var patches = this.diff.patch_fromText(patch_data['patch']);
+            var patches = this.diff.patch_fromText(patch_data.patch);
             var results = this.diff.patch_apply(patches, this.content_value_t0);
 
             // Test patch application (results[1] contains a list of boolean for patch results)
-            if (results.length < 2 || 
-            _.compact(results[1]).length != results[1].length) {
-                console.log("Invalid application of ", patches, results);
+            if (results.length < 2 
+            || _.compact(results[1]).length != results[1].length) {
+                logging.error("invalid application of ", patches, results);
                 this.sendSync();
                 return false;
-            }
+            }            
 
             var newtext = results[0];
             var newtext_hash = _hash(newtext);
 
-            // Check new hash
-            if (newtext_hash != patch_data.hashs.after) {
-                console.log("Invalid end hash");
+            // Check new hash if last changes from this user is older than 2sec
+            if ((Date.now() - this.timeOfLastLocalChange) > 2000
+            && newtext_hash != patch_data.hashs.after) {
+                logging.warn("invalid version -> resync");
                 this.sendSync();
                 return false;
             }
 
             // Set editor content
-            this.setContent(newtext, patches);
+            this.setContent(newtext);
             return true;
         },
 
@@ -381,9 +398,7 @@ define([
                                 }
                                 break;
                             case "patch":
-                                if (data.patch != null) {
-                                    self.patchQueue.defer(data);
-                                }
+                                self.patchQueue.defer(data);
                                 break;
                             case "modified":
                                 if (data.state != null) {

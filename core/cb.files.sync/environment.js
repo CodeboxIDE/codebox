@@ -19,7 +19,7 @@ function Environment(envId, creator, service) {
     this.modified = false;
     this.service = service;
 
-    this.doc = new Document(null, creator.userId, this.service);
+    this.doc = new Document(null, creator.userId, this.service, this.transferPatch);
 }
 
 Environment.prototype.setup = function() {
@@ -177,6 +177,16 @@ Environment.prototype.pingOthers = function(user) {
     );
 };
 
+Environment.prototype.transferPatch = function(user, patch, hashBefore, hashAfter) {
+    this.notifyOthers(user, 'patch', {
+        'patch': patch,
+        'hashs': {
+            'before': hashBefore,
+            'after': hashAfter
+        }
+    });
+};
+
 /*
  * Actions
  */
@@ -252,18 +262,22 @@ Environment.prototype.moveCursor = function(user, payload) {
 
 Environment.prototype.patch = function(user, payload) {
     var patched = this.doc.patch(
+        user,
         payload.patch,
         payload.hashs.before,
         payload.hashs.after
     );
+
+    if (patched === undefined) {
+        console.log("in queue");
+        return;
+    }
 
     // Failed patching
     if(patched == null) {
         return this.syncAll();
     }
     this.modifiedState(patched);
-
-    return this.notifyOthers(user, null, payload);
 };
 
 Environment.prototype.close = function(user, payload) {

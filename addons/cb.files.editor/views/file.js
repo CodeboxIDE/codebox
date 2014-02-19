@@ -193,7 +193,7 @@ define([
                 this.setMode(mode)
             }, this);
             this.sync.on("content", function(content, oldcontent, patches) {
-                var selection, cursor_lead, cursor_anchor, scroll_y, operations, deltas;
+                var selection, cursor_lead, cursor_anchor, scroll_y, operations;
 
                 // if resync patches is null
                 patches = patches || [];
@@ -220,33 +220,26 @@ define([
 
                 // Set editor content
                 this._op_set = true;
-                if (operations.length > 0) {
-                    deltas = [];
-                    for (var i in operations) {
-                        var op = operations[i];
 
-                        deltas.push({
+                // Apply ace delta all in once
+                $doc.applyDeltas(
+                    _.map(operations, function(op) {
+                        return {
                             action: op.type+"Text",
                             range: {
-                                start: this.posFromIndex(op.index),
-                                end: this.posFromIndex(op.index + op.content.length)
+                                start: that.posFromIndex(op.index),
+                                end: that.posFromIndex(op.index + op.content.length)
                             },
                             text: op.content
-                        });
-                    }
+                        }
+                    })
+                );
 
-                    // Apply ace delta all in once
-                    $doc.applyDeltas(deltas);
-
-                    // Check document
-                    if ($doc.getValue() != content) {
-                        console.log("!!! Invalid operation ", content, $doc.getValue());
-                        this.sync.sendSync();
-                    }
-
-                } else {
-                    console.log("!!! Resync all editor");
+                // Check document content is as expected
+                if ($doc.getValue() != content) {
+                    logging.error("Invalid operation ", content, $doc.getValue());
                     $doc.setValue(content);
+                    this.sync.sendSync();
                 }
                 this._op_set = false;
 
