@@ -193,7 +193,7 @@ define([
                 this.setMode(mode)
             }, this);
             this.sync.on("content", function(content, oldcontent, patches) {
-                var selection, cursor_lead, cursor_anchor, scroll_y, operations;
+                var selection, cursor_lead, cursor_anchor, scroll_y, operations, deltas;
 
                 // if resync patches is null
                 patches = patches || [];
@@ -221,25 +221,32 @@ define([
                 // Set editor content
                 this._op_set = true;
                 if (operations.length > 0) {
+                    deltas = [];
                     for (var i in operations) {
                         var op = operations[i];
 
                         if (op.type == "insert") {
-                            $doc.insert(
-                                this.posFromIndex(op.index),
-                                op.content
-                            );
+                            deltas.push({
+                                action: "insertText",
+                                range: this.posFromIndex(op.index),
+                                text: op.content
+                            });
                         }
 
                         if (op.type == "delete") {
-                            $doc.remove(
-                                aceRange.Range.fromPoints(
-                                this.posFromIndex(op.index),
-                                this.posFromIndex(op.index + op.content.length)
-                                )
-                            );
+                            deltas.push({
+                                action: "removeText",
+                                range: aceRange.Range.fromPoints(
+                                    this.posFromIndex(op.index),
+                                    this.posFromIndex(op.index + op.content.length)
+                                ),
+                                text: op.content
+                            });
                         }
                     }
+
+                    // Apply ace delta all in once
+                    $doc.applyDeltas(deltas);
 
                     // Check document
                     if ($doc.getValue() != content) {

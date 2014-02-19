@@ -26,6 +26,7 @@ Document.prototype.patch = function(patchText, preHash, postHash) {
 
     // Fail if different base
     if(currentHash != preHash) {
+        console.log("!! wrong patch ", patchText);
         return null;
     }
 
