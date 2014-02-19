@@ -217,6 +217,7 @@ define([
             // Test patch application (results[1] contains a list of boolean for patch results)
             if (results.length < 2 || 
             _.compact(results[1]).length != results[1].length) {
+                console.log("Invalid application of ", patches, results);
                 this.sendSync();
                 return false;
             }
@@ -226,6 +227,7 @@ define([
 
             // Check new hash
             if (newtext_hash != patch_data.hashs.after) {
+                console.log("Invalid end hash");
                 this.sendSync();
                 return false;
             }

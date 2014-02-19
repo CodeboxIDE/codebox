@@ -225,24 +225,14 @@ define([
                     for (var i in operations) {
                         var op = operations[i];
 
-                        if (op.type == "insert") {
-                            deltas.push({
-                                action: "insertText",
-                                range: this.posFromIndex(op.index),
-                                text: op.content
-                            });
-                        }
-
-                        if (op.type == "remove") {
-                            deltas.push({
-                                action: "removeText",
-                                range: aceRange.Range.fromPoints(
-                                    this.posFromIndex(op.index),
-                                    this.posFromIndex(op.index + op.content.length)
-                                ),
-                                text: op.content
-                            });
-                        }
+                        deltas.push({
+                            action: op.type+"Text",
+                            range: {
+                                start: this.posFromIndex(op.index),
+                                end: this.posFromIndex(op.index + op.content.length)
+                            },
+                            text: op.content
+                        });
                     }
 
                     // Apply ace delta all in once
