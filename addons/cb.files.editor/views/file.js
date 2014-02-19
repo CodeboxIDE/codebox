@@ -178,6 +178,11 @@ define([
             });
 
             var $doc = this.editor.session.doc;
+
+            // Force unix newline mode (for cursor position calcul)
+            $doc.setNewLineMode("unix");
+
+            // Send change
             $doc.on('change', function(d) {
                 if (that._op_set) return;
                 that.sync.updateContent(that.editor.session.getValue());
