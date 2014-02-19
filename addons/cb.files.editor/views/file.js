@@ -190,28 +190,32 @@ define([
             this.sync.on("content", function(content, oldcontent, patches) {
                 var selection, cursor_lead, cursor_anchor, scroll_y, operations;
 
+                // if resync patches is null
+                patches = patches || [];
+
+                // Calcul operaitons from patch
+                operations = this.sync.patchesToOps(patches);
+
                 // Do some operations on selection to preserve selection
                 selection = this.editor.getSession().getSelection();
 
                 scroll_y = this.editor.getSession().getScrollTop();
 
                 cursor_lead = selection.getSelectionLead();
-                cursor_lead = this.sync.cursorPatch({
+                cursor_lead = this.sync.cursorApplyOps({
                     x: cursor_lead.column,
                     y: cursor_lead.row
-                }, patches, oldcontent);
+                }, operations, oldcontent);
 
                 cursor_anchor = selection.getSelectionAnchor();
-                cursor_anchor = this.sync.cursorPatch({
+                cursor_anchor = this.sync.cursorApplyOps({
                     x: cursor_anchor.column,
                     y: cursor_anchor.row
-                }, patches, oldcontent);
+                }, operations, oldcontent);
 
                 // Set editor content
                 this._op_set = true;
-                if (patches) {
-                    operations = this.sync.patchesToOps(patches);
-
+                if (operations.length > 0) {
                     for (var i in operations) {
                         var op = operations[i];
 
@@ -239,6 +243,7 @@ define([
                     }
 
                 } else {
+                    console.log("!!! Resync all editor");
                     $doc.setValue(content);
                 }
                 this._op_set = false;

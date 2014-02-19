@@ -212,7 +212,7 @@ define([
             }
 
             var newtext = results[0];
-            var newtext_hash = hash.crc32(newtext);
+            var newtext_hash = _hash(newtext);
 
             // Check new hash
             if (newtext_hash != patch_data.hashs.after)
@@ -581,53 +581,28 @@ define([
         /*
          *  Apply patches to a cursor
          *  @cursor : cursor object {x:, y:}
-         *  @patches : diff patches to apply
+         *  @operations: operations to paply
          */
-        cursorPatch: function(cursor, patches, content){
-            var self = this;
-
-            var cursor_x = cursor.x;
-            var cursor_y = cursor.y;
+        cursorApplyOps: function(cursor, operations, content){
+            var cursorIndex, diff;
 
             content = content || this.content_value_t0;
-            patches = patches || [];
+            operations = operations || [];
 
-            var cursor_index = self.cursorIndexBypos(cursor_x, cursor_y, content);
+            cursorIndex = this.cursorIndexBypos(cursor.x, cursor.y, content);
 
-            _.each(patches, function(change, i) {
-                var plage_start = change.start1
-                var plage_size = change.length2 - change.length1;
-                var plage_end = plage_start + change.length1;
+            for (var i in operations) {
+                var op = operations[i];
 
-                if (cursor_index <= plage_start){
-                    //do nothing :
-                    //le curseur est avant la plage de modification
+                if (cursorIndex < op.index) {
+                    // Before operations -> ignore
+                } else {
+                    diff = (op.type == "insert") ? 1 : -1;
+                    cursorIndex = cursorIndex + diff;
                 }
-                else if (cursor_index >= plage_end){
-                    //deplace le curseur de plage_size car :
-                    //le curseur est aprés la plage de modification
-                    cursor_index = cursor_index + plage_size;
-                }
-                else{
-                    //le curseur est dans la plage de modification du patch
-                    //deplacement doit etre calculé selon les diffs
-                    _.each(change.diffs, function(diff, a) {
-                        // taille du diff
-                        var len = diff[1].length;
-                        //deplacement
-                        var dep = diff[0];
+            }
 
-
-                        var diff_pos = change.start1+len;
-
-                        if (diff_pos <= cursor_index)
-                        {
-                            cursor_index = cursor_index + dep
-                        }
-                    });
-                }
-            });
-            return cursor_index;
+            return cursorIndex;
         },
 
         /*
