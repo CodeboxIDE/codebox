@@ -176,7 +176,9 @@ define([
                 var cursor = that.editor.getSession().getSelection().getCursor();
                 that.sync.updateUserCursor(cursor.column, cursor.row);
             });
-            this.editor.getSession().doc.on('change', function(d) {
+
+            var $doc = this.editor.session.doc;
+            $doc.on('change', function(d) {
                 if (that._op_set) return;
                 that.sync.updateContent(that.editor.session.getValue());
             });
@@ -213,16 +215,15 @@ define([
                     for (var i in operations) {
                         var op = operations[i];
 
-                        console.log("operation: ", i, op, op.type, op.index, op.content);
                         if (op.type == "insert") {
-                            this.editor.session.doc.insert(
+                            $doc.insert(
                                 this.posFromIndex(op.index),
                                 op.content
                             );
                         }
 
                         if (op.type == "delete") {
-                            this.editor.session.doc.remove(
+                            $doc.remove(
                                 aceRange.Range.fromPoints(
                                 this.posFromIndex(op.index),
                                 this.posFromIndex(op.index + op.content.length)
@@ -232,12 +233,13 @@ define([
                     }
 
                     // Check document
-                    if (this.editor.session.doc.getValue() != content) {
-                        console.log("!!! Invalid operation ", content, this.editor.session.doc.getValue());
+                    if ($doc.getValue() != content) {
+                        console.log("!!! Invalid operation ", content, $doc.getValue());
+                        this.sync.sendSync();
                     }
 
                 } else {
-                    this.editor.session.setValue(content);
+                    $doc.setValue(content);
                 }
                 this._op_set = false;
 
@@ -381,8 +383,7 @@ define([
                 if (index <= (line.length)) break;
                 index = index - (line.length + 1);
             }
-
-            console.log("index", index, row, index);
+            
             return {
                 'row': row,
                 'column': index

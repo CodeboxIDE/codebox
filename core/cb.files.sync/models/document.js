@@ -8,7 +8,7 @@ var EventEmitter = require('events').EventEmitter;
 var Diff = require('googlediff');
 var diff = new Diff();
 
-var md5 = require('../utils').md5;
+var hash = require('../utils').hash;
 
 function Document(path, creatorId, service) {
     this.path = path;
@@ -22,7 +22,7 @@ Document.prototype.getContent = function() {
 };
 
 Document.prototype.patch = function(patchText, preHash, postHash) {
-    var currentHash = md5(this.buffer);
+    var currentHash = hash(this.buffer);
 
     // Fail if different base
     if(currentHash != preHash) {

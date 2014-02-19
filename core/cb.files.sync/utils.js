@@ -1,7 +1,6 @@
 // Requires
 var _ = require('underscore');
-
-var crypto = require('cryptojs').Crypto;
+var crc = require('crc');
 
 function truth() {
     return true;
@@ -23,11 +22,11 @@ function has(obj, keys) {
     );
 }
 
-function md5(data) {
-    return crypto.MD5(data).toString();
+function hash(str) {
+    return crc.hex32(crc.crc32(str));
 }
 
 // Exports
 exports.has = has;
-exports.md5 = md5;
+exports.hash = hash;
 exports.truth = truth;

@@ -2,11 +2,11 @@ define([
     "hr/promise",
     "hr/hr",
     "vendors/diff_match_patch",
-    "vendors/crypto",
+    "utils/hash",
     "core/user",
     "core/collaborators",
     "utils/dialogs"
-], function(Q, hr, diff_match_patch, CryptoJS, user, collaborators, dialogs) {
+], function(Q, hr, diff_match_patch, hash, user, collaborators, dialogs) {
 
     /*
     FileSync let you easily sync text content in files and access 
@@ -26,6 +26,10 @@ define([
     sync.updateUserCursor(x, y);
     sync.updateUserSelection(x, y);
     */
+
+    var _hash = function(s) {
+        return hash.hex32(hash.crc32(s));
+    };
 
     var logging = hr.Logger.addNamespace("filesync");
 
@@ -117,7 +121,7 @@ define([
 
             // new content
             this.content_value_t1 = value;
-            this.hash_value_t1 = String(CryptoJS.MD5(this.content_value_t1));
+            this.hash_value_t1 = _hash(this.content_value_t1);
 
             // create patch
             var diff_data = this.diff.diff_main(this.content_value_t0, this.content_value_t1, true);
@@ -169,16 +173,16 @@ define([
         /*
          *  Define file content
          */
-        setContent: function(content, patch) {
+        setContent: function(content, patches) {
             var oldcontent, oldmode_sync = this.sync;
 
             // Stop sync and update content
             this.sync = false;
-            this.hash_value_t1 = String(CryptoJS.MD5(content));
+            this.hash_value_t1 = _hash(content);
             oldcontent = this.content_value_t0;
             this.content_value_t0 = content;
             this.content_value_t1 = content;
-            this.trigger("content", content, oldcontent, patch);
+            this.trigger("content", content, oldcontent, patches);
             if (this.file != null) {
                 this.file.setCache(content);
             }
@@ -208,7 +212,7 @@ define([
             }
 
             var newtext = results[0];
-            var newtext_hash = String(CryptoJS.MD5(newtext));
+            var newtext_hash = hash.crc32(newtext);
 
             // Check new hash
             if (newtext_hash != patch_data.hashs.after)
@@ -226,7 +230,6 @@ define([
          *  Convert patch to operations
          */
         patchesToOps: function(patches) {
-            console.log(patches);
             return _.chain(patches)
                 .map(function(change, i) {
                     var diffIndex = change.start1;
