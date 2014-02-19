@@ -224,12 +224,18 @@ define([
                         if (op.type == "delete") {
                             this.editor.session.doc.remove(
                                 aceRange.Range.fromPoints(
-                                this.posFromIndex(op.index - op.content.length),
-                                this.posFromIndex(op.index)
+                                this.posFromIndex(op.index),
+                                this.posFromIndex(op.index + op.content.length)
                                 )
                             );
                         }
                     }
+
+                    // Check document
+                    if (this.editor.session.doc.getValue() != content) {
+                        console.log("!!! Invalid operation ", content, this.editor.session.doc.getValue());
+                    }
+
                 } else {
                     this.editor.session.setValue(content);
                 }
@@ -368,9 +374,9 @@ define([
         },
 
         posFromIndex: function(index) {
-            var row = 0;
-            var lines = this.editor.session.doc.$lines;
-            for (row in lines) {
+            var row, lines;
+            lines = this.editor.session.doc.getAllLines();
+            for (row = 0; row < lines.length; row++) {
                 var line = lines[row];
                 if (index <= (line.length +1)) break;
                 index = index - (line.length + 1);

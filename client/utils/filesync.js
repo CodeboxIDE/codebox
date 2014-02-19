@@ -226,6 +226,7 @@ define([
          *  Convert patch to operations
          */
         patchesToOps: function(patches) {
+            console.log(patches);
             return _.chain(patches)
                 .map(function(change, i) {
                     var diffIndex = change.start1;
@@ -234,16 +235,21 @@ define([
                         var content = diff[1];
                         var diffType = diff[0];
 
-                        diffIndex = diffIndex + content.length;
+                        diffType = diffType > 0 ? "insert" : 
+                            (diffType == 0 ? null : "delete");
 
-                        if (diffType == 0) return;
-
-                        diffType = diffType > 0 ? "insert" : "delete";
-                        return {
+                        var op = !diffType? null : {
                             'type': diffType,
                             'content': content,
                             'index': diffIndex
                         };
+
+                        if (!diffType) {
+                            diffIndex = diffIndex + content.length;
+                        } else {
+                            diffIndex = diffIndex + content.length;
+                        }
+                        return op;
                     });
                 })
                 .flatten()
