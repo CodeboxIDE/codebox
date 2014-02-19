@@ -67,6 +67,7 @@ define([
                 'flags': this.model.isNewfile() ? "hidden": "",
                 'offline': false,
                 'action': function(state) {
+                    that.editor
                     that.sync.updateEnv({
                         'sync': state
                     });
@@ -135,6 +136,9 @@ define([
             // Create sync
             this.sync = new FileSync();
             this.sync.on("update:env", function(options) {
+                this._op_set = true;
+                this.editor.setValue("");
+                this._op_set = false;
                 this.collaborationToggle.toggleFlag("active", options.sync);
                 this.collaboratorsMenu.toggleFlag("disabled", !options.sync);
             }, this);

@@ -141,6 +141,8 @@ define([
             // Send patch
             this.timeOfLastLocalChange = Date.now();
             this.sendPatch(patch_text, this.hash_value_t0, this.hash_value_t1);
+
+            this.file.modifiedState(true);
         },
 
 
@@ -187,7 +189,7 @@ define([
             this.sync = false;
 
             // Calcul patches
-            var patches = this.diff.patch_make(this.content_value_t0 || "", content);
+            var patches = this.diff.patch_make(this.content_value_t0, content);
 
             // Calcul new hash
             this.hash_value_t1 = _hash(content);
@@ -316,13 +318,17 @@ define([
 
             this.hash_value_t0 = null;
             this.hash_value_t1 = null;
-            this.content_value_t0 = null;
-            this.content_value_t1 = null;
+            this.content_value_t0 = "";
+            this.content_value_t1 = "";
 
             logging.log("update env with", this.envId, options, hr.Offline.isConnected());
 
             if (this.file.isNewfile()) options.sync = false;
 
+            // Signal update
+            this.trigger("update:env", options);
+
+            // Start sync
             if (!hr.Offline.isConnected() || !options.sync) {
                 /// Offline sync
                 self.setMode(self.modes.READONLY);
@@ -416,8 +422,6 @@ define([
                     }
                 });
             }
-
-            this.trigger("update:env", options);
         },
 
         /*
@@ -830,6 +834,7 @@ define([
          *  Close the connection
          */
         close: function() {
+            this.file.modifiedState(false);
             this.send("close");
             this.off();
         },
