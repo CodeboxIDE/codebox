@@ -468,7 +468,7 @@ define([
 
             if (this._socket) return Q(this._socket);
             if (this.envId != null) {
-                return box.socket("filesync", true).then(function(s) {
+                return box.socket("filesync").then(function(s) {
                     that._socket = s;
                     return that._socket;
                 })
@@ -483,7 +483,6 @@ define([
         closeSocket: function() {
             var that = this;
             if (!this._socket) return;
-            this._socket.disconnect();
             this_socket = null;
         },
 
@@ -513,20 +512,6 @@ define([
                 'color': this.participantColor(id)
             };
             this.trigger("cursor:move", id, this.cursors[id]);
-            return this;
-        },
-
-        /*
-         *  Cursors clear
-         */
-        cursorsClear: function() {
-            var that = this;
-            _.each(this.cursors, function(cid, userId) {
-                that.trigger("cursor:remove", cid, that.cursors[cid]);
-            });
-            _.each(this.selections, function(cid, userId) {
-                that.trigger("selection:remove", cid, that.selections[cid]);
-            });
             return this;
         },
 
@@ -648,6 +633,7 @@ define([
          *  Set lists of participants
          */
         setParticipants: function(participants) {
+            // Update participants list
             this.participants = _.chain(participants)
             .map(function(participant, i) {
                 participant.user = collaborators.getById(participant.userId);
@@ -664,8 +650,25 @@ define([
             .compact()
             .value();
 
+            this.participantIds = _.pluck(participants, "userId");
+            logging.log("update participants", this.participantIds, _.keys(this.cursors), _.keys(this.selections));
+
             // Signal participant update
             this.trigger("participants");
+
+            // Clear old participants cursors
+            _.each(this.cursors, function(cursor, cId) {
+                if (_.contains(this.participantIds, cId)) return;
+
+                this.trigger("cursor:remove", cId);
+                delete this.cursors[cId];
+            }, this);
+            _.each(this.selections, function(cursor, cId) {
+                if (_.contains(this.participantIds, cId)) return;
+
+                this.trigger("selection:remove", cId);
+                delete this.selections[cId];
+            }, this);
 
             // Update all participants cursor/selection
             _.each(this.participants, function(participant) {
@@ -834,6 +837,7 @@ define([
          *  Close the connection
          */
         close: function() {
+            clearInterval(this.timer);
             this.file.modifiedState(false);
             this.send("close");
             this.off();

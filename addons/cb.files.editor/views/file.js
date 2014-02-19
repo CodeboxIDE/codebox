@@ -286,7 +286,10 @@ define([
 
             // Remove a cursor/selection
             this.sync.on("cursor:remove selection:remove", function(cId) {
-                this.editor.getSession().removeMarker(cId);
+                if (this.markersC[cId]) this.editor.getSession().removeMarker(this.markersC[cId]);
+                if (this.markersS[cId]) this.editor.getSession().removeMarker(this.markersS[cId]);
+                delete this.markersC[cId];
+                delete this.markersS[cId]
             }, this);
 
             // Participants list change

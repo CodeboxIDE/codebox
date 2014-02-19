@@ -44,6 +44,7 @@ Environment.prototype.addUser = function(user) {
     this.users[user.key()] = new member();
 
     user.on('exit', this.userExit);
+    this.pingOthers(user);
     return Q(true);
 };
 
@@ -269,7 +270,6 @@ Environment.prototype.patch = function(user, payload) {
     );
 
     if (patched === undefined) {
-        console.log("in queue");
         return;
     }
 
