@@ -26,7 +26,11 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
         name: "Codebox",
         template: "main.html",
         metas: {
-            "description": "Cloud IDE on a box."
+            "robots": "noindex, nofollow",
+            "description": "Cloud IDE on a box.",
+            "apple-mobile-web-app-capable": "yes",
+            "apple-mobile-web-app-status-bar-style": "black",
+            "viewport": "width=device-width, initial-scale=1, user-scalable=no"
         },
         links: {
             "icon": hr.Urls.static("images/icons/32.png"),
