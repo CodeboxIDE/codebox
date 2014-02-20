@@ -40,7 +40,7 @@ define([
                 'position': 1
             });
             this.on("tab:state", function(active) {
-                this.menu.toggleFlag("disabled", !active);
+                this.menu.toggleFlag("hidden", !active);
             }, this);
             this.on("tab:close", function() {
                 this.menu.destroy();

@@ -8,33 +8,74 @@ var EventEmitter = require('events').EventEmitter;
 var Diff = require('googlediff');
 var diff = new Diff();
 
-var md5 = require('../utils').md5;
+var hash = require('../utils').hash;
 
-function Document(path, creatorId, service) {
+function Document(path, creatorId, service, patcher) {
     this.path = path;
     this.buffer = '';
     this.creatorId = creatorId;
     this.service = service;
+
+    this.patchQueue = [];
+    this.patchingInProcess = false;
+    this.patcher = patcher;
 }
 
 Document.prototype.getContent = function() {
     return this.buffer;
 };
 
-Document.prototype.patch = function(patchText, preHash, postHash) {
-    var currentHash = md5(this.buffer);
+Document.prototype.patch = function(user, patchText, preHash, postHash) {
+    if (this.patchingInProcess){
+        this.patchQueue.push({
+            'patch': patchText,
+            'pre': preHash,
+            'post': postHash
+        });
+        return;
+    }
+    this.patchingInProcess = true;
 
-    // Fail if different base
-    if(currentHash != preHash) {
+    var currentHash = hash(this.buffer);
+
+    // Try apply patch
+    var patch = diff.patch_fromText(patchText);
+    var oldBuffer = this.buffer;
+
+    var results = diff.patch_apply(patch, this.buffer);
+
+    // Patch applied with success?
+    if (results.length < 2 || 
+    _.compact(results[1]).length != results[1].length) {
+        console.log("Invalid application of ", patch, results);
+
+        // clear queue
+        this.patchQueue = [];
+        this.patchingInProcess = false;
+
+        // resync everybody
         return null;
     }
 
-    // Do patching
-    var patch = diff.patch_fromText(patchText);
+    var afterHash = hash(results[0]);
+    if(currentHash != preHash) {
+        console.log("!! content was different before");
+    }
+    if (afterHash != postHash) {
+        console.log("!! content is different from expected");
+    }
 
-    // Update buffer
-    var oldBuffer = this.buffer;
-    this.buffer = diff.patch_apply(patch, this.buffer)[0];
+    // Update content
+    this.buffer = results[0];
+
+    // Send new patch to all the other
+    this.patcher(user, patchText, hash(oldBuffer), hash(this.buffer));
+
+    this.patchingInProcess = false;
+    if (this.patchQueue.length > 0){
+        var nextPatch = this.patchQueue.shift();
+        return this.patch(nextPatch.patch, nextPatch.pre, nextPatch.post);
+    }
 
     return oldBuffer != this.buffer;
 };

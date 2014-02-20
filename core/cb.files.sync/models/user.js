@@ -33,7 +33,7 @@ function User(socket, userId, token, service) {
 util.inherits(User, EventEmitter);
 
 User.prototype.key = function() {
-    return [this.userId, this.socket.id].join(':');
+    return this.userId; //[this.userId, this.socket.id].join(':');
 };
 
 User.prototype.open = function(path, perm) {

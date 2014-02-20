@@ -27,6 +27,7 @@ define([
     var filer = new Filer();
 
     var fsCall = function(method, args, context) {
+        if (!_syncIsEnable) return Q.reject(new Error("Offline synchronization is disabled"));
         if (_.isUndefined(args)) args = [];
         if (!_.isArray(args)) args = [args];
 
@@ -84,7 +85,8 @@ define([
         return fsCall(filer.init, {
             persistent: true,
             size: 10 * 1024 * 1024
-        }, filer).then(function() {
+        }, filer)
+        .then(function() {
             logger.log("fs is ready");
             _isInit = true;
             return Q();
@@ -381,8 +383,6 @@ define([
     var syncFileBoxToLocal = needFsReady(function() {
         var box = require("core/box");
 
-        if (!_syncIsEnable) return Q(false);
-
         var doSync = function(fp) {
             var path = fp.path();
             if (isIgnoredFile(path)) return Q();
@@ -437,8 +437,6 @@ define([
         options = _.defaults({}, options || {}, {
 
         });
-
-        if (!_syncIsEnable) return Q.reject(new Error("Offline sync is not enable"));
 
         var previousChanges = changes.size();
 

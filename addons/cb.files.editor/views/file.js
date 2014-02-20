@@ -7,7 +7,7 @@ define([
     var _ = codebox.require("hr/utils");
     var $ = codebox.require("hr/dom");
     var hr = codebox.require("hr/hr");
-    var Dialogs = codebox.require("utils/dialogs");
+    var alerts = codebox.require("utils/alerts");
     var FilesTabView = codebox.require("views/files/tab");
     var FileSync = codebox.require("utils/filesync");
     var user = codebox.require("core/user");
@@ -67,6 +67,7 @@ define([
                 'flags': this.model.isNewfile() ? "hidden": "",
                 'offline': false,
                 'action': function(state) {
+                    that.editor
                     that.sync.updateEnv({
                         'sync': state
                     });
@@ -135,6 +136,11 @@ define([
             // Create sync
             this.sync = new FileSync();
             this.sync.on("update:env", function(options) {
+                if (options.reset) {
+                    this._op_set = true;
+                    this.editor.setValue("");
+                    this._op_set = false;
+                }
                 this.collaborationToggle.toggleFlag("active", options.sync);
                 this.collaboratorsMenu.toggleFlag("disabled", !options.sync);
             }, this);
@@ -176,7 +182,14 @@ define([
                 var cursor = that.editor.getSession().getSelection().getCursor();
                 that.sync.updateUserCursor(cursor.column, cursor.row);
             });
-            this.editor.getSession().doc.on('change', function(d) {
+
+            var $doc = this.editor.session.doc;
+
+            // Force unix newline mode (for cursor position calcul)
+            $doc.setNewLineMode("unix");
+
+            // Send change
+            $doc.on('change', function(d) {
                 if (that._op_set) return;
                 that.sync.updateContent(that.editor.session.getValue());
             });
@@ -186,7 +199,13 @@ define([
                 this.setMode(mode)
             }, this);
             this.sync.on("content", function(content, oldcontent, patches) {
-                var selection, cursor_lead, cursor_anchor, scroll_y;
+                var selection, cursor_lead, cursor_anchor, scroll_y, operations;
+
+                // if resync patches is null
+                patches = patches || [];
+
+                // Calcul operaitons from patch
+                operations = this.sync.patchesToOps(patches);
 
                 // Do some operations on selection to preserve selection
                 selection = this.editor.getSession().getSelection();
@@ -194,20 +213,40 @@ define([
                 scroll_y = this.editor.getSession().getScrollTop();
 
                 cursor_lead = selection.getSelectionLead();
-                cursor_lead = this.sync.cursorPatch({
+                cursor_lead = this.sync.cursorApplyOps({
                     x: cursor_lead.column,
                     y: cursor_lead.row
-                }, patches, oldcontent);
+                }, operations, oldcontent);
 
                 cursor_anchor = selection.getSelectionAnchor();
-                cursor_anchor = this.sync.cursorPatch({
+                cursor_anchor = this.sync.cursorApplyOps({
                     x: cursor_anchor.column,
                     y: cursor_anchor.row
-                }, patches, oldcontent);
+                }, operations, oldcontent);
 
                 // Set editor content
                 this._op_set = true;
-                this.editor.session.setValue(content);
+
+                // Apply ace delta all in once
+                $doc.applyDeltas(
+                    _.map(operations, function(op) {
+                        return {
+                            action: op.type+"Text",
+                            range: {
+                                start: that.posFromIndex(op.index),
+                                end: that.posFromIndex(op.index + op.content.length)
+                            },
+                            text: op.content
+                        }
+                    })
+                );
+
+                // Check document content is as expected
+                if ($doc.getValue() != content) {
+                    logging.error("Invalid operation ", content, $doc.getValue());
+                    $doc.setValue(content);
+                    this.sync.sendSync();
+                }
                 this._op_set = false;
 
                 // Move cursors
@@ -219,19 +258,43 @@ define([
                 cursor_lead = this.sync.cursorPosByindex(cursor_lead, content);
                 this.editor.getSession().getSelection().selectTo(cursor_lead.y, cursor_lead.x);
             }, this);
+
+            // Participant cursor moves
             this.sync.on("cursor:move", function(cId, c) {
-                var range = new aceRange.Range(c.y, c.x, c.y, c.x+1);
+                var name, range = new aceRange.Range(c.y, c.x, c.y, c.x+1);
+
+                // Remove old cursor
                 if (this.markersC[cId]) this.editor.getSession().removeMarker(this.markersC[cId]);
-                this.markersC[cId] = this.editor.getSession().addMarker(range, "marker-cursor marker-"+c.color.replace("#", ""), "text", true);
+
+                // Calcul name
+                name = cId
+                var participant = collaborators.getById(cId);
+                if (participant) name = participant.get("name");
+
+                // Add new cursor
+                this.markersC[cId] = this.editor.getSession().addMarker(range, "marker-cursor marker-"+c.color.replace("#", ""), function(html, range, left, top, config){
+                    html.push("<div class='marker-cursor' style='top: "+top+"px; left: "+left+"px; border-left-color: "+c.color+"; border-bottom-color: "+c.color+";'>"
+                    + "<div class='marker-cursor-nametag' style='background: "+c.color+";'>&nbsp;"+name+"&nbsp;<div class='marker-cursor-nametag-flag' style='border-right-color: "+c.color+"; border-bottom-color: "+c.color+";'></div>"
+                    + "</div>&nbsp;</div>");  
+                }, true);
             }, this);
+
+            // Participant selection 
             this.sync.on("selection:move", function(cId, c) {
                 var range = new aceRange.Range(c.start.y, c.start.x, c.end.y, c.end.x);
                 if (this.markersS[cId]) this.editor.getSession().removeMarker(this.markersS[cId]);
                 this.markersS[cId] = this.editor.getSession().addMarker(range, "marker-selection marker-"+c.color.replace("#", ""), "line", false);
             }, this);
+
+            // Remove a cursor/selection
             this.sync.on("cursor:remove selection:remove", function(cId) {
-                this.editor.getSession().removeMarker(cId);
+                if (this.markersC[cId]) this.editor.getSession().removeMarker(this.markersC[cId]);
+                if (this.markersS[cId]) this.editor.getSession().removeMarker(this.markersS[cId]);
+                delete this.markersC[cId];
+                delete this.markersS[cId]
             }, this);
+
+            // Participants list change
             this.sync.on("participants", function() {
                 this.collaboratorsMenu.set("label", _.size(this.sync.participants));
                 this.collaboratorsMenu.menu.reset(_.map(this.sync.participants, function(participant) {
@@ -270,6 +333,12 @@ define([
             }, this);
             this.sync.on("mode", function(mode) {
                 this.tab.setTabState("sync", mode == this.sync.modes.SYNC);
+            }, this);
+            this.sync.on("close", function(mode) {
+                this.tab.closeTab();
+            }, this);
+            this.sync.on("error", function(err) {
+                alerts.show("Error: "+(err.message || err), 3000);
             }, this);
 
             this.sync.on("sync:modified", function(state) {
@@ -340,6 +409,21 @@ define([
             this.editor.getSession().setUseSoftTabs(this.options.enablesofttabs);
             this.editor.getSession().setTabSize(this.options.tabsize);
             return this;
+        },
+
+        posFromIndex: function(index) {
+            var row, lines;
+            lines = this.editor.session.doc.getAllLines();
+            for (row = 0; row < lines.length; row++) {
+                var line = lines[row];
+                if (index <= (line.length)) break;
+                index = index - (line.length + 1);
+            }
+            
+            return {
+                'row': row,
+                'column': index
+            };
         },
 
         /*

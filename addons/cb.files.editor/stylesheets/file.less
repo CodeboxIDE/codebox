@@ -1,9 +1,6 @@
 .mixin-cursor-color(@color) {
     @pseudo-selector: ~".marker-@{color}";
     @{pseudo-selector} {
-        &.marker-cursor {
-            border-color: ~"#@{color}";
-        }
         &.marker-selection {
             background: ~"#@{color}";
         }
@@ -52,6 +49,43 @@
             .mixin-cursor-color("2980b9");
             .mixin-cursor-color("f39c12");
             .mixin-cursor-color("8e44ad");
+
+            .marker-cursor {
+                position: absolute;
+                z-index: 5;
+                border-left: 2px solid #0ff;
+                margin-left: -1px;
+                right: 5px;
+                text-align: right;
+                color: #ff0;
+                border-bottom: 1px dotted rgba(0,255,255,0.30);
+            }
+            .marker-cursor-nametag {
+                position: absolute;
+                bottom: -1px;
+                right: 0px;
+                text-align: right;
+                color: #fff;
+                background: #0ff;
+                padding: 0px;
+                padding-left: 3px;
+                padding-right: 3px;
+                opacity: 1;
+                font-family: Arial, sans-serif;
+                font-weight: 600;
+                pointer-events: auto;
+                cursor: help;
+            }
+            .marker-cursor-nametag-flag {
+                position: absolute;
+                bottom: 0px;
+                left: -6px;
+                width: 0px;
+                height: 0px;
+                border: 3px solid rgba(0,255,255,0.00);
+                border-right: 3px solid #0ff;
+                border-bottom: 3px solid #0ff;
+            }
         }
     }
 }

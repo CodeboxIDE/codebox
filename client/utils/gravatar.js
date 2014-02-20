@@ -1,8 +1,8 @@
 define([
     'hr/hr',
     'hr/utils',
-    'vendors/crypto'
-], function (hr, _, CryptoJS) {
+    'utils/hash'
+], function (hr, _, hash) {
     return {
         get: function(email, options) {
             options = _.defaults({}, options || {}, {
@@ -11,7 +11,7 @@ define([
             });
 
             return "https://secure.gravatar.com/avatar/"
-             + String(CryptoJS.MD5(email.toLowerCase().trim()))
+             + hash.md5(email.toLowerCase().trim())
              + "?size=" + options.size
              + "&default=" + encodeURIComponent(options.defaultImage);
         }

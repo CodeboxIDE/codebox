@@ -2,32 +2,17 @@ define([
     "hr/promise",
     "hr/hr",
     "vendors/diff_match_patch",
-    "vendors/crypto",
+    "utils/hash",
     "core/user",
     "core/collaborators",
     "utils/dialogs"
-], function(Q, hr, diff_match_patch, CryptoJS, user, collaborators, dialogs) {
-
-    /*
-    FileSync let you easily sync text content in files and access 
-    collaborative data (participants, cursors, selections).
-
-    var sync = new FileSync({
-        'file': myfile
-    });
-
-    // Content is updated
-    sync.on("content", function(newcontent) {
-        // display the content to the user
-    });
-
-    // Update content
-    sync.updateContent(mycontent);
-    sync.updateUserCursor(x, y);
-    sync.updateUserSelection(x, y);
-    */
-
+], function(Q, hr, diff_match_patch, hash, user, collaborators, dialogs) {
     var logging = hr.Logger.addNamespace("filesync");
+
+    // hash method for patch
+    var _hash = function(s) {
+        return hash.hex32(hash.crc32(s));
+    };
 
     var FileSync = hr.Class.extend({
         defaults: {
@@ -53,21 +38,47 @@ define([
         initialize: function() {
             FileSync.__super__.initialize.apply(this, arguments);
 
+            // Diff/Patch calculoator
             this.diff = new diff_match_patch();
+
+            // Current selections
             this.selections = {};
+
+            // Current cursors
             this.cursors = {};
             this.synced = false;
+
+            // File model for this sync
             this.file = null;
+
+            // Environment id used for sync
             this.envId = null;
             this.envOptions = null;
+
+            // Mode for edition
             this.mode = this.modes.SYNC;
-            this.ping = false;  // ping
-            this.participants = []; // participants list
-            this.syncState = false; // sync connection state
+
+            // Ping has been received
+            this.ping = false;
+
+            // List of participants
+            this.participants = [];
+
+            // Synchronization state
+            this.syncState = false;
+            this.timeOfLastLocalChange = Date.now();
+
+            // Modified state
             this.modified = false;
 
             // Add timer for ping
             this.timer = setInterval(_.bind(this._intervalPing, this), 15*1000);
+
+            // Patch queue
+            this.patchQueue = new hr.Queue({
+                task: this.patchContent,
+                context: this
+            });
 
             // Init file
             if (this.options.file) {
@@ -77,7 +88,9 @@ define([
             // Offline sync
             hr.Offline.on("state", function(state) {
                 if (hr.Offline.isConnected()) return;
-                if (this.envId) this.updateEnv(this.envId, this.envOptions);
+                if (this.envId) this.updateEnv(this.envId, _.extend({}, this.envOptions, {
+                    reset: false
+                }));
             }, this);
         },
 
@@ -106,30 +119,32 @@ define([
             return this.sendSelection(sx, sy, ex, ey);
         },
 
-        // Update content
+        /*
+         *  Update content of the document (for all collaborators)
+         *  Call this method when you detec a change in the editor, ...
+         */
         updateContent: function(value) {
-            if (this.isReadonly()) return this;
+            if (!value || this.isReadonly()) return;
 
-            if (!value) return;
-
-            // old content
+            // Old content hash
             this.hash_value_t0 = this.hash_value_t1;
 
-            // new content
+            // New content hash
             this.content_value_t1 = value;
-            this.hash_value_t1 = String(CryptoJS.MD5(this.content_value_t1));
+            this.hash_value_t1 = _hash(this.content_value_t1);
 
-            // create patch
-            var diff_data = this.diff.diff_main(this.content_value_t0, this.content_value_t1, true);
-            var patch_list = this.diff.patch_make(this.content_value_t0, this.content_value_t1, diff_data);
+            // Create patch
+            var patch_list = this.diff.patch_make(this.content_value_t0, this.content_value_t1);
             var patch_text = this.diff.patch_toText(patch_list);
              
-            // update value
+            // Update value
             this.content_value_t0 = this.content_value_t1;
 
-            // send patch
+            // Send patch
+            this.timeOfLastLocalChange = Date.now();
             this.sendPatch(patch_text, this.hash_value_t0, this.hash_value_t1);
-            if (this.file) this.file.setCache(this.content_value_t1);
+
+            this.file.modifiedState(true);
         },
 
 
@@ -169,20 +184,28 @@ define([
         /*
          *  Define file content
          */
-        setContent: function(content, patch) {
+        setContent: function(content) {
             var oldcontent, oldmode_sync = this.sync;
 
             // Stop sync and update content
             this.sync = false;
-            this.hash_value_t1 = String(CryptoJS.MD5(content));
+
+            // Calcul patches
+            var patches = this.diff.patch_make(this.content_value_t0, content);
+
+            // Calcul new hash
+            this.hash_value_t1 = _hash(content);
+
             oldcontent = this.content_value_t0;
             this.content_value_t0 = content;
             this.content_value_t1 = content;
-            this.trigger("content", content, oldcontent, patch);
-            if (this.file != null) {
-                this.file.setCache(content);
-            }
+
+            // Trigger event to signal we have new content
+            this.trigger("content", content, oldcontent, patches);
+
+            // Return to previous sync mode
             this.sync = oldmode_sync;
+
             return this;
         },
 
@@ -190,39 +213,93 @@ define([
          *  Apply patch to content
          */
         patchContent: function(patch_data) {
+            logging.log("receive patch ", patch_data);
+
+            // Check patch
+            if (!patch_data
+            || !patch_data.patch
+            || !patch_data.hashs.before
+            || !patch_data.hashs.after) {
+                logging.error("Invalid patch data");
+                return false;
+            }
+
             // Check old hash
-            if (this.hash_value_t1 == patch_data.hashs.after)
-            {
+            if (this.hash_value_t1 == patch_data.hashs.after) {
                 // Same content
                 return false;
             }
 
             // Apply on text
-            var patches = this.diff.patch_fromText(patch_data['patch']);
+            var patches = this.diff.patch_fromText(patch_data.patch);
             var results = this.diff.patch_apply(patches, this.content_value_t0);
 
-            if (results.length < 2 || results[1][0] == false) {
+            // Test patch application (results[1] contains a list of boolean for patch results)
+            if (results.length < 2 
+            || _.compact(results[1]).length != results[1].length) {
+                logging.error("invalid application of ", patches, results);
                 this.sendSync();
                 return false;
-            }
+            }            
 
             var newtext = results[0];
-            var newtext_hash = String(CryptoJS.MD5(newtext));
+            var newtext_hash = _hash(newtext);
 
-            // Check new hash
-            if (newtext_hash != patch_data.hashs.after)
-            {
+            // Check new hash if last changes from this user is older than 2sec
+            if ((Date.now() - this.timeOfLastLocalChange) > 2000
+            && newtext_hash != patch_data.hashs.after) {
+                logging.warn("invalid version -> resync");
                 this.sendSync();
                 return false;
             }
 
             // Set editor content
-            this.setContent(newtext, patches);
+            this.setContent(newtext);
             return true;
         },
 
         /*
-         *  Update current file
+         *  Convert patch to a list of operations
+         *  Format for an operation:
+         *  {
+         *      type: "insert" or "remove",
+         *      content: "operation content",
+         *      index: (int) position for this operation in the file
+         *  }
+         */
+        patchesToOps: function(patches) {
+            return _.chain(patches)
+                .map(function(change, i) {
+                    var diffIndex = change.start1;
+
+                    return _.map(change.diffs, function(diff, a) {
+                        var content = diff[1];
+                        var diffType = diff[0];
+
+                        diffType = diffType > 0 ? "insert" : 
+                            (diffType == 0 ? null : "remove");
+
+                        var op = !diffType? null : {
+                            'type': diffType,
+                            'content': content,
+                            'index': diffIndex
+                        };
+
+                        if (!diffType) {
+                            diffIndex = diffIndex + content.length;
+                        } else {
+                            diffIndex = diffIndex + content.length;
+                        }
+                        return op;
+                    });
+                })
+                .flatten()
+                .compact()
+                .value();
+        },
+
+        /*
+         *  Update synchronization environement
          */
         updateEnv: function(envId, options) {
             var self = this;
@@ -233,36 +310,48 @@ define([
             }
 
             options = _.defaults({}, options || {}, {
-                sync: false
+                sync: false,
+                reset: false
             });
 
             if (!envId) return this;
+            if (this.file.isNewfile() || !hr.Offline.isConnected()) options.sync = false;
+            options.reset = options.sync? false : options.reset;
 
             this.envOptions = options
             this.envId = envId;
 
-            this.hash_value_t0 = null;
-            this.hash_value_t1 = null;
-            this.content_value_t0 = null;
-            this.content_value_t1 = null;
-
             logging.log("update env with", this.envId, options, hr.Offline.isConnected());
 
-            if (this.file.isNewfile()) options.sync = false;
+            if (options.reset) {
+                this.hash_value_t0 = null;
+                this.hash_value_t1 = null;
+                this.content_value_t0 = "";
+                this.content_value_t1 = "";
+            }
 
-            if (!hr.Offline.isConnected() || !options.sync) {
-                /// Offline sync
-                self.setMode(self.modes.READONLY);
+            // Signal update
+            this.trigger("update:env", options);
 
-                this.file.getCache().then(function(content) {
-                    // Update content
-                    self.setContent(content);
+            // Start sync
+            if (!options.sync) {
+                if (options.reset) {
+                    this.setMode(self.modes.READONLY);
 
-                    // Enable sync
-                    self.setMode(self.modes.ASYNC);
-                }, function(err) {
-                    logging.error("Error for offline sync: ", err);
-                });
+                    this.file.getCache().then(function(content) {
+                        // Update content
+                        self.setContent(content);
+
+                        // Enable sync
+                        self.setMode(self.modes.ASYNC);
+                    }, function(err) {
+                        logging.error("Error for offline sync: ", err);
+                        self.trigger("close");
+                    });
+                } else {
+                    this.setMode(self.modes.ASYNC);
+                    this.setContent(this.content_value_t1 || "");
+                }
             } else {
                 /// Online sync
                 self.setMode(self.modes.SYNC);
@@ -283,7 +372,7 @@ define([
                         logging.log("socket connecting ...");
                     });
                     socket.on('message', function(data) {
-                        logging.log("socket receive packet ", data);
+                        //logging.log("socket receive packet ", data);
                         self.ping = true;
 
                         // Calid data
@@ -325,9 +414,7 @@ define([
                                 }
                                 break;
                             case "patch":
-                                if (data.patch != null) {
-                                    self.patchContent(data);
-                                }
+                                self.patchQueue.defer(data);
                                 break;
                             case "modified":
                                 if (data.state != null) {
@@ -345,16 +432,15 @@ define([
                     }
                 });
             }
-
-            this.trigger("update:env", options);
         },
 
         /*
-         *  Set file to the editor
+         *  Set file for the synschronization
          */
         setFile: function(file, options) {
             options = _.defaults({}, options || {}, {
                 sync: false,
+                reset: true,
                 autoload: true
             });
 
@@ -368,7 +454,6 @@ define([
             this.file = file;
 
             if (this.file != null) {
-                
                 this.file.on("set", _.partial(this.setFile, this.file, options), this);
                 this.file.on("modified", this.trigger.bind(this, "sync:modified"));
                 this.file.on("loading", this.trigger.bind(this, "sync:loading"));
@@ -384,7 +469,9 @@ define([
             }
         },
 
-        /* Socket for the connection */
+        /*
+         *  Return a socket for this connexion
+         */
         socket: function() {
             var that = this;
 
@@ -392,7 +479,7 @@ define([
 
             if (this._socket) return Q(this._socket);
             if (this.envId != null) {
-                return box.socket("filesync", true).then(function(s) {
+                return box.socket("filesync").then(function(s) {
                     that._socket = s;
                     return that._socket;
                 })
@@ -401,11 +488,12 @@ define([
             }
         },
 
-        /* Close sync socket */
+        /*
+         *  Close connexion with the server
+         */
         closeSocket: function() {
             var that = this;
             if (!this._socket) return;
-            this._socket.disconnect();
             this_socket = null;
         },
 
@@ -435,20 +523,6 @@ define([
                 'color': this.participantColor(id)
             };
             this.trigger("cursor:move", id, this.cursors[id]);
-            return this;
-        },
-
-        /*
-         *  Cursors clear
-         */
-        cursorsClear: function() {
-            var that = this;
-            _.each(this.cursors, function(cid, userId) {
-                that.trigger("cursor:remove", cid, that.cursors[cid]);
-            });
-            _.each(this.selections, function(cid, userId) {
-                that.trigger("selection:remove", cid, that.selections[cid]);
-            });
             return this;
         },
 
@@ -542,69 +616,79 @@ define([
         /*
          *  Apply patches to a cursor
          *  @cursor : cursor object {x:, y:}
-         *  @patches : diff patches to apply
+         *  @operations: operations to paply
          */
-        cursorPatch: function(cursor, patches, content){
-            var self = this;
-
-            var cursor_x = cursor.x;
-            var cursor_y = cursor.y;
+        cursorApplyOps: function(cursor, operations, content){
+            var cursorIndex, diff;
 
             content = content || this.content_value_t0;
-            patches = patches || [];
+            operations = operations || [];
 
-            var cursor_index = self.cursorIndexBypos(cursor_x, cursor_y, content);
+            cursorIndex = this.cursorIndexBypos(cursor.x, cursor.y, content);
 
-            _.each(patches, function(change, i) {
-                var plage_start = change.start1
-                var plage_size = change.length2 - change.length1;
-                var plage_end = plage_start + change.length1;
+            for (var i in operations) {
+                var op = operations[i];
 
-                if (cursor_index <= plage_start){
-                    //do nothing :
-                    //le curseur est avant la plage de modification
+                if (cursorIndex < op.index) {
+                    // Before operations -> ignore
+                } else {
+                    diff = (op.type == "insert") ? 1 : -1;
+                    cursorIndex = cursorIndex + diff * op.content.length;
                 }
-                else if (cursor_index >= plage_end){
-                    //deplace le curseur de plage_size car :
-                    //le curseur est aprés la plage de modification
-                    cursor_index = cursor_index + plage_size;
-                }
-                else{
-                    //le curseur est dans la plage de modification du patch
-                    //deplacement doit etre calculé selon les diffs
-                    _.each(change.diffs, function(diff, a) {
-                        // taille du diff
-                        var len = diff[1].length;
-                        //deplacement
-                        var dep = diff[0];
+            }
 
-
-                        var diff_pos = change.start1+len;
-
-                        if (diff_pos <= cursor_index)
-                        {
-                            cursor_index = cursor_index + dep
-                        }
-                    });
-                }
-            });
-            return cursor_index;
+            return cursorIndex;
         },
 
         /*
          *  Set lists of participants
          */
-        setParticipants: function(parts) {
-            this.participants = _.compact(_.map(parts, function(participant, i) {
+        setParticipants: function(participants) {
+            // Update participants list
+            this.participants = _.chain(participants)
+            .map(function(participant, i) {
                 participant.user = collaborators.getById(participant.userId);
                 if (!participant.user) {
                     logging.error("participant non user:", participant.userId);
                     return null;
                 }
+
+                // Color for this participant
                 participant.color = this.options.colors[i % this.options.colors.length];
+
                 return participant;
-            }, this));
+            }, this)
+            .compact()
+            .value();
+
+            this.participantIds = _.pluck(participants, "userId");
+            logging.log("update participants", this.participantIds);
+
+            // Signal participant update
             this.trigger("participants");
+
+            // Clear old participants cursors
+            _.each(this.cursors, function(cursor, cId) {
+                if (_.contains(this.participantIds, cId)) return;
+
+                this.trigger("cursor:remove", cId);
+                delete this.cursors[cId];
+            }, this);
+            _.each(this.selections, function(cursor, cId) {
+                if (_.contains(this.participantIds, cId)) return;
+
+                this.trigger("selection:remove", cId);
+                delete this.selections[cId];
+            }, this);
+
+            // Update all participants cursor/selection
+            _.each(this.participants, function(participant) {
+                this.cursorMove(participant.userId, participant.cursor.x, participant.cursor.y);
+                this.selectionMove(participant.userId,
+                    participant.selection.start.x, participant.selection.start.y,
+                    participant.selection.end.x, participant.selection.end.y);
+            }, this);
+            
             return this;
         },
 
@@ -636,7 +720,7 @@ define([
                     'environment': this.envId
                 });
 
-                logging.log("send packet", data);
+                //logging.log("send packet", data);
                 this.socket().then(function(socket) {
                     socket.json.send(data);
                 })
@@ -741,10 +825,13 @@ define([
             // If aync mode
             if (this.getMode() == this.modes.ASYNC) {
                 doSave = function(args) {
-                    return that.file.write(that.content_value_t1, args.path).then(function(newPath) {
+                    return that.file.write(that.content_value_t1, args.path)
+                    .then(function(newPath) {
                         if (newPath != that.file.path()) {
                             that.trigger("file:path", newPath);
                         }
+                    }, function(err) {
+                        that.trigger("error", err);
                     });
                 };
             }
@@ -764,6 +851,8 @@ define([
          *  Close the connection
          */
         close: function() {
+            clearInterval(this.timer);
+            this.file.modifiedState(false);
             this.send("close");
             this.off();
         },
