@@ -5,6 +5,9 @@ define([
 ], function ($, _, MenuView) {
 
     var ContextMenu = {
+        lastTimeOpened: 0,
+        origin: null,
+
         /*
          * Clear context menus
          */
@@ -35,6 +38,7 @@ define([
          */
         open: function(menuItems, pos) {
             ContextMenu.clear();
+            ContextMenu.lastTimeOpened = Date.now();
 
             var menu = ContextMenu.generateMenu(menuItems);
 
@@ -74,6 +78,7 @@ define([
             });
 
             var handler = function(e) {
+                ContextMenu.origin = e.type;
                 var target = e.target || e.srcElement;
 
                 // Ignore contextmenu on textinput
@@ -81,10 +86,13 @@ define([
                 (target.tagName == 'INPUT' || target.tagName == 'SELECT' || target.tagName == 'TEXTAREA' || target.isContentEditable)) {
                     return;
                 }
+                
+                var x = e.pageX || e.originalEvent.touches[0].pageX;
+                var y = e.pageY || e.originalEvent.touches[0].pageY;
 
                 ContextMenu.open(menu, {
-                    'left': e.pageX,
-                    'top': e.pageY
+                    'left': x,
+                    'top': y
                 });
 
                 $el.addClass("ui-context-menu");
@@ -92,11 +100,13 @@ define([
             }
 
             $el.on("contextmenu", handler);
+            if (navigator.userAgent.match(/iPad/i) != null) $el.taphold(handler);
         }
     };
 
     // Click on the page: clse context menu
-    $(document).click(function () {
+    $(document).on("click", function (e) {
+        if (ContextMenu.lastTimeOpened > (Date.now() - 600) && ContextMenu.origin != "contextmenu") return;
         ContextMenu.clear();
     });
 
