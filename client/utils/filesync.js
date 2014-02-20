@@ -304,6 +304,9 @@ define([
         updateEnv: function(envId, options) {
             var self = this;
 
+            // Send close to previous session
+            this.send("close");
+
             if (_.isObject(envId)) {
                 options = envId;
                 envId = this.envId;
@@ -378,6 +381,8 @@ define([
                         logging.log("socket connecting ...");
                     });
                     socket.on('message', function(data) {
+                        if (!self.isSync()) return;
+
                         //logging.log("socket receive packet ", data);
                         self.ping = true;
 
