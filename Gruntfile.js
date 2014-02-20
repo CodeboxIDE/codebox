@@ -68,7 +68,8 @@ module.exports = function (grunt) {
                             'vendors/bootstrap/popover',
                             'vendors/bootstrap/scrollspy',
                             'vendors/bootstrap/tab',
-                            'vendors/bootstrap/transition'
+                            'vendors/bootstrap/transition',
+                            'vendors/longpress'
                         ]
                     },
                     'vendors/socket.io': {
