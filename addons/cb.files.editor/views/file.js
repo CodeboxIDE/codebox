@@ -7,7 +7,7 @@ define([
     var _ = codebox.require("hr/utils");
     var $ = codebox.require("hr/dom");
     var hr = codebox.require("hr/hr");
-    var Dialogs = codebox.require("utils/dialogs");
+    var alerts = codebox.require("utils/alerts");
     var FilesTabView = codebox.require("views/files/tab");
     var FileSync = codebox.require("utils/filesync");
     var user = codebox.require("core/user");
@@ -334,6 +334,9 @@ define([
             }, this);
             this.sync.on("close", function(mode) {
                 this.tab.closeTab();
+            }, this);
+            this.sync.on("error", function(err) {
+                alerts.show("Error: "+(err.message || err), 3000);
             }, this);
 
             this.sync.on("sync:modified", function(state) {

@@ -88,7 +88,9 @@ define([
             // Offline sync
             hr.Offline.on("state", function(state) {
                 if (hr.Offline.isConnected()) return;
-                if (this.envId) this.updateEnv(this.envId, this.envOptions);
+                if (this.envId) this.updateEnv(this.envId, _.extend({}, this.envOptions, {
+                    reset: false
+                }));
             }, this);
         },
 
@@ -308,41 +310,48 @@ define([
             }
 
             options = _.defaults({}, options || {}, {
-                sync: false
+                sync: false,
+                reset: false
             });
 
             if (!envId) return this;
+            if (this.file.isNewfile() || !hr.Offline.isConnected()) options.sync = false;
+            options.reset = options.sync? false : options.reset;
 
             this.envOptions = options
             this.envId = envId;
 
-            this.hash_value_t0 = null;
-            this.hash_value_t1 = null;
-            this.content_value_t0 = "";
-            this.content_value_t1 = "";
-
             logging.log("update env with", this.envId, options, hr.Offline.isConnected());
 
-            if (this.file.isNewfile() || !hr.Offline.isConnected()) options.sync = false;
+            if (options.reset) {
+                this.hash_value_t0 = null;
+                this.hash_value_t1 = null;
+                this.content_value_t0 = "";
+                this.content_value_t1 = "";
+            }
 
             // Signal update
             this.trigger("update:env", options);
 
             // Start sync
             if (!options.sync) {
-                /// Offline sync
-                self.setMode(self.modes.READONLY);
+                if (options.reset) {
+                    this.setMode(self.modes.READONLY);
 
-                this.file.getCache().then(function(content) {
-                    // Update content
-                    self.setContent(content);
+                    this.file.getCache().then(function(content) {
+                        // Update content
+                        self.setContent(content);
 
-                    // Enable sync
-                    self.setMode(self.modes.ASYNC);
-                }, function(err) {
-                    logging.error("Error for offline sync: ", err);
-                    self.trigger("close");
-                });
+                        // Enable sync
+                        self.setMode(self.modes.ASYNC);
+                    }, function(err) {
+                        logging.error("Error for offline sync: ", err);
+                        self.trigger("close");
+                    });
+                } else {
+                    this.setMode(self.modes.ASYNC);
+                    this.setContent(this.content_value_t1 || "");
+                }
             } else {
                 /// Online sync
                 self.setMode(self.modes.SYNC);
@@ -431,6 +440,7 @@ define([
         setFile: function(file, options) {
             options = _.defaults({}, options || {}, {
                 sync: false,
+                reset: true,
                 autoload: true
             });
 
@@ -815,10 +825,13 @@ define([
             // If aync mode
             if (this.getMode() == this.modes.ASYNC) {
                 doSave = function(args) {
-                    return that.file.write(that.content_value_t1, args.path).then(function(newPath) {
+                    return that.file.write(that.content_value_t1, args.path)
+                    .then(function(newPath) {
                         if (newPath != that.file.path()) {
                             that.trigger("file:path", newPath);
                         }
+                    }, function(err) {
+                        that.trigger("error", err);
                     });
                 };
             }
