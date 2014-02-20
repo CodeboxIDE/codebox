@@ -151,6 +151,20 @@ function setup_perm () {
     sudo chmod 777 /tmp
 }
 
+function setup_appengine () {
+    # PHP and Python
+    if [ -d "/opt/google_appengine" ]; then
+        export PATH="/opt/google_appengine:${PATH}"
+    # GO
+    else if [ -d "/opt/go_appengine" ]; then
+        export PATH="/opt/go_appengine:${PATH}"
+        export GOROOT="/opt/go_appengine/goroot"
+        export GOPATH="/opt/go_appengine/gopath"
+    # Java
+    else if [ -d "/opt/java_appengine" ]; then
+        export PATH="/opt/java_appengine/bin:${PATH}"
+    fi
+}
 
 function setup_env () {
     echo "Calling setup_env ..."
@@ -162,6 +176,9 @@ function setup_env () {
 
     # Set command prompt
     export PS1="\[$(tput setaf 1)\]\u\[$(tput setaf 3)\] \W \[$(tput setaf 2)\]# \[$(tput sgr0)\]"
+
+    # Set App Engine related variables
+    setup_appengine
 
     # Unset sensitive stuff
     unset RSA_PRIVATE
