@@ -284,7 +284,10 @@ var start = function(config) {
         ];
         return app.load(plugins);
     }).then(function() {
-        return Q(app);
+        return Q({
+            'app': app,
+            'config': config
+        });
     });
 };
 
