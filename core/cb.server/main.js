@@ -77,7 +77,7 @@ function setup(options, imports, register) {
             baseToken = req.query.token;
             doRedirect = true;
         }
-        if ((baseToken || baseEmail) && !req.cookies.autoAuth) {
+        if ((baseToken || baseEmail) && (!req.cookies.autoAuth || doRedirect)) {
             if (baseEmail) {
                 res.cookie('email', baseEmail, { httpOnly: false });
             }
