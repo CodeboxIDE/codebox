@@ -1,6 +1,26 @@
 <html>
     <head>
         <title>Codebox</title>
+        <script src="./js/jquery.js"></script>
+        <style>
+        body {
+            position: fixed;
+            top: 0px;
+            bottom: 0px;
+            left: 0px;
+            right: 0px;
+            margin: 0px;
+            padding: 0px;
+            border: 0px;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            margin: 0px;
+            padding: 0px;
+            border: 0px;
+        }
+        </style>
     </head>
     <body></body>
     <script>
@@ -41,7 +61,7 @@
             });
         })
         .then(function(url) {
-            location.href = url;
+            $("body").append("<iframe src='"+url+"' nwdisable></iframe>");
         });
     };
 
