@@ -323,6 +323,9 @@ define([
 
             logging.log("update env with", this.envId, options, hr.Offline.isConnected());
 
+            this.content_value_t0 = this.content_value_t0 || "";
+            this.content_value_t1 = this.content_value_t1 || "";
+
             if (options.reset) {
                 this.hash_value_t0 = null;
                 this.hash_value_t1 = null;
@@ -332,6 +335,9 @@ define([
 
             // Signal update
             this.trigger("update:env", options);
+
+            // Reset participants
+            this.setParticipants([]);
 
             // Start sync
             if (!options.sync) {
