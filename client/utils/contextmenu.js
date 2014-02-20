@@ -87,9 +87,12 @@ define([
                     return;
                 }
 
+                var x = e.pageX || e.originalEvent.touches[0].pageX;
+                var y = e.pageY || e.originalEvent.touches[0].pageY;
+
                 ContextMenu.open(menu, {
-                    'left': e.pageX,
-                    'top': e.pageY
+                    'left': x,
+                    'top': y
                 });
 
                 $el.addClass("ui-context-menu");
@@ -102,7 +105,7 @@ define([
     };
 
     // Click on the page: clse context menu
-    $(document).click(function (e) {
+    $(document).on("click", function (e) {
         if (ContextMenu.lastTimeOpened > (Date.now() - 600) && ContextMenu.origin != "contextmenu") return;
         ContextMenu.clear();
     });
