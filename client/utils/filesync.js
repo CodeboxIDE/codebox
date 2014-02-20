@@ -323,13 +323,13 @@ define([
 
             logging.log("update env with", this.envId, options, hr.Offline.isConnected());
 
-            if (this.file.isNewfile()) options.sync = false;
+            if (this.file.isNewfile() || !hr.Offline.isConnected()) options.sync = false;
 
             // Signal update
             this.trigger("update:env", options);
 
             // Start sync
-            if (!hr.Offline.isConnected() || !options.sync) {
+            if (!options.sync) {
                 /// Offline sync
                 self.setMode(self.modes.READONLY);
 
@@ -341,6 +341,7 @@ define([
                     self.setMode(self.modes.ASYNC);
                 }, function(err) {
                     logging.error("Error for offline sync: ", err);
+                    self.trigger("close");
                 });
             } else {
                 /// Online sync

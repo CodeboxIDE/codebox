@@ -332,6 +332,9 @@ define([
             this.sync.on("mode", function(mode) {
                 this.tab.setTabState("sync", mode == this.sync.modes.SYNC);
             }, this);
+            this.sync.on("close", function(mode) {
+                this.tab.closeTab();
+            }, this);
 
             this.sync.on("sync:modified", function(state) {
                 this.tab.setTabState("modified", state);
