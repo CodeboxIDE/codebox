@@ -1,6 +1,6 @@
 // Requires
 var Q = require('q');
-var _ = require('underscore');
+var _ = require('lodash');
 var Gittle = require('gittle');
 
 function GitRPCService(workspace, events) {

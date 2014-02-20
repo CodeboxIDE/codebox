@@ -1,5 +1,5 @@
 // Requires
-var _ = require('underscore');
+var _ = require('lodash');
 
 function setup(options, imports, register) {
     var deploy = imports.deploy;

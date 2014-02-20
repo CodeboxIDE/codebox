@@ -1,6 +1,6 @@
 // Requires
 var Q = require('q');
-var _ = require('underscore');
+var _ = require('lodash');
 var shux = require('shux');
 
 var qnode = require('../utils').qnode;

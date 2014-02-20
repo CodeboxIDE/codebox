@@ -1,6 +1,6 @@
 // Port allocation
 var gui = require('nw.gui');
-var underscore = require('underscore');
+var lodash = require('lodash');
 var qClass = require('qpatch').qClass;
 var harbor = qClass(require('harbor'));
 var ports = new harbor(19000, 20000);
@@ -76,7 +76,7 @@ window.onload = function() {
     var env = qs.env ? JSON.parse(qs.env) : null;
     // Merge environment variables sent from manager
     if(env) {
-        process.env = underscore.extend({}, process.env, env);
+        process.env = lodash.extend({}, process.env, env);
     }
     startCodebox(path).fail(function() {
         win.close();

@@ -2,7 +2,7 @@ module.exports = function (grunt) {
     var fs = require('fs');
     var path = require("path");
     var pkg = require("./package.json");
-    var _ = require('underscore');
+    var _ = require('lodash');
 
     // Path to the client src
     var clientPath = path.resolve(__dirname, "client");

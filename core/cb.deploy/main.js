@@ -1,5 +1,5 @@
 // Requires
-var _ = require('underscore');
+var _ = require('lodash');
 var DeploymentSolution = require("./solution").DeploymentSolution;
 
 // List of all deployment solution

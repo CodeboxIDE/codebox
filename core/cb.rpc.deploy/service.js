@@ -1,6 +1,6 @@
 // Requires
 var Q = require('q');
-var _ = require('underscore');
+var _ = require('lodash');
 
 function DeployRPCService(deploy, events) {
     this.deploy = deploy;
