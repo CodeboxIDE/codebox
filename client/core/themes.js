@@ -74,6 +74,11 @@ define([
 
         cssContent = css.convertJSON(theme.styles, {
             namespace: {
+                // scrollbar
+                'scrollbar': "::-webkit-scrollbar",
+                'scrollbar thumb': "::-webkit-scrollbar-thumb",
+                'scrollbar corner': "::-webkit-scrollbar-corner",
+
                 // menu bar
                 'menubar': ".cb-menubar",
                 'menubar button': ".cb-menubar .cb-commands-menubar .menu-command-item>.btn",
