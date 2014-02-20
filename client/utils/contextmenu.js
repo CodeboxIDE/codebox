@@ -86,7 +86,7 @@ define([
                 (target.tagName == 'INPUT' || target.tagName == 'SELECT' || target.tagName == 'TEXTAREA' || target.isContentEditable)) {
                     return;
                 }
-
+                
                 var x = e.pageX || e.originalEvent.touches[0].pageX;
                 var y = e.pageY || e.originalEvent.touches[0].pageY;
 
@@ -100,7 +100,7 @@ define([
             }
 
             $el.on("contextmenu", handler);
-            if (navigator.userAgent.match(/iPad/i) != null) $el.longpress(handler);
+            if (navigator.userAgent.match(/iPad/i) != null) $el.taphold(handler);
         }
     };
 
