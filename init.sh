@@ -43,9 +43,6 @@ function setup_ssh () {
 
     chmod 600 "${SSH_DIR}id_rsa.pub"
     chmod 600 "${SSH_DIR}id_rsa"
-
-    ssh-keyscan -H github.com >> "${SSH_DIR}known_hosts"
-    ssh-keyscan -H bitbucket.org >> "${SSH_DIR}known_hosts"
 }
 
 
