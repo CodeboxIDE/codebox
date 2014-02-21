@@ -93,7 +93,7 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
             var password = hr.Cookies.get("token");
 
             if (!box.isAuth() && ((email && password) || (email && box.get("public"))) && this._autologin) {
-                this.doLogin(email, password, true);
+                this.doLogin(email, password);
                 return;
             }
             return Application.__super__.render.apply(this, arguments);
@@ -168,13 +168,12 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
 
             var email = this.$(".login-box #login-email").val();
             var password = this.$(".login-box #login-token").val();
-            var tosave = this.$(".login-box #login-save").is(":checked");
 
-            this.doLogin(email, password, tosave);
+            this.doLogin(email, password);
         },
 
         // Do login
-        doLogin: function(email, password, tosave) {
+        doLogin: function(email, password) {
             var that = this;
 
             // If public: generate a random password
@@ -198,13 +197,9 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
             }
 
             return session.start(email, password).then(function() {
-                if (tosave) {
-                    hr.Cookies.set("email", email);
-                    hr.Cookies.set("token", password);
-                } else {
-                    hr.Cookies.set("email", "");
-                    hr.Cookies.set("token", "");
-                }
+                hr.Cookies.set("email", email);
+                hr.Cookies.set("token", password);
+
                 that.render();
             }).fail(function(err) {
                 that._autologin = false;

@@ -25,30 +25,22 @@
 	<div class="cb-login">
 		<div class="login-box">
 			<div class="header">
-				<span class="fa-stack">
-				  <i class="fa fa-cloud fa-stack-2x"></i>
-				  <i class="fa fa-code fa-stack-1x fa-inverse"></i>
-				</span>
+  				<img src="http://localhost:8000/static/images/icons/128.png" />
 			</div>
 			<div class="inner">
 				<% if (hr.offline.isConnected()) { %>
 					<div class="form-group">
-						<input type="email" class="form-control input-lg" name="login-email" id="login-email" placeholder="Enter email" value="<%- email %>" autocomplete="off">
+						<input type="email" class="form-control input-lg" name="login-email" id="login-email" placeholder="Email" value="<%- email %>" autocomplete="off">
 						<% if (session.box.get("public")) { %>
-						<p class="help-block">This box is public, please enter an email to log in.</p>
+						<p class="help-block">This workspace is public, enter an email to identify yourself (GIT and collaborators).</p>
 						<% } %>
 					</div>
 					<% if (!session.box.get("public")) { %>
 					<div class="form-group">
-						<input type="password" class="form-control input-lg" name="login-token" id="login-token" placeholder="Enter token" value="<%- token %>" autocomplete="off">
+						<input type="password" class="form-control input-lg" name="login-token" id="login-token" placeholder="Password" value="<%- token %>" autocomplete="off">
 					</div>
 					<% } %>
-					<div class="checkbox">
-						<label>
-							<input type="checkbox" id="login-save" checked> Remember me
-						</label>
-					</div>
-					<button id="login-submit" class="btn btn-lg btn-block btn-primary">Login</button>
+					<button id="login-submit" class="btn btn-lg btn-block btn-default">Enter</button>
 				<% } else { %>
 					<div class="form-group">
 						<p class="help-block">Sorry, You can't use this workspace in offline mode.</p>
