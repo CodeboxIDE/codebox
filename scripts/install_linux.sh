@@ -2,6 +2,9 @@
 
 # This script need to be stored with content of app release for linux
 
+# Vendor name
+VENDOR=friendcode
+
 # User who is running the installer
 USER=$(whoami)
 
@@ -12,14 +15,15 @@ CODEBOX_PATH=/home/$USER/.codebox
 SCRIPTPATH=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
 
 # Removing base folder if already exists
-if [ -e $CODEBOX_PATH ] then
+if [ -e $CODEBOX_PATH ]
+then
     echo  "Removing old .codebox folder"
     rm -rf $CODEBOX_PATH
     echo ""
 fi
 
 # Creating base folder
-echo -ne "Creating $CODEBOX_PATH"
+echo "Creating $CODEBOX_PATH"
 mkdir -p $CODEBOX_PATH
 echo ""
 
@@ -47,34 +51,40 @@ done
 echo ""
 
 # Create desktop entry
-touch ./codebox.desktop
-echo "[Desktop Entry]" >> codebox.desktop
-echo "Type=Application" >> codebox.desktop
-echo "Encoding=UTF-8" >> codebox.desktop
-echo "Name=Codebox" >> codebox.desktop
-echo "Comment=Code Editor" >> codebox.desktop
-echo "Exec=$CODEBOX_PATH/Codebox" >> codebox.desktop
-echo "Icon= $CODEBOX_PATH/icon.png"  >> codebox.desktop
-echo "Categories=Utilities/TextEditor" >> codebox.desktop
-echo "Terminal=false" >> codebox.desktop
+FILE_DESKTOP=$VENDOR-codebox.desktop
+touch $FILE_DESKTOP
+echo "[Desktop Entry]" >> $FILE_DESKTOP
+echo "Type=Application" >> $FILE_DESKTOP
+echo "Encoding=UTF-8" >> $FILE_DESKTOP
+echo "Name=Codebox" >> $FILE_DESKTOP
+echo "GenericName=Code Editor" >> $FILE_DESKTOP
+echo "Comment=Code Editor" >> $FILE_DESKTOP
+echo "Exec=$CODEBOX_PATH/Codebox" >> $FILE_DESKTOP
+echo "Icon= $CODEBOX_PATH/icon.png"  >> $FILE_DESKTOP
+echo "Categories=Development;Utilities;TextEditor" >> $FILE_DESKTOP
+echo "Terminal=false" >> $FILE_DESKTOP
 
 echo "Granting the shortcut execution permissions"
 echo "(this requires root access)"
-cp codebox.desktop /home/$(whoami)/Desktop
-sudo chmod +x /home/$(whoami)/Desktop/codebox.desktop
+cp $FILE_DESKTOP /home/$(whoami)/Desktop
+sudo chmod +x /home/$(whoami)/Desktop/$FILE_DESKTOP
 echo ""
 
 echo "Writing desktop menu item"
-touch codebox.directory
-echo "[Desktop Entry]" >> codebox.directory
-echo "Value=1.0" >> codebox.directory
-echo "Type=Directory" >> codebox.directory
-echo "Encoding=UTF-8" >> codebox.directory
+FILE_DIRECTORYENTRY=$VENDOR-codebox.directory
+touch $FILE_DIRECTORYENTRY
+echo "[Desktop Entry]" >> $FILE_DIRECTORYENTRY
+echo "Value=1.0" >> $FILE_DIRECTORYENTRY
+echo "Type=Directory" >> $FILE_DIRECTORYENTRY
+echo "Encoding=UTF-8" >> $FILE_DIRECTORYENTRY
+echo "Name=Codebox" >> $FILE_DIRECTORYENTRY
+echo "Comment=Code Editor" >> $FILE_DIRECTORYENTRY
+echo "Icon= $CODEBOX_PATH/icon.png"  >> $FILE_DIRECTORYENTRY
 echo "done"
 echo ""
 
 echo "Installing to Applications menu"
-xdg-desktop-menu install codebox.directory codebox.desktop
+xdg-desktop-menu install $FILE_DIRECTORYENTRY $FILE_DESKTOP
 xdg-desktop-menu forceupdate
 echo ""
 
