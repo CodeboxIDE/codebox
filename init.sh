@@ -156,12 +156,12 @@ function setup_appengine () {
     if [ -d "/opt/google_appengine" ]; then
         export PATH="/opt/google_appengine:${PATH}"
     # GO
-    else if [ -d "/opt/go_appengine" ]; then
+    elif [ -d "/opt/go_appengine" ]; then
         export PATH="/opt/go_appengine:${PATH}"
         export GOROOT="/opt/go_appengine/goroot"
         export GOPATH="/opt/go_appengine/gopath"
     # Java
-    else if [ -d "/opt/java_appengine" ]; then
+    elif [ -d "/opt/java_appengine" ]; then
         export PATH="/opt/java_appengine/bin:${PATH}"
     fi
 }
