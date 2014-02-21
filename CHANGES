@@ -1,3 +1,15 @@
+2014-02-21  Samy Pessé  <samy.pesse@friendco.de>
+            Aaron O'Mullan <aaron.omullan@friendco.de>
+
+    * Bump version to 0.6.0
+    * New realtime collaboration (much more stable and efficient)
+    * Desktop applications build for Linux (32 bits) and Mac
+    * Deployment (FTP, GitHub Pages, Parse, Heroku, Google App Engine)
+    * Improve iPad support
+    * Show collaborators in collaborative editor (cursor and name)
+    * Auto-run App Engine applications with dev_server
+    * Auto-run Parse applications
+
 2014-02-11  Samy Pessé  <samy.pesse@friendco.de>
             Aaron O'Mullan <aaron.omullan@friendco.de>
 
