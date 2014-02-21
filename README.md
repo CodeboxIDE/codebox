@@ -14,31 +14,24 @@ A screencast of the IDE is available on [Youtube](https://www.youtube.com/watch?
 
 ## How to install and run Codebox
 
-#### Install
+#### Desktop Applications
+
+Installers for the latest stable build for **Mac** and **Linux** can be downloaded on the [release page](https://github.com/FriendCode/codebox/releases).
+
+Instructions on how to install it can be found for each release.
+
+#### Install from NPM
+
+Codebox can be installed as a Node package and use programatically or from the command line.
 
 Install Codebox globally using NPM:
 ```
-npm install -g codebox
+$ npm install -g codebox
 ```
 
-##### Ubuntu (extra steps).
-
-On ubuntu you'll need `git` and `build-essential`, install them with:
+And start the IDE from the command line:
 ```
-sudo apt-get -y install git build-essential
-```
-
-You will also need to install via `npm` using `sudo` with the following:
-```
-sudo npm install -g codebox
-```
-
-Desktop binaries for Mac and Linux are **coming soon**.
-
-#### Usage
-
-```
-codebox run ./myworkspace --open
+$ codebox run ./myworkspace --open
 ```
 
 Use this command to run and open Codebox IDE. By default, Codebox uses GIT to identify you, you can use the option ```--email=john.doe@gmail.com``` to define the email you want to use during GIT operations.
