@@ -22,7 +22,7 @@ function setup(options, imports, register) {
             username: {
                 label: "Username",
                 type: "text",
-                help: "Username to login with during the FTP connexion"
+                help: "Username to login with during the FTP connection"
             },
             password: {
                 label: "Password",
