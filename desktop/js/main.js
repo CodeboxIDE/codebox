@@ -10,6 +10,22 @@ var querystring = require("querystring");
 
 var CodeboxIO = require('codebox-io').Client;
 
+// Local storage utilities
+var storage = {
+    get: function(key, def) {
+        try {
+            return JSON.parse(window.localStorage[key]);
+        } catch(err) {
+            return window.localStorage[key] || def;
+        }
+    },
+        set: function(key, value) {
+        window.localStorage[key] = JSON.stringify(value);
+    }
+};
+
+// Config
+var codeboxIoHost = "https://www.codebox.io";
 
 // Port allocation
 var qClass = require('qpatch').qClass;
@@ -24,41 +40,30 @@ var $btnOpen = $("#open-new");
 var $btnMenu = $("#open-menu");
 
 
-// Local storage
-var storageGet = function(key, def) {
-    try {
-        return JSON.parse(localStorage[key]);
-    } catch(err) {
-        return localStorage[key] || def;
-    }
-};
-var storageSet = function(key, value) {
-    localStorage[key] = JSON.stringify(value);
-};
-
 // Update codebox.io connexion
 var updateRemote = function() {
     var boxes, key, token;
-    token = storageGet("token");
+    token = storage.get("token");
 
     $alert.toggle(!token);
     if (!token) {
         boxes = [];
-        storageSet("remoteBoxes", boxes);
+        storage.set("remoteBoxes", boxes);
         updateProjects();
     }
 
     var client = new CodeboxIO({
+        'host': codeboxIoHost,
         'token': token
     });
     client.account().then(function(account) {
-        storageSet("email", account.email);
+        storage.set("email", account.email);
         return client.boxes()
     }).then(function(_boxes) {
         boxes = _.map(_boxes, function(box) {
             return _.pick(box, "name", "url", "stack", "id", "public", "permissions");
         });
-        storageSet("remoteBoxes", boxes);
+        storage.set("remoteBoxes", boxes);
         updateProjects();
     });
 };
@@ -87,11 +92,11 @@ var addProjectItem = function(name, description, image, handler) {
 
 // Update list of projects
 var updateProjects = function() {
-    var projects = storageGet("projects", []);
+    var projects = storage.get("projects", []);
     $projectList.empty();
 
     // Add remote boxes
-    var boxes = storageGet("remoteBoxes", []);
+    var boxes = storage.get("remoteBoxes", []);
     boxes.forEach(function(box) {
         addProjectItem(box.name, "remote - "+box.stack, "icons/128.png", function() {
             runRemoteCodebox(box);
@@ -117,24 +122,24 @@ var updateProjects = function() {
     });
 
     // Resave project
-    storageSet("projects", projects);
+    storage.set("projects", projects);
 
     return projects.length > 0;
 };
 
 // Update codebox.io account
 var updateCodeboxIOAccount = function() {
-    var token = storageGet("token");
+    var token = storage.get("token");
 
     if (token) {
         if (confirm("Do you want to unlink this desktop from your CodeboxIO account?") == true) {
             token = "";
         }
     } else {
-        token = prompt("Please enter your CodeboxIO Account Token to connect it to this desktop, this token can be found on your codebox.io account settings:");
+        token = prompt("Please enter your codebox.io account token to connect it to this desktop, this token can be found on your codebox.io account settings:");
     }
 
-    storageSet("token", token);
+    storage.set("token", token);
     updateRemote();
 }
 
@@ -142,13 +147,13 @@ var updateCodeboxIOAccount = function() {
 var addProject = function(path) {
     if (!path) return false;
 
-    var projects = storageGet("projects", []);
+    var projects = storage.get("projects", []);
 
     // Project is already added
     if (projects.indexOf(path) !== -1) return false;
 
     projects.push(path);
-    storageSet("projects", projects);
+    storage.set("projects", projects);
     updateProjects();
 
     return true;
@@ -219,13 +224,11 @@ var runLocalCodebox = function(path) {
 // Open the remote ide for a box
 var runRemoteCodebox = function(box) {
     var options = {
-        'email': storageGet("email"),
-        'token': storageGet("token")
+        'token': storage.get("token")
     };
 
     var url = box.url;
-    if (navigator.onLine) url = "https://www.codebox.io/boot/"+box.id;
-    url = url+"?"+querystring.stringify(options);
+    if (navigator.onLine) url = codeboxIoHost+"/boot/"+box.id+"?"+querystring.stringify(options);
 
     var win = gui.Window.open(url, {
         'title': "Codebox",
@@ -244,30 +247,6 @@ var runRemoteCodebox = function(box) {
     return win;
 };
 
-// Menu options
-var menu = new gui.Menu();
-
-menu.append(new gui.MenuItem({
-    label: 'CodeboxIO Account',
-    click: function() {
-        updateCodeboxIOAccount();
-    }
-}));
-menu.append(new gui.MenuItem({
-    label: 'Reset data',
-    click: function() {
-        localStorage.clear();
-        updateRemote();
-    }
-}));
-menu.append(new gui.MenuItem({ type: 'separator' }));
-menu.append(new gui.MenuItem({
-    label: 'Quit',
-    click: function() {
-        gui.App.quit();
-    }
-}));
-
 // Bind events
 $directorySelector.change(function handleFileSelect(evt) {
     var path = $(this).val();
@@ -280,13 +259,53 @@ $btnOpen.click(function(e) {
 $btnMenu.click(function(e) {
     e.preventDefault();
     var pos = $btnMenu.offset();
+
+    var menu = new gui.Menu();
+    var token = storage.get("token");
+
+    if (token) {
+        menu.append(new gui.MenuItem({
+            label: 'Disconnect codebox.io account',
+            click: function() {
+                updateCodeboxIOAccount();
+            }
+        }));
+    } else {
+        menu.append(new gui.MenuItem({
+            label: 'Connect codebox.io account',
+            click: function() {
+                updateCodeboxIOAccount();
+            }
+        }));
+        menu.append(new gui.MenuItem({
+            label: 'Sign up to codebox.io',
+            click: function() {
+                gui.Shell.openExternal(codeboxIoHost+'/signup');
+            }
+        }));
+    }
+    menu.append(new gui.MenuItem({ type: 'separator' }));
+    
+    menu.append(new gui.MenuItem({
+        label: 'Reset all data',
+        click: function() {
+            localStorage.clear();
+            updateRemote();
+        }
+    }));
+    menu.append(new gui.MenuItem({ type: 'separator' }));
+    menu.append(new gui.MenuItem({
+        label: 'Quit',
+        click: function() {
+            gui.App.quit();
+        }
+    }));
     menu.popup(Math.floor(pos.left), Math.floor(pos.top));
 });
 $alert.click(function(e) {
     e.preventDefault();
     updateCodeboxIOAccount();
 });
-
 
 
 // Start the application
@@ -298,7 +317,7 @@ window.onload = function() {
     win.focus();
 
     // Start
-    !updateRemote();
+    updateRemote();
     if (!updateProjects()) {
         selectPath();
     }
