@@ -130,7 +130,7 @@ module.exports = function (grunt) {
                     mac: false,
                     win: false,
                     linux32: true,
-                    linux64: true,
+                    linux64: false,
                     version: NW_VERSION,
                     zip: false
                 },
