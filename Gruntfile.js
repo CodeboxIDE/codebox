@@ -170,6 +170,18 @@ module.exports = function (grunt) {
                 cwd: '.',
                 stdout: true,
                 stderr: true
+            },
+            build_mac_release: {
+                command: "./scripts/build_mac_dmg.sh",
+                cwd: './',
+                stdout: true,
+                stderr: true
+            },
+            build_linux_release: {
+                command: "./scripts/build_linux_tar.sh",
+                cwd: './',
+                stdout: true,
+                stderr: true
             }
         },
         copy: {
@@ -326,7 +338,8 @@ module.exports = function (grunt) {
         'exec:build_extras',
         'nodewebkit:mac',
         'exec:copy_extras',
-        'clean:tmp'
+        'clean:tmp',
+        'exec:build_mac_release'
     ]);
     grunt.registerTask('build-app-linux', [
         'tmp',
@@ -335,7 +348,8 @@ module.exports = function (grunt) {
         'nodewebkit:linux',
         'copy:linuxInstaller',
         'copy:linuxIcon',
-        'clean:tmp'
+        'clean:tmp',
+        'exec:build_linux_release'
     ]);
 
     // Desktop app test
