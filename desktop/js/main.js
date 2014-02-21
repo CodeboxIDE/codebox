@@ -132,7 +132,7 @@ var updateCodeboxIOAccount = function() {
     var token = storage.get("token");
 
     if (token) {
-        if (confirm("Do you want to unlink this desktop from your CodeboxIO account?") == true) {
+        if (confirm("Do you want to unlink this desktop from your codebox.io account?") == true) {
             token = "";
         }
     } else {

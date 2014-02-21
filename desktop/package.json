@@ -6,10 +6,11 @@
         "title": "Codebox",
         "width": 400,
         "height": 500,
-        "position": "center",
         "min_height": 400,
         "min_width": 400,
         "max_width": 400,
+        "icon": "icons/128.png",
+        "position": "center",
         "show": false,
         "toolbar": false,
         "frame": true
