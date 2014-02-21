@@ -3,6 +3,7 @@
 SCRIPTPATH=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
 
 NW_VERSION=$1
+NW_VERSION=${NW_VERSION:=0.8.0}
 REBUILD_MODULES=("shux/node_modules/pty.js" "ctags" "gittle/node_modules/pty.js" "vfs-local/node_modules/pty.js")
 
 echo $NW_VERSION
