@@ -215,6 +215,7 @@ module.exports = function (grunt) {
                     mode: true
                 }
             },
+
             // Change the package.json to use node-webkit's
             desktopPKG: {
                 cwd: './',
@@ -230,7 +231,21 @@ module.exports = function (grunt) {
                         );
                     }
                 }
-            }
+            },
+
+            // Installer for linux
+            linuxInstaller: {
+                cwd: './',
+                src: 'scripts/install_linux.sh',
+                dest: './appBuilds/releases/Codebox/linux32/Codebox/install.sh'
+            },
+
+            // Installer for linux
+            linuxIcon: {
+                cwd: './',
+                src: './desktop/icons/128.png',
+                dest: './appBuilds/releases/Codebox/linux32/Codebox/icon.png'
+            },
         },
         compress: {
             tmp: {
@@ -317,6 +332,8 @@ module.exports = function (grunt) {
         'copy:desktopPKG',
         'exec:nwbuild',
         'nodewebkit:linux',
+        'copy:linuxInstaller',
+        'copy:linuxIcon',
         'clean:tmp'
     ]);
 
