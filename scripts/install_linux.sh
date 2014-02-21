@@ -89,7 +89,7 @@ xdg-desktop-menu forceupdate
 echo ""
 
 echo "Cleaning"
-rm codebox.directory codebox.desktop
+rm $FILE_DIRECTORYENTRY $FILE_DESKTOP
 echo ""
 
 echo "Codebox is now installed on your desktop"
