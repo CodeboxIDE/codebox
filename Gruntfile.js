@@ -12,11 +12,11 @@ module.exports = function (grunt) {
 
     // Load grunt modules
     grunt.loadNpmTasks('hr.js');
+    grunt.loadNpmTasks('grunt-exec');
     grunt.loadNpmTasks('grunt-node-webkit-builder');
     grunt.loadNpmTasks('grunt-contrib-compress');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-shell');
 
     // Init GRUNT configuraton
     grunt.initConfig({
@@ -104,84 +104,72 @@ module.exports = function (grunt) {
             }
         },
         nodewebkit: {
-            options: {
-                build_dir: './appBuilds',
-                mac: true,
-                win: false,
-                linux32: false,
-                linux64: false,
-                mac_icns: "./desktop/icons/mac.icns",
-                credits: "./desktop/credits.html",
-                version: NW_VERSION,
-                zip: false
-            },
-            src: [
-                ".tmp/**",
-
-                // grunt.file.copy duplicates symbolic and hard links
-                // so we need to copy it with the shell
-                "!.tmp/extras/**",
-            ]
-        },
-        shell: {
-            nwbuild: {
-                command: "./scripts/nwbuild.sh",
+            mac: {
                 options: {
-                    execOptions: {
-                        cwd: '.tmp/',
-                        stdout: true,
-                        stderr: true,
-                        failOnError: true,
-                        env: _.extend({
-                            'NW_VERSION': NW_VERSION
-                        }, process.env)
-                    }
+                    build_dir: './appBuilds',
+                    mac: true,
+                    win: false,
+                    linux32: false,
+                    linux64: false,
+                    mac_icns: "./desktop/icons/mac.icns",
+                    credits: "./desktop/credits.html",
+                    version: NW_VERSION,
+                    zip: false
                 },
+                src: [
+                    ".tmp/**",
+
+                    // grunt.file.copy duplicates symbolic and hard links
+                    // so we need to copy it with the shell
+                    "!.tmp/extras/**",
+                ]
+            },
+            linux: {
+                options: {
+                    build_dir: './appBuilds',
+                    mac: false,
+                    win: false,
+                    linux32: true,
+                    linux64: true,
+                    version: NW_VERSION,
+                    zip: false
+                },
+                src: [
+                    ".tmp/**"
+                ]
+            }
+        },
+        exec: {
+            nwbuild: {
+                command: "./scripts/nwbuild.sh "+NW_VERSION,
+                cwd: '.tmp/',
+                stdout: true,
+                stderr: true
             },
             build_extras: {
                 command: "./scripts/build_extras.sh",
-                options: {
-                    execOptions: {
-                        cwd: '.tmp/',
-                        stdout: true,
-                        stderr: true,
-                        failOnError: true
-                    }
-                },
+                cwd: '.tmp/',
+                stdout: true,
+                stderr: true
             },
             publish: {
                 command: "npm publish",
-                options: {
-                    execOptions: {
-                        cwd: '.tmp/',
-                        stdout: true,
-                        stderr: true,
-                        failOnError: true
-                    }
-                }
+                cwd: '.tmp/',
+                stdout: true,
+                stderr: true
             },
             build_files_editor: {
                 command: "npm install",
-                options: {
-                    execOptions: {
-                        cwd: './addons/cb.files.editor/',
-                        stdout: true,
-                        stderr: true,
-                        failOnError: true
-                    }
-                }
+                cwd: './addons/cb.files.editor/',
+                stdout: true,
+                stderr: true
             },
             copy_extras: {
                 // Copy and preserve symbolic links
                 command: "mv .tmp/extras ./appBuilds/releases/Codebox/mac/Codebox.app/Contents/Resources/app.nw/extras",
-                options: {
-                    execOptions: {
-                        cwd: '.',
-                    },
-                    stdout: true,
-                    stderr: true,
-                    failOnError: true
-                }
+                cwd: '.',
+                stdout: true,
+                stderr: true
             }
         },
         copy: {
@@ -213,6 +201,7 @@ module.exports = function (grunt) {
                     "./client/build/**",
 
                     // Ignore some build time only modules
+                    "./node_modules/.bin/**",
                     "!./node_modules/grunt/**",
                     "!./node_modules/grunt-*/**",
                     "!./node_modules/hr.js/**",
@@ -301,7 +290,7 @@ module.exports = function (grunt) {
     // Build
     grunt.registerTask('build', [
         'hr',
-        'shell:build_files_editor'
+        'exec:build_files_editor'
     ]);
 
     // Build tmp directory
@@ -314,13 +303,20 @@ module.exports = function (grunt) {
     ]);
 
     // Desktop app generation
-    grunt.registerTask('buildApps', [
+    grunt.registerTask('build-app-mac', [
         'tmp',
         'copy:desktopPKG',
-        'shell:nwbuild',
-        'shell:build_extras',
-        'nodewebkit',
-        'shell:copy_extras',
+        'exec:nwbuild',
+        'exec:build_extras',
+        'nodewebkit:mac',
+        'exec:copy_extras',
+        'clean:tmp'
+    ]);
+    grunt.registerTask('build-app-linux', [
+        'tmp',
+        'copy:desktopPKG',
+        'exec:nwbuild',
+        'nodewebkit:linux',
         'clean:tmp'
     ]);
 
@@ -328,13 +324,13 @@ module.exports = function (grunt) {
     grunt.registerTask('testApps', [
         'tmp',
         'copy:desktopPKG',
-        'shell:nwbuild'
+        'exec:nwbuild'
     ]);
 
     // Publish to NPM
     grunt.registerTask('publish', [
         'tmp',
-        'shell:publish',
+        'exec:publish',
         'clean:tmp'
     ]);
 
