@@ -81,3 +81,5 @@ echo ""
 echo "Cleaning"
 rm codebox.directory codebox.desktop
 echo ""
+
+echo "Codebox is now installed on your desktop"
