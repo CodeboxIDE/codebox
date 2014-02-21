@@ -16,7 +16,8 @@ var loadAddonsInfos = function(addonOptions, addonsRoot, _options) {
 
     // Options
     _options = _.defaults({}, _options || {}, {
-        ignoreError: false
+        ignoreError: true,
+        unlinkInvalid: false
     });
 
     // Addons options
@@ -37,7 +38,7 @@ var loadAddonsInfos = function(addonOptions, addonsRoot, _options) {
                     return Q(addons);
                 }, function(err) {
                     addonOptions.logger.error("error", err);
-                    if (_options.ignoreError) {
+                    if (_options.unlinkInvalid) {
                         //  When ignoring error
                         //  it will check that the addon is not a symlink
                         //  and unlink invalid ones
@@ -53,6 +54,8 @@ var loadAddonsInfos = function(addonOptions, addonsRoot, _options) {
                             return Q(addons);
                         });
                     }
+                    
+                    if (_options.ignoreError) return Q(addons);
                     return Q.reject(err);
                 });
             });

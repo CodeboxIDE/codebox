@@ -189,7 +189,7 @@ function setup(options, imports, register, app) {
     .then(function() {
         // Load collection of addons
         return loadAddonsInfos(configAddonsPath, {
-            ignoreError: true
+            unlinkInvalid: true
         });
     })
     .then(manager.runAddonsOperation(function(addon) {
