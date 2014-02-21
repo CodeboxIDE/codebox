@@ -1,5 +1,5 @@
 var Q = require("q");
-var _ = require("underscore");
+var _ = require("lodash");
 var request = require("request");
 
 var method = function(key, httpMethod, endpoint, options) {

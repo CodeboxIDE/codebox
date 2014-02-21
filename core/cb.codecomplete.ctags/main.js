@@ -1,4 +1,4 @@
-var _ = require("underscore");
+var _ = require("lodash");
 var tags = require("./tags");
 
 function setup(options, imports, register) {

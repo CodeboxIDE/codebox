@@ -1,5 +1,5 @@
 // Requires
-var _ = require('underscore');
+var _ = require('lodash');
 var loadfire = require('loadfire');
 
 var urlparse = require('url').parse;

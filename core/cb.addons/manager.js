@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var _ = require('lodash');
 var Q = require("q");
 var fs  =  require('fs');
 var path = require('path');
@@ -76,7 +76,6 @@ var runAddonsOperation = function(operation, options) {
                 if (options.failOnError) {
                     return Q.reject(err);
                 } else {
-                    logger.error("ignore error", err);
                     failedAddons.push(addon.infos.name);
                     return Q();
                 }

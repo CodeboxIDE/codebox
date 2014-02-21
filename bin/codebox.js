@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var Q = require('q');
-var _ = require('underscore');
+var _ = require('lodash');
 var cli = require('commander');
 var path = require('path');
 var open = require("open");

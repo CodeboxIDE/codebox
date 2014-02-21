@@ -1,5 +1,5 @@
 // Requires
-var _ = require('underscore');
+var _ = require('lodash');
 
 var wireFriendly = require('../utils').wireFriendly;
 var timestamp = require('../utils').timestamp;
