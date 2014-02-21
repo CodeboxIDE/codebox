@@ -305,7 +305,8 @@ module.exports = function (grunt) {
     // Build
     grunt.registerTask('build', [
         'hr',
-        'exec:build_files_editor'
+        'exec:build_files_editor',
+        'buildAddons:dev'
     ]);
 
     // Build tmp directory
@@ -368,7 +369,6 @@ module.exports = function (grunt) {
 
     grunt.registerTask('default', [
         'build',
-        'buildAddons:dev',
         'run'
     ]);
 };
