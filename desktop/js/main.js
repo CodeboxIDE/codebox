@@ -107,11 +107,17 @@ var updateProjects = function() {
             'text': "No recent folders"
         }));
     }
-    projects.reverse().forEach(function(path) {
+    projects.reverse().forEach(function(path, i) {
+        if (!fs.existsSync(path)) {
+            projects = _.without(projects, path);
+        }
         addProjectItem(path.split("/").pop(), path, "icons/folder.png", function() {
             runLocalCodebox(path);
         });
     });
+
+    // Resave project
+    storageSet("projects", projects);
 
     return projects.length > 0;
 };
@@ -134,14 +140,18 @@ var updateCodeboxIOAccount = function() {
 
 // Add a path to the projects list
 var addProject = function(path) {
+    if (!path) return false;
+
     var projects = storageGet("projects", []);
 
     // Project is already added
-    if (projects.indexOf(path) !== -1) return;
+    if (projects.indexOf(path) !== -1) return false;
 
     projects.push(path);
     storageSet("projects", projects);
     updateProjects();
+
+    return true;
 };
 
 // Select new project
@@ -261,8 +271,7 @@ menu.append(new gui.MenuItem({
 // Bind events
 $directorySelector.change(function handleFileSelect(evt) {
     var path = $(this).val();
-    addProject(path);
-    runLocalCodebox(path);
+    if (addProject(path)) runLocalCodebox(path);
 });
 $btnOpen.click(function(e) {
     e.preventDefault();
