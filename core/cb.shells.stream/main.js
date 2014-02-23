@@ -51,6 +51,10 @@ function setup(options, imports, register) {
                     socket.emit("shell.output", data.toString("utf8"));
                 });
 
+                shell.on('end', function() {
+                    socket.disconnect();
+                });
+
                 // Stream is now hooked up
                 events.emit('shell.open', {
                     'shellId': data.shellId
