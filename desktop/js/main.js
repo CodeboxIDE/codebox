@@ -231,7 +231,7 @@ var runRemoteCodebox = function(box) {
     if (navigator.onLine) url = codeboxIoHost+"/boot/"+box.id+"?"+querystring.stringify(options);
 
     var win = gui.Window.open(url, {
-        'title': "Codebox",
+        'title': [box.name, "Remote Codebox"].join('-'),
         'position': 'center',
         'width': 1024,
         'height': 768,
