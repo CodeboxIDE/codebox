@@ -202,11 +202,11 @@ var importExtra = function(_path) {
 };
 
 // Start the local ide for a path
-var runLocalCodebox = function(path) {
-    path = encodeURIComponent(path);
+var runLocalCodebox = function(_path) {
+    var encodedPath = encodeURIComponent(_path);
     var env = encodeURIComponent(JSON.stringify(process.env));
-    var win = gui.Window.open("./ide.html?path="+path+"&env="+env, {
-        'title': "Codebox",
+    var win = gui.Window.open("./ide.html?path="+encodedPath+"&env="+env, {
+        'title': [path.basename(_path),  "Codebox"].join('-'),
         'position': 'center',
         'width': 1024,
         'height': 768,
@@ -285,7 +285,7 @@ $btnMenu.click(function(e) {
         }));
     }
     menu.append(new gui.MenuItem({ type: 'separator' }));
-    
+
     menu.append(new gui.MenuItem({
         label: 'Reset all data',
         click: function() {
