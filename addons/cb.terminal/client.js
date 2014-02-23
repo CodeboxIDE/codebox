@@ -53,16 +53,13 @@ define([
             'theme': {
                 'label': 'Theme',
                 'type': 'select',
-                'options': {
-                    'default': 'default',
-                    'github': 'github'
-                }/*_.chain(Terminal.themes.defaults)
+                'options': _.chain(Terminal.themes.defaults)
                 .clone()
                 .map(function(theme, name) {
                     return [name, name];
                 })
                 .object()
-                .value()*/
+                .value()
             }
         }
     });
