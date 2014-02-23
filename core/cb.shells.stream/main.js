@@ -2,43 +2,22 @@
 var Q = require('q');
 var _ = require('lodash');
 
-var ss = require('socket.io-stream');
-var es = require('event-stream');
-
-var Shell = require('./shell').Shell;
-
-
-function ShellSocketManager(manager) {
-    this.manager = manager;
-
-    _.bindAll(this);
-}
-
-ShellSocketManager.prototype.handleStream = function(stream, shellId, opts) {
-    // Input data
-    var manager = this.manager;
-
-    // Build new shell
-    var shell = new Shell(
-        manager,
-        shellId,
-        stream,
-        opts
-    );
-
-    // Initialize
-    return shell.init();
-};
 
 
 function setup(options, imports, register) {
     // Import
+    var logger = imports.logger.namespace("shells.stream");
     var shells = imports.shells;
     var io = imports.socket_io.io;
     var events = imports.events;
     var shells_rpc = imports.shells_rpc;
 
-    var socketManager = new ShellSocketManager(shells);
+    var getShell = function(data) {
+        if(shells.shells[data.shellId]) {
+            return Q(shells.attach(data.shellId));
+        }
+        return shells.createShell(data.shellId, data.opts)
+    };
 
     events.on('shell.spawn', function(data) {
         return shells.shells[data.shellId].ps.pause();
@@ -49,22 +28,48 @@ function setup(options, imports, register) {
     });
 
     // Construct
-    io.of('/stream/shells').on('connection', function(socket) {
-        ss(socket).on('shell.open', function(stream, data) {
+    io.of('/shells').on('connection', function(socket) {
+        var shell = null;
+        var options = null;
+
+        logger.log("new socket connected");
+
+        socket.on('shell.open', function(data) {
+            options = data;
+            logger.log("open shell ", options);
+
             // Default options
-            data.opts = _.defaults(data.opts, {
+            options.opts = _.defaults(options.opts, {
                 'arguments': []
             });
 
-            // Connect stream to socket.io
-            // then resume shell's stream
-            return socketManager.handleStream(stream, data.shellId, data.opts)
-            .then(function(shell) {
+            return getShell(options)
+            .then(function(_shell) {
+                shell = _shell;
+
+                shell.on('data', function(data) {
+                    socket.emit("shell.output", {
+                        content: data.toString("utf8")
+                    });
+                });
+
                 // Stream is now hooked up
                 events.emit('shell.open', {
                     'shellId': data.shellId
                 });
             });
+        });
+
+        socket.on("disconnect", function() {
+            logger.log("socket disconnected");
+
+            if (!shell) return;
+            shells_rpc.destroy(options)
+        })
+
+        socket.on('shell.input', function(data) {
+            if (!shell) return;
+            shell.write(data.content);
         });
 
         socket.on('shell.destroy', function (data) {

@@ -1,18 +1,13 @@
 define([
-    "themes",
+    "vendors/sh",
     "views/tab"
-], function(THEMES, TerminalTab) {
+], function(Terminal, TerminalTab) {
     var Command = codebox.require("models/command");
     var commands = codebox.require("core/commands/toolbar");
     var box = codebox.require("core/box");
     var tabs = codebox.require("core/tabs");
     var settings = codebox.require("core/settings");
     var menu = codebox.require("core/commands/menu");
-
-    var themes_map = {};
-    _.each(THEMES, function(color, name) {
-        themes_map[name] = name;
-    });
 
     // Add settings
     settings.add({
@@ -58,7 +53,16 @@ define([
             'theme': {
                 'label': 'Theme',
                 'type': 'select',
-                'options': themes_map
+                'options': {
+                    'default': 'default',
+                    'github': 'github'
+                }/*_.chain(Terminal.themes.defaults)
+                .clone()
+                .map(function(theme, name) {
+                    return [name, name];
+                })
+                .object()
+                .value()*/
             }
         }
     });

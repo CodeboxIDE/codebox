@@ -1,8 +1,7 @@
 define([
-    "themes",
     "vendors/sh",
     "less!stylesheets/tab.less"
-], function(THEMES, Terminal) {
+], function(Terminal) {
     var _ = codebox.require("hr/utils");
     var $ = codebox.require("hr/dom");
     var hr = codebox.require("hr/hr");
@@ -11,20 +10,6 @@ define([
     var user = codebox.require("core/user");
 
     var settings = user.settings("terminal");
-
-    // Build colors array for a given theme object
-    function themeColors(theme) {
-        // Copy pallette
-        var colors = theme.palette;
-
-        // Set background and forground colors if available
-        if(theme.background) colors[256] = theme.background;
-        if(theme.foreground) colors[257] = theme.foreground;
-
-        return colors;
-    }
-
-    console.log(Terminal);
 
     var TerminalTab = Tab.extend({
         className: Tab.prototype.className+ " addon-terminal-tab",
@@ -55,15 +40,15 @@ define([
                 'class': "tab-panel-inner terminal-body"
             }).appendTo($("<div>", {"class": "tab-panel-body"}).appendTo(this.$el)).get(0);
 
-            // Get theme
-            this.theme = THEMES[settings.get("theme", 'solarized_dark')];
-
             // New terminal
-            this.term = new Terminal(80, 24);
+            this.term = new Terminal({
+                cols: 80,
+                rows: 24,
+                theme: settings.get("theme", 'default')
+            });
             this.term.open(this.term_el);
 
             this.interval = setInterval(_.bind(this.resize, this), 2000);
-            this.clear();
 
             // Init codebox stream
             this.sessionId = this.options.shellId || _.uniqueId("term");
@@ -76,47 +61,40 @@ define([
                 this.shell.disconnect();
                 this.term.destroy();
             }, this);
+            
             this.on("tab:state", function(state) {
-                if (state) this.term.focus();
+                if (state) {
+                    this.term.focus();
+                }
             }, this);
 
             this.setTabTitle("Terminal - "+this.sessionId);
 
+
+            this.shell.once('data', function() {
+                that.resize();
+            });
+
+            this.shell.on('data', function(chunk) {
+                that.write(chunk);
+            });
+
             this.shell.on("connect", function() {
                 that.connected = true;
-
-                that.shell.stream.once('data', function() {
-                    that.resize();
-                });
-
-                that.shell.stream.on('error', function() {
-                    that.writeln("Error connecting to remote host");
-                });
-
-                that.shell.stream.on('end', function() {
-                    that.writeln("Connection closed by remote host");
-                    that.closeTab();
-                });
-
-                that.shell.stream.on('data', function(chunk) {
-                    that.write(chunk.toString());
-                });
-
                 that.trigger("terminal:ready");
             }, this);
 
-            // Connect term and stream
+            this.shell.on('disconnect', function() {
+                that.writeln("Connection closed");
+                that.closeTab();
+            });
+
+            // Connect term
             this.term.on('data', function(data) {
-                that.shell.stream.write(data);
+                that.shell.write(data);
             });
             this.term.on("resize", function(w, h) {
-                if (!that.connected) return;
-
-                that.shell.socket.emit("shell.resize", {
-                    "shellId": that.shell.shellId,
-                    "rows": h,
-                    "columns": w
-                });
+                that.shell.resize(w, h);
             });
 
             this.shell.connect();
@@ -131,8 +109,8 @@ define([
                 "line-height": settings.get("line-height", 1.3)            
             });
             $(this.term_el).css({
-                'background': this.theme.background,
-                'border-color': this.theme.background
+                'background': this.term.colors[256],
+                'border-color': this.term.colors[256]
             });
 
             return this.ready();
@@ -163,11 +141,6 @@ define([
         // Write a line
         writeln: function(line) {
             return this.write(line+"\r\n");
-        },
-
-        // Clear
-        clear: function() {
-            return this.write("\033[H\033[2J");
         }
     });
 
