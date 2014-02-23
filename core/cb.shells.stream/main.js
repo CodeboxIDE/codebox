@@ -30,20 +30,21 @@ function setup(options, imports, register) {
     // Construct
     io.of('/shells').on('connection', function(socket) {
         var shell = null;
-        var options = null;
+        var shellOptions = null;
 
         logger.log("new socket connected");
 
+        // Open the shell
         socket.on('shell.open', function(data) {
-            options = data;
-            logger.log("open shell ", options);
+            shellOptions = data;
+            logger.log("open shell ", shellOptions);
 
             // Default options
-            options.opts = _.defaults(options.opts, {
+            shellOptions.opts = _.defaults(shellOptions.opts, {
                 'arguments': []
             });
 
-            return getShell(options)
+            return getShell(shellOptions)
             .then(function(_shell) {
                 // Increment number of socket connected to this shell
                 shells.shells[data.shellId].nSockets = (shells.shells[data.shellId].nSockets || 0) + 1;
@@ -65,32 +66,43 @@ function setup(options, imports, register) {
             });
         });
 
+        // Participant left
         socket.on("disconnect", function() {
             logger.log("socket disconnected");
 
-            if (!shell || !shells.shells[options.shellId]) return;
-            
-            if (shells.shells[options.shellId].nSockets > 1) {
-                logger.log("-> don't close multi-users terminal ", options.shellId);
-                shells.shells[options.shellId].nSockets = shells.shells[options.shellId].nSockets - 1;
+            if (!shell || !shells.shells[shellOptions.shellId]) return;
+
+            if (shells.shells[shellOptions.shellId].nSockets > 1) {
+                logger.log("-> don't close multi-users terminal ", shellOptions.shellId);
+                shells.shells[shellOptions.shellId].nSockets = shells.shells[shellOptions.shellId].nSockets - 1;
             } else {
-                shells_rpc.destroy(options);
+                shells_rpc.destroy(shellOptions);
             }
         });
 
+        // Write to the stdin
         socket.on('shell.input', function(data) {
             if (!shell) return;
+
             shell.write(data);
         });
 
-        socket.on('shell.destroy', function (data) {
-            shells_rpc.destroy(data)
+        // Destroy the shell (force)
+        socket.on('shell.destroy', function () {
+            if (!shell) return;
+
+            shells_rpc.destroy(shellOptions)
             .then(function() {
-                events.emit('shell.destroy', data);
+                events.emit('shell.destroy', shellOptions);
             });
         });
 
+        // Resize the terminal
         socket.on('shell.resize', function(data) {
+            if (!shell) return;
+
+            data.shellId = shellOptions.shellId;
+
             shells_rpc.resize(data)
             .then(function() {
                 events.emit('shell.resize', data);

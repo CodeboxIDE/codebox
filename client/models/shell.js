@@ -85,10 +85,19 @@ define([
         resize: function(w, h) {
             if (this.socket != null) {
                 this.socket.emit("shell.resize", {
-                    "shellId": this.shellId,
                     "rows": h,
                     "columns": w
                 });
+            }
+            return this;
+        },
+
+        /*
+         *  Force destroy the shell
+         */
+        forceDestroy: function() {
+            if (this.socket != null) {
+                this.socket.emit("shell.destroy");
             }
             return this;
         }
