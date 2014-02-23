@@ -45,6 +45,9 @@ function setup(options, imports, register) {
 
             return getShell(options)
             .then(function(_shell) {
+                // Increment number of socket connected to this shell
+                shells.shells[data.shellId].nSockets = (shells.shells[data.shellId].nSockets || 0) + 1;
+
                 shell = _shell;
 
                 shell.on('data', function(data) {
@@ -65,9 +68,15 @@ function setup(options, imports, register) {
         socket.on("disconnect", function() {
             logger.log("socket disconnected");
 
-            if (!shell) return;
-            shells_rpc.destroy(options)
-        })
+            if (!shell || !shells.shells[options.shellId]) return;
+            
+            if (shells.shells[options.shellId].nSockets > 1) {
+                logger.log("-> don't close multi-users terminal ", options.shellId);
+                shells.shells[options.shellId].nSockets = shells.shells[options.shellId].nSockets - 1;
+            } else {
+                shells_rpc.destroy(options);
+            }
+        });
 
         socket.on('shell.input', function(data) {
             if (!shell) return;
