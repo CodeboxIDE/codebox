@@ -48,9 +48,7 @@ function setup(options, imports, register) {
                 shell = _shell;
 
                 shell.on('data', function(data) {
-                    socket.emit("shell.output", {
-                        content: data.toString("utf8")
-                    });
+                    socket.emit("shell.output", data.toString("utf8"));
                 });
 
                 // Stream is now hooked up
@@ -69,7 +67,7 @@ function setup(options, imports, register) {
 
         socket.on('shell.input', function(data) {
             if (!shell) return;
-            shell.write(data.content);
+            shell.write(data);
         });
 
         socket.on('shell.destroy', function (data) {

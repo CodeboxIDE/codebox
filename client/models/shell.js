@@ -52,8 +52,7 @@ define([
                 });
 
                 that.socket.on("shell.output", function(data) {
-                    console.log("output", data);
-                    that.trigger("data", data.content);
+                    that.trigger("data", data);
                 });
             });
 
@@ -75,9 +74,7 @@ define([
          */
         write: function(buf) {
             if (this.socket != null) {
-                this.socket.emit("shell.input", {
-                    'content': buf
-                });
+                this.socket.emit("shell.input", buf.toString());
             }
             return this;
         },
