@@ -1,8 +1,8 @@
 define([
     "themes",
-    "vendors/term",
+    "vendors/sh",
     "less!stylesheets/tab.less"
-], function(THEMES) {
+], function(THEMES, Terminal) {
     var _ = codebox.require("hr/utils");
     var $ = codebox.require("hr/dom");
     var hr = codebox.require("hr/hr");
@@ -23,6 +23,8 @@ define([
 
         return colors;
     }
+
+    console.log(Terminal);
 
     var TerminalTab = Tab.extend({
         className: Tab.prototype.className+ " addon-terminal-tab",
@@ -49,8 +51,6 @@ define([
             ]);
 
             // Init rendering
-            this.term_w = 80;
-            this.term_h = 24;
             this.term_el = $("<div>", {
                 'class': "tab-panel-inner terminal-body"
             }).appendTo($("<div>", {"class": "tab-panel-body"}).appendTo(this.$el)).get(0);
@@ -59,16 +59,7 @@ define([
             this.theme = THEMES[settings.get("theme", 'solarized_dark')];
 
             // New terminal
-            this.term = new Terminal({
-                cols: this.term_w,
-                rows: this.term_h,
-                screenKeys: true,
-                useStyle: false,
-                scrollback: 1000,
-                parent: this.term_el,
-                colors: themeColors(this.theme)
-            });
-
+            this.term = new Terminal(80, 24);
             this.term.open(this.term_el);
 
             this.interval = setInterval(_.bind(this.resize, this), 2000);
@@ -95,11 +86,7 @@ define([
                 that.connected = true;
 
                 that.shell.stream.once('data', function() {
-                    that.shell.socket.emit("shell.resize", {
-                        "shellId": that.shell.shellId,
-                        "rows": that.term_h,
-                        "columns": that.term_w
-                    });
+                    that.resize();
                 });
 
                 that.shell.stream.on('error', function() {
@@ -116,19 +103,14 @@ define([
                 });
 
                 that.trigger("terminal:ready");
-
-                //this.render();
             }, this);
 
             // Connect term and stream
             this.term.on('data', function(data) {
                 that.shell.stream.write(data);
             });
-            this.on("resize", function(w, h) {
+            this.term.on("resize", function(w, h) {
                 if (!that.connected) return;
-
-                w = w || that.term_w;
-                h = h || that.term_h;
 
                 that.shell.socket.emit("shell.resize", {
                     "shellId": that.shell.shellId,
@@ -153,36 +135,21 @@ define([
                 'border-color': this.theme.background
             });
 
-            // Resize term
-            // Wait till browser has rendered terminal first
-            // only then can we resize
-            setTimeout(this.resize.bind(this), 0);
-
             return this.ready();
         },
 
         // Resize the terminal
-        resize: function(w, h) {
+        resize: function() {
             if (!this.options.resize) { return false; }
 
-            var lineHeight = Math.floor(settings.get("line-height", 1.3) *  settings.get("size", 13));
+            var w = this.$el.width();
+            var h = this.$el.height();
 
-            w = w || _.min([
-                400,
-                _.max([Math.floor((this.$el.outerWidth()-10)/8)-1, 10])
-            ]);
-            h = h || _.min([
-                400,
-                _.max([Math.floor(this.$el.outerHeight()/lineHeight)-1, 10])
-            ]);
-            if (w == this.term_w && h == this.term_h) {
-                return this;
+            if (w != this._width || h != this._height) {
+                this._width = w;
+                this._height = h;
+                this.term.sizeToFit();
             }
-            this.term_w = w;
-            this.term_h = h;
-            this.term.resize(this.term_w, this.term_h);
-
-            this.trigger("resize", this.term_w, this.term_h);
 
             return this;
         },
