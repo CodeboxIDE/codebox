@@ -19,8 +19,9 @@ define([
         },
         menuTitle: "Terminal",
         events: {
-            'click': "focus",
-            'touchstart': "focus"
+            'contextmenu': "clickTerm",
+            'click': "clickTerm",
+            'touchstart': "clickTerm"
         },
 
         initialize: function(options) {
@@ -154,6 +155,11 @@ define([
         // Write a line
         writeln: function(line) {
             return this.write(line+"\r\n");
+        },
+
+        // Block propagation of clicks to sublevel
+        clickTerm: function(e) {
+            e.stopPropagation();
         }
     });
 
