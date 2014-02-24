@@ -75,9 +75,6 @@ module.exports = function (grunt) {
                     'vendors/socket.io': {
                         exports: 'io'
                     },
-                    'vendors/socket.io-stream': {
-                        exports: 'ss'
-                    },
                     'vendors/crypto': {
                         exports: 'CryptoJS'
                     },

@@ -1,8 +1,7 @@
 define([
-    "themes",
-    "vendors/term",
+    "vendors/sh",
     "less!stylesheets/tab.less"
-], function(THEMES) {
+], function(Terminal) {
     var _ = codebox.require("hr/utils");
     var $ = codebox.require("hr/dom");
     var hr = codebox.require("hr/hr");
@@ -12,18 +11,6 @@ define([
 
     var settings = user.settings("terminal");
 
-    // Build colors array for a given theme object
-    function themeColors(theme) {
-        // Copy pallette
-        var colors = theme.palette;
-
-        // Set background and forground colors if available
-        if(theme.background) colors[256] = theme.background;
-        if(theme.foreground) colors[257] = theme.foreground;
-
-        return colors;
-    }
-
     var TerminalTab = Tab.extend({
         className: Tab.prototype.className+ " addon-terminal-tab",
         defaults: {
@@ -31,6 +18,11 @@ define([
             resize: true
         },
         menuTitle: "Terminal",
+        events: {
+            'contextmenu': "clickTerm",
+            'click': "clickTerm",
+            'touchstart': "clickTerm"
+        },
 
         initialize: function(options) {
             var that = this;
@@ -49,30 +41,19 @@ define([
             ]);
 
             // Init rendering
-            this.term_w = 80;
-            this.term_h = 24;
             this.term_el = $("<div>", {
                 'class': "tab-panel-inner terminal-body"
             }).appendTo($("<div>", {"class": "tab-panel-body"}).appendTo(this.$el)).get(0);
 
-            // Get theme
-            this.theme = THEMES[settings.get("theme", 'solarized_dark')];
-
             // New terminal
             this.term = new Terminal({
-                cols: this.term_w,
-                rows: this.term_h,
-                screenKeys: true,
-                useStyle: false,
-                scrollback: 1000,
-                parent: this.term_el,
-                colors: themeColors(this.theme)
+                cols: 80,
+                rows: 24,
+                theme: settings.get("theme", 'default')
             });
-
             this.term.open(this.term_el);
 
             this.interval = setInterval(_.bind(this.resize, this), 2000);
-            this.clear();
 
             // Init codebox stream
             this.sessionId = this.options.shellId || _.uniqueId("term");
@@ -85,59 +66,47 @@ define([
                 this.shell.disconnect();
                 this.term.destroy();
             }, this);
+
             this.on("tab:state", function(state) {
-                if (state) this.term.focus();
+                if (state) {
+                    this.focus();
+                }
             }, this);
 
             this.setTabTitle("Terminal - "+this.sessionId);
 
+
+            this.shell.once('data', function() {
+                that.resize();
+            });
+
+            this.shell.on('data', function(chunk) {
+                that.write(chunk);
+            });
+
             this.shell.on("connect", function() {
                 that.connected = true;
-
-                that.shell.stream.once('data', function() {
-                    that.shell.socket.emit("shell.resize", {
-                        "shellId": that.shell.shellId,
-                        "rows": that.term_h,
-                        "columns": that.term_w
-                    });
-                });
-
-                that.shell.stream.on('error', function() {
-                    that.writeln("Error connecting to remote host");
-                });
-
-                that.shell.stream.on('end', function() {
-                    that.writeln("Connection closed by remote host");
-                    that.closeTab();
-                });
-
-                that.shell.stream.on('data', function(chunk) {
-                    that.write(chunk.toString());
-                });
-
                 that.trigger("terminal:ready");
-
-                //this.render();
             }, this);
 
-            // Connect term and stream
-            this.term.on('data', function(data) {
-                that.shell.stream.write(data);
+            this.shell.on('disconnect', function() {
+                that.writeln("Connection closed");
+                that.closeTab();
             });
-            this.on("resize", function(w, h) {
-                if (!that.connected) return;
 
-                w = w || that.term_w;
-                h = h || that.term_h;
-
-                that.shell.socket.emit("shell.resize", {
-                    "shellId": that.shell.shellId,
-                    "rows": h,
-                    "columns": w
-                });
+            // Connect term
+            this.term.on('data', function(data) {
+                that.shell.write(data);
+            });
+            this.term.on("resize", function(w, h) {
+                that.shell.resize(w, h);
             });
 
             this.shell.connect();
+
+            setTimeout(function() {
+                that.focus();
+            }, 300);
             return this;
         },
 
@@ -149,42 +118,32 @@ define([
                 "line-height": settings.get("line-height", 1.3)            
             });
             $(this.term_el).css({
-                'background': this.theme.background,
-                'border-color': this.theme.background
+                'background': this.term.colors[256],
+                'border-color': this.term.colors[256]
             });
-
-            // Resize term
-            // Wait till browser has rendered terminal first
-            // only then can we resize
-            setTimeout(this.resize.bind(this), 0);
 
             return this.ready();
         },
 
         // Resize the terminal
-        resize: function(w, h) {
+        resize: function() {
             if (!this.options.resize) { return false; }
 
-            var lineHeight = Math.floor(settings.get("line-height", 1.3) *  settings.get("size", 13));
+            var w = this.$el.width();
+            var h = this.$el.height();
 
-            w = w || _.min([
-                400,
-                _.max([Math.floor((this.$el.outerWidth()-10)/8)-1, 10])
-            ]);
-            h = h || _.min([
-                400,
-                _.max([Math.floor(this.$el.outerHeight()/lineHeight)-1, 10])
-            ]);
-            if (w == this.term_w && h == this.term_h) {
-                return this;
+            if (w != this._width || h != this._height) {
+                this._width = w;
+                this._height = h;
+                this.term.sizeToFit();
             }
-            this.term_w = w;
-            this.term_h = h;
-            this.term.resize(this.term_w, this.term_h);
-
-            this.trigger("resize", this.term_w, this.term_h);
 
             return this;
+        },
+
+        // Focus
+        focus: function() {
+            this.term.focus();
         },
 
         // Write
@@ -198,9 +157,9 @@ define([
             return this.write(line+"\r\n");
         },
 
-        // Clear
-        clear: function() {
-            return this.write("\033[H\033[2J");
+        // Block propagation of clicks to sublevel
+        clickTerm: function(e) {
+            e.stopPropagation();
         }
     });
 

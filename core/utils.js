@@ -268,6 +268,14 @@ function batch(func, processor, options) {
     };
 }
 
+var btoa = function(s) {
+    return (new Buffer(s)).toString('base64');
+};
+
+var atob = function(s) {
+    return (new Buffer(s, 'base64')).toString('binary');
+};
+
 // Exports
 exports.exec = exec;
 exports.qnode = qnode;
@@ -278,3 +286,5 @@ exports.methodObj = methodObj;
 exports.wireFriendly = wireFriendly;
 exports.timestamp = timestamp;
 exports.startsWith = startsWith;
+exports.atob = atob;
+exports.btoa = btoa;

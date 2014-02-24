@@ -15,12 +15,48 @@
         overflow: hidden;
 
         * {
-            white-space: nowrap;
+            user-select: initial;
+            -webkit-user-select: initial;
         }
 
-        .terminal-cursor {
-            background: #fff;
-            color: #000;
+        .terminal-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            font-family: Menlo,Monaco,"DejaVu Sans Mono",Consolas,"Andale Mono",monospace;
+        }
+        .terminal-container div {
+            margin: 0px;
+            padding: 0px;
+        }
+        .terminal-container .terminal {
+            width: 100%;
+            height: 100%;
+            font-size: 13px;
+            line-height: 18px;
+        }
+        .terminal-container .terminal-input {
+            position: absolute;
+            top: 0;
+            left: -1000%;
+            background: rgba(255,255,255,0.75);
+            color: black;
+            border: 0;
+            outline: 0;
+            width: 100%;
+        }
+        .terminal-container .screen-keys {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+        .terminal-container .terminal-size-indicator {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            background-color: rgba(255,255,255,0.75);
+            color: black;
+            padding: 0 3px;
         }
     };
 }
