@@ -5,7 +5,7 @@ REMOTEPATH=$2
 LOGIN=$4
 PASSWORD=$5
 
-if [[ -z "$PASSWORD" ]]; then
+if [ -z "$PASSWORD" ]; then
     read -s -p "Enter Password: " PASSWORD
 fi
 
