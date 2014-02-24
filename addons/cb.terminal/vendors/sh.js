@@ -524,7 +524,7 @@ Terminal.prototype.bindMouse = function () {
             f += "~[" + c.x + "," + c.y + "]\r";
             s.send(f)
         } else s.decLocator ? (a &= 3, c.x -= 32, c.y -= 32, 0 === a ? a = 2 : 1 === a ? a = 4 : 2 === a ? a = 6 : 3 === a && (a = 3), s.send("\u001b[" + a + ";" + (3 === a ? 4 : 0) + ";" + c.y + ";" + c.x + ";" + (c.page || 0) + "&w")) : s.urxvtMouse ? (c.x -= 32, c.y -= 32, s.send("\u001b[" + a + ";" + c.x + ";" + c.y + "M")) :
-            s.sgrMouse ? (c.x -= 32, c.y -= 32, s.send("\u001b[<" + (3 === (a & 3) ? a & -4 : a) + ";" + c.x + ";" + c.y + (3 === (a & 3) ? "m" : "M"))) : (f = [], y(f, a), y(f, c.x), y(f, c.y), s.send("\u001b[M" + String.fromCharCode.apply(H, f)))
+            s.sgrMouse ? (c.x -= 32, c.y -= 32, s.send("\u001b[<" + (3 === (a & 3) ? a & -4 : a) + ";" + c.x + ";" + c.y + (3 === (a & 3) ? "m" : "M"))) : (f = [], y(f, a), y(f, c.x), y(f, c.y), s.send("\u001b[M" + String.fromCharCode.apply(String, f)))
     }
 
     function u(a) {
