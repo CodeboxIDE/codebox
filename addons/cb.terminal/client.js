@@ -105,7 +105,7 @@ define([
     };
 
     // Reset list when events from shells:
-    box.on("box:shell:open box:shell:destroy", refreshList);
+    box.on("box:shell:open box:shell:exit", refreshList);
 
     // Add the command to file/tools menu
     menu.getById("file").menuSection([

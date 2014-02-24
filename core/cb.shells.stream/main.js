@@ -99,10 +99,7 @@ function setup(options, imports, register) {
         socket.on('shell.destroy', function () {
             if (!shell) return;
 
-            shells_rpc.destroy(shellOptions)
-            .then(function() {
-                events.emit('shell.destroy', shellOptions);
-            });
+            shells_rpc.destroy(shellOptions);
         });
 
         // Resize the terminal
