@@ -53,7 +53,8 @@ define(["views/dialog"], function(GitDialog) {
         return Q(method())
         .fail(function(err) {
             if (err.code == 401) {
-                return dialogs.fields("Need authentication:", {
+                // Fields for https auth
+                var fields = {
                     username: {
                         type: "text",
                         label: "Username"
@@ -62,7 +63,19 @@ define(["views/dialog"], function(GitDialog) {
                         type: "password",
                         label: "Password"
                     }
-                })
+                };
+
+                // Passphrase for ssh
+                if (err.message.toLowerCase().indexOf("authentication") < 0) {
+                    fields = {
+                        passphrase: {
+                            type: "text",
+                            label: "Passphrase"
+                        }
+                    };
+                }
+
+                return dialogs.fields("Need authentication:", fields)
                 .then(method);
             }
         })
