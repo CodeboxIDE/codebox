@@ -198,9 +198,25 @@ Terminal.debug = !1;
 Terminal.focus = null;
 
 Terminal.prototype.focus = function () {
-    this.selectionMode = !1;
+    if (Terminal.focus && Terminal.focus !== this) {
+        Terminal.focus.blur();
+    }
+
+    Terminal.focus = this;
+    if (this.sendFocus) this.send("\u001b[I");
+
+    this.showCursor();
     this.inputElement.focus();
-    Terminal.focus !== this && (Terminal.focus && (Terminal.focus.cursorState = 0, Terminal.focus.refresh(Terminal.focus.y, Terminal.focus.y), Terminal.focus.sendFocus && Terminal.focus.send("\u001b[O")), Terminal.focus = this, this.sendFocus && this.send("\u001b[I"), this.showCursor())
+};
+
+Terminal.prototype.blur = function() {
+    if (Terminal.focus !== this) return;
+
+    Terminal.focus = null;
+    this.redrawCursor();
+    if (this.sendFocus) this.send("\u001b[O");
+
+    this.inputElement.blur();
 };
 
 Terminal.prototype.toggleVirtualCtrlKey = function () {
@@ -367,6 +383,22 @@ Terminal.prototype.open = function (parent) {
         this.bindKeys();
         this.focus();
 
+        // If we click somewhere other than a
+        // terminal, unfocus the terminal.
+        events.on(document, 'mousedown', function(ev) {
+            if (!Terminal.focus) return;
+
+            var el = ev.target || ev.srcElement;
+            if (!el) return;
+
+            do {
+              if (el === Terminal.focus.element) return;
+            } while (el = el.parentNode);
+
+            console.log("blur terminal");
+            Terminal.focus.blur();
+        });
+
         events.on(this.element, "mousedown", function (ev) {
             var button = ev.button != null
                 ? +ev.button
@@ -379,7 +411,7 @@ Terminal.prototype.open = function (parent) {
                 button = button === 1 ? 0 : button === 4 ? 1 : button;
             }
 
-            if (button !== 2) return;
+            if (button !== 2) return that.focus();
             
             that.element.contentEditable = true;
             that.element.focus();

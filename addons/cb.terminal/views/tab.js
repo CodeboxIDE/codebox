@@ -18,6 +18,10 @@ define([
             resize: true
         },
         menuTitle: "Terminal",
+        events: {
+            'click': "focus",
+            'touchstart': "focus"
+        },
 
         initialize: function(options) {
             var that = this;
@@ -61,10 +65,10 @@ define([
                 this.shell.disconnect();
                 this.term.destroy();
             }, this);
-            
+
             this.on("tab:state", function(state) {
                 if (state) {
-                    this.term.focus();
+                    this.focus();
                 }
             }, this);
 
@@ -130,6 +134,11 @@ define([
             }
 
             return this;
+        },
+
+        // Focus
+        focus: function() {
+            this.term.focus();
         },
 
         // Write

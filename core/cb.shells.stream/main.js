@@ -1,7 +1,7 @@
 // Requires
 var Q = require('q');
 var _ = require('lodash');
-
+var utils = require('../utils');
 
 
 function setup(options, imports, register) {
@@ -34,6 +34,12 @@ function setup(options, imports, register) {
 
         logger.log("new socket connected");
 
+
+        var handleShellOutput = function(data) {
+            socket.emit("shell.output", utils.btoa(data));
+        };
+
+
         // Open the shell
         socket.on('shell.open', function(data) {
             shellOptions = data;
@@ -51,11 +57,9 @@ function setup(options, imports, register) {
 
                 shell = _shell;
 
-                shell.on('data', function(data) {
-                    socket.emit("shell.output", data.toString("utf8"));
-                });
-
-                shell.on('end', function() {
+                // Bind events
+                shell.on('data', handleShellOutput);
+                shell.once('end', function() {
                     socket.disconnect();
                 });
 
@@ -70,7 +74,11 @@ function setup(options, imports, register) {
         socket.on("disconnect", function() {
             logger.log("socket disconnected");
 
+            // Shell still exists
             if (!shell || !shells.shells[shellOptions.shellId]) return;
+
+            // Unbind events
+            shell.removeListener('data', handleShellOutput);
 
             if (shells.shells[shellOptions.shellId].nSockets > 1) {
                 logger.log("-> don't close multi-users terminal ", shellOptions.shellId);
@@ -84,7 +92,7 @@ function setup(options, imports, register) {
         socket.on('shell.input', function(data) {
             if (!shell) return;
 
-            shell.write(data);
+            shell.write(utils.atob(data));
         });
 
         // Destroy the shell (force)
