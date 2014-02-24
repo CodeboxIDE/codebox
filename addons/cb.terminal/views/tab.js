@@ -102,6 +102,10 @@ define([
             });
 
             this.shell.connect();
+
+            setTimeout(function() {
+                that.focus();
+            }, 300);
             return this;
         },
 
