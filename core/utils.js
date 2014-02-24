@@ -273,7 +273,7 @@ var btoa = function(s) {
 };
 
 var atob = function(s) {
-    return (new Buffer(s, 'base64')).toString('binary');
+    return (new Buffer(s, 'base64')).toString('utf8');
 };
 
 // Exports

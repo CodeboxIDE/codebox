@@ -1,8 +1,9 @@
 define([
     "hr/utils",
     "hr/hr",
+    "utils/hash",
     "vendors/socket.io",
-], function(_, hr) {
+], function(_, hr, hash) {
     var logging = hr.Logger.addNamespace("terminal");
 
     var Shell = hr.Model.extend({
@@ -52,7 +53,7 @@ define([
                 });
 
                 that.socket.on("shell.output", function(data) {
-                    that.trigger("data", atob(data));
+                    that.trigger("data", hash.atob(data));
                 });
             });
 
@@ -74,7 +75,7 @@ define([
          */
         write: function(buf) {
             if (this.socket != null) {
-                this.socket.emit("shell.input", btoa(buf));
+                this.socket.emit("shell.input", hash.btoa(buf));
             }
             return this;
         },

@@ -36,7 +36,7 @@ function setup(options, imports, register) {
 
 
         var handleShellOutput = function(data) {
-            socket.emit("shell.output", utils.btoa(data));
+            socket.emit("shell.output", utils.btoa(data.toString("utf8")));
         };
 
 
