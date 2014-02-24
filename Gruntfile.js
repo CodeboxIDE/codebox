@@ -179,6 +179,18 @@ module.exports = function (grunt) {
                 cwd: './',
                 stdout: true,
                 stderr: true
+            },
+            clean_addons: {
+                command: "rm -rf */**/addon-built.js",
+                cwd: '.',
+                stdout: true,
+                stderr: true
+            },
+            clean_addons_tmp: {
+                command: "rm -rf */**/addon-built.js",
+                cwd: '.tmp/',
+                stdout: true,
+                stderr: true
             }
         },
         copy: {
@@ -311,6 +323,12 @@ module.exports = function (grunt) {
     // Load in any and all tasks in the `tasks` folder
     grunt.loadTasks('tasks');
 
+    // Rebuild all addons
+    grunt.registerTask('rebuildAddons', [
+        'exec:clean_addons',
+        'buildAddons:dev'
+    ]);
+
     // Build
     grunt.registerTask('build', [
         'hr',
@@ -323,6 +341,7 @@ module.exports = function (grunt) {
         'build',
         'clean:tmp',
         'copy:tmp',
+        'exec:clean_addons_tmp',
         'buildAddons:tmp',
         'compress:tmp'
     ]);
