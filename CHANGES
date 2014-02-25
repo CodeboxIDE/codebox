@@ -1,3 +1,12 @@
+2014-02-25  Samy Pessé  <samy.pesse@friendco.de>
+            Aaron O'Mullan <aaron.omullan@friendco.de>
+
+    * Bump version to 0.6.2
+    * New terminals!
+    * New command line argument: --users
+    * Improve iPad support
+    * Fix ftp uplaod script for linux
+
 2014-02-21  Samy Pessé  <samy.pesse@friendco.de>
             Aaron O'Mullan <aaron.omullan@friendco.de>
 
