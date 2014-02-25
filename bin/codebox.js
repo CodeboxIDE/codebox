@@ -40,8 +40,7 @@ function usersAuthHook(users) {
             'userId': userId,
             'name': userId,
             'token': data.token,
-            'email': data.email,
-            'settings': {} // user current settings
+            'email': data.email
         };
     };
 }
