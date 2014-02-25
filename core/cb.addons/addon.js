@@ -149,9 +149,10 @@ var Addon = function(_rootPath, options) {
         }).then(function() {
             var d = Q.defer();
 
-            requirejs.optimize(optconfig, function(resp, err) {
-                if (err) return d.reject(err);
+            requirejs.optimize(optconfig, function(resp) {
                 d.resolve(resp);
+            }, function(err) {
+                d.reject(err);
             });
 
             return d.promise;
