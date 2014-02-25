@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+
 LOCALDIR=$3
 REMOTESERVER=$1
 REMOTEPATH=$2
