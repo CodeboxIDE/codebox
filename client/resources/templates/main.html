@@ -28,6 +28,12 @@
   				<img src="/static/images/icons/128.png" />
 			</div>
 			<form class="inner">
+				<% if (loginError != null) { %>
+					<div class="form-group">
+						<p class="text-danger text-center"><%- loginError.message || loginError %></p>
+					</div>
+				<% } %>
+
 				<% if (hr.offline.isConnected()) { %>
 					<div class="form-group">
 						<input type="email" class="form-control input-lg" name="login-email" id="login-email" placeholder="Email" value="<%- email %>" autocomplete="off">

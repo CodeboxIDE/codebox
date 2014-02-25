@@ -44,6 +44,7 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
         initialize: function() {
             Application.__super__.initialize.apply(this, arguments);
             this._autologin = true;
+            this.loginError = null;
 
             // Tabs
             tabs.on("tabs:default tabs:opennew", function() {
@@ -84,6 +85,7 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
             return {
                 'email': hr.Cookies.get("email"),
                 'token': hr.Cookies.get("token"),
+                'loginError': this.loginError
             };
         },
 
@@ -203,9 +205,10 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
                 that.render();
             }).fail(function(err) {
                 that._autologin = false;
-                dialogs.alert("Error at login", err.message).fin(function() {
-                    that.render();
-                });
+                that.loginError = err;
+
+                loading.stop();
+                that.render();
             });
         },
 

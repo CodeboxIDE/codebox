@@ -23,8 +23,7 @@ function setup(options, imports, register) {
 				'userId': userId,
 				'name': userId,
 				'token': data.token,
-				'email': data.email,
-				'settings': settings.get(userId, {}).settings || {}
+				'email': data.email
 			};
 		},
 
@@ -47,48 +46,78 @@ function setup(options, imports, register) {
 		}
 	});
 
+	// Post operations for hooks
+	// can be used for validation
+	var postHooks = {
+		'auth': function(data) {
+			// Valid data
+			if (!_.has(data, "userId") || !_.has(data, "name")
+			|| !_.has(data, "token") || !_.has(data, "email")) {
+				return Q.reject(new Error("Invalid authentication data"));
+			}
+
+			// Load base settings if no settings
+			data.settings = data.settings || settings.get(data.userId, {}).settings || {};
+			return data;
+		}
+	};
+
+
 	// Use a hook
 	//	-> if function: call the function
 	//	-> if string: do http request
 	var useHook = function(hook, data) {
-		if (baseHooks[hook] == null) {
-			var err = new Error("Error trying to use inexistant hook: "+hook);
-			logger.exception(err, false);
-			return Q.reject(err);
-		}
+		return Q()
 
-		var handler = baseHooks[hook];
-		logger.log("use hook", hook);
-		if (_.isFunction(handler)) {
-			return Q(handler(data));
-		} else if (_.isString(handler)) {
-			var d = Q.defer();
+		// Call hook
+		.then(function() {
+			if (baseHooks[hook] == null) {
+				var err = new Error("Error trying to use inexistant hook: "+hook);
+				logger.exception(err, false);
+				return Q.reject(err);
+			}
 
-			// Do http requests
-			request.post(handler, {
-	            'body': {
-	            	'data': data,
-	            	'hook': hook
-	            },
-	            'headers': {
-	            	'Authorization': options.webAuthToken
-	            },
-	            'json': true,
-	        }, function (error, response, body) {
-				if (!error && response.statusCode == 200) {
-					d.resolve(body);
-				} else {
-					logger.error("Error with hook:", hook, error, body);
-					d.reject(new Error("Error with "+hook+" webhook: "+(body ? (body.error || body) : error.message)));
-				}
-			});
+			var handler = baseHooks[hook];
+			logger.log("use hook", hook);
+			if (_.isFunction(handler)) {
+				return Q(handler(data));
+			} else if (_.isString(handler)) {
+				var d = Q.defer();
 
-			return d.promise;
-		} else {
-			var err = new Error("Not a valid hook");
-			logger.exception(err, false);
-			return Q.reject();
-		}
+				// Do http requests
+				request.post(handler, {
+		            'body': {
+		            	'data': data,
+		            	'hook': hook
+		            },
+		            'headers': {
+		            	'Authorization': options.webAuthToken
+		            },
+		            'json': true,
+		        }, function (error, response, body) {
+					if (!error && response.statusCode == 200) {
+						d.resolve(body);
+					} else {
+						logger.error("Error with hook:", hook, error, body);
+						d.reject(new Error("Error with "+hook+" webhook: "+(body ? (body.error || body) : error.message)));
+					}
+				});
+
+				return d.promise;
+			} else {
+				var err = new Error("Not a valid hook");
+				logger.exception(err, false);
+				return Q.reject();
+			}
+		})
+
+		// Post hooks
+		.then(function(data) {
+			if (postHooks[hook]) {
+				return postHooks[hook](data);
+			}
+			return data;
+		});
 	};
 
     register(null, {

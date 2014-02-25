@@ -11,7 +11,7 @@ var pkg = require('../package.json');
 var codebox = require("../index.js");
 
 // Codebox git repo: use to identify the user
-var codeboxGitRepo = new Gittle(path.resolve(__dirname, ".."))
+var codeboxGitRepo = new Gittle(path.resolve(__dirname, ".."));
 
 // Options
 cli.option('-p, --port [http port]', 'Port to run the IDE');
@@ -20,6 +20,30 @@ cli.option('-t, --title [project title]', 'Title for the project.');
 cli.option('-s, --sample [project type]', 'Replace directory content by a sample (warning: erase content).');
 cli.option('-o, --open', 'Open the IDE in your favorite browser');
 cli.option('-e, --email [email address]', 'Email address to use as a default authentication');
+cli.option('-u, --users [list users]', 'List of coma seperated users and password (formatted as "username:passowrd")');
+
+
+// An authentication hook that uses a dictionary of users
+function usersAuthHook(users) {
+    return function(data) {
+        if (!data.email || !data.token) {
+            return Q.reject(new Error("Need 'token' and 'email' for auth hook"));
+        }
+
+        var userId = data.email;
+
+        if (!users[userId] || data.token != users[userId]) {
+            return Q.reject(new Error("Invalid user !"));
+        }
+
+        return {
+            'userId': userId,
+            'name': userId,
+            'token': data.token,
+            'email': data.email
+        };
+    };
+}
 
 // Command 'run'
 cli.command('run [folder]')
@@ -38,6 +62,12 @@ cli.command('run [folder]')
     that.title = that.title || process.env.WORKSPACE_NAME;
     that.port = that.port || process.env.PORT || 8000;
     that.hostname = that.hostname || "0.0.0.0";
+
+    var users = !that.users ? {} : _.object(_.map(that.users.split(','), function(x) {
+        // x === 'username:password'
+        return x.split(':', 2);
+    }));
+
 
     var config = {
         'root': that.directory,
@@ -75,6 +105,13 @@ cli.command('run [folder]')
             'users': {
                 // Don't use default git user
                 'gitDefault': false
+            }
+        });
+    } else if(!_.isEmpty(users)) {
+        _.extend(config, {
+            'public': false,
+            'hooks': {
+                'auth': usersAuthHook(users)
             }
         });
     }
