@@ -248,8 +248,9 @@ Terminal.prototype.applyVirtualKey = function (a) {
             a.stopPropagation && a.stopPropagation()
         }
     };
-    this.virtualCtrlKey && (Terminal.ctrlKey = !0, this.toggleVirtualCtrlKey());
-    this.virtualAltKey && (Terminal.altKey = !0, this.toggleVirtualAltKey());
+
+    this.virtualCtrlKey && (c.ctrlKey = !0, this.toggleVirtualCtrlKey());
+    this.virtualAltKey && (c.altKey = !0, this.toggleVirtualAltKey());
     return c
 };
 
