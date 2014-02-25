@@ -50,7 +50,7 @@
             $this.on('touchend', mouseup_callback);
         },
         teardown: function(namespaces){
-            $(this).unbind(namespace)
+            $(this).unbind(namespaces)
         }
     };
 
