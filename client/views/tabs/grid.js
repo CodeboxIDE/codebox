@@ -185,14 +185,19 @@ define([
             var $sections = this.getSection(null, i);
             var h = $sections.height();
 
-            $sections.height(h+d);
+            $sections.height(this.pixelToPercent(null, h+d)+"%");
         },
 
         resizeColumn: function(i, d) {
             var $sections = this.getSection(i, null);
             var w = $sections.width();
 
-            $sections.width(w+d);
+            $sections.width(this.pixelToPercent(w+d, null)+"%");
+        },
+
+        pixelToPercent: function(x, y) {
+            if (x != null) return ((x*100) / this.$el.width());
+            if (y != null) return ((y*100) / this.$el.height());
         }
     });
 
