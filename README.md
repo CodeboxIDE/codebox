@@ -10,7 +10,7 @@ Codebox is built with web technologies: `node.js`, `javascript`, `html` and `les
 The project is open source under the [Apache 2.0](https://github.com/FriendCode/codebox/blob/master/LICENSE) license.
 A screencast of the IDE is available on [Youtube](https://www.youtube.com/watch?v=xvPEngyXA2A).
 
-![Image](https://github.com/FriendCode/codebox/blob/master/docs/assets/base.png?raw=true)
+![Image](https://raw.github.com/FriendCode/codebox/master/docs/assets/base.png)
 
 ## How to install and run Codebox
 
