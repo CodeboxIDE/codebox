@@ -25,8 +25,11 @@
     -webkit-tap-highlight-color: transparent;
     -webkit-text-size-adjust: none;
     -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    user-select: none;
+    .user-select(none);
+}
+
+input, textarea, select {
+    .user-select(initial);
 }
 
 a:focus {
