@@ -3,12 +3,15 @@ define([
     "hr/dom",
     "hr/hr",
     "models/command",
+
     "utils/dragdrop",
     "utils/keyboard",
     "utils/contextmenu",
+
     "views/tabs/tab",
-    "views/tabs/base"
-], function(_, $, hr, Command, DragDrop, Keyboard, ContextMenu, TabView, TabPanelView) {
+    "views/tabs/base",
+    "views/tabs/grid"
+], function(_, $, hr, Command, DragDrop, Keyboard, ContextMenu, TabView, TabPanelView, GridView) {
     // Complete tabs system
     var TabsView = hr.View.extend({
         className: "cb-tabs",
@@ -16,7 +19,8 @@ define([
             "dblclick .tabs-header": "openDefaultNew"
         },
         layouts: {
-            "Auto Grid": null,
+            "Auto Grid": 0,
+            "Columns: 1": 1,
             "Columns: 2": 2,
             "Columns: 3": 3,
             "Columns: 4": 4
@@ -29,6 +33,11 @@ define([
 
             // Current layout
             this.layout = null; // null: mode auto
+            this.grid = new GridView();
+            this.grid.addView(new hr.View());
+            this.grid.addView(new hr.View());
+            this.grid.addView(new hr.View());
+            this.grid.addView(new hr.View());
 
             // Commands
             this.layoutCommand = new Command({}, {
@@ -65,8 +74,12 @@ define([
             // Empty view
             this.empty();
 
+            // Add grid
+            this.grid.$el.appendTo(this.$el);
+            this.grid.render();
+
             // Check tabs
-            this.checkTabs();
+            /*this.checkTabs();
 
             // Calcul number of sections
             var sections = this.getSections();
@@ -154,7 +167,7 @@ define([
                     sectionTop = sectionTop + sectionHeight;
                 }
             }, this);
-            this.delegateEvents();
+            this.delegateEvents();*/
 
             return this.ready();
         },
@@ -398,8 +411,8 @@ define([
 
         // Define tabs layout
         setLayout: function(l) {
-            this.layout = l;
-            this.trigger("layout", this.layout);
+            this.grid.setLayout(l);
+            this.trigger("layout", l);
             this.update();
         }
     }, {
