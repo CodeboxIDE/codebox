@@ -68,8 +68,10 @@ define([
             // Add grid content
             x = 0; y = 0;
             _.each(this.views, function(view, i) {
+                var section
+
                 // Container object
-                var section = $("<div>", {
+                section = $("<div>", {
                     'class': 'grid-section',
                     'css': {
                         'left': (x * sectionWidth)+"%",
@@ -84,7 +86,8 @@ define([
                 if (x < (nColumns - 1)) {
                     // Horrizontal
                     var hBar = $("<div>", {
-                        'class': "grid-resize-bar-h"
+                        'class': "grid-resize-bar-h",
+                        'mousedown': this.resizerHandler(x, y, "h")
                     });
                     hBar.appendTo(section);
                 }
@@ -92,7 +95,8 @@ define([
                 if (y < (nLines - 1)) {
                     // Vertical
                     var vBar = $("<div>", {
-                        'class': "grid-resize-bar-v"
+                        'class': "grid-resize-bar-v",
+                        'mousedown': this.resizerHandler(x, y, "v")
                     });
                     vBar.appendTo(section);
                 }
@@ -109,7 +113,32 @@ define([
             return this.ready();
         },
 
-        
+        // Create a resizer handler
+        resizerHandler: function(x, y, type) {
+            var $document = $(document);
+            var oX, oY, dX, dY;
+            return function(e) {
+                e.preventDefault();
+                oX = e.pageX;
+                oY = e.pageY;
+
+                var f = function(e) {
+                    dx = oX - e.pageX;
+                    dy = oY - e.pageY;
+
+                    if (type == "h") {
+                        console.log("move h", dx);
+                    } else {
+                        console.log("move v", dy);
+                    }
+                };
+
+                $document.mousemove(f);
+                $document.mouseup(function(e) {
+                    $document.unbind('mousemove', f);
+                });
+            };
+        }
     });
 
     return GridView;
