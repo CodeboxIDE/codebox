@@ -140,11 +140,9 @@ define([
                     dy = oY - e.pageY;
 
                     if (type == "h") {
-                        console.log("move h", dx);
-                        that.resizeColumn(y, -dx);
+                        that.resizeColumn(x, -dx);
                     } else {
-                        console.log("move v", dy);
-                        that.resizeLine(x, -dy);
+                        that.resizeLine(y, -dy);
                     }
 
                     oX = e.pageX;
@@ -181,18 +179,53 @@ define([
             });
         },
 
-        resizeLine: function(i, d) {
-            var $sections = this.getSection(null, i);
-            var h = $sections.height();
+        _resize: function(type, i, d) {
+            var getSection = _.bind(_.partialRight(this.getSection, null), this);
+            var pixelToPercent = _.bind(_.partialRight(this.pixelToPercent, null), this);
+            var size = function(el, s) {
+                if (!s) return el.width();
+                return el.width(s);
+            };
+            var position = "left";
 
-            $sections.height(this.pixelToPercent(null, h+d)+"%");
+            if (type == "h") {
+                getSection = _.bind(_.partial(this.getSection, null), this);
+                pixelToPercent = _.bind(_.partial(this.pixelToPercent, null), this);
+                position = "top";
+                size = function(el, s) {
+                    if (!s) return el.height();
+                    return el.height(s);
+                }
+            }
+
+            var $sections = getSection(i);
+            var $sectionsAfter = getSection(i+1);
+
+            // New size for next sections
+            var sAfterN = pixelToPercent(size($sectionsAfter)-d);
+
+            // New size for current sections
+            var sCurrentN = pixelToPercent(size($sections)+d);
+
+            // Limited size
+            if (sCurrentN < 10 || sAfterN < 10) return false;
+
+            // Resize next line
+            $sectionsAfter.css(_.object([position], [pixelToPercent($sectionsAfter.position()[position]+d)+"%"]));
+            size($sectionsAfter, sAfterN+"%");
+
+            // Resize current line
+            size($sections, sCurrentN+"%");
+
+            return true;
+        },
+
+        resizeLine: function(i, d) {
+            return this._resize("h", i, d);
         },
 
         resizeColumn: function(i, d) {
-            var $sections = this.getSection(i, null);
-            var w = $sections.width();
-
-            $sections.width(this.pixelToPercent(w+d, null)+"%");
+            return this._resize("w", i, d);
         },
 
         pixelToPercent: function(x, y) {

@@ -38,6 +38,10 @@ define([
             this.grid.addView(new hr.View());
             this.grid.addView(new hr.View());
             this.grid.addView(new hr.View());
+            this.grid.addView(new hr.View());
+            this.grid.addView(new hr.View());
+            this.grid.addView(new hr.View());
+            this.grid.addView(new hr.View());
 
             // Commands
             this.layoutCommand = new Command({}, {
