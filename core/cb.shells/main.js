@@ -64,7 +64,7 @@ function setup(options, imports, register) {
         }[os.platform()];
 
         // If on unknown platform
-        if(!cmd) {
+        if(!cmd || !process.env.USER) {
             return Q('bash');
         }
 
