@@ -8,6 +8,21 @@
     .grid-section {
         position: absolute;
 
+        .grid-section-content {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            left: 0px;
+            bottom: 0px;
+
+            &.with-bar-h {
+                right: 3px;
+            }
+            &.with-bar-v {
+                bottom: 3px;
+            }
+        }
+
         .grid-resize-bar-v {
             position: absolute;
             right: 0px;

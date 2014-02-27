@@ -80,10 +80,10 @@ define([
             // Add grid content
             x = 0; y = 0;
             _.each(this.views, function(view, i) {
-                var section
+                var $section, $content;
 
                 // Container object
-                section = $("<div>", {
+                $section = $("<div>", {
                     'class': 'grid-section',
                     'css': {
                         'left': (x * sectionWidth)+"%",
@@ -92,7 +92,14 @@ define([
                         'height': sectionHeight+"%"
                     }
                 });
-                section.appendTo(this.$el);
+                $section.appendTo(this.$el);
+
+                // Content
+                $content = $("<div>", {
+                    'class': 'grid-section-content'
+                });
+                $content.append(view.$el);
+                $content.appendTo($section);
 
                 // Resize bar
                 if (x < (layout.columns - 1)) {
@@ -101,7 +108,8 @@ define([
                         'class': "grid-resize-bar-h",
                         'mousedown': this.resizerHandler(x, y, "h")
                     });
-                    hBar.appendTo(section);
+                    hBar.appendTo($section);
+                    $content.addClass("with-bar-h");
                 }
 
                 if (y < (layout.lines - 1)) {
@@ -110,9 +118,9 @@ define([
                         'class': "grid-resize-bar-v",
                         'mousedown': this.resizerHandler(x, y, "v")
                     });
-                    vBar.appendTo(section);
+                    vBar.appendTo($section);
+                    $content.addClass("with-bar-v");
                 }
-
 
                 // Calcul next position
                 x = x + 1;
