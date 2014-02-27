@@ -8,7 +8,7 @@ define([
     "utils/contextmenu"
 ], function(_, $, hr, Command, DragDrop, Keyboard, ContextMenu) {
     // Tab header
-    var TabView = hr.List.extend({
+    var TabView = hr.List.Item.extend({
         className: "component-tab",
         defaults: {
             title: "",
@@ -103,6 +103,8 @@ define([
                 "href": "#",
                 "html": "&times;"
             }).prependTo(inner);
+
+            this.$el.toggleClass("active", this.model.isActive());
             
             return this.ready();
         },
@@ -128,7 +130,7 @@ define([
         // (event) open
         open: function(e) {
             if (e != null) e.preventDefault();
-            //this.tabs.open(this.tabid);
+            this.model.active();
         },
 
         // (event) Drag start
@@ -143,7 +145,7 @@ define([
                 e.preventDefault();
                 e.stopPropagation();
             }
-            //this.tabs.close(this.tabid, force);
+            this.model.close(force);
         },
 
         // (event) close others tabs

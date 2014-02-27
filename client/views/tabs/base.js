@@ -39,13 +39,17 @@ define([
                 'title': this.menuTitle,
                 'position': 1
             });
-            this.on("tab:state", function(active) {
-                this.menu.toggleFlag("hidden", !active);
-            }, this);
-            this.on("tab:close", function() {
-                this.menu.destroy();
-            }, this);
             menu.collection.add(this.menu);
+
+            // Bind tab event
+            this.tab.on("destroy", function() {
+                this.menu.destroy();
+                this.trigger("tab:close");
+            }, this);
+            this.tab.on("change:active", function() {
+                this.trigger("tab:state", this.tab.isActive());
+                this.menu.toggleFlag("hidden", !this.tab.isActive());
+            }, this);
 
             // Keyboard shortcuts
             this.setShortcuts(this.shortcuts || {});
@@ -77,17 +81,17 @@ define([
         // Close the tab
         closeTab: function(e, force) {
             if (e != null) e.preventDefault();
-            //this.tabs.close(this.tabid, force);
+            this.tab.close(force);
         },
 
         // Open the tab
         openTab: function(e) {
-            //this.tabs.open(this.tabid);
+            this.tab.active();
         },
 
         // Set tab title
         setTabTitle: function(t) {
-            //this.tab.set("title", t);
+            this.tab.set("title", t);
             return this;
         },
 
@@ -113,9 +117,7 @@ define([
 
         // Return if is active
         isActiveTab: function() {
-            /*var active = this.tabs.getCurrentTab();
-            return !(active == null || active.tabid != this.tabid);*/
-            return false;
+            return this.tab.isActive();
         },
 
         // Check that tab can be closed

@@ -128,11 +128,12 @@ define([
             }
 
             if (!tab) {
-                tab = new Tab({}, {
+                tab = new Tab({
+                    'manager': this
+                }, {
                     'id': options.uniqueId,
                     'title': options.title
                 });
-                tab.manager = this;
 
                 // Create tab object
                 this.tabs.add(tab);
@@ -146,61 +147,9 @@ define([
                 this.getSection(options.section).addTab(tab);
             }
 
+            if (options.open) tab.active();
+
             return tab.view;
-
-            /*var tabid, tabinfos;
-            options = _.defaults(options || {}, {
-                silent: false,
-                render: true,
-
-                title: "untitled",      // Base title for the tab
-                type: "default",
-                uniqueId: null,         // Unique id for unicity of the tab
-                close: true,            // Enable/disable close button
-                open: true,             // Open after creation
-                section: 0,             // Section to open in
-                parentId: null          // Parent tabid
-            });
-            tabid = options.uniqueId != null ? this.checkTabExists(options.uniqueId) : null;
-            if (tabid == null) {
-                tabid = _.uniqueId("tab");
-                tabinfos = {
-                    "tabid": tabid,
-                    "title": options.title,
-                    "state": null,
-                    "uniqueId": options.uniqueId,
-                    "type": this.options.type,
-                    "view": null,
-                    "tab": null
-                };
-                this.tabs[tabid] = tabinfos;
-
-                this.tabs[tabid].tab = new TabView({
-                    "tabid": tabid,
-                    "close": options.close,
-                    "section": options.section
-                }, this);
-
-                this.tabs[tabid].view = new V(_.extend(construct || {}, {
-                    "tabid": tabid,
-                }), this);
-
-                if (options.parentId != null) {
-                    this.on("tab:"+options.parentId+":close", _.partial(this.tabs[tabid].tab.close, null, true), this.tabs[tabid].tab);
-                }
-
-                this.tabs[tabid].view.trigger("tab:ready");
-
-                this.tabs[tabid].tab.update();
-                this.tabs[tabid].view.update();
-
-                this.addComponent("tabs_tabs", this.tabs[tabid].tab);
-                this.addComponent("tabs_content", this.tabs[tabid].view);
-
-                if (options.render) this.update();
-            }
-            if (this.activeTab == null || options.open) this.open(tabid);
-            return this.tabs[tabid].view;*/
         },
 
         // Open a tab by tabid
@@ -211,7 +160,9 @@ define([
 
         // Close a tab by tabid
         close: function(tabid, force) {
-            return Q();
+            var tab = this.tabs.getById(tabid);
+            if (!tab) return Q.reject(new Error("Invalid tab"));
+            return tab.close(force);
         },
 
         // Open default new tab

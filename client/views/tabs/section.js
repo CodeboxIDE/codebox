@@ -6,7 +6,15 @@ define([
     "views/tabs/tab"
 ], function(_, $, hr, Tabs, TabHeaderItem) {
     var TabItem = hr.List.Item.extend({
-
+        className: "component-tab-content",
+        initialize: function() {
+            TabItem.__super__.initialize.apply(this, arguments);
+            this.$el.append(this.model.view.$el);
+        },
+        render: function() {
+            this.$el.toggleClass("active", this.model.isActive());
+            return this.ready();
+        }
     });
     var TabsList = hr.List.extend({
         Collection: Tabs
