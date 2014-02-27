@@ -173,6 +173,14 @@ define([
 
                 this.grid.removeView(section);
             }, this);
+        },
+
+        // Change tab section
+        changeTabSection: function(tab, section) {
+            section = this.getSection(section);
+
+            tab.section.remove(tab);
+            section.addTab(tab);
         }
     }, {
         Panel: TabPanelView

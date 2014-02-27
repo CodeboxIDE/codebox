@@ -34,8 +34,35 @@ define([
             TabView.__super__.initialize.apply(this, arguments);
 
             var that = this;
+            var $document = $(document);
 
             this.$el.attr("draggable", true);
+
+            this.$el.mousedown(function(e) {
+                e.preventDefault();
+                var oX = e.pageX;
+                var poX = that.$el.position().left;
+
+                var f = function(e) {
+                    dx = oX - e.pageX;
+
+                    that.$el.addClass("move");
+                    that.$el.css({
+                        'left': poX-dx
+                    });
+
+                    console.log("movement ", dx);
+                };
+
+                $document.mousemove(f);
+                $document.mouseup(function(e) {
+                    that.$el.removeClass("move");
+                    that.$el.css({
+                        'left': null
+                    });
+                    $document.unbind('mousemove', f);
+                });
+            });
 
             // Context menu
             ContextMenu.add(this.$el, [
@@ -116,9 +143,8 @@ define([
 
         // Set section
         setSection: function(section) {
-            /*this.section = section;
-            this.open();
-            this.tabs.update();*/
+            this.model.changeSection(section);
+            this.model.active();
         },
 
         // Create section

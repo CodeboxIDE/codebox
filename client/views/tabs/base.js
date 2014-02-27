@@ -111,7 +111,7 @@ define([
 
         // Set tab title
         setTabId: function(t) {
-            //this.tabs.tabs[this.tabid].uniqueId = t;
+            //this.model.set("id", t);
             return this;
         },
 
@@ -128,17 +128,19 @@ define([
         // Goto
         tabGotoPrevious: function(e) {
             if (e) e.preventDefault();
-            /*var that = this;
+            var that = this;
             setTimeout(function() {
-                that.tabs.open(that.tabs.getPreviousTab(that.tabid));
-            }, 0);*/
+                var p = that.tab.prevTab();
+                if (p) p.active();
+            }, 0);
         },
         tabGotoNext: function(e) {
             if (e) e.preventDefault();
-            /*var that = this;
+            var that = this;
             setTimeout(function() {
-                that.tabs.open(that.tabs.getNextTab(that.tabid));
-            }, 0);*/
+                var p = that.tab.nextTab();
+                if (p) p.active();
+            }, 0);
         }
     });
 

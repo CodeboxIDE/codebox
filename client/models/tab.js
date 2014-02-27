@@ -64,6 +64,11 @@ define([
             this.model.set("active", false);
         },
 
+        // Change tab section
+        changeSection: function(section) {
+            return this.manager.changeTabSection(this, section);
+        },
+
         // Close this tab
         close: function(force) {
             var that = this, tabid = this.id, prev = null;
@@ -105,10 +110,7 @@ define([
 
             // Check that we can close the tab
             return Q(this.view.tabCanBeClosed())
-            .then(handleClose, handleClose)
-            .fail(function(err) {
-                console.log("error !!! ", err);
-            });
+            .then(handleClose, handleClose);
         },
 
         // Close all other tabs in the section
