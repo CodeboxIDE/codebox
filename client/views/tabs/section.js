@@ -64,6 +64,7 @@ define([
          *  Add a tab to this section
          */
         addTab: function(tab) {
+            tab.section = this.tabs;
             this.tabs.add(tab);
             return this;
         },

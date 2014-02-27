@@ -142,6 +142,7 @@ define([
                 tab.view = new V(_.extend(construct || {}, {
                     "tab": tab,
                 }), this);
+                tab.view.update();
 
                 // Add to section
                 this.getSection(options.section).addTab(tab);

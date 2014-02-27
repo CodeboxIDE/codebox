@@ -12,11 +12,39 @@ define([
 
         initialize: function() {
             Tab.__super__.initialize.apply(this, arguments);
+
             this.manager = this.options.manager;
+            this._closed = false;
 
             if (!this.manager) {
                 throw "Need a manager to create a tab";
             }
+        },
+
+        // Get previous tab
+        getNthTab: function(collection, n) {
+            var prev = null;
+            collection = collection || this.section;
+
+            var i = collection.indexOf(this);
+
+            // tab not found
+            if (i < 0) return;
+            i = i + n;
+
+            if (i < 0 || i >= collection.size()) return null;
+
+            return collection.models[i];
+        },
+
+        // Get previous tab
+        prevTab: function(collection) {
+            return this.getNthTab(collection, -1);
+        },
+
+        // Get next tab
+        nextTab: function(collection) {
+            return this.getNthTab(collection, +1);
         },
 
         // Return true if this tab is active
@@ -24,9 +52,9 @@ define([
             return this.get("active");
         },
 
-        // Active this tab
+        // Active this tab on the current section
         active: function() {
-            this.collection.each(function(tab) {
+            this.section.each(function(tab) {
                 tab.set("active", tab.id == this.id);
             }, this);
         },
@@ -38,13 +66,19 @@ define([
 
         // Close this tab
         close: function(force) {
-            var that = this, tabid = this.id;
+            var that = this, tabid = this.id, prev = null;
+
+            if (this._closed) return Q.reject(new Error("Tab already been closed"));
+            
 
             var handleClose = function(state) {
-                if (!state && !force) return;
+                if ((!state && !force) || this._closed) return;
 
-                if (!that.isActive()) {
-                    // Change active tab
+                that._closed = true;
+
+                if (that.isActive()) {
+                    // Change active tab to an another tab with priority order:
+                    prev = that.prevTab() || that.nextTab() || that.prevTab(that.manager.tabs) || that.nextTab(that.manager.tabs);
                 }
 
                 // Triger in tab
@@ -57,13 +91,12 @@ define([
                 that.manager.trigger("tab:"+tabid+":close");
                 that.manager.trigger("tabs:close", tabid);
 
-                /*if (!_.size(that.tabs) || !previousTabId) {
-                    that.trigger("tabs:default");
-                } else {
-                    that.open(previousTabId);
-                }*/
+                if (prev) prev.active();
 
                 that.destroy();
+
+                // No tab -> open default
+                if (that.manager.tabs.size() == 0) that.manager.trigger("tabs:default");
 
                 return Q(tabid);
             };
