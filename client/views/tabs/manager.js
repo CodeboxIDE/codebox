@@ -36,9 +36,6 @@ define([
             var that = this;
             TabsView.__super__.initialize.apply(this, arguments);
 
-            // Sections
-            this.sections = {};
-
             // Current layout
             this.layout = null; // null: mode auto
             this.grid = new GridView();
@@ -73,20 +70,23 @@ define([
 
         // Return a section by its id
         getSection: function(id) {
-            if (!this.sections[id]) {
-                this.sections[id] = new TabsSectionView();
-                this.sections[id].sectionId = id;
-                this.grid.addView(this.sections[id]);
+            var s = _.find(this.grid.views, function(section) {
+                return section.sectionId == id;
+            });
+
+            if (!s) {
+                s = new TabsSectionView();
+                s.sectionId = id;
+                this.grid.addView(s);
             }
 
-            return this.sections[id];
+            return s;
         },
 
         // Remove a section
         removeSection: function(id) {
             var s = this.getSection(id);
             this.grid.removeView(s);
-            delete this.sections[id];
             return this;
         },
 
@@ -153,21 +153,8 @@ define([
             return tab.view;
         },
 
-        // Open a tab by tabid
-        open: function(tabid) {
-            
-            return this;
-        },
-
-        // Close a tab by tabid
-        close: function(tabid, force) {
-            var tab = this.tabs.getById(tabid);
-            if (!tab) return Q.reject(new Error("Invalid tab"));
-            return tab.close(force);
-        },
-
         // Open default new tab
-        openDefaultNew: function(e) {
+        openDefault: function(e) {
             this.trigger("tabs:opennew");
         },
 
@@ -176,6 +163,16 @@ define([
             this.grid.setLayout(l);
             this.trigger("layout", l);
             this.update();
+        },
+
+        // Check sections
+        // -> check that there is no empty sections
+        checkSections: function() {
+            _.each(this.grid.views, function(section) {
+                if (section.tabs.size() > 0) return;
+
+                this.grid.removeView(section);
+            }, this);
         }
     }, {
         Panel: TabPanelView

@@ -95,15 +95,28 @@ define([
 
                 that.destroy();
 
+                that.manager.checkSections();
+
                 // No tab -> open default
-                if (that.manager.tabs.size() == 0) that.manager.trigger("tabs:default");
+                if (that.manager.tabs.size() == 0) that.manager.openDefault();
 
                 return Q(tabid);
             };
 
             // Check that we can close the tab
             return Q(this.view.tabCanBeClosed())
-            .then(handleClose, handleClose);
+            .then(handleClose, handleClose)
+            .fail(function(err) {
+                console.log("error !!! ", err);
+            });
+        },
+
+        // Close all other tabs in the section
+        closeOthers: function() {
+            this.section.each(function(tab) {
+                if (tab.id != this.id) tab.close();
+            }, this);
+            this.active();
         }
     });
 

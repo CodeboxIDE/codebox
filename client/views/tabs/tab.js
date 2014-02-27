@@ -44,7 +44,7 @@ define([
                     'type': "action",
                     'title': "New Tab",
                     'action': function() {
-                        //that.tabs.openDefaultNew();
+                        that.model.manager.openDefault();
                     }
                 },
                 { 'type': "divider" },
@@ -150,7 +150,7 @@ define([
 
         // (event) close others tabs
         closeOthers: function(e) {
-            //this.tabs.closeOthers(this.tabid);
+            this.model.closeOthers();
         }
     });
 
