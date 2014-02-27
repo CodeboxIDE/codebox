@@ -8,7 +8,7 @@ define([
     "utils/contextmenu"
 ], function(_, $, hr, Command, DragDrop, Keyboard, ContextMenu) {
     // Tab header
-    var TabView = hr.View.extend({
+    var TabView = hr.List.extend({
         className: "component-tab",
         defaults: {
             title: "",
@@ -36,9 +36,6 @@ define([
             var that = this;
 
             this.$el.attr("draggable", true);
-            this.tabid = this.options.tabid;
-            this.tabs = this.parent;
-            this.section = this.options.section || 0;
 
             // Context menu
             ContextMenu.add(this.$el, [
@@ -47,7 +44,7 @@ define([
                     'type': "action",
                     'title': "New Tab",
                     'action': function() {
-                        that.tabs.openDefaultNew();
+                        //that.tabs.openDefaultNew();
                     }
                 },
                 { 'type': "divider" },
@@ -77,7 +74,7 @@ define([
                     }
                 },
                 { 'type': "divider" },
-                that.tabs.layoutCommand
+                that.model.manager.layoutCommand
             ]);
 
             return this;
@@ -87,14 +84,12 @@ define([
         render: function() {
             this.$el.empty();
 
-            var tab = this.tabs.tabs[this.tabid];
-
             var inner = $("<div>", {
                 "class": "inner",
-                "html": tab.title
+                "html": this.model.get("title")
             }).appendTo(this.$el);
 
-            var states = (tab.state || "").split(" ");
+            var states = this.model.get("state", "").split(" ");
             _.each(states, function(state) {
                 if (state && this.states[state]) {
                     $("<i>", {
@@ -102,15 +97,13 @@ define([
                     }).prependTo(inner);
                 }
             }, this);
-            
 
-            if (this.options.close) {
-                $("<a>", {
-                    "class": "close",
-                    "href": "#",
-                    "html": "&times;"
-                }).prependTo(inner);
-            }
+            $("<a>", {
+                "class": "close",
+                "href": "#",
+                "html": "&times;"
+            }).prependTo(inner);
+            
             return this.ready();
         },
 
@@ -121,9 +114,9 @@ define([
 
         // Set section
         setSection: function(section) {
-            this.section = section;
+            /*this.section = section;
             this.open();
-            this.tabs.update();
+            this.tabs.update();*/
         },
 
         // Create section
@@ -135,13 +128,13 @@ define([
         // (event) open
         open: function(e) {
             if (e != null) e.preventDefault();
-            this.tabs.open(this.tabid);
+            //this.tabs.open(this.tabid);
         },
 
         // (event) Drag start
         dragStart: function(e) {
             DragDrop.drag(e, "move");
-            DragDrop.setData(e, "tab", this.tabid);
+            DragDrop.setData(e, "tab", this.model.id);
         },
 
         // (event) close
@@ -150,12 +143,12 @@ define([
                 e.preventDefault();
                 e.stopPropagation();
             }
-            this.tabs.close(this.tabid, force);
+            //this.tabs.close(this.tabid, force);
         },
 
         // (event) close others tabs
         closeOthers: function(e) {
-            this.tabs.closeOthers(this.tabid);
+            //this.tabs.closeOthers(this.tabid);
         }
     });
 

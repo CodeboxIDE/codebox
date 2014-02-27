@@ -2,23 +2,26 @@ define([
     "hr/utils",
     "hr/dom",
     "hr/hr",
-    "collections/tabs"
-], function(_, $, hr, Tabs) {
+    "collections/tabs",
+    "views/tabs/tab"
+], function(_, $, hr, Tabs, TabHeaderItem) {
     var TabItem = hr.List.Item.extend({
 
     });
     var TabsList = hr.List.extend({
-        Collection: Tabs,
-        Item: TabItem
+        Collection: Tabs
     });
 
 
     var TabsSectionContent = TabsList.extend({
-        Item: TabItem
+        className: "tabs-section-content",
+        Item: TabItem,
+
     });
 
     var TabsSectionHeader = TabsList.extend({
-        Item: TabItem
+        className: "tabs-section-header",
+        Item: TabHeaderItem
     });
 
 

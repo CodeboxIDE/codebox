@@ -2,7 +2,9 @@ define([
     "hr/utils",
     "hr/dom",
     "hr/hr",
+
     "models/command",
+    "models/tab",
 
     "collections/tabs",
 
@@ -14,7 +16,7 @@ define([
     "views/tabs/base",
     "views/tabs/grid",
     "views/tabs/section"
-], function(_, $, hr, Command, Tabs, DragDrop, Keyboard, ContextMenu, TabView, TabPanelView, GridView, TabsSectionView) {
+], function(_, $, hr, Command, Tab , Tabs, DragDrop, Keyboard, ContextMenu, TabView, TabPanelView, GridView, TabsSectionView) {
     // Complete tabs system
     var TabsView = hr.View.extend({
         className: "cb-tabs",
@@ -126,11 +128,14 @@ define([
             }
 
             if (!tab) {
-                // Create tab object
-                tab = this.tabs.add({
+                tab = new Tab({}, {
                     'id': options.uniqueId,
                     'title': options.title
                 });
+                tab.manager = this;
+
+                // Create tab object
+                this.tabs.add(tab);
 
                 // Create content view
                 tab.view = new V(_.extend(construct || {}, {

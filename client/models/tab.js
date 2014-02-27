@@ -6,7 +6,7 @@ define([
         defaults: {
             "id": null,
             "title": "",
-            "state": null,
+            "state": "",
             "active": false
         }
     });
