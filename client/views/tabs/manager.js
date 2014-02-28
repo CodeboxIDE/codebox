@@ -12,11 +12,11 @@ define([
     "utils/keyboard",
     "utils/contextmenu",
 
+    "views/grid",
     "views/tabs/tab",
     "views/tabs/base",
-    "views/tabs/grid",
     "views/tabs/section"
-], function(_, $, hr, Command, Tab , Tabs, DragDrop, Keyboard, ContextMenu, TabView, TabPanelView, GridView, TabsSectionView) {
+], function(_, $, hr, Command, Tab , Tabs, DragDrop, Keyboard, ContextMenu, GridView, TabView, TabPanelView, TabsSectionView) {
     // Complete tabs system
     var TabsView = hr.View.extend({
         className: "cb-tabs",

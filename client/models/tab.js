@@ -57,6 +57,7 @@ define([
             this.section.each(function(tab) {
                 tab.set("active", tab.id == this.id);
             }, this);
+            this.manager.trigger("active", this);
         },
 
         // Disactive

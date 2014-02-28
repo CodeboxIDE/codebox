@@ -46,9 +46,11 @@ define([
                 this.menu.destroy();
                 this.trigger("tab:close");
             }, this);
-            this.tab.on("change:active", function() {
-                this.trigger("tab:state", this.tab.isActive());
-                this.menu.toggleFlag("hidden", !this.tab.isActive());
+            this.tab.manager.on("active", function(tab) {
+                var state = tab.id == this.tab.id;
+
+                this.trigger("tab:state", state);
+                this.menu.toggleFlag("hidden", !state);
             }, this);
 
             // Keyboard shortcuts
