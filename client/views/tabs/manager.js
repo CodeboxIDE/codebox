@@ -38,7 +38,7 @@ define([
 
             // Current layout
             this.layout = null; // null: mode auto
-            this.grid = new GridView();
+            this.grid = new GridView({}, this);
             this.grid.$el.appendTo(this.$el);
 
             // Commands
@@ -75,7 +75,7 @@ define([
             });
 
             if (!s) {
-                s = new TabsSectionView();
+                s = new TabsSectionView({}, this);
                 s.sectionId = id;
                 this.grid.addView(s);
             }
@@ -169,18 +169,39 @@ define([
         // -> check that there is no empty sections
         checkSections: function() {
             _.each(this.grid.views, function(section) {
-                if (section.tabs.size() > 0) return;
+                // If empty remove it
+                if (section.tabs.size() == 0) {
+                    this.grid.removeView(section);
+                    return;
+                }
 
-                this.grid.removeView(section);
+                // If no active tab
+                if (section.tabs.getActive() == null) {
+                    section.tabs.first().active();
+                }
+                
             }, this);
         },
 
         // Change tab section
         changeTabSection: function(tab, section) {
+            if (_.isString(tab)) tab = this.tabs.getById(tab);
+            if (!tab) return false;
             section = this.getSection(section);
 
+            // Remove from old section
             tab.section.remove(tab);
+
+            // Add to new section
             section.addTab(tab);
+
+            // Active
+            tab.active();
+
+            // Check sections to remove empty one
+            this.checkSections();
+
+            return true;
         }
     }, {
         Panel: TabPanelView

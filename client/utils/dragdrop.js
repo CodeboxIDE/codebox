@@ -34,7 +34,7 @@ define([
         dragover: function(e, effect) {
             if (e != null) {
                 var ev = e.originalEvent;
-                if (ev.preventDefault) ev.preventDefault();
+                e.preventDefault();
                 ev.dataTransfer.dropEffect = effect;
                 return true;
             } else {
@@ -48,8 +48,7 @@ define([
          */
         drop: function(e, effect) {
             if (e != null) {
-                var ev = e.originalEvent;
-                if (ev.stopPropagation) ev.stopPropagation();
+                e.stopPropagation();
                 return true;
             } else {
                 return false;

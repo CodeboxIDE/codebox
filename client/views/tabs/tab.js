@@ -7,6 +7,7 @@ define([
     "utils/keyboard",
     "utils/contextmenu"
 ], function(_, $, hr, Command, DragDrop, Keyboard, ContextMenu) {
+
     // Tab header
     var TabView = hr.List.Item.extend({
         className: "component-tab",
@@ -38,31 +39,41 @@ define([
 
             this.$el.attr("draggable", true);
 
-            this.$el.mousedown(function(e) {
+            /*this.$el.mousedown(function(e) {
                 e.preventDefault();
+                var dx, dy;
                 var oX = e.pageX;
-                var poX = that.$el.position().left;
+                var oY = e.pageY;
+                var poX = that.$el.offset().left;
+                var poY = that.$el.offset().top;
 
                 var f = function(e) {
                     dx = oX - e.pageX;
+                    dy = oY - e.pageY;
 
                     that.$el.addClass("move");
                     that.$el.css({
-                        'left': poX-dx
+                        'left': poX-dx,
+                        'top': poY
                     });
 
-                    console.log("movement ", dx);
+                    if (Math.abs(dy) > 50) {
+                        that.$el.css({
+                            'top': poY-dy
+                        });
+                    }
                 };
 
                 $document.mousemove(f);
                 $document.mouseup(function(e) {
                     that.$el.removeClass("move");
                     that.$el.css({
-                        'left': "auto"
+                        'left': "auto",
+                        'top': "auto"
                     });
                     $document.unbind('mousemove', f);
                 });
-            });
+            });*/
 
             // Context menu
             ContextMenu.add(this.$el, [

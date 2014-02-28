@@ -11,7 +11,14 @@ define([
             return this.find(function(tab) {
                 return tab.id == id;
             });
-        }
+        },
+
+        // Return current active tab
+        getActive: function() {
+            return this.find(function(tab) {
+                return tab.get("active");
+            });
+        },
     });
 
     return Tabs;

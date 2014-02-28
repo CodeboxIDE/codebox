@@ -2,9 +2,10 @@ define([
     "hr/utils",
     "hr/dom",
     "hr/hr",
+    "utils/dragdrop",
     "collections/tabs",
     "views/tabs/tab"
-], function(_, $, hr, Tabs, TabHeaderItem) {
+], function(_, $, hr, DragDrop, Tabs, TabHeaderItem) {
     var TabItem = hr.List.Item.extend({
         className: "component-tab-content",
         initialize: function() {
@@ -45,6 +46,8 @@ define([
         initialize: function() {
             TabsSectionView.__super__.initialize.apply(this, arguments);
 
+            var that = this;
+
             this.tabs = new Tabs();
 
             this.header = new TabsSectionHeader({
@@ -56,6 +59,50 @@ define([
 
             this.header.$el.appendTo(this.$el);
             this.content.$el.appendTo(this.$el);
+
+            var ignoreNextLeave = false;
+
+            this.$el.on('dragenter', function(e) {
+                if (e.target !== this) {
+                    ignoreNextLeave = true;
+                }
+
+                console.log("drag enter", that.cid, e);
+                if (DragDrop.checkDrop(e, "tab")) {
+                    that.$el.addClass("dragover");
+                }
+            });
+
+            this.$el.on('dragover', function(e) {
+                if (DragDrop.checkDrop(e, "tab")) {
+                    e.preventDefault();
+                    DragDrop.dragover(e, 'move');
+                }
+            });
+
+            this.$el.on('dragleave', function(e) {
+                if (ignoreNextLeave) {
+                    ignoreNextLeave = false;
+                    return;
+                }
+
+                console.log("drag leave", that.cid, e);
+                if (DragDrop.checkDrop(e, "tab")) {
+                    that.$el.removeClass("dragover");
+                }
+            });
+            
+            this.$el.on('drop', function(e) {
+                console.log("drop ", e);
+                if (DragDrop.checkDrop(e, "tab")) {
+                    that.$el.removeClass("dragover");
+                    DragDrop.drop(e);
+                    console.log("Drop ", DragDrop.getData(e, "tab"), that);
+
+                    that.parent.changeTabSection(DragDrop.getData(e, "tab"), that.sectionId);
+                    //this.tabs[DragDrop.getData(e, "tab")].tab.setSection(section);
+                }
+            });
 
             return this;
         },
