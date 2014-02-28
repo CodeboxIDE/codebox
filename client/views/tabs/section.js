@@ -97,12 +97,16 @@ define([
                 if (DragDrop.checkDrop(e, "tab")) {
                     that.$el.removeClass("dragover");
                     DragDrop.drop(e);
-                    console.log("Drop ", DragDrop.getData(e, "tab"), that);
 
                     that.parent.changeTabSection(DragDrop.getData(e, "tab"), that.sectionId);
-                    //this.tabs[DragDrop.getData(e, "tab")].tab.setSection(section);
                 }
             });
+
+            this.on("grid:layout", function() {
+                this.tabs.each(function(tab) {
+                    tab.view.trigger("tab:layout");
+                });
+            }, this);
 
             return this;
         },

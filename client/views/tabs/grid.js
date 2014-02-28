@@ -65,6 +65,15 @@ define([
         },
 
         /*
+         *  Signal an update on tha layout to all views
+         */
+        signalLayout: function() {
+            _.each(this.views, function(view) {
+                view.trigger("grid:layout");
+            });
+        },
+
+        /*
          *  Re-render the complete layout
          */
         render: function() {
@@ -107,6 +116,7 @@ define([
                 });
                 $content.append(view.$el);
                 $content.appendTo($section);
+                view.trigger("grid:layout");
 
                 // Resize bar
                 if (x < (layout.columns - 1)) {
@@ -231,6 +241,8 @@ define([
 
             // Resize current line
             size($sections, sCurrentN+"%");
+
+            this.signalLayout();
 
             return true;
         },

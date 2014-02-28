@@ -72,6 +72,9 @@ define([
                     this.focus();
                 }
             }, this);
+            this.on("tab:layout", function() {
+                that.resize();
+            }, this);
 
             this.setTabTitle("Terminal - "+this.sessionId);
 
