@@ -69,6 +69,13 @@ define([
          */
         render: function() {
             var x, y;
+
+            // Detach view
+            _.each(this.views, function(view) {
+                view.$el.detach();
+            });
+
+            // Clear the view
             this.$el.empty();
 
             // Calcul layout

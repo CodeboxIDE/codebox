@@ -58,7 +58,7 @@ define([
                 $document.mouseup(function(e) {
                     that.$el.removeClass("move");
                     that.$el.css({
-                        'left': null
+                        'left': "auto"
                     });
                     $document.unbind('mousemove', f);
                 });
