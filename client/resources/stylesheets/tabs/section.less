@@ -6,7 +6,7 @@
     right: 0px;
 
     &.dragover {
-        opacity: 0.6;
+        opacity: 0.4;
 
         &:after {
             content:'';
@@ -16,6 +16,10 @@
             bottom: 0;
             right: 0;
             z-index: 1;
+        }
+
+        * {
+            pointer-events:none;
         }
     }
 

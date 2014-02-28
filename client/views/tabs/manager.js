@@ -187,6 +187,7 @@ define([
         changeTabSection: function(tab, section) {
             if (_.isString(tab)) tab = this.tabs.getById(tab);
             if (!tab) return false;
+
             section = this.getSection(section);
 
             // Remove from old section
