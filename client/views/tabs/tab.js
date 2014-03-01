@@ -17,8 +17,9 @@ define([
             close: true
         },
         events: {
-            "click":        "open",
-            "click .close": "close"
+            "mousedown .close": "close",
+            "click .close": "close",
+            "click": "open",
         },
         states: {
             'modified': "fa-asterisk",
