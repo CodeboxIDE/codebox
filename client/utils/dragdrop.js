@@ -1,98 +1,143 @@
 define([
+    'hr/hr',
     'hr/dom'
-], function ($) {
-    var DragDrop = {
-        /*
-         *  Init drag on a event
-         *  @e : dom event
-         *  @effect : effect allowed : copy, ...
-         */
-        drag: function(e, effect) {
-            if (e != null) {
-                var ev = e.originalEvent;
-                ev.dataTransfer.effectAllowed = effect;
-                return true;
-            } else {
-                return false;
-            }
+], function (hr, $) {
+    var DropArea = hr.Class.extend({
+        defaults: {
+            // View for this area
+            view: null,
+
+            // Class when drop data
+            className: "dragover",
+
+            // Draggable type
+            dragType: null,
+
+            // Handler for drop
+            handler: null
         },
 
-        /*
-         *  Check drag is gogod for droping
-         *  @e : dom event
-         *  @attr : data require
-         */
-        checkDrop: function(e, attr) {
-            return _.contains(e.originalEvent.dataTransfer.types, attr);
-        },
+        initialize: function() {
+            DropArea.__super__.initialize.apply(this, arguments);
+            var that = this;
 
-        /*
-         *  Init dragover on a event
-         *  @e : dom event
-         *  @effect : effect allowed : copy, ...
-         */
-        dragover: function(e, effect) {
-            if (e != null) {
-                var ev = e.originalEvent;
-                e.preventDefault();
-                ev.dataTransfer.dropEffect = effect;
-                return true;
-            } else {
-                return false;
-            }
-        },
+            this.view = this.options.view;
+            this.$el = this.view.$el;
 
-        /*
-         *  Init drop event
-         *  @e : dom event
-         */
-        drop: function(e, effect) {
-            if (e != null) {
-                e.stopPropagation();
-                return true;
-            } else {
-                return false;
-            }
-        },
+            this.dragType = this.options.dragType;
 
-        /*
-         *  Define drag data
-         *  @e : dom event
-         *  @attr : name of the data
-         *  @data : data
-         */
-        setData: function(e, attr, data) {
-            if (e != null) {
-                var ev = e.originalEvent;
-                ev.dataTransfer.setData(attr, JSON.stringify(data));
-                return true;
-            } else {
-                return false;
-            }
-        },
-
-        /*
-         *  Get drag data
-         *  @e : dom event
-         *  @attr : name of the data
-         */
-        getData: function(e, attr) {
-            if (e != null) {
-                var ev = e.originalEvent;
-                var o = ev.dataTransfer.getData(attr);
-                if (o == null) {
-                    return null;
+            this.$el.on('mouseenter', function(e) {
+                if (that.dragType.isDragging()) {
+                    that.dragType.enterDropArea(that);
+                    that.$el.addClass("dragover");
                 }
-                try {
-                    var obj = JSON.parse(o);
-                    return obj;
-                } catch(err) {
-                    return null;
-                } 
-            } else {
-                return null;
-            }
+            });
+
+            this.$el.on('mouseleave', function(e) {
+                that.$el.removeClass("dragover");
+            });
+
+            this.on("drop", function() {
+                that.$el.removeClass("dragover");
+            });
+
+            if (this.options.handler) this.on("drop", this.options.handler);
+        }
+    });
+
+    var DraggableType = hr.Class.extend({
+        initialize: function() {
+            DraggableType.__super__.initialize.apply(this, arguments);
+
+            // Data transfered
+            this.data = null;
+
+            // Drop handler
+            this.drop = null;
         },
+
+        // Is currently dragging data
+        isDragging: function() {
+            return this.data != null;
+        },
+
+        // Enter drop area
+        enterDropArea: function(area) {
+            this.drop = area;
+        },
+
+        // Exit drop area
+        exitDropArea: function() {
+            this.drop = null;
+        },
+
+        // Enable drag and drop in a object
+        enableDrag: function(options) {
+            var that = this, $document = $(document), $el, data;
+
+            options = _.defaults(options || {}, {
+                // View to drag
+                view: null,
+
+                // Element to drag
+                el: null,
+
+                // Data to transfer
+                data: null
+            });
+            if (options.el) $el = $(options.el);
+            if (options.view) $el = options.view.$el, data = options.view;
+            if (options.data) data = options.data;
+
+            $el.mousedown(function(e) {
+                e.preventDefault();
+                var dx, dy;
+                var oX = e.pageX;
+                var oY = e.pageY;
+                var poX = $el.offset().left;
+                var poY = $el.offset().top;
+
+                that.data = data;
+
+                var f = function(e) {
+                    dx = oX - e.pageX;
+                    dy = oY - e.pageY;
+
+                    $el.addClass("move");
+                    $el.css({
+                        'left': poX-dx,
+                        'top': poY
+                    });
+
+                    if (Math.abs(dy) > 50) {
+                        $el.css({
+                            'top': poY-dy
+                        });
+                    }
+                };
+
+                $document.mousemove(f);
+                $document.mouseup(function(e) {
+                    if (that.drop) {
+                        that.drop.trigger("drop", that.data);
+                    }
+
+                    that.data = null;
+                    that.drop = null;
+
+                    $el.removeClass("move");
+                    $el.css({
+                        'left': "auto",
+                        'top': "auto"
+                    });
+                    $document.unbind('mousemove', f);
+                });
+            });
+        }
+    });
+
+    return {
+        DropArea: DropArea,
+        DraggableType: DraggableType
     };
-    return DragDrop;
 });

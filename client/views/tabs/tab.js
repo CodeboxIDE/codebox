@@ -6,7 +6,7 @@ define([
     "utils/dragdrop",
     "utils/keyboard",
     "utils/contextmenu"
-], function(_, $, hr, Command, DragDrop, Keyboard, ContextMenu) {
+], function(_, $, hr, Command, dnd, Keyboard, ContextMenu) {
 
     // Tab header
     var TabView = hr.List.Item.extend({
@@ -19,8 +19,7 @@ define([
         events: {
             "click":        "open",
             "click .close": "close",
-            "dblclick":     "split",
-            "dragstart":    "dragStart"
+            "dblclick":     "split"
         },
         states: {
             'modified': "fa-asterisk",
@@ -38,6 +37,11 @@ define([
             var $document = $(document);
 
             this.$el.attr("draggable", true);
+
+            TabView.drag.enableDrag({
+                view: this,
+                data: this.model
+            });
 
             // Context menu
             ContextMenu.add(this.$el, [
@@ -134,12 +138,6 @@ define([
             this.model.active();
         },
 
-        // (event) Drag start
-        dragStart: function(e) {
-            DragDrop.drag(e, "move");
-            DragDrop.setData(e, "tab", this.model.id);
-        },
-
         // (event) close
         close: function(e, force) {
             if (e != null) {
@@ -153,6 +151,8 @@ define([
         closeOthers: function(e) {
             this.model.closeOthers();
         }
+    }, {
+        'drag': new dnd.DraggableType()
     });
 
     return TabView;

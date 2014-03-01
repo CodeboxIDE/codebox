@@ -5,7 +5,7 @@ define([
     "utils/dragdrop",
     "collections/tabs",
     "views/tabs/tab"
-], function(_, $, hr, DragDrop, Tabs, TabHeaderItem) {
+], function(_, $, hr, dnd, Tabs, TabHeaderItem) {
     var TabItem = hr.List.Item.extend({
         className: "component-tab-content",
         events: {
@@ -71,43 +71,12 @@ define([
 
             var ignoreNextLeave = false;
 
-            this.$el.on('dragenter', function(e) {
-                if (e.target !== this) {
-                    ignoreNextLeave = true;
-                }
-
-                console.log("drag enter", that.cid, e);
-                if (DragDrop.checkDrop(e, "tab")) {
-                    that.$el.addClass("dragover");
-                }
-            });
-
-            this.$el.on('dragover', function(e) {
-                if (DragDrop.checkDrop(e, "tab")) {
-                    e.preventDefault();
-                    DragDrop.dragover(e, 'move');
-                }
-            });
-
-            this.$el.on('dragleave', function(e) {
-                if (ignoreNextLeave) {
-                    ignoreNextLeave = false;
-                    return;
-                }
-
-                console.log("drag leave", that.cid, e);
-                if (DragDrop.checkDrop(e, "tab")) {
-                    that.$el.removeClass("dragover");
-                }
-            });
-            
-            this.$el.on('drop', function(e) {
-                console.log("drop ", e);
-                if (DragDrop.checkDrop(e, "tab")) {
-                    that.$el.removeClass("dragover");
-                    DragDrop.drop(e);
-
-                    that.parent.changeTabSection(DragDrop.getData(e, "tab"), that.sectionId);
+            // Drop tabs
+            this.dropArea = new dnd.DropArea({
+                view: this,
+                dragType: TabHeaderItem.drag,
+                handler: function(tab) {
+                    tab.changeSection(that.sectionId);
                 }
             });
 

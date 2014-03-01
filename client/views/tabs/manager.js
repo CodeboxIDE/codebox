@@ -8,7 +8,6 @@ define([
 
     "collections/tabs",
 
-    "utils/dragdrop",
     "utils/keyboard",
     "utils/contextmenu",
 
@@ -16,7 +15,7 @@ define([
     "views/tabs/tab",
     "views/tabs/base",
     "views/tabs/section"
-], function(_, $, hr, Command, Tab , Tabs, DragDrop, Keyboard, ContextMenu, GridView, TabView, TabPanelView, TabsSectionView) {
+], function(_, $, hr, Command, Tab , Tabs, Keyboard, ContextMenu, GridView, TabView, TabPanelView, TabsSectionView) {
     // Complete tabs system
     var TabsView = hr.View.extend({
         className: "cb-tabs",
