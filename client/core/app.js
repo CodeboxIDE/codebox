@@ -154,8 +154,11 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
                     // Trigger event that app is ready
                     that.trigger("ready");
 
-                    // Open new file if not files opened by addons
-                    if (files.active.size() == 0) files.openNew();
+                    // Open new file if not files opened by addons and no restored tabs
+                    tabs.restoreTabs()
+                    .then(function(_n) {
+                        if (files.active.size() == 0 && _n == 0) files.openNew();
+                    });
                 });
             }
             return Application.__super__.finish.apply(this, arguments);

@@ -36,6 +36,23 @@ define([
     // Files handlers map
     var handlers = {};
 
+    // Restorer for tabs
+    tabs.addRestorer("file", function(tabInfos) {
+        var parts = tabInfos.id.split(":");
+        var handlerId = parts[0];
+        var path = parts.slice(1).join(":");
+
+        var newFile = path.indexOf("temporary") == 0;
+        if (!newFile) {
+            return openFile(path.replace("file://", ""))
+            .then(function() {
+                return tabs.getById(tabInfos.id);
+            });
+        }
+
+        return null;
+    });
+
     // Add handler
     var addHandler = function(handlerId, handler) {
         if (!handler

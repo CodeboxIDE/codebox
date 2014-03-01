@@ -62,9 +62,17 @@ define([
             // Tabs collection
             this.tabs = new Tabs();
 
+            // Restorer
+            this.restorer = {};
+
             // Set base layout
             this.setLayout(null);
             return this;
+        },
+
+        // Return a tab by its id
+        getById: function(id) {
+            return this.tabs.getById(id);
         },
 
         // Return a section by its id
@@ -105,6 +113,9 @@ define([
             var tab = null;
 
             options = _.defaults(options || {}, {
+                // Tab type
+                type: "unknown",
+
                 // Don't trigger event
                 silent: false,
 
@@ -131,6 +142,7 @@ define([
                 tab = new Tab({
                     'manager': this
                 }, {
+                    'type': options.type,
                     'id': options.uniqueId,
                     'title': options.title
                 });
@@ -149,6 +161,7 @@ define([
             }
 
             if (options.open) tab.active();
+            this.saveTabs();
 
             return tab.view;
         },
@@ -181,6 +194,8 @@ define([
                 }
                 
             }, this);
+
+            this.saveTabs();
         },
 
         // Change tab section
@@ -203,6 +218,75 @@ define([
             this.checkSections();
 
             return true;
+        },
+
+        // Save tabs
+        saveTabs: function() {
+            var state = {};
+
+            // Snapshot sections and tabs
+            state.sections = _.map(this.grid.views, function(section) {
+                return {
+                    'id': section.sectionId,
+                    'tabs':section.tabs.map(function(tab) {
+                        return tab.snapshot();
+                    })
+                };
+            });
+
+            // Snapshot layout
+            state.layout = this.grid.columns;
+
+            hr.Storage.set("tabs", state);
+        },
+
+        // Add a restorer for tabs
+        addRestorer: function(type, handler) {
+            this.restorer[type] = handler;
+            return this;
+        },
+
+        // Load tabs saved in last session (return number of tabs restored)
+        restoreTabs: function(state) {
+            var n = 0, that = this;
+
+            state = state || hr.Storage.get("tabs");
+
+            // Set layout
+            this.setLayout(state.layout);
+
+            // Restore tabs
+            return Q.all(
+                _.chain(state.sections || [])
+                .map(function(section) {
+                    that.getSection(section.id);
+                    return section.tabs;
+                })
+                .flatten()
+                .map(function(tab) {
+                    // Restore tab
+                    return Q()
+                    .then(function() {
+                        if (!that.restorer[tab.type]) return;
+
+                        return Q(that.restorer[tab.type](tab));
+                    })
+                    .then(function(_tab) {
+                        if (!_tab) return;
+
+                        // restore in right section
+                        _tab.changeSection(tab.section);
+                        n = n + 1;
+                    })
+                    .fin(function() {
+                        return Q();
+                    })
+                })
+                .value()
+            )
+            .then(function() {
+                return n;
+            });
         }
     }, {
         Panel: TabPanelView

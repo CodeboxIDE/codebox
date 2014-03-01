@@ -125,6 +125,16 @@ define([
                 if (tab.id != this.id) tab.close();
             }, this);
             this.active();
+        },
+
+        // Return a snapshot of current tab
+        snapshot: function() {
+            return {
+                'id': this.id,
+                'type': this.get("type"),
+                'section': this.section.sectionId,
+                'active': this.isActive()
+            };
         }
     });
 
