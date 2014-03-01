@@ -40,6 +40,9 @@ define([
     var TabsSectionHeader = TabsList.extend({
         className: "tabs-section-header",
         Item: TabHeaderItem,
+        events: {
+            'dblclick': "openNewtab"
+        },
 
         initialize: function() {
             TabsSectionHeader.__super__.initialize.apply(this, arguments);
@@ -61,6 +64,10 @@ define([
 
             return this;
         },
+
+        openNewtab: function() {
+            this.parent.manager.openDefault();
+        }
     });
 
 
@@ -77,6 +84,7 @@ define([
             TabsSectionView.__super__.initialize.apply(this, arguments);
 
             var that = this;
+            this.manager = this.parent;
 
             this.tabs = new Tabs();
 
