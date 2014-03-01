@@ -148,12 +148,12 @@ define([
         },
 
         // (event) close
-        close: function(e, force) {
+        close: function(e) {
             if (e != null) {
                 e.preventDefault();
                 e.stopPropagation();
             }
-            this.model.close(force);
+            this.model.close();
         },
 
         // (event) close others tabs
