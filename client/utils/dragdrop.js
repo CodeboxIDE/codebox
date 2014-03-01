@@ -31,6 +31,7 @@ define([
 
             this.$el.on('mouseenter', function(e) {
                 if (that.dragType.isDragging()) {
+                    e.stopPropagation();
                     that.dragType.enterDropArea(that);
                     that.$el.addClass("dragover");
                 }
@@ -57,7 +58,7 @@ define([
             this.data = null;
 
             // Drop handler
-            this.drop = null;
+            this.drop = [];
         },
 
         // Is currently dragging data
@@ -65,14 +66,21 @@ define([
             return this.data != null;
         },
 
+        // Get drop
+        getDrop: function() {
+            return (this.drop.length > 0)? this.drop[this.drop.length - 1] : null;
+        },
+
         // Enter drop area
         enterDropArea: function(area) {
-            this.drop = area;
+            //console.log("enter drop", this.drop.length, area.$el.get(0));
+            this.drop.push(area);
         },
 
         // Exit drop area
         exitDropArea: function() {
-            this.drop = null;
+            this.drop.pop();
+            //console.log("exit drop", this.drop.length);
         },
 
         // Enable drag and drop in a object
@@ -90,7 +98,10 @@ define([
                 data: null,
 
                 // Base drop area
-                baseDropArea: null
+                baseDropArea: null,
+
+                // Before dragging
+                start: null
             });
             if (options.el) $el = $(options.el);
             if (options.view) $el = options.view.$el, data = options.view;
@@ -116,10 +127,15 @@ define([
                 // Contrain element
                 var cw, ch, cx, cy;
 
-                that.drop = options.baseDropArea;
+                that.drop = [];
+                if (options.baseDropArea) that.enterDropArea(options.baseDropArea);
                 that.data = data;
 
+                if (options.start) options.start();
+
                 var f = function(e) {
+                    var _drop = that.getDrop();
+
                     dx = oX - e.pageX;
                     dy = oY - e.pageY;
 
@@ -131,11 +147,11 @@ define([
                     ex = poX - dx;
                     ey = poY - dy;
 
-                    if (that.drop && that.drop.options.constrain) {
-                        cw = that.drop.$el.width();
-                        ch = that.drop.$el.height();
-                        cx = that.drop.$el.offset().left;
-                        cy = that.drop.$el.offset().top;
+                    if (_drop && _drop.options.constrain) {
+                        cw = _drop.$el.width();
+                        ch = _drop.$el.height();
+                        cx = _drop.$el.offset().left;
+                        cy = _drop.$el.offset().top;
 
                         if (Math.abs(ey - cy) < 50) ey = cy;
                         if (Math.abs((ey + eh) - (cy+ch)) < 50) ey = cy + ch - eh;
@@ -152,16 +168,17 @@ define([
                 $document.mousemove(f);
                 $document.one("mouseup", function(e) {
                     $document.unbind('mousemove', f);
-                    
-                    if (hasMove && (!options.baseDropArea || !that.drop || (options.baseDropArea.cid != that.drop.cid))) {
-                        if (that.drop) {
-                            that.drop.trigger("drop", that.data);
+                    var _drop = that.getDrop();
+
+                    if (hasMove && (!options.baseDropArea || !_drop || (options.baseDropArea.cid != _drop.cid))) {
+                        if (_drop) {
+                            _drop.trigger("drop", that.data);
                         }
-                        that.trigger("drop", that.drop, that.data);
+                        that.trigger("drop", _drop, that.data);
                     }
 
                     that.data = null;
-                    that.drop = null;
+                    that.drop = [];
 
                     $el.removeClass("move");
                     $el.css({

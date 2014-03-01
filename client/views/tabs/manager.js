@@ -74,8 +74,9 @@ define([
             });
 
             if (!s) {
-                s = new TabsSectionView({}, this);
-                s.sectionId = id;
+                s = new TabsSectionView({
+                    sectionId: id
+                }, this);
                 this.grid.addView(s);
             }
 
@@ -183,7 +184,7 @@ define([
         },
 
         // Change tab section
-        changeTabSection: function(tab, section) {
+        changeTabSection: function(tab, section, options) {
             if (_.isString(tab)) tab = this.tabs.getById(tab);
             if (!tab) return false;
 
@@ -193,7 +194,7 @@ define([
             tab.section.remove(tab);
 
             // Add to new section
-            section.addTab(tab);
+            section.addTab(tab, options);
 
             // Active
             tab.active();

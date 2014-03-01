@@ -5,7 +5,9 @@
     z-index: 0;
     cursor: default;
     margin: 0px;
+    padding: 0px;
     background: @tabColor;
+     .transition(padding-left ease 0.25s);
 
     &.move {
         position: fixed;
@@ -15,6 +17,10 @@
         * {
             pointer-events:none;
         }
+    }
+
+    &.dragover {
+        padding-left: 150px;
     }
 
 

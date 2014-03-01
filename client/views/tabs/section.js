@@ -58,6 +58,7 @@ define([
                     y: 20
                 },
                 handler: function(tab) {
+                    console.log("drop tab at end");
                     tab.changeSection(that.parent.sectionId);
                 }
             });
@@ -85,8 +86,10 @@ define([
 
             var that = this;
             this.manager = this.parent;
+            this.sectionId = this.options.sectionId;
 
             this.tabs = new Tabs();
+            this.tabs.sectionId = this.sectionId;
 
             this.header = new TabsSectionHeader({
                 collection: this.tabs
@@ -110,9 +113,9 @@ define([
         /*
          *  Add a tab to this section
          */
-        addTab: function(tab) {
+        addTab: function(tab, options) {
             tab.section = this.tabs;
-            this.tabs.add(tab);
+            this.tabs.add(tab, options);
             return this;
         },
 

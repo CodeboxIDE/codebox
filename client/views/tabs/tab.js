@@ -36,11 +36,32 @@ define([
             var $document = $(document);
 
             this.$el.attr("draggable", true);
-            
+
+            // Drop tabs to order
+            this.dropArea = new dnd.DropArea({
+                view: this,
+                dragType: TabView.drag,
+                handler: function(tab) {
+                    var i = that.list.collection.indexOf(that.model);
+                    var ib = that.list.collection.indexOf(tab);
+
+                    if (ib >= 0 && ib < i) {
+                        i = i - 1;
+                    }
+                    console.log("drop tab at position", i);
+                    that.model.manager.changeTabSection(tab, that.list.collection.sectionId, {
+                        at: i
+                    });
+                }
+            });
+
             TabView.drag.enableDrag({
                 view: this,
                 data: this.model,
-                baseDropArea: this.list.dropArea
+                baseDropArea: this.list.dropArea,
+                start: function() {
+                    that.open();
+                }
             });
 
             // Context menu
