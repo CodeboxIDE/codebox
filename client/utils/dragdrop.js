@@ -14,7 +14,10 @@ define([
             dragType: null,
 
             // Handler for drop
-            handler: null
+            handler: null,
+
+            // Contrain elastic
+            constrain: null
         },
 
         initialize: function() {
@@ -35,6 +38,7 @@ define([
 
             this.$el.on('mouseleave', function(e) {
                 that.$el.removeClass("dragover");
+                that.dragType.exitDropArea();
             });
 
             this.on("drop", function() {
@@ -83,7 +87,10 @@ define([
                 el: null,
 
                 // Data to transfer
-                data: null
+                data: null,
+
+                // Base drop area
+                baseDropArea: null
             });
             if (options.el) $el = $(options.el);
             if (options.view) $el = options.view.$el, data = options.view;
@@ -91,35 +98,66 @@ define([
 
             $el.mousedown(function(e) {
                 e.preventDefault();
-                var dx, dy;
+                var dx, dy, hasMove = false;
+
+                // origin mouse
                 var oX = e.pageX;
                 var oY = e.pageY;
+
+                // origin element
                 var poX = $el.offset().left;
                 var poY = $el.offset().top;
 
+                // element new position
+                var ex, ey, ew, eh;
+                ew = $el.width();
+                eh = $el.height();
+
+                // Contrain element
+                var cw, ch, cx, cy;
+
+                that.drop = options.baseDropArea;
                 that.data = data;
 
                 var f = function(e) {
                     dx = oX - e.pageX;
                     dy = oY - e.pageY;
 
-                    $el.addClass("move");
-                    $el.css({
-                        'left': poX-dx,
-                        'top': poY
-                    });
-
-                    if (Math.abs(dy) > 50) {
-                        $el.css({
-                            'top': poY-dy
-                        });
+                    if (Math.abs(dx) > 20 || Math.abs(dy) > 20) {
+                        if (!hasMove) $el.addClass("move");
+                        hasMove = true;
                     }
+
+                    ex = poX - dx;
+                    ey = poY - dy;
+
+                    if (that.drop && that.drop.options.constrain) {
+                        cw = that.drop.$el.width();
+                        ch = that.drop.$el.height();
+                        cx = that.drop.$el.offset().left;
+                        cy = that.drop.$el.offset().top;
+
+                        if (Math.abs(ey - cy) < 50) ey = cy;
+                        if (Math.abs((ey + eh) - (cy+ch)) < 50) ey = cy + ch - eh;
+                        if (Math.abs(ex - cx) < 50) ex = cx;
+                        if (Math.abs((ex + ew) - (cx+cw)) < 50) ex = cx + cw - ew;
+                    }
+
+                    $el.css({
+                        'left': ex,
+                        'top': ey
+                    });
                 };
 
                 $document.mousemove(f);
-                $document.mouseup(function(e) {
-                    if (that.drop) {
-                        that.drop.trigger("drop", that.data);
+                $document.one("mouseup", function(e) {
+                    $document.unbind('mousemove', f);
+                    
+                    if (hasMove && (!options.baseDropArea || !that.drop || (options.baseDropArea.cid != that.drop.cid))) {
+                        if (that.drop) {
+                            that.drop.trigger("drop", that.data);
+                        }
+                        that.trigger("drop", that.drop, that.data);
                     }
 
                     that.data = null;
@@ -130,7 +168,6 @@ define([
                         'left': "auto",
                         'top': "auto"
                     });
-                    $document.unbind('mousemove', f);
                 });
             });
         }

@@ -70,6 +70,11 @@ define([
             return this.manager.changeTabSection(this, section);
         },
 
+        // Split section
+        splitSection: function() {
+            this.changeSection(_.uniqueId("section"));
+        },
+
         // Close this tab
         close: function(force) {
             var that = this, tabid = this.id, prev = null;

@@ -39,7 +39,28 @@ define([
 
     var TabsSectionHeader = TabsList.extend({
         className: "tabs-section-header",
-        Item: TabHeaderItem
+        Item: TabHeaderItem,
+
+        initialize: function() {
+            TabsSectionHeader.__super__.initialize.apply(this, arguments);
+
+            var that = this;
+
+            // Drop tabs
+            this.dropArea = new dnd.DropArea({
+                view: this,
+                dragType: TabHeaderItem.drag,
+                constrain: {
+                    x: 20,
+                    y: 20
+                },
+                handler: function(tab) {
+                    tab.changeSection(that.parent.sectionId);
+                }
+            });
+
+            return this;
+        },
     });
 
 
@@ -61,24 +82,13 @@ define([
 
             this.header = new TabsSectionHeader({
                 collection: this.tabs
-            });
+            }, this);
             this.content = new TabsSectionContent({
                 collection: this.tabs
-            });
+            }, this);
 
             this.header.$el.appendTo(this.$el);
             this.content.$el.appendTo(this.$el);
-
-            var ignoreNextLeave = false;
-
-            // Drop tabs
-            this.dropArea = new dnd.DropArea({
-                view: this,
-                dragType: TabHeaderItem.drag,
-                handler: function(tab) {
-                    tab.changeSection(that.sectionId);
-                }
-            });
 
             this.on("grid:layout", function() {
                 this.tabs.each(function(tab) {

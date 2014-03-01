@@ -18,8 +18,7 @@ define([
         },
         events: {
             "click":        "open",
-            "click .close": "close",
-            "dblclick":     "split"
+            "click .close": "close"
         },
         states: {
             'modified': "fa-asterisk",
@@ -37,10 +36,11 @@ define([
             var $document = $(document);
 
             this.$el.attr("draggable", true);
-
+            
             TabView.drag.enableDrag({
                 view: this,
-                data: this.model
+                data: this.model,
+                baseDropArea: this.list.dropArea
             });
 
             // Context menu
@@ -76,7 +76,7 @@ define([
                     'type': "action",
                     'title': "New Group",
                     'action': function() {
-                        that.split();
+                        that.model.splitSection();
                     }
                 },
                 { 'type': "divider" },
@@ -120,18 +120,6 @@ define([
             return this.$el.hasClass("active");
         },
 
-        // Set section
-        setSection: function(section) {
-            this.model.changeSection(section);
-            this.model.active();
-        },
-
-        // Create section
-        split: function(e) {
-            if (e) e.stopPropagation();
-            this.setSection(_.uniqueId("section"));
-        },
-
         // (event) open
         open: function(e) {
             if (e != null) e.preventDefault();
@@ -154,6 +142,10 @@ define([
     }, {
         'drag': new dnd.DraggableType()
     });
+
+    TabView.drag.on("drop", function(section, tab) {
+        if (!section && tab) tab.splitSection();
+    })
 
     return TabView;
 });
