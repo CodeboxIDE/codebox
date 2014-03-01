@@ -8,6 +8,9 @@ define([
 ], function(_, $, hr, DragDrop, Tabs, TabHeaderItem) {
     var TabItem = hr.List.Item.extend({
         className: "component-tab-content",
+        events: {
+            "click": "click"
+        },
         initialize: function() {
             TabItem.__super__.initialize.apply(this, arguments);
             this.$el.append(this.model.view.$el);
@@ -15,8 +18,14 @@ define([
         render: function() {
             this.$el.toggleClass("active", this.model.isActive());
             return this.ready();
+        },
+
+        // On click focus the tab
+        click: function() {
+            this.model.active();
         }
     });
+
     var TabsList = hr.List.extend({
         Collection: Tabs
     });

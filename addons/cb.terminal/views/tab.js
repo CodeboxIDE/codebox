@@ -163,6 +163,8 @@ define([
         // Block propagation of clicks to sublevel
         clickTerm: function(e) {
             e.stopPropagation();
+
+            // We stop propagation so we need to active the tab manually
             this.openTab();
         }
     });

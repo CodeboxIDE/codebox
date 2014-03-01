@@ -42,6 +42,7 @@ define([
             this.content = null;
             this.modified = false;
             this._loading = false;
+            this._uniqueId = Date.now()+_.uniqueId("file");
             this.read = this.download;
 
             // Change in codebox : file deleted
@@ -304,7 +305,7 @@ define([
          */
         syncEnvId: function() {
             if (this.isNewfile()) {
-                return "temporary://"+Date.now()+_.uniqueId("file");
+                return "temporary://"+this._uniqueId;
             }
             return "file://"+this.path();
         },

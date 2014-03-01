@@ -113,7 +113,7 @@ define([
 
         // Set tab title
         setTabId: function(t) {
-            //this.model.set("id", t);
+            this.tab.set("id", t);
             return this;
         },
 
