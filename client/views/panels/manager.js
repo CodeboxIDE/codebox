@@ -3,8 +3,10 @@ define([
     'hr/dom',
     'hr/hr',
     'models/command',
-    'views/panels/base'
-], function(_, $, hr, Command, PanelBaseView) {
+    'views/panels/base',
+    'views/tabs/manager'
+], function(_, $, hr, Command, PanelBaseView, TabsManager) {
+
     var PanelsView = hr.View.extend({
         className: "cb-panels-list",
         defaults: {},
@@ -14,6 +16,10 @@ define([
         initialize: function(options) {
             var that = this;
             PanelsView.__super__.initialize.apply(this, arguments);
+
+            // Tabs
+            this.tabs = new TabsManager({}, this);
+            this.tabs.$el.appendTo(this.$el);
 
             // Active panel
             this.activePanel = null;
@@ -54,9 +60,6 @@ define([
             });
 
             this.panels[panelId] = new panelView(constructor, this);
-
-            this.panels[panelId].$el.appendTo(this.$el);
-            this.panels[panelId].$el.hide();
             this.panels[panelId].render();
 
             return this.panels[panelId];
@@ -64,37 +67,27 @@ define([
 
         // Render
         render: function() {
-            this.$el.empty();
-            _.each(this.panels, function(panel, panelId) {
-                panel.$el.appendTo(this.$el);
-                panel.render();
-            }, this);
-
             return this.ready();
         },
 
         // Open a panel
         open: function(pId) {
             var opened = false;
-            _.each(this.panels, function(panel, panelId) {
-                opened = opened || (panelId == pId);
 
-                // Change visibility of the panel
-                panel.$el.toggle(panelId == pId);
-
-                // Trigger panel event
-                if (panelId != pId && panelId == this.activePanel) {
-                    panel.trigger("panel:close");
-                } else if (panelId == pId) {
-                    panel.trigger("panel:open");
+            if (pId && this.panels[pId]) {
+                opened = true;
+                var tab = this.tabs.add(TabsManager.Panel, {}, {
+                    'title': pId,
+                    'uniqueId': pId
+                });
+                if (tab.$el.is(':empty')) {
+                    this.panels[pId].$el.appendTo(tab.$el);
                 }
-            }, this);
+            }
 
-            // Change active panel
             this.previousPanel = this.activePanel || this.previousPanel;
             this.activePanel = pId;
-
-            // Trigger global event
+            
             if (opened) {
                 this.trigger("open", pId);
             } else {
@@ -108,11 +101,6 @@ define([
         // Close panel
         close: function() {
             return this.open(null);
-        },
-
-        // Is active
-        isActive: function(pId) {
-            return this.activePanel == pId;
         },
 
         // Show panels
