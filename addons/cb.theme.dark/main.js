@@ -20,21 +20,6 @@ define([
             'theme': aceTheme
         },
         styles: {
-            // Scrollbar
-            /*scrollbar: {
-                'background': "transparent",
-                'width': "10px",
-
-                corner: {
-
-                },
-
-                thumb: {
-                    'background': "#4b505b"
-                }
-            },*/
-
-
             // Top menubar
             menubar: {
                 'background': bgNormal,
@@ -58,6 +43,11 @@ define([
                 body: {
                     'color': colorDark
                 }
+            },
+
+            // Body
+            body: {
+                'background': bgDark
             },
 
             // Tabs

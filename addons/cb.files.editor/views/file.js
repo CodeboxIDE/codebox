@@ -313,6 +313,7 @@ define([
             // Parent tab
             this.tab.on("tab:layout", function() {
                 this.editor.resize();
+                this.editor.renderer.updateFull();
             }, this);
             this.tab.on("tab:state", function(state) {
                 if (state) this.focus();
@@ -376,6 +377,8 @@ define([
         },
 
         focus: function() {
+            this.editor.resize();
+            this.editor.renderer.updateFull();
             this.editor.focus();
             return this;
         },

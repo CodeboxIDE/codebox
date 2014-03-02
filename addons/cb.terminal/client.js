@@ -77,10 +77,21 @@ define([
         var tab = tabs.add(TerminalTab, {
             'shellId': shellId
         }, {
+            'type': "terminal",
             'section': "terminals"
         });
 
         // Return the tab
+        return tab;
+    });
+
+    // Restorer for tabs
+    tabs.addRestorer("terminal", function(tabInfos) {
+        var tab = tabs.add(TerminalTab, {}, {
+            'type': "terminal",
+            'section': "terminals"
+        });
+
         return tab;
     });
 

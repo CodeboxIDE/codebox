@@ -30,8 +30,8 @@ define([
             TabPanelView.__super__.initialize.apply(this, arguments);
             var menu = require("core/commands/menu");
 
-            this.tabid = this.options.tabid;
             this.tabs = this.parent;
+            this.tab = this.options.tab;
 
             // Create tab menu
             this.menu = new Command({}, {
@@ -39,13 +39,19 @@ define([
                 'title': this.menuTitle,
                 'position': 1
             });
-            this.on("tab:state", function(active) {
-                this.menu.toggleFlag("hidden", !active);
-            }, this);
-            this.on("tab:close", function() {
-                this.menu.destroy();
-            }, this);
             menu.collection.add(this.menu);
+
+            // Bind tab event
+            this.tab.on("destroy", function() {
+                this.menu.destroy();
+                this.trigger("tab:close");
+            }, this);
+            this.tab.manager.on("active", function(tab) {
+                var state = tab.id == this.tab.id;
+
+                this.trigger("tab:state", state);
+                this.menu.toggleFlag("hidden", !state);
+            }, this);
 
             // Keyboard shortcuts
             this.setShortcuts(this.shortcuts || {});
@@ -77,24 +83,23 @@ define([
         // Close the tab
         closeTab: function(e, force) {
             if (e != null) e.preventDefault();
-            this.tabs.close(this.tabid, force);
+            this.tab.close(force);
         },
 
         // Open the tab
         openTab: function(e) {
-            this.tabs.open(this.tabid);
+            this.tab.active();
         },
 
         // Set tab title
         setTabTitle: function(t) {
-            this.tabs.tabs[this.tabid].title = t;
-            this.tabs.tabs[this.tabid].tab.update();
+            this.tab.set("title", t);
             return this;
         },
 
         // Set tab state
         setTabState: function(state, value) {
-            var states = (this.tabs.tabs[this.tabid].state || "").split(" ");
+            var states = (this.tab.get("state") || "").split(" ");
 
             if (value == null)  state = !_.contains(states, state);
             if (value) {
@@ -102,27 +107,19 @@ define([
             } else {
                 states = _.without(states, state);
             }
-            this.tabs.tabs[this.tabid].state = _.uniq(states).join(" ");
-            this.tabs.tabs[this.tabid].tab.update();
+            this.tab.set("state", _.uniq(states).join(" "));
             return this;
         },
 
         // Set tab title
         setTabId: function(t) {
-            this.tabs.tabs[this.tabid].uniqueId = t;
-            return this;
-        },
-
-        // Set tab type
-        setTabType: function(t) {
-            this.tabs.tabs[this.tabid].type = t;
+            this.tab.set("id", t);
             return this;
         },
 
         // Return if is active
         isActiveTab: function() {
-            var active = this.tabs.getCurrentTab();
-            return !(active == null || active.tabid != this.tabid);
+            return this.tab.isActive();
         },
 
         // Check that tab can be closed
@@ -135,14 +132,16 @@ define([
             if (e) e.preventDefault();
             var that = this;
             setTimeout(function() {
-                that.tabs.open(that.tabs.getPreviousTab(that.tabid));
+                var p = that.tab.prevTab();
+                if (p) p.active();
             }, 0);
         },
         tabGotoNext: function(e) {
             if (e) e.preventDefault();
             var that = this;
             setTimeout(function() {
-                that.tabs.open(that.tabs.getNextTab(that.tabid));
+                var p = that.tab.nextTab();
+                if (p) p.active();
             }, 0);
         }
     });

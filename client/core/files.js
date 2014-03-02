@@ -36,6 +36,23 @@ define([
     // Files handlers map
     var handlers = {};
 
+    // Restorer for tabs
+    tabs.addRestorer("file", function(tabInfos) {
+        var parts = tabInfos.id.split(":");
+        var handlerId = parts[0];
+        var path = parts.slice(1).join(":");
+
+        var newFile = path.indexOf("temporary") == 0;
+        if (!newFile) {
+            return openFile(path.replace("file://", ""))
+            .then(function() {
+                return tabs.getById(tabInfos.id);
+            });
+        }
+
+        return null;
+    });
+
     // Add handler
     var addHandler = function(handlerId, handler) {
         if (!handler
@@ -60,31 +77,24 @@ define([
                 // Add files as open
                 if (handler.setActive) activeFiles.add(file);
 
-                var tab = tabs.getActiveTabByType("directory");
-                if (tab != null && !tabs.checkTabExists(uniqueId) && !file.isNewfile()) {
-                    // Change current tab to open the file
-                    tab.view.load(path, handler);
-                } else {
+                // Add new tab
+                var tab = tabs.add(FileTab, {
+                    "model": file,
+                    "handler": handler
+                }, {
+                    "uniqueId": uniqueId,
+                    "type": "file",
+                });
 
-                    // Add new tab
-                    var tab = tabs.add(FileTab, {
-                        "model": file,
-                        "handler": handler
-                    }, {
-                        "uniqueId": uniqueId,
-                        "type": "file",
-                    });
+                // Focus tab -> set active file
+                tab.on("tab:state", function(state) {
+                    if (state) box.setActiveFile(file);
+                });
 
-                    // Focus tab -> set active file
-                    tab.on("tab:state", function(state) {
-                        if (state) box.setActiveFile(file);
-                    });
-
-                    // Close tab -> close active file
-                    tab.on("tab:close", function(state) {
-                        if (handler.setActive) activeFiles.remove(file);
-                    });
-                }
+                // Close tab -> close active file
+                tab.on("tab:close", function(state) {
+                    if (handler.setActive) activeFiles.remove(file);
+                });
             };
         }
 

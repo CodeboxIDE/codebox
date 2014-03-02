@@ -63,7 +63,6 @@ define([
         /* Adapt the tab to the file (title, ...) */
         adaptFile: function() {
             this.setTabTitle(this.model.get("name", "loading..."));
-            this.setTabType(this.model.isDirectory() ? "directory" : "file");
             this.setTabId(this.fileHandler.id+":"+this.model.syncEnvId());
             return this;
         },

@@ -5,7 +5,24 @@
     z-index: 0;
     cursor: default;
     margin: 0px;
+    padding: 0px;
     background: @tabColor;
+     .transition(padding-left ease 0.25s);
+
+    &.move,
+    &.active.move {
+        position: fixed;
+        z-index: 100000;
+        pointer-events:none;
+
+        * {
+            pointer-events:none;
+        }
+    }
+
+    &.dragover {
+        padding-left: 150px;
+    }
 
 
     .inner {
@@ -33,7 +50,7 @@
             }
             &.state-sync {
                 color: #27ae60;
-            } 
+            }
         }
 
         .close {
@@ -70,7 +87,7 @@
         z-index: 10;
         border-color: @tabActiveBorder;
         background: @tabActiveColor;
-        
+
         .inner {
             .close {
                 color: rgba(0,0,0,0.5);

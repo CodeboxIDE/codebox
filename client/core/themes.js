@@ -88,10 +88,13 @@ define([
                 'lateralbar commands': ".cb-lateralbar .lateral-commands",
                 'lateralbar body': ".cb-lateralbar .lateral-body",
 
+                // body
+                'body': ".cb-body",
+
                 // tabs
                 'tabs section': ".cb-tabs .section",
-                'tabs header': ".cb-tabs .section .tabs-header",
-                'tabs content': ".cb-tabs .section .tabs-content",
+                'tabs header': ".cb-tabs .tabs-section .tabs-section-header",
+                'tabs content': ".cb-tabs .tabs-section .tabs-section-content",
                 'tabs tab': ".component-tab",
 
                 // operations

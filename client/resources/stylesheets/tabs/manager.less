@@ -2,37 +2,5 @@
     position: absolute;
     width: 100%;
     height: 100%;
-
-    .section {
-        position: absolute;
-        top: 0px;
-        bottom: 0px;
-        left: 0px;
-        border-bottom: 1px solid @tabSeparationColor;
-        border-right: 1px solid @tabSeparationColor;
-
-        &.dragover {
-            opacity: 0.6;
-        }
-
-        .tabs-header {
-            position: absolute;
-            top: 0px;
-            height: @tabHeight;
-            right: 0px;
-            left: 0px;
-            background: @tabBackground;
-            overflow: hidden;
-        }
-
-        .tabs-content {
-            position: absolute;
-            top: @tabHeight - 1px;
-            bottom: 0px;
-            right: 0px;
-            left: 0px;
-            z-index: 1;
-            background: @tabActiveColor;
-        }
-    }
+    overflow: hidden;
 }

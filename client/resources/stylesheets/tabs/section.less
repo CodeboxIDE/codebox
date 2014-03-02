@@ -1,0 +1,50 @@
+.tabs-section {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+
+    &.dragover {
+        /*opacity: 0.4;
+
+        &:after {
+            content:'';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            z-index: 1;
+        }
+
+        * {
+            pointer-events:none;
+        }*/
+    }
+
+    .tabs-section-header {
+        position: absolute;
+        top: 0px;
+        height: @tabHeight;
+        right: 0px;
+        left: 0px;
+        background: @tabBackground;
+        overflow: hidden;
+        list-style: none;
+        margin: 0px;
+        padding: 0px;
+    }
+
+    .tabs-section-content {
+        position: absolute;
+        top: @tabHeight - 1px;
+        bottom: 0px;
+        right: 0px;
+        left: 0px;
+        z-index: 1;
+        background: @tabActiveColor;
+        margin: 0px;
+        padding: 0px;
+    }
+}

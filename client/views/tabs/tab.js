@@ -6,9 +6,10 @@ define([
     "utils/dragdrop",
     "utils/keyboard",
     "utils/contextmenu"
-], function(_, $, hr, Command, DragDrop, Keyboard, ContextMenu) {
+], function(_, $, hr, Command, dnd, Keyboard, ContextMenu) {
+
     // Tab header
-    var TabView = hr.View.extend({
+    var TabView = hr.List.Item.extend({
         className: "component-tab",
         defaults: {
             title: "",
@@ -16,10 +17,9 @@ define([
             close: true
         },
         events: {
-            "click":        "open",
+            "mousedown .close": "close",
             "click .close": "close",
-            "dblclick":     "split",
-            "dragstart":    "dragStart"
+            "click": "open",
         },
         states: {
             'modified': "fa-asterisk",
@@ -34,11 +34,36 @@ define([
             TabView.__super__.initialize.apply(this, arguments);
 
             var that = this;
+            var $document = $(document);
 
             this.$el.attr("draggable", true);
-            this.tabid = this.options.tabid;
-            this.tabs = this.parent;
-            this.section = this.options.section || 0;
+
+            // Drop tabs to order
+            this.dropArea = new dnd.DropArea({
+                view: this,
+                dragType: TabView.drag,
+                handler: function(tab) {
+                    var i = that.list.collection.indexOf(that.model);
+                    var ib = that.list.collection.indexOf(tab);
+
+                    if (ib >= 0 && ib < i) {
+                        i = i - 1;
+                    }
+                    console.log("drop tab at position", i);
+                    that.model.manager.changeTabSection(tab, that.list.collection.sectionId, {
+                        at: i
+                    });
+                }
+            });
+
+            TabView.drag.enableDrag({
+                view: this,
+                data: this.model,
+                baseDropArea: this.list.dropArea,
+                start: function() {
+                    that.open();
+                }
+            });
 
             // Context menu
             ContextMenu.add(this.$el, [
@@ -47,7 +72,7 @@ define([
                     'type': "action",
                     'title': "New Tab",
                     'action': function() {
-                        that.tabs.openDefaultNew();
+                        that.model.manager.openDefault();
                     }
                 },
                 { 'type': "divider" },
@@ -73,11 +98,11 @@ define([
                     'type': "action",
                     'title': "New Group",
                     'action': function() {
-                        that.split();
+                        that.model.splitSection();
                     }
                 },
                 { 'type': "divider" },
-                that.tabs.layoutCommand
+                that.model.manager.layoutCommand
             ]);
 
             return this;
@@ -87,14 +112,12 @@ define([
         render: function() {
             this.$el.empty();
 
-            var tab = this.tabs.tabs[this.tabid];
-
             var inner = $("<div>", {
                 "class": "inner",
-                "html": tab.title
+                "html": this.model.get("title")
             }).appendTo(this.$el);
 
-            var states = (tab.state || "").split(" ");
+            var states = this.model.get("state", "").split(" ");
             _.each(states, function(state) {
                 if (state && this.states[state]) {
                     $("<i>", {
@@ -102,15 +125,15 @@ define([
                     }).prependTo(inner);
                 }
             }, this);
-            
 
-            if (this.options.close) {
-                $("<a>", {
-                    "class": "close",
-                    "href": "#",
-                    "html": "&times;"
-                }).prependTo(inner);
-            }
+            $("<a>", {
+                "class": "close",
+                "href": "#",
+                "html": "&times;"
+            }).prependTo(inner);
+
+            this.$el.toggleClass("active", this.model.isActive());
+            
             return this.ready();
         },
 
@@ -119,45 +142,32 @@ define([
             return this.$el.hasClass("active");
         },
 
-        // Set section
-        setSection: function(section) {
-            this.section = section;
-            this.open();
-            this.tabs.update();
-        },
-
-        // Create section
-        split: function(e) {
-            if (e) e.stopPropagation();
-            this.setSection(_.uniqueId("section"));
-        },
-
         // (event) open
         open: function(e) {
             if (e != null) e.preventDefault();
-            this.tabs.open(this.tabid);
-        },
-
-        // (event) Drag start
-        dragStart: function(e) {
-            DragDrop.drag(e, "move");
-            DragDrop.setData(e, "tab", this.tabid);
+            this.model.active();
         },
 
         // (event) close
-        close: function(e, force) {
+        close: function(e) {
             if (e != null) {
                 e.preventDefault();
                 e.stopPropagation();
             }
-            this.tabs.close(this.tabid, force);
+            this.model.close();
         },
 
         // (event) close others tabs
         closeOthers: function(e) {
-            this.tabs.closeOthers(this.tabid);
+            this.model.closeOthers();
         }
+    }, {
+        'drag': new dnd.DraggableType()
     });
+
+    TabView.drag.on("drop", function(section, tab) {
+        if (!section && tab) tab.splitSection();
+    })
 
     return TabView;
 });
