@@ -3,6 +3,9 @@ define([
 ], function(aceTheme) {
     var themes = codebox.require("core/themes");
 
+    var bgDarker = "#1a1d24";
+    var colorDarker = "#505c66";
+
     var bgDark = "#222830";
     var colorDark = "#64737e";
 
@@ -22,13 +25,12 @@ define([
         styles: {
             // Top menubar
             menubar: {
-                'background': bgNormal,
-                'color': colorNormal,
+                'background': bgDarker,
+                'color': colorDarker,
                 'border-color': "#111",
 
                 button: {
-                    'border-color': bgNormal,
-                    'border-bottom-color': "transparent"
+                    'border-color': bgNormal
                 }
             },
 
