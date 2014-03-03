@@ -20,7 +20,11 @@ define([
             // Tabs
             this.tabs = new TabsManager({
                 layout: 1,
-                tabMenu: false
+                layouts: {
+                    "Columns: 1": 1
+                },
+                tabMenu: false,
+                newTab: false
             }, this);
             this.tabs.$el.appendTo(this.$el);
 

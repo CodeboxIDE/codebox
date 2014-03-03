@@ -21,20 +21,25 @@ define([
     var TabsView = hr.View.extend({
         className: "cb-tabs",
         defaults: {
-            // BAse layout
+            // Base layout
             layout: null,
 
+            // Available layouts
+            layouts: {
+                "Auto Grid": 0,
+                "Columns: 1": 1,
+                "Columns: 2": 2,
+                "Columns: 3": 3,
+                "Columns: 4": 4
+            },
+
             // Enable tab menu
-            tabMenu: true
+            tabMenu: true,
+
+            // Enable open new tab
+            newTab: true
         },
         events: {},
-        layouts: {
-            "Auto Grid": 0,
-            "Columns: 1": 1,
-            "Columns: 2": 2,
-            "Columns: 3": 3,
-            "Columns: 4": 4
-        },
 
         // Constructor
         initialize: function(options) {
@@ -42,7 +47,7 @@ define([
             TabsView.__super__.initialize.apply(this, arguments);
 
             // Current layout
-            this.layout = null; // null: mode auto
+            this.layout = this.options.layout; // null: mode auto
             this.grid = new GridView({}, this);
             this.grid.$el.appendTo(this.$el);
 
@@ -57,7 +62,7 @@ define([
                 'type': "menu",
                 'title': "Layout"
             });
-            _.each(this.layouts, function(layout, layoutName) {
+            _.each(this.options.layouts, function(layout, layoutName) {
                 var command = new Command({}, {
                     'type': "action",
                     'title': layoutName,
@@ -78,7 +83,7 @@ define([
             this.restorer = {};
 
             // Set base layout
-            this.setLayout(this.options.layout);
+            this.setLayout(this.layout);
             return this;
         },
 
@@ -185,6 +190,8 @@ define([
 
         // Define tabs layout
         setLayout: function(l) {
+            if (!_.contains(_.values(this.options.layouts), l)) return;
+
             this.grid.setLayout(l);
             this.trigger("layout", l);
             this.update();

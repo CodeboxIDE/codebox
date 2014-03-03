@@ -66,16 +66,16 @@ define([
             });
 
             // Context menu
-            ContextMenu.add(this.$el, [
-                {
+            ContextMenu.add(this.$el, _.compact([
+                (this.model.manager.options.newTab ? {
                     'id': "tab.new",
                     'type': "action",
                     'title': "New Tab",
                     'action': function() {
                         that.model.manager.openDefault();
                     }
-                },
-                { 'type': "divider" },
+                } : null),
+                (this.model.manager.options.newTab ? { 'type': "divider" } : null),
                 {
                     'id': "tab.close",
                     'type': "action",
@@ -103,7 +103,7 @@ define([
                 },
                 { 'type': "divider" },
                 that.model.manager.layoutCommand
-            ]);
+            ]));
 
             return this;
         },
