@@ -47,15 +47,29 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
             this._autologin = true;
             this.loginError = null;
 
+            // Init base grid for UI
             this.grid = new GridView({
                 columns: 1000
             });
-            this.grid.addView(panels, {
-                width: 20
+
+            // Add lateral bar: panels and operations
+            var v = this.grid.addView(new hr.View(), {
+                width: 18
             });
+            panels.$el.appendTo(v.$el);
+            operations.$el.appendTo(v.$el);
+
+            // Add operations
+            operations.on("add remove reset", function() {
+                setTimeout(function() {
+                    panels.$el.css("bottom", operations.$el.height());
+                }, 200);
+            });
+
+            // Add tabs
             this.grid.addView(tabs);
 
-            // Tabs
+            // Default tab: new file
             tabs.on("tabs:default tabs:opennew", function() {
                 files.openNew();
             }, this);
@@ -116,15 +130,6 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
                 commands.render();
 
                 this.grid.$el.appendTo(this.$(".cb-body"));
-
-                // Add operations
-                operations.$el.appendTo(this.$(".lateral-operations"));
-                operations.render();
-                operations.on("add remove reset", function() {
-                    setTimeout(function() {
-                        that.$(".lateral-body").css("bottom", operations.$el.height());
-                    }, 200);
-                });
 
                 // Load addons
                 loading.show(addons.loadAll()).fail(function(err) {

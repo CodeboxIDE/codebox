@@ -4,7 +4,7 @@
         top: @codeboxMenubarHeight;
         left: 0px;
         bottom: 0px;
-        width: @codeboxLateralbarWidth;
+        width: @codeboxToolbarWidth;
         .transition(width @lateralTransitionSpeed);
         .user-select(none);
         background: @codeboxBodyBackground;
@@ -18,28 +18,6 @@
             bottom: 0px;
             height: 100%;
             background: @codeboxBodyBackground;
-        }
-
-        .lateral-body {
-            position: absolute;
-            top: 0px;
-            left: @codeboxToolbarWidth;
-            bottom: 0px;
-            right: 0px;
-            overflow-y: auto;
-            overflow-x: hidden;
-            .transition(all @lateralTransitionSpeed);
-            z-index: 1;
-            color: #000;
-            text-shadow: none;
-        }
-
-        .lateral-operations {
-            position: absolute;
-            bottom: 0px;
-            left: 0px;
-            right: 0px;
-            z-index: 10;
         }
     }
 }

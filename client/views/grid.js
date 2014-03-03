@@ -31,7 +31,9 @@ define([
             });
 
             this.views.push(view);
-            return this.render();
+            this.update();
+
+            return view;
         },
 
         /*
@@ -43,7 +45,7 @@ define([
             this.views = _.filter(this.views, function(_v) {
                 return _v.cid != view;
             });
-            return this.render();
+            this.update();
         },
 
         /*
@@ -51,7 +53,7 @@ define([
          */
         setLayout: function(n) {
             this.columns = n;
-            return this.render();
+            this.update();
         },
 
         /*
