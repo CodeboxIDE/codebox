@@ -26,7 +26,7 @@ define([
             // Top menubar
             menubar: {
                 'background': bgDarker,
-                'color': colorDarker,
+                'color': colorDark,
                 'border-color': "#111",
 
                 button: {
