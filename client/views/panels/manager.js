@@ -75,8 +75,15 @@ define([
                     'title': this.panels[pId].options.title,
                     'uniqueId': pId
                 });
+
+                // If new tab
                 if (tab.$el.is(':empty')) {
+                    tab.once("tab:close", function() {
+                        this.panels[pId].$el.detach();
+                    }, this);
+
                     this.panels[pId].$el.appendTo(tab.$el);
+                    this.panels[pId].render();
                 }
             }
 
