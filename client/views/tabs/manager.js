@@ -40,7 +40,10 @@ define([
             newTab: true,
 
             // Max number of tabs per sections (-1 for unlimited)
-            maxTabsPerSection: -1
+            maxTabsPerSection: -1,
+
+            // Tabs are draggable
+            draggable: true
         },
         events: {},
 
@@ -56,6 +59,7 @@ define([
 
             // Drag and drop of tabs
             this.drag = new dnd.DraggableType();
+            this.drag.toggle(this.options.draggable);
             this.drag.on("drop", function(section, tab) {
                 if (!section && tab) tab.splitSection();
             })

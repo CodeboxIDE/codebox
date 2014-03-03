@@ -36,8 +36,6 @@ define([
             var that = this;
             var $document = $(document);
 
-            this.$el.attr("draggable", true);
-
             // Drop tabs to order
             this.dropArea = new dnd.DropArea({
                 view: this,

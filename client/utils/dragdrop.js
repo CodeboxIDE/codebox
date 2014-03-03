@@ -57,8 +57,17 @@ define([
             // Data transfered
             this.data = null;
 
+            // State
+            this.state = true;
+
             // Drop handler
             this.drop = [];
+        },
+
+        // Toggle enable/disable drag and drop
+        toggle: function(st) {
+            this.state = st;
+            return this;
         },
 
         // Is currently dragging data
@@ -108,7 +117,9 @@ define([
             if (options.data) data = options.data;
 
             $el.mousedown(function(e) {
+                if (!that.state) return;
                 e.preventDefault();
+
                 var dx, dy, hasMove = false;
 
                 // origin mouse

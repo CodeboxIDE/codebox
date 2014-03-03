@@ -25,6 +25,7 @@ define([
                 },
                 tabMenu: false,
                 newTab: false,
+                draggable: false,
                 maxTabsPerSection: 1
             }, this);
             this.tabs.$el.appendTo(this.$el);
