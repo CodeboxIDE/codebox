@@ -1,8 +1,9 @@
 define([
     "hr/utils",
     "hr/dom",
-    "hr/hr"
-], function(_, $, hr) {
+    "hr/hr",
+    "utils/dragdrop"
+], function(_, $, hr, dnd) {
     var GridView = hr.View.extend({
         className: "component-grid",
         defaults: {
@@ -177,6 +178,8 @@ define([
                 oX = e.pageX;
                 oY = e.pageY;
 
+                dnd.cursor.set(type == "h" ? "col-resize" : "row-resize");
+
                 var f = function(e) {
                     dx = oX - e.pageX;
                     dy = oY - e.pageY;
@@ -194,6 +197,7 @@ define([
                 $document.mousemove(f);
                 $document.mouseup(function(e) {
                     $document.unbind('mousemove', f);
+                    dnd.cursor.reset();
                 });
             };
         },

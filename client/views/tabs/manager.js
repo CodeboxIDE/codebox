@@ -184,11 +184,9 @@ define([
                 var sectionId = options.section;
                 for (;;) {
                     var section = this.getSection(sectionId);
-                    console.log("test section ", sectionId)
                     if (this.options.maxTabsPerSection > 0 && section.tabs.size() >= this.options.maxTabsPerSection) {
                         sectionId = _.uniqueId("tabSection");
                     } else {
-                        console.log("add to section ", sectionId);
                         section.addTab(tab);
                         break;
                     }

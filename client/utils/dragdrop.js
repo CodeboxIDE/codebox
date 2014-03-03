@@ -1,7 +1,21 @@
 define([
+    'hr/utils',
     'hr/hr',
     'hr/dom'
-], function (hr, $) {
+], function (_, hr, $) {
+
+    // Define cursor
+    var storedStylesheet = null;
+    var setCursor = function(cs) {
+        // Reset cursor
+        if (storedStylesheet) storedStylesheet.remove();
+        storedStylesheet = null;
+
+        // Set new cursor
+        if (cs) storedStylesheet = $( "<style>*{ cursor: "+cs+" !important; }</style>" ).appendTo($("body"));
+    };
+    var resetCursor = _.partial(setCursor, null);
+
     var DropArea = hr.Class.extend({
         defaults: {
             // View for this area
@@ -110,7 +124,10 @@ define([
                 baseDropArea: null,
 
                 // Before dragging
-                start: null
+                start: null,
+
+                // Cursor
+                cursor: "copy"
             });
             if (options.el) $el = $(options.el);
             if (options.view) $el = options.view.$el, data = options.view;
@@ -176,9 +193,13 @@ define([
                     });
                 };
 
+                setCursor(options.cursor);
+
                 $document.mousemove(f);
                 $document.one("mouseup", function(e) {
                     $document.unbind('mousemove', f);
+                    resetCursor();
+                    
                     var _drop = that.getDrop();
 
                     if (hasMove && (!options.baseDropArea || !_drop || (options.baseDropArea.cid != _drop.cid))) {
@@ -202,6 +223,10 @@ define([
     });
 
     return {
+        cursor: {
+            set: setCursor,
+            reset: resetCursor
+        },
         DropArea: DropArea,
         DraggableType: DraggableType
     };
