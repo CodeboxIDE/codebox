@@ -4,6 +4,7 @@ define([
     'utils/dialogs',
     'utils/alerts',
     'utils/loading',
+    'views/grid',
     'core/box',
     'core/session',
     'core/addons',
@@ -18,7 +19,7 @@ define([
     'core/themes',
     'core/search/files',
     'core/search/tags'
-], function (hr, url, dialogs, alerts, loading,
+], function (hr, url, dialogs, alerts, loading, GridView,
 box, session, addons, box, files, commands, menu, tabs, panels, operations, localfs, themes) {
 
     // Define base application
@@ -46,17 +47,15 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
             this._autologin = true;
             this.loginError = null;
 
+            this.grid = new GridView({
+                columns: 1000
+            });
+            this.grid.addView(panels);
+            this.grid.addView(tabs);
+
             // Tabs
             tabs.on("tabs:default tabs:opennew", function() {
                 files.openNew();
-            }, this);
-
-            // Panels
-            panels.on("open", function() {
-                this.toggleMode("body-fullpage", false);
-            }, this);
-            panels.on("close", function() {
-                this.toggleMode("body-fullpage", true);
             }, this);
 
             // Offline: state/update
@@ -114,13 +113,7 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
                 commands.$el.appendTo(this.$(".cb-commands"));
                 commands.render();
 
-                // Add tabs
-                tabs.$el.appendTo(this.$(".cb-body"));
-                tabs.render();
-
-                // Add panels
-                panels.$el.appendTo(this.$(".cb-panels"));
-                panels.render();
+                this.grid.$el.appendTo(this.$(".cb-body"));
 
                 // Add operations
                 operations.$el.appendTo(this.$(".lateral-operations"));

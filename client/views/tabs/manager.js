@@ -295,7 +295,7 @@ define([
             return Q.all(
                 _.chain(state.sections || [])
                 .map(function(section) {
-                    if (section.tabs.length > 0) that.getSection(section.id);
+                    that.getSection(section.id);
                     return section.tabs;
                 })
                 .flatten()
@@ -321,6 +321,7 @@ define([
                 .value()
             )
             .then(function() {
+                that.checkSections();
                 return n;
             });
         }

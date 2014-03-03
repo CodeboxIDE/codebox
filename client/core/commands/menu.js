@@ -23,7 +23,6 @@ define([
             settings.open("themes");
         }
     }).menuSection([
-        panels.visibilityCommand,
         panels.panelsCommand
     ]).menuSection([
         tabs.layoutCommand
