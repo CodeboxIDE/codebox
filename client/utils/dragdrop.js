@@ -168,7 +168,10 @@ define([
                     dy = oY - e.pageY;
 
                     if (Math.abs(dx) > 20 || Math.abs(dy) > 20) {
-                        if (!hasMove) $el.addClass("move");
+                        if (!hasMove) {
+                            setCursor(options.cursor);
+                            $el.addClass("move");
+                        }
                         hasMove = true;
                     }
 
@@ -193,13 +196,11 @@ define([
                     });
                 };
 
-                setCursor(options.cursor);
-
                 $document.mousemove(f);
                 $document.one("mouseup", function(e) {
                     $document.unbind('mousemove', f);
                     resetCursor();
-                    
+
                     var _drop = that.getDrop();
 
                     if (hasMove && (!options.baseDropArea || !_drop || (options.baseDropArea.cid != _drop.cid))) {
