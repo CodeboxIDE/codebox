@@ -50,7 +50,9 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
             this.grid = new GridView({
                 columns: 1000
             });
-            this.grid.addView(panels);
+            this.grid.addView(panels, {
+                width: 20
+            });
             this.grid.addView(tabs);
 
             // Tabs
