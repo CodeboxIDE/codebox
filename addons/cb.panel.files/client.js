@@ -10,7 +10,9 @@ define([
     var box = codebox.require("core/box");
 
     // Add files panels
-    var panel = panels.register("files", PanelFilesView);
+    var panel = panels.register("files", PanelFilesView, {
+        title: "Folder"
+    });
     
     // Open files panel
     panel.connectCommand(commands.register("files.tree.open", {
@@ -73,4 +75,7 @@ define([
             }
         }
     ]);
+
+    // Open panel
+    panel.open();
 });

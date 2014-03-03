@@ -4,7 +4,9 @@ define([
     'hr/hr'
 ], function(_, $, hr) {
     var PanelBaseView = hr.View.extend({
-        defaults: {},
+        defaults: {
+            title: ""
+        },
         events: {},
 
         // Constructor

@@ -355,7 +355,7 @@ define([
             path = this.path(path);
             if (path == "/") {
                 var fileData = {
-                    "name": "/",
+                    "name": this.codebox.get("name"),
                     "size": 0,
                     "mtime": 0,
                     "mime": "inode/directory",

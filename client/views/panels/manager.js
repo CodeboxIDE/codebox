@@ -47,8 +47,10 @@ define([
         },
 
         // Register a new panel
-        register: function(panelId, panelView, constructor, options) {
-            constructor = _.extend(constructor || {}, {
+        register: function(panelId, panelView, constructor) {
+            constructor = _.extend({
+                'title': panelId
+            }, constructor || {}, {
                 'panel': panelId
             });
 
@@ -70,7 +72,7 @@ define([
             if (pId && this.panels[pId]) {
                 opened = true;
                 var tab = this.tabs.add(TabsManager.Panel, {}, {
-                    'title': pId,
+                    'title': this.panels[pId].options.title,
                     'uniqueId': pId
                 });
                 if (tab.$el.is(':empty')) {
