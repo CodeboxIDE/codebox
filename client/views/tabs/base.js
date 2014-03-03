@@ -39,7 +39,7 @@ define([
                 'title': this.menuTitle,
                 'position': 1
             });
-            menu.collection.add(this.menu);
+            if (this.tab.manager.options.tabMenu) menu.collection.add(this.menu);
 
             // Bind tab event
             this.tab.on("destroy", function() {

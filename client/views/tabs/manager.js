@@ -20,9 +20,14 @@ define([
     // Complete tabs system
     var TabsView = hr.View.extend({
         className: "cb-tabs",
-        events: {
-            
+        defaults: {
+            // BAse layout
+            layout: null,
+
+            // Enable tab menu
+            tabMenu: true
         },
+        events: {},
         layouts: {
             "Auto Grid": 0,
             "Columns: 1": 1,
@@ -73,7 +78,7 @@ define([
             this.restorer = {};
 
             // Set base layout
-            this.setLayout(null);
+            this.setLayout(this.options.layout);
             return this;
         },
 

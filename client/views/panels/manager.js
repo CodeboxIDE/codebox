@@ -18,7 +18,10 @@ define([
             PanelsView.__super__.initialize.apply(this, arguments);
 
             // Tabs
-            this.tabs = new TabsManager({}, this);
+            this.tabs = new TabsManager({
+                layout: 1,
+                tabMenu: false
+            }, this);
             this.tabs.$el.appendTo(this.$el);
 
             // Active panel
