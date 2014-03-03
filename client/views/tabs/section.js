@@ -52,13 +52,12 @@ define([
             // Drop tabs
             this.dropArea = new dnd.DropArea({
                 view: this,
-                dragType: TabHeaderItem.drag,
+                dragType: this.parent.manager.drag,
                 constrain: {
                     x: 20,
                     y: 20
                 },
                 handler: function(tab) {
-                    console.log("drop tab at end");
                     tab.changeSection(that.parent.sectionId);
                 }
             });

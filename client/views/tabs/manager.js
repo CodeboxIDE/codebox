@@ -8,6 +8,7 @@ define([
 
     "collections/tabs",
 
+    "utils/dragdrop",
     "utils/keyboard",
     "utils/contextmenu",
 
@@ -15,7 +16,7 @@ define([
     "views/tabs/tab",
     "views/tabs/base",
     "views/tabs/section"
-], function(_, $, hr, Command, Tab , Tabs, Keyboard, ContextMenu, GridView, TabView, TabPanelView, TabsSectionView) {
+], function(_, $, hr, Command, Tab , Tabs, dnd, Keyboard, ContextMenu, GridView, TabView, TabPanelView, TabsSectionView) {
     // Complete tabs system
     var TabsView = hr.View.extend({
         className: "cb-tabs",
@@ -39,6 +40,12 @@ define([
             this.layout = null; // null: mode auto
             this.grid = new GridView({}, this);
             this.grid.$el.appendTo(this.$el);
+
+            // Drag and drop of tabs
+            this.drag = new dnd.DraggableType();
+            this.drag.on("drop", function(section, tab) {
+                if (!section && tab) tab.splitSection();
+            })
 
             // Commands
             this.layoutCommand = new Command({}, {

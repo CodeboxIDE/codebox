@@ -41,7 +41,7 @@ define([
             // Drop tabs to order
             this.dropArea = new dnd.DropArea({
                 view: this,
-                dragType: TabView.drag,
+                dragType: this.model.manager.drag,
                 handler: function(tab) {
                     var i = that.list.collection.indexOf(that.model);
                     var ib = that.list.collection.indexOf(tab);
@@ -56,7 +56,7 @@ define([
                 }
             });
 
-            TabView.drag.enableDrag({
+            this.model.manager.drag.enableDrag({
                 view: this,
                 data: this.model,
                 baseDropArea: this.list.dropArea,
@@ -161,13 +161,7 @@ define([
         closeOthers: function(e) {
             this.model.closeOthers();
         }
-    }, {
-        'drag': new dnd.DraggableType()
     });
-
-    TabView.drag.on("drop", function(section, tab) {
-        if (!section && tab) tab.splitSection();
-    })
 
     return TabView;
 });

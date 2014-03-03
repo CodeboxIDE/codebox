@@ -98,6 +98,12 @@ define([
             return this;
         },
 
+        // Check if a panel is active
+        isActive: function(pId) {
+            var t = this.tabs.getById(pId);
+            return !(t == null || !t.isActive());
+        },
+
         // Close panel
         close: function() {
             return this.open(null);
