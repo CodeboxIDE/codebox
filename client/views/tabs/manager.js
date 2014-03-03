@@ -37,7 +37,10 @@ define([
             tabMenu: true,
 
             // Enable open new tab
-            newTab: true
+            newTab: true,
+
+            // Max number of tabs per sections (-1 for unlimited)
+            maxTabsPerSection: -1
         },
         events: {},
 
@@ -174,7 +177,18 @@ define([
                 tab.view.update();
 
                 // Add to section
-                this.getSection(options.section).addTab(tab);
+                var sectionId = options.section;
+                for (;;) {
+                    var section = this.getSection(sectionId);
+                    console.log("test section ", sectionId)
+                    if (this.options.maxTabsPerSection > 0 && section.tabs.size() >= this.options.maxTabsPerSection) {
+                        sectionId = _.uniqueId("tabSection");
+                    } else {
+                        console.log("add to section ", sectionId);
+                        section.addTab(tab);
+                        break;
+                    }
+                }
             }
 
             if (options.open) tab.active();
@@ -223,6 +237,9 @@ define([
             if (!tab) return false;
 
             section = this.getSection(section);
+
+            // Check limit
+            if (this.options.maxTabsPerSection > 0 && section.tabs.size() >= this.options.maxTabsPerSection) return false;
 
             // Remove from old section
             tab.section.remove(tab);

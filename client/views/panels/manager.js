@@ -24,7 +24,8 @@ define([
                     "Columns: 1": 1
                 },
                 tabMenu: false,
-                newTab: false
+                newTab: false,
+                maxTabsPerSection: 1
             }, this);
             this.tabs.$el.appendTo(this.$el);
 
