@@ -2,13 +2,13 @@ define([
     'hr/utils',
     'hr/hr',
     'views/commands/toolbar',
-    'core/search'
+    'core/search',
 ], function (_, hr, CommandsToolbar, search) {
     // Collection for all toolbar commands
     var commands = new CommandsToolbar();
 
     // Add commands to search
-    search.handler({
+    /*search.handler({
         'id': "commands",
         'title': "Commands"
     }, function(query) {
@@ -25,7 +25,7 @@ define([
                 }, this)
             }
         });
-    });
+    });*/
 
     return commands;
 });

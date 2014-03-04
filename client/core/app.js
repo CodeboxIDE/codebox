@@ -12,6 +12,7 @@ define([
     'core/files',
     'core/commands/toolbar',
     'core/commands/menu',
+    'core/commands/palette',
     'core/tabs',
     'core/panels',
     'core/operations',
@@ -20,7 +21,7 @@ define([
     'core/search/files',
     'core/search/tags'
 ], function (hr, url, dialogs, alerts, loading, GridView,
-box, session, addons, box, files, commands, menu, tabs, panels, operations, localfs, themes) {
+box, session, addons, box, files, commands, menu, palette, tabs, panels, operations, localfs, themes) {
 
     // Define base application
     var Application = hr.Application.extend({
@@ -129,7 +130,12 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
                 commands.$el.appendTo(this.$(".cb-commands"));
                 commands.render();
 
+                // Add grid
                 this.grid.$el.appendTo(this.$(".cb-body"));
+
+                // Add palette
+                palette.$el.appendTo(this.$(".cb-body"));
+                palette.render();
 
                 // Load addons
                 loading.show(addons.loadAll()).fail(function(err) {

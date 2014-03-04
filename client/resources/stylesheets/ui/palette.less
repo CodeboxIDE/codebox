@@ -1,0 +1,55 @@
+.cb-commands-palette {
+    position: absolute;
+    top: 0px;
+    left: 50%;
+    z-index: 10;
+    width: @codeboxPaletteWidth;
+    margin-left: -(@codeboxPaletteWidth/2);
+    padding: 8px;
+    background: @codeboxPaletteBackground;
+    border: 1px solid #ccc;
+
+    &.close {
+        display: none;
+    }
+
+    input {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .results {
+        max-height: 300px;
+        overflow-y: auto;
+
+        .results-category {
+            list-style: none;
+            margin: 0px;
+            padding: 0px;
+            margin-top: 10px;
+
+            &:first-child {
+                margin-top: 0px;
+            }
+
+            li {
+                padding: 6px 8px;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+
+                &.header {
+                    background: rgba(0,0,0,0.1);
+                }
+
+                &.result {
+                    
+
+                    &.selected {
+                        background: @codeboxActiveColor;
+                    }
+                }
+            }
+        }
+    }
+}
