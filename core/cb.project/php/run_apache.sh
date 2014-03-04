@@ -81,7 +81,7 @@ EOF
 # Wait for a process or group of processes
 function anywait() {
     for pid in "$@"; do
-        while kill -0 "$pid"; do
+        while kill -0 "$pid" &> /dev/null; do
             sleep 0.5
         done
     done
