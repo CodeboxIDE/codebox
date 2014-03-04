@@ -12,7 +12,6 @@ define([
             
         },
         events: {
-            "keydown input": "keydown",
             "keyup input": "keyup",
             "mousedown": "mousedown"
         },
@@ -21,7 +20,9 @@ define([
             PaletteView.__super__.initialize.apply(this, arguments);
 
             this.selected = 0;
+            this.nResults = 0;
             this.query = "";
+            this.openCallback = {};
 
             this._keydown = _.bind(function(e) {
                 var key = e.which || e.keyCode;
@@ -47,7 +48,9 @@ define([
             if (this.isOpen()) return;
 
             this.$el.removeClass("close");
-            this.$("input").focus();
+            this.$("input").val("").focus();
+            this.clearResults();
+            this.doSearch("");
 
             $(document).bind("keydown", this._keydown);
             $(document).bind("mousedown", this._mousedown);
@@ -119,10 +122,7 @@ define([
                     li = $("<li>", {
                         "class": "result",
                         "data-result": i,
-                        "text": _result.text,
-                        "hover": function() {
-                            //that.selectResult(i);
-                        }
+                        "text": _result.text
                     }).appendTo($cat);
 
                     $cat.show();
@@ -133,26 +133,32 @@ define([
                     }
 
                     // Reselect result
-                    //this.selectResult(this.selected);
+                    that.selectResult(that.selected);
                 });
             }, this);
         },
 
-        // (event) Key input in search
-        keydown: function(e) {
-           /* var key = e.which || e.keyCode;
-            var q = $(e.currentTarget).val();
+        // Select a result
+        selectResult: function(i) {
+            this.selected = i;
+            if (this.selected < -1) this.selected = 0;
+            if (this.selected >= this.nResults) this.selected = this.nResults - 1;
 
-            if (key == 38 || key == 40 || key == 13) {
-                e.preventDefault();
+            this.$(".result").removeClass("selected");
+            this.$(".result[data-result='"+this.selected+"']").addClass("selected");
+
+            return this;
+        },
+
+        // Open a result
+        openResult: function(i) {
+            if (!_.isNumber(i)) {
+                i = $(i.currentTarget).data("result");
             }
-
-            if (q.length == 0 && key == 8) {
-                e.preventDefault();
-                this.blur();
-                this.clearResults();
-                this.close();
-            }*/
+            if (i == -1) return this;
+            if (this.openCallback[i] != null) this.openCallback[i]();
+            this.close();
+            return this;
         },
 
         // (event) Key input in search
@@ -163,9 +169,6 @@ define([
             if (key == 27) {
                 /* ESC */
                 e.preventDefault();
-                /*this.blur();
-                this.clearResults();
-                this.close();*/
                 return;
             } else if (key == 38) {
                 /* UP */
@@ -176,11 +179,10 @@ define([
             } else if (key == 13) {
                 /* ENTER */
                 e.preventDefault();
-                //this.openResult(this.selected);
+                this.openResult(this.selected);
             }
             this.doSearch(q);
-            
-            //this.selectResult(this.selected);    
+            this.selectResult(this.selected);    
         },
 
         // (event) Mouse down

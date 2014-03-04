@@ -68,11 +68,11 @@ define([
                 var addResults = function(results) {
                     i = i + 1;
                     d.notify({
-                        category: {
+                        'category': {
                             'title': handler.title
                         },
-                        results: results, 
-                        query: query
+                        'results': results, 
+                        'query': query
                     });
                     if (i == n) {
                         d.resolve(n);
