@@ -118,7 +118,7 @@ define([
 
         // Return if is active
         isActiveTab: function() {
-            return this.tab.isActive();
+            return this.tab.manager.isActiveTab(this.tab);
         },
 
         // Check that tab can be closed

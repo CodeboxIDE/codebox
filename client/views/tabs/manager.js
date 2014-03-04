@@ -52,6 +52,9 @@ define([
             var that = this;
             TabsView.__super__.initialize.apply(this, arguments);
 
+            // Current actiev tab id
+            this.activeTab = null;
+
             // Current layout
             this.layout = this.options.layout; // null: mode auto
             this.grid = new GridView({}, this);
@@ -211,6 +214,11 @@ define([
             this.grid.setLayout(l);
             this.trigger("layout", l);
             this.update();
+        },
+
+        // Check if tab is the active tab
+        isActiveTab: function(tab) {
+            return this.activeTab == tab.id;
         },
 
         // Check sections
