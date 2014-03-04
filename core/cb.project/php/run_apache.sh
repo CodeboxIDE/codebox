@@ -3,6 +3,9 @@
 WORKSPACE=$1
 PORT=$2
 
+# Dir of current script
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 # Detect current platform
 # We need this to customize configuration differently for OS X and Linux
 platform="$(uname)"
@@ -43,12 +46,15 @@ fi
 mkdir -p ${FOLDER}
 mkdir -p "${FOLDER}/logs"
 
+PID_FILE="${FOLDER}/httpd.pid"
+LOCK_FILE="${FOLDER}/accept.lock"
+
 # Generate the apache config
 cat  <<EOF > "${FOLDER}/${CONF}"
 ServerName localhost
 Listen ${PORT}
-PidFile ${FOLDER}/httpd.pid
-LockFile ${FOLDER}/accept.lock
+PidFile ${PID_FILE}
+LockFile ${LOCK_FILE}
 
 # Start only one server
 StartServers 1
@@ -71,10 +77,21 @@ ${EXTRA_CONF}
 
 EOF
 
+
+# Wait for a process or group of processes
+function anywait() {
+    for pid in "$@"; do
+        while kill -0 "$pid"; do
+            sleep 0.5
+        done
+    done
+}
+
 function cleanup {
-    if [[ -f "${FOLDER}/http.pid" ]]; then
+    if [[ -f ${PID_FILE} ]]; then
         echo "Killed process"
-        kill -s KILL $(cat "${FOLDER}/http.pid")
+        # Kill process and all children
+        /bin/kill -s KILL -$(cat ${PID_FILE})
     fi
     # Remove folder on exit
     echo "Cleaning up ${FOLDER}"
@@ -82,8 +99,17 @@ function cleanup {
 }
 
 # Cleanup when killed
-trap cleanup EXIT INT
+trap cleanup EXIT INT KILL
 
 # Run apache process in foreground
 echo "Running apache2 on ${WORKSPACE} (${FOLDER})"
-/usr/sbin/apachectl -d ${FOLDER} -f ${CONF} -e info -D FOREGROUND
+/usr/sbin/apachectl -d ${FOLDER} -f ${CONF} -e info
+
+# Wait for PID_FILE to appear, timeout after 5s
+${DIR}/_waitfile.sh ${PID_FILE} 5
+
+# Wait for Apache process
+PID=$(cat ${PID_FILE})
+echo "Waiting for Apache2 process : ${PID}"
+anywait ${PID}
+echo "Apache is dead (pid=${PID})"
