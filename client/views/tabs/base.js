@@ -42,16 +42,15 @@ define([
             if (this.tab.manager.options.tabMenu) menu.collection.add(this.menu);
 
             // Bind tab event
-            this.listenTo(this.tab, "destroy", function() {
-                this.menu.destroy();
-                this.trigger("tab:close");
-            });
             this.listenTo(this.tab.manager, "active", function(tab) {
                 var state = tab.id == this.tab.id;
 
                 this.trigger("tab:state", state);
                 this.menu.toggleFlag("hidden", !state);
             });
+            this.on("tab:close", function() {
+                this.menu.destroy();
+            }, this);
 
             // Keyboard shortcuts
             this.setShortcuts(this.shortcuts || {});
