@@ -18,9 +18,16 @@ define([
         initialize: function() {
             MenuItem.__super__.initialize.apply(this, arguments);
 
+            // Submenu
             this._submenu = null;
 
             return this;
+        },
+
+        // Destructor
+        remove: function() {
+            if (this._submenu) this._submenu.remove();
+            return MenuItem.__super__.remove.apply(this, arguments);
         },
 
         buildAction: function(action) {
@@ -123,9 +130,9 @@ define([
                 this._submenu = new MenuView({
                     'collection': this.model.menu
                 });
-                this._submenu.on("action", function(subitem) {
+                this.listenTo(this._submenu, "action", function(subitem) {
                     this.trigger("action", this.model, subitem);
-                }, this);
+                });
             }
             return this._submenu;
         }

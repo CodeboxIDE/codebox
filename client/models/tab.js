@@ -94,9 +94,7 @@ define([
 
                 // Triger in tab
                 that.view.trigger("tab:close");
-                that.view.off();
-
-                delete that.view;
+                that.view.remove();
 
                 // Trigger global
                 that.manager.trigger("tab:"+tabid+":close");

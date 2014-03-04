@@ -54,12 +54,6 @@ define([
             command.set("action", function() {
                 that.toggle();
             });
-            this.on("panel:open", function() {
-                command.toggleFlag("active", true);
-            });
-            this.on("panel:close", function() {
-                command.toggleFlag("active", false);
-            });
             this.parent.panelsCommand.menu.add(command);
         }
     });

@@ -40,6 +40,11 @@ define([
             return this;
         },
 
+        render: function() {
+            if (this.subFiles) this.subFiles.detach();
+            return FilesTreeViewItem.__super__.render.apply(this, arguments);
+        },
+
         // Finish rendering
         finish: function() {
             this.$el.toggleClass("disabled", !this.model.canOpen());
@@ -69,7 +74,7 @@ define([
                         "codebox": this.codebox,
                         "model": this.model,
                         "paddingLeft": this.paddingLeft+15
-                    });
+                    }, this);
                     this.subFiles.$el.appendTo(this.$(".files"));
                     this.subFiles.update();
                 }
@@ -129,6 +134,7 @@ define([
             ContextMenu.add(this.$el, this.model.contextMenu());
 
             this.model.listdir().then(function(files) {
+                that.clearComponents();
                 that.empty();
                 that.countFiles = 0;
 
@@ -145,6 +151,7 @@ define([
                     });
                     v.update();
                     v.$el.appendTo(that.$el);
+                    that.addComponent("file", v);
 
                     that.countFiles = that.countFiles + 1;
                 });

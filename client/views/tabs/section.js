@@ -15,9 +15,17 @@ define([
             TabItem.__super__.initialize.apply(this, arguments);
             this.$el.append(this.model.view.$el);
         },
+
+        // Render active state
         render: function() {
             this.$el.toggleClass("active", this.model.isActive());
             return this.ready();
+        },
+
+        // Detatch the tab before removing this item
+        remove: function() {
+            this.model.view.detach();
+            return TabItem.__super__.remove.apply(this, arguments);
         },
 
         // On click focus the tab

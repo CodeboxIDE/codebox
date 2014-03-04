@@ -89,7 +89,7 @@ define([
 
             // Detach view
             _.each(this.views, function(view) {
-                view.$el.detach();
+                view.detach();
             });
 
             // Clear the view

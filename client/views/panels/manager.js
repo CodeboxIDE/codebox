@@ -55,7 +55,7 @@ define([
             });
 
             this.panels[panelId] = new panelView(constructor, this);
-            this.panels[panelId].render();
+            this.panels[panelId].update();
 
             return this.panels[panelId];
         },
@@ -79,11 +79,12 @@ define([
                 // If new tab
                 if (tab.$el.is(':empty')) {
                     tab.once("tab:close", function() {
+                        this.panels[pId].trigger("tab:close");
                         this.panels[pId].$el.detach();
                     }, this);
 
                     this.panels[pId].$el.appendTo(tab.$el);
-                    this.panels[pId].render();
+                    this.panels[pId].update();
                 }
             }
 
