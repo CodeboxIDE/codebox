@@ -6,9 +6,10 @@ timeout=$2
 CMD="
 while [ ! -f ${filename} ]
 do
-    echo tick
+    echo -n .
     sleep 0.2
 done
+echo
 "
 
 # Return when file exists with timeout
