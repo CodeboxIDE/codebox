@@ -10,12 +10,13 @@ define([
 
     commands.register("palette.toggle", {
         title: "Palette",
+        description: "Open Command Palette",
         icons: {
             'default': "search",
         },
         position: 0,
         shortcuts: [
-            "alt+s", "mod+shift+p"
+            "mod+shift+p", "alt+s"
         ]
     }, function() {
         palette.toggle();

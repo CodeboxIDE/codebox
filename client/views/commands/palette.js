@@ -2,8 +2,39 @@ define([
     "hr/utils",
     "hr/dom",
     "hr/hr",
-    "text!resources/templates/commands/palette.html"
-], function(_, $, hr, templateFile) {
+    "models/command",
+    "collections/commands",
+    "utils/keyboard",
+    "text!resources/templates/commands/palette/input.html",
+    "text!resources/templates/commands/palette/command.html"
+], function(_, $, hr, Command, Commands, keyboard,
+templateFile, commandTemplateFile) {
+
+    var CommandItem = hr.List.Item.extend({
+        className: "command",
+        template: commandTemplateFile,
+        events: {
+            'click': "run"
+        },
+
+        templateContext: function() {
+            return {
+                'command': this.model
+            };
+        },
+
+        run: function(e) {
+            e.preventDefault();
+        }
+    });
+
+    // Commands list
+    var CommandsView = hr.List.extend({
+        Item: CommandItem,
+        Collection: Commands,
+        className: "palette-commands"
+    });
+
     var PaletteView = hr.View.extend({
         className: "cb-commands-palette close",
         template: templateFile,
@@ -16,10 +47,7 @@ define([
         initialize: function(options) {
             PaletteView.__super__.initialize.apply(this, arguments);
 
-            this.selected = 0;
-            this.nResults = 0;
-            this.query = "";
-            this.openCallback = {};
+            this.commands = new CommandsView({}, this);
 
             this._keydown = _.bind(function(e) {
                 var key = e.which || e.keyCode;
@@ -35,6 +63,11 @@ define([
             return this;
         },
 
+        finish: function() {
+            this.commands.appendTo(this.$(".results"));
+            return PaletteView.__super__.finish.apply(this, arguments);
+        },
+
         // Check if is open
         isOpen: function() {
             return !this.$el.hasClass("close");
@@ -46,7 +79,7 @@ define([
 
             this.$el.removeClass("close");
             this.$("input").val("").focus();
-            this.clearResults();
+            //this.clearResults();
             this.doSearch("");
 
             $(document).bind("keydown", this._keydown);
@@ -75,8 +108,7 @@ define([
 
         // Clear results
         clearResults: function() {
-            this.$(".results").empty();
-            this.resultsCallback = {};
+            this.commands.collection.clear();
             return this;
         },
 
@@ -85,77 +117,9 @@ define([
             if (this.query == query) return;
             console.log("do search", query);
 
-            var that = this, $results = this.$(".results");
-
-            this.query = query;
-            this.nResults = 0;
-            this.clearResults();
-
-            this.options.searchHandler(this.query)
-            .then(function() {
-                console.log("search done");
-            },
-            function(err) {
-                console.log("search error", err);
-            },
-            function(result) {
-                console.log("result", result);
-                if (that.query != result.query) return;
-
-                var n = 0;
-                var $cat = $("<ul>", {
-                    "class": "results-category"
-                }).hide().appendTo($results);
-                $("<li>", {
-                    "text": result.category.title,
-                    "class": "header"
-                }).appendTo($cat);
-
-                _.each(result.results, function(_result) {
-                    var li, i;
-                    i = that.nResults;
-                    that.nResults = that.nResults + 1;
-                    n = n + 1;
-                    li = $("<li>", {
-                        "class": "result",
-                        "data-result": i,
-                        "text": _result.text
-                    }).appendTo($cat);
-
-                    $cat.show();
-
-                    // Callback for click
-                    if (_result.callback != null) {
-                        that.openCallback[i] = _result.callback;
-                    }
-
-                    // Reselect result
-                    that.selectResult(that.selected);
-                });
-            }, this);
-        },
-
-        // Select a result
-        selectResult: function(i) {
-            this.selected = i;
-            if (this.selected < -1) this.selected = 0;
-            if (this.selected >= this.nResults) this.selected = this.nResults - 1;
-
-            this.$(".result").removeClass("selected");
-            this.$(".result[data-result='"+this.selected+"']").addClass("selected");
-
-            return this;
-        },
-
-        // Open a result
-        openResult: function(i) {
-            if (!_.isNumber(i)) {
-                i = $(i.currentTarget).data("result");
-            }
-            if (i == -1) return this;
-            if (this.openCallback[i] != null) this.openCallback[i]();
-            this.close();
-            return this;
+            this.commands.collection.reset(Command.all.filter(function(command) {
+                return command.get("search");
+            }));
         },
 
         // (event) Key input in search
@@ -176,10 +140,10 @@ define([
             } else if (key == 13) {
                 /* ENTER */
                 e.preventDefault();
-                this.openResult(this.selected);
+                //this.openResult(this.selected);
             }
             this.doSearch(q);
-            this.selectResult(this.selected);    
+           // this.selectResult(this.selected);    
         },
 
         // (event) Mouse down

@@ -6,10 +6,12 @@ define([], function() {
     var Command = codebox.require("models/command");
 
     // HTTP Ports
-    var samplesMenu = new Command({}, {
+    var samplesMenu = Command.register("project.samples", {
+        'category': "Project",
         'title': "Use Sample Project",
         'type': "menu",
-        'offline': false
+        'offline': false,
+        'search': false
     });
 
     // Update samples list

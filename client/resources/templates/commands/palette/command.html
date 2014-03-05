@@ -1,0 +1,9 @@
+<span class="title">
+<% if (command.get("category")) { %>
+<%- command.get("category") %>:
+<% } %>
+<%- command.get("description") || command.get("title") %>
+</span>
+<% if (command.label()) { %>
+<span class="label label-default"><%= command.label() %></span>
+<% } %>

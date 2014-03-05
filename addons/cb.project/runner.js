@@ -9,11 +9,12 @@ define([
     var Command = codebox.require("models/command");
 
     // Run commands
-    var runCommands = new Command({}, {
-        'id': "project.action",
+    var runCommands = Command.register("project.run.action", {
+        'category': "Project",
         'title': "Perform Action",
         'type': "menu",
-        'offline': false
+        'offline': false,
+        'search': false
     });
 
     // Update runner list

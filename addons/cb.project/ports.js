@@ -7,11 +7,12 @@ define([], function() {
     var Command = codebox.require("models/command");
 
     // HTTP Ports
-    var httpPorts = new Command({}, {
-        'id': "run.ports.http",
+    var httpPorts = Command.register("project.ports", {
+        'category': "Project",
         'title': "Running Ports",
         'type': "menu",
-        'offline': false
+        'offline': false,
+        'search': false
     });
 
     // Update running ports list

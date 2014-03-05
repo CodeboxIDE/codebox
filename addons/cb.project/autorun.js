@@ -18,6 +18,7 @@ define([
 
     // Run command
     var runCommand = commands.register("project.run", {
+        category: "Project",
         title: "Run",
         icons: {
             'default': "play",

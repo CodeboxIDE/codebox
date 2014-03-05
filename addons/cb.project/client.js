@@ -11,7 +11,6 @@ define([
     var menu = codebox.require("core/commands/menu");
     var dialogs = codebox.require("utils/dialogs");
     var alerts = codebox.require("utils/alerts");
-    var Command = codebox.require("models/command");
 
     // Add samples submenu
     menu.getById("file").menuSection([
@@ -26,7 +25,9 @@ define([
         autorun.command,
         runner.command
     ]).menuSection([
-        Command.register("project.build", {
+        {
+            'id': "project.build",
+            'category': "Project",
             'title': "Build",
             'offline': false,
             'action': function() {
@@ -37,8 +38,10 @@ define([
             'shortcuts': [
                 "mod+b"
             ]
-        }),
-        Command.register("project.clean", {
+        },
+        {
+            'id': "project.clean",
+            'category': "Project",
             'title': "Clean",
             'offline': false,
             'action': function() {
@@ -49,10 +52,12 @@ define([
             'shortcuts': [
                 "mod+shift+k"
             ]
-        })
+        }
     ]).menuSection([
         {
-            'type': "action",
+
+            'id': "project.ports.refresh",
+            'category': "Project",
             'title': "Refresh Ports",
             'offline': false,
             'action': ports.update

@@ -17,7 +17,9 @@ define([
         position: 5
     }).menuSection({
         'id': "themes.settings",
+        'category': "View",
         'title': "Settings",
+        'description': "Open Theme and View Settings",
         'offline': false,
         'action': function() {
             settings.open("themes");
@@ -33,8 +35,12 @@ define([
         position: 0
     }).menuSection([{
         'id': "quit",
+        'category': "Application",
         'title': "Quit",
-        'shortcuts': ["alt+q"],
+        'description': "Close Current Session",
+        'shortcuts': [
+            "alt+q"
+        ],
         'action': session.exit
     }], {
         'position': 1000

@@ -14,13 +14,11 @@ define([
             // Command unique id
             'id': "",
 
-            // Command title
-            'title': "",
-
-            // Command help label
-            'label': "",
-
-            // Command icon
+            // Representation
+            'category': "", // Category for this command ("Workspace", "Deployment", ...)
+            'title': "", // Title for menu, tip, ...
+            'description': "", // Short description
+            'label': "", // Help label
             'icons': {
                 'default': "sign-blank",
                 'menu': "sign-blank",
@@ -139,8 +137,8 @@ define([
             return this;
         }
     }, {
-        // Map of command by ids
-        mapIds: {},
+        // Collection of all commands
+        all: null,
 
         // Register a command
         register: function(commandId, properties) {
@@ -156,7 +154,7 @@ define([
                 }));
             }
             
-            if (!Command.mapIds[commandId]) {
+            if (!Command.all.get(commandId)) {
                 logging.log("Register command", commandId);
                 var command = new Command({}, _.extend(properties, {
                     'id': commandId
@@ -172,11 +170,11 @@ define([
                     });
                 }
 
-                Command.mapIds[commandId] = command;
+                Command.all.add(command);
+                return command;
             } else {
                 throw "Error command already registrated:"+commandId;
             }
-            return Command.mapIds[commandId];
         },
 
         // Return a divider
@@ -202,10 +200,15 @@ define([
 
         // Run a command
         run: function(commandId) {
-            if (!Command.mapIds[commandId]) return false;
-            return Command.mapIds[commandId].run.apply(Command.mapIds[commandId], Array.prototype.slice.call(arguments, 1));
+            var c = Command.all.get(commandId);
+            if (!c) return false;
+            return c.run.apply(c, Array.prototype.slice.call(arguments, 1));
         }
     });
+
+    Command.all = new (hr.Collection.extend({
+        Model: Command
+    }));
 
     return Command;
 });

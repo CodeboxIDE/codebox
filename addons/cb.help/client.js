@@ -10,8 +10,8 @@ define([], function() {
     var helpUrl = "http://help.codebox.io/";
 
     // Command open changelog
-    var commandChanges = Command.register({
-        'id': "help.changes",
+    var commandChanges = Command.register("help.changes", {
+        'category': "Help",
         'title': "Open Release Notes",
         'action': function(title) {
             return rpc.execute("box/changes").then(function(changes) {
@@ -28,7 +28,9 @@ define([], function() {
         commandChanges,
         {
             'id': "help.documentation",
+            'category': "Help",
             'title': "Documentation",
+            'description': "Open Documentation",
             'shortcuts': ['?'],
             'offline': false,
             'action': function() {
@@ -38,7 +40,8 @@ define([], function() {
     ]).menuSection([
         {
             'id': "help.feedback",
-            'title': "Submit feedback",
+            'category': "Help",
+            'title': "Submit Feedback",
             'offline': false,
             'action': function() {
                 window.open("https://github.com/FriendCode/codebox/issues");

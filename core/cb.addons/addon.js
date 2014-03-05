@@ -130,6 +130,7 @@ var Addon = function(_rootPath, options) {
             'baseUrl': addonPath,
             'name': main,
             'out': output,
+            'logLevel': 4, // silent
             'paths': {
                 'require-tools': requiretoolsPath
             },

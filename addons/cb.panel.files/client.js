@@ -16,7 +16,9 @@ define([
     
     // Open files panel
     panel.connectCommand(commands.register("files.tree.open", {
+        category: "Files",
         title: "Files",
+        description: "Open files tree",
         icons: {
             'default': "folder-o",
         },
@@ -27,7 +29,7 @@ define([
     }));
 
     // Recents files
-    var recentFiles = Command.register("file.recents", {
+    var recentFiles = Command.register({
         'type': "menu",
         'title': "Open Recent"
     });
@@ -47,16 +49,16 @@ define([
     // Command new file
     menu.getById("file").menuSection([
         {
-            'id': "file.new",
-            'type': "action",
+            'id': "files.file.new",
+            'category': "Files",
             'title': "New File",
             'shortcuts': ["alt+shift+n"],
             'action': function() {
                 files.openNew()
             }
         }, {
-            'id': "folder.create",
-            'type': "action",
+            'id': "files.folder.create",
+            'category': "Files",
             'title': "New Folder",
             'shortcuts': ["alt+shift+f"],
             'action': function() {
@@ -69,7 +71,7 @@ define([
     }).menuSection([
         {
             'id': "workspace.save.zip",
-            'type': "action",
+            'category': "Files",
             'title': "Save Project As ZIP",
             'offline': false,
             'action': function() {

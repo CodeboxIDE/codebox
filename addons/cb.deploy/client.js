@@ -110,7 +110,9 @@ define([], function() {
 
     // Command to add a new deployment solution
     var addCommand = Command.register("deploy.solutions.add", {
+        category: "Deployment",
         title: "Add Solution",
+        description: "Add a solution",
         offline: false,
         action: function(page) {
             getSolutionTypes().then(function(solutionTypes) {
@@ -143,7 +145,9 @@ define([], function() {
 
     // Command to remove a solution
     var removeCommand = Command.register("deploy.solutions.remove", {
+        category: "Deployment",
         title: "Remove Solution",
+        description: "Remove a solution",
         offline: false,
         action: function() {
             dialogs.select("Remove Deployment Dolution",

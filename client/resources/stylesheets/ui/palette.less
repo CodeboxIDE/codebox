@@ -22,31 +22,24 @@
         max-height: 300px;
         overflow-y: auto;
 
-        .results-category {
+        .palette-commands {
             list-style: none;
             margin: 0px;
             padding: 0px;
-            margin-top: 10px;
 
-            &:first-child {
-                margin-top: 0px;
-            }
-
-            li {
+            .command {
                 padding: 6px 8px;
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 overflow: hidden;
 
-                &.header {
-                    background: rgba(0,0,0,0.1);
+                .label {
+                    float: right;
                 }
 
-                &.result {
-                    &.selected {
-                        background: @codeboxActiveColor;
-                        color: #fff;
-                    }
+                &.selected {
+                    background: @codeboxActiveColor;
+                    color: #fff;
                 }
             }
         }
