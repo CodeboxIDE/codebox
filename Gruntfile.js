@@ -42,8 +42,7 @@ module.exports = function (grunt) {
                 // Static files mappage
                 "static": {
                     "images": path.resolve(clientPath, "resources", "images"),
-                    "fonts": path.resolve(clientPath, "resources", "fonts"),
-                    "require-tools": path.resolve(clientPath, "resources", "require-tools")
+                    "fonts": path.resolve(clientPath, "resources", "fonts")
                 },
 
                 // Stylesheet entry point
