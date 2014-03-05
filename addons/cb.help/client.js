@@ -1,11 +1,13 @@
-define(["views/dialog"], function(HelpDialog) {
+define([], function() {
     var hr = codebox.require("hr/hr");
     var app = codebox.require("core/app");
     var menu = codebox.require("core/commands/menu");
     var files = codebox.require("core/files");
     var rpc = codebox.require("core/backends/rpc");
-    var dialogs = codebox.require("utils/dialogs");
     var Command = codebox.require("models/command");
+
+    // Help url
+    var helpUrl = "http://help.codebox.io/";
 
     // Command open changelog
     var commandChanges = Command.register({
@@ -28,8 +30,9 @@ define(["views/dialog"], function(HelpDialog) {
             'id': "help.documentation",
             'title': "Documentation",
             'shortcuts': ['?'],
+            'offline': false,
             'action': function() {
-                dialogs.open(HelpDialog);
+                window.open(helpUrl);
             }
         }
     ]).menuSection([
