@@ -11,6 +11,7 @@ var ProjectType = require('./project').ProjectType;
 // This list is ordered
 var SUPPORTED = [
     require("./appengine"),
+    require("./django"),
     require("./makefile"),
     require("./procfile"),
     require("./c"),
