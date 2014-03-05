@@ -19,7 +19,9 @@ define([
             'progress': null,
 
             // Icon to show
-            'icon': "fa-refresh fa-spin",
+            'icons': {
+                'default': "fa-refresh fa-spin",
+            },
 
             // State
             'state': 'running', // 'idle', 'running'

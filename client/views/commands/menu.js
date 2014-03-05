@@ -32,7 +32,7 @@ define([
 
         buildAction: function(action) {
             var that = this;
-            var itemIcon = this.model.get("iconMenu", "");
+            var itemIcon = this.model.get("icons.menu", "");
 
             var $a = $("<a>", {
                 'text': this.model.get("title"),
@@ -81,7 +81,7 @@ define([
             var that = this;
             var itemType = this.model.get("type");
             var itemText = this.model.get("title");
-            var itemIcon = this.model.get("iconMenu", "");
+            var itemIcon = this.model.get("icons.menu", "");
 
             var $li = this.$el;
             $li.empty();

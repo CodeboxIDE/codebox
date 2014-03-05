@@ -74,7 +74,9 @@ define([], function() {
                 box.openTerminal(data.shellId, {
                     id: "deploy."+solutionId(solution.name)+"."+actionId,
                     title: data.title || "Deployment to "+solution.name+" ("+actionId+")",
-                    icon: "fa-cloud-upload"
+                    icons: {
+                        'default': "fa-cloud-upload",
+                    }
                 });
             }
         }, function(err) {

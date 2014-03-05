@@ -1,12 +1,13 @@
 define([
     "hr/hr",
-    "views/commands/manager"
-], function(hr, CommandsView) {
+    "views/commands/manager",
+    "text!resources/templates/commands/command.html"
+], function(hr, CommandsView, templateFile) {
 
     // List Item View
     var CommandItem = CommandsView.CommandItem.extend({
         className: "menu-item",
-        template: "commands/command.html",
+        template: templateFile,
         events: {
             "click a": "run"
         },

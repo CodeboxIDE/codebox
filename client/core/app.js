@@ -5,6 +5,7 @@ define([
     'utils/alerts',
     'utils/loading',
     'views/grid',
+    'text!resources/templates/main.html',
     'core/box',
     'core/session',
     'core/addons',
@@ -20,13 +21,13 @@ define([
     'core/themes',
     'core/search/files',
     'core/search/tags'
-], function (hr, url, dialogs, alerts, loading, GridView,
+], function (hr, url, dialogs, alerts, loading, GridView, templateFile,
 box, session, addons, box, files, commands, menu, palette, tabs, panels, operations, localfs, themes) {
 
     // Define base application
     var Application = hr.Application.extend({
         name: "Codebox",
-        template: "main.html",
+        template: templateFile,
         metas: {
             "robots": "noindex, nofollow",
             "description": "Cloud IDE on a box.",

@@ -10,7 +10,9 @@ define([
     // Add opening command
     var command = commands.register("addons.manager.open", {
         title: "Add-ons",
-        icon: "puzzle-piece",
+        icons: {
+            'default': "puzzle-piece",
+        },
         visible: false,
         offline: false,
     }, function() {

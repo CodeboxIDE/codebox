@@ -1,10 +1,11 @@
 define([
     "hr/utils",
     "hr/dom",
-    "hr/hr"
-], function(_, $, hr) {
+    "hr/hr",
+    "text!resources/templates/settings/base.html"
+], function(_, $, hr, templateFile) {
     var SettingsPageView = hr.View.extend({
-        template: "settings/base.html",
+        template: templateFile,
         defaults: {
             'namespace': "",
             'title': "",

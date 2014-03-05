@@ -1,12 +1,13 @@
 define([
     "hr/hr",
     "models/operation",
-    "collections/operations"
-], function(hr, Operation, Operations) {
+    "collections/operations",
+    "text!resources/templates/operations/operation.html"
+], function(hr, Operation, Operations, templateFile) {
 
     var OperationItem = hr.List.Item.extend({
         className: "operation-item",
-        template: "operations/operation.html",
+        template: templateFile,
         events: {
             "click": "open"
         },

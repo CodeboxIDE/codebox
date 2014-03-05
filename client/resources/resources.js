@@ -1,10 +1,9 @@
 define([
     "hr/hr"
 ], function(hr) {
-	// Load templates using HTTP
+	// Load templates using direct text content
     hr.Resources.addNamespace("templates", {
-        loader: "http",
-        base: "templates"
+        loader: "text"
     });
     
     return {}

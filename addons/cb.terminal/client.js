@@ -67,7 +67,9 @@ define([
     // Add opening command
     var command = commands.register("terminal.open", {
         title: "New Terminal",
-        icon: "terminal",
+        icons: {
+            'default': "terminal",
+        },
         offline: false,
         shortcuts: [
             "alt+t"

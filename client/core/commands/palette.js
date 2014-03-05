@@ -10,7 +10,9 @@ define([
 
     commands.register("palette.toggle", {
         title: "Palette",
-        icon: "search",
+        icons: {
+            'default': "search",
+        },
         position: 0,
         shortcuts: [
             "alt+s", "mod+shift+p"

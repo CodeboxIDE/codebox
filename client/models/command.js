@@ -21,8 +21,11 @@ define([
             'label': "",
 
             // Command icon
-            'icon': "sign-blank",
-            'iconMenu': "sign-blank",
+            'icons': {
+                'default': "sign-blank",
+                'menu': "sign-blank",
+                'search': "keyboard-o"
+            },
 
             // Command action handler
             'action': function() {},

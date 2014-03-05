@@ -7,10 +7,7 @@ define([
     var PaletteView = hr.View.extend({
         className: "cb-commands-palette close",
         template: templateFile,
-        templateLoader: "text",
-        defaults: {
-            
-        },
+        defaults: {},
         events: {
             "keyup input": "keyup",
             "mousedown": "mousedown"

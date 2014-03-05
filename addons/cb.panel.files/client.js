@@ -17,7 +17,9 @@ define([
     // Open files panel
     panel.connectCommand(commands.register("files.tree.open", {
         title: "Files",
-        icon: "folder-o",
+        icons: {
+            'default': "folder-o",
+        },
         position: 2,
         shortcuts: [
             "alt+f"

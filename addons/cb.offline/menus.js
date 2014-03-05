@@ -12,7 +12,9 @@ define([], function() {
     var checkConnection = commands.register("offline.check", {
         'title': "Check Connection",
         'offline': true,
-        'icon': "bolt"
+        'icons': {
+            'default': "bolt",
+        }
     }, function() {
         hr.Offline.check();
     });
