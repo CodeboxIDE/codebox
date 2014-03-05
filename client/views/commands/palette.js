@@ -86,8 +86,8 @@ templateFile, commandTemplateFile) {
 
             this.$el.removeClass("close");
             this.$("input").val("").focus();
-            //this.clearResults();
             this.doSearch("");
+            this.selectItem(0);
 
             $(document).bind("keydown", this._keydown);
             $(document).bind("mousedown", this._mousedown);
@@ -156,14 +156,26 @@ templateFile, commandTemplateFile) {
         },
 
         selectItem: function(i) {
+            var boxH = this.$(".results").height();
+
             this.selected = i;
 
             if (this.selected >= this.commands.collection.size()) this.selected = this.commands.collection.size() - 1;
             if (this.selected < 0) this.selected = 0;
 
             this.commands.collection.each(function(model, i) {
-                var item = this.commands.items[model.id];
+                var y, h, item = this.commands.items[model.id];
                 item.$el.toggleClass("selected", i == this.selected);
+
+                if (i == this.selected) {
+                    h = item.$el.outerHeight();
+                    y = item.$el.position().top;
+
+                    if (y > (boxH-(h/2)) || y < 0) {
+                        this.$(".results").scrollTop((i+1)*h - boxH)
+                    }
+                }
+
             }, this);
         },
 
