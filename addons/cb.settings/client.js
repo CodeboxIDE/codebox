@@ -15,12 +15,13 @@ define(["views/dialog"], function(SettingsDialog) {
             "mod+,"
         ],
         position: 100,
-        offline: false
-    }, function(page) {
-        dialogs.open(SettingsDialog, {
-            'page': page,
-            'keyboardEnter': false
-        });
+        offline: false,
+        action: function(page) {
+            dialogs.open(SettingsDialog, {
+                'page': page,
+                'keyboardEnter': false
+            });
+        }
     });
 
     menu.getById("file").menu.add(command);
