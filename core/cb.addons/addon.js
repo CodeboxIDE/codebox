@@ -5,6 +5,8 @@ var wrench = require('wrench');
 var child_process = require('child_process');
 var Q = require("q");
 
+var requirejs = require("requirejs");
+
 var exec = function(command, options) {
 
     var deferred = Q.defer();
@@ -111,9 +113,6 @@ var Addon = function(_rootPath, options) {
             return Q(this);
         }
 
-        // R.js bin
-        var rjs = path.resolve(__dirname, "../../node_modules/.bin/r.js");
-
         // Base directory for the addon
         var addonPath = this.root;
 
@@ -126,7 +125,7 @@ var Addon = function(_rootPath, options) {
         // Output file
         var output = path.resolve(addonPath, "addon-built.js");
 
-        // Build config (todo: use this config for the command)
+        // Build config
         var optconfig = {
             'baseUrl': addonPath,
             'name': main,
@@ -134,7 +133,7 @@ var Addon = function(_rootPath, options) {
             'paths': {
                 'require-tools': requiretoolsPath
             },
-            'optimize': "none",
+            'optimize': "uglify",
             'map': {
                 '*': {
                     'css': "require-tools/css/css",
@@ -143,23 +142,27 @@ var Addon = function(_rootPath, options) {
                 }
             }
         };
-
-        var command = rjs+" -o baseUrl="+addonPath+" paths.require-tools="+requiretoolsPath+" name="+main+" map.*.css=require-tools/css/css map.*.less=require-tools/less/less map.*.text=require-tools/text/text out="+output;
-
         // Run optimization
         logger.log("Optimizing", this.infos.name);
         return Q.nfcall(fs.unlink, output).fail(function() {
             return Q();
         }).then(function() {
-            return exec(command)
+            var d = Q.defer();
+
+            requirejs.optimize(optconfig, function(resp) {
+                d.resolve(resp);
+            }, function(err) {
+                d.reject(err);
+            });
+
+            return d.promise;
         }).then(function() {
             logger.log("Finished", that.infos.name, "optimization");
             return Q(that);
         }, function(err) {
             logger.error("error for optimization of", that.infos.name);
-            logger.error("command=",command);
-            logger.error(err.stdout);
-            logger.exception(err, false);
+            logger.error("options=", optconfig);
+            logger.error(err);
             return Q.reject(err);
         });
     };
