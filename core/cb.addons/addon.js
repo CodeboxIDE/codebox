@@ -117,7 +117,7 @@ var Addon = function(_rootPath, options) {
         var addonPath = this.root;
 
         // Path to the require-tools
-        var requiretoolsPath = path.resolve(__dirname, "../../client/build/static/require-tools");
+        var requiretoolsPath = path.resolve(__dirname, "require-tools");
 
         // Base main
         var main = this.infos.client.main;
