@@ -35,6 +35,18 @@ var SUPPORTED = [
     require("./parse")
 ];
 
+// For a given workspace, multiple project types can be matched
+// (python, django for example or nodejs, meteor)
+// here we define scores to define which one has a higher importance
+var RANKS = {
+    'procfile': 3,
+    'appengine': 3,
+
+    'django': 2,
+    'meteor': 2,
+    'parse': 2,
+};
+
 // Returns true if lang is supported otherwise false
 function supports(projectDir, projectType) {
     // No detector
@@ -63,9 +75,14 @@ var detectProjectTypes = function(projectDir) {
         }
 
         // List of supported project types
-        return _.filter(SUPPORTED, function(lang, idx) {
+        return _.chain(SUPPORTED)
+        .filter(function(lang, idx) {
             return supported_list[idx];
-        });
+        })
+        .sortBy(function(lang) {
+            return RANKS[lang.id] || 1;
+        })
+        .value();
     })
     .fail(utils.constant([]));
 };
