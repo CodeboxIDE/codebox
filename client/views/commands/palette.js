@@ -24,7 +24,13 @@ templateFile, commandTemplateFile) {
         },
 
         run: function(e) {
-            e.preventDefault();
+            if (e) e.preventDefault();
+
+            // Run the command
+            this.model.run();
+
+            // Close the palette
+            this.list.parent.close();
         }
     });
 
@@ -48,6 +54,7 @@ templateFile, commandTemplateFile) {
             PaletteView.__super__.initialize.apply(this, arguments);
 
             this.commands = new CommandsView({}, this);
+            this.selected = 0;
 
             this._keydown = _.bind(function(e) {
                 var key = e.which || e.keyCode;
@@ -117,9 +124,11 @@ templateFile, commandTemplateFile) {
             if (this.query == query) return;
             console.log("do search", query);
 
+            this.query = query;
             this.commands.collection.reset(Command.all.filter(function(command) {
                 return command.get("search");
             }));
+            this.selectItem(this.selected);
         },
 
         // (event) Key input in search
@@ -140,10 +149,29 @@ templateFile, commandTemplateFile) {
             } else if (key == 13) {
                 /* ENTER */
                 e.preventDefault();
-                //this.openResult(this.selected);
+                this.openItem(this.selected);
             }
             this.doSearch(q);
-           // this.selectResult(this.selected);    
+            this.selectItem(this.selected);
+        },
+
+        selectItem: function(i) {
+            this.selected = i;
+
+            if (this.selected >= this.commands.collection.size()) this.selected = this.commands.collection.size() - 1;
+            if (this.selected < 0) this.selected = 0;
+
+            this.commands.collection.each(function(model, i) {
+                var item = this.commands.items[model.id];
+                item.$el.toggleClass("selected", i == this.selected);
+            }, this);
+        },
+
+        openItem: function(i) {
+            var item, model = this.commands.collection.at(i);
+            if (!model) return false;
+            item = this.commands.items[model.id];
+            return item.run();
         },
 
         // (event) Mouse down
