@@ -276,6 +276,31 @@ var atob = function(s) {
     return (new Buffer(s, 'base64')).toString('utf8');
 };
 
+var deepkeys = function(obj, all) {
+    var keys= {};
+    var getBase = function(base, key) {
+        if (_.size(base) == 0) return key;
+        return base+"."+key;
+    };
+
+    var addKeys = function(_obj, base) {
+        var _base, _isObject;
+        base = base || "";
+
+        _.each(_obj, function(value, key) {
+            _base = getBase(base, key);
+            _isObject = _.isObject(value) && !_.isArray(value);
+
+            if (_isObject) addKeys(value, _base);
+            if (all == true || !_isObject) keys[_base] = value;
+        });
+    };
+
+    addKeys(obj);
+
+    return keys;
+};
+
 // Exports
 exports.exec = exec;
 exports.qnode = qnode;
@@ -288,3 +313,4 @@ exports.timestamp = timestamp;
 exports.startsWith = startsWith;
 exports.atob = atob;
 exports.btoa = btoa;
+exports.deepkeys = deepkeys;

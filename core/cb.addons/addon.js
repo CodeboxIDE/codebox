@@ -5,7 +5,7 @@ var wrench = require('wrench');
 var child_process = require('child_process');
 var Q = require("q");
 
-var requirejs = require("requirejs");
+var utils = require("../utils");
 
 var exec = function(command, options) {
 
@@ -116,6 +116,9 @@ var Addon = function(_rootPath, options) {
         // Base directory for the addon
         var addonPath = this.root;
 
+        // R.js bin
+        var rjs = path.resolve(__dirname, "../../node_modules/.bin/r.js");
+
         // Path to the require-tools
         var requiretoolsPath = path.resolve(__dirname, "require-tools");
 
@@ -143,26 +146,18 @@ var Addon = function(_rootPath, options) {
                 }
             }
         };
+
+        // Build command for r.js
+        var command = rjs+" -o "+_.reduce(utils.deepkeys(optconfig), function(s, value, key) {
+            return s+key+"="+value+" ";
+        }, "");
+
         // Run optimization
         logger.log("Optimizing", this.infos.name);
         return Q.nfcall(fs.unlink, output).fail(function() {
             return Q();
         }).then(function() {
-            var d = Q.defer();
-            
-            var catcheErr = function (err) {
-                d.reject(err);
-                process.removeListener('uncaughtException', catcheErr);
-            };
-
-            process.on('uncaughtException', catcheErr);
-            requirejs.optimize(optconfig, function(resp) {
-                process.removeListener('uncaughtException', catcheErr);
-                d.resolve(resp);
-            });
-            
-
-            return d.promise;
+            return exec(command)
         }).then(function() {
             logger.log("Finished", that.infos.name, "optimization");
             return Q(that);
