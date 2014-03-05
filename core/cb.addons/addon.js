@@ -149,12 +149,18 @@ var Addon = function(_rootPath, options) {
             return Q();
         }).then(function() {
             var d = Q.defer();
-
-            requirejs.optimize(optconfig, function(resp) {
-                d.resolve(resp);
-            }, function(err) {
+            
+            var catcheErr = function (err) {
                 d.reject(err);
+                process.removeListener('uncaughtException', catcheErr);
+            };
+
+            process.on('uncaughtException', catcheErr);
+            requirejs.optimize(optconfig, function(resp) {
+                process.removeListener('uncaughtException', catcheErr);
+                d.resolve(resp);
             });
+            
 
             return d.promise;
         }).then(function() {
