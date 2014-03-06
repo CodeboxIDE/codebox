@@ -136,23 +136,27 @@ templateFile, commandTemplateFile) {
             var that = this;
             if (this.commands.collection.query == query) return;
 
-            this.commands.collection.query = query;
-            this.commands.collection.reset([]);
-            this.options.searchHandler(this.query)
-            .then(function() {
-                console.log("search done");
-            },
-            function(err) {
-                console.log("search error", err);
-            },
-            function(result) {
-                that.commands.collection.add(result.results);
-            });
+            if (this.commands.collection.query && query
+            && query.indexOf(this.commands.collection.query) == 0) {
+                // Continue current search
+                this.commands.collection.query = query;
+                this.commands.filter(function(command) {
+                    return command.textScore(query) > 0;
+                });
+            } else {
+                // Different search
+                this.commands.collection.query = query;
+                this.commands.collection.reset([]);
+                this.commands.clearFilter();
+                this.options.searchHandler(this.query)
+                .then(function() {},
+                function(err) {},
+                function(result) {
+                    that.commands.collection.add(result.results);
+                });
+            }
 
-            /*this.commands.collection.reset(Command.all.filter(function(command) {
-                return command.get("search");
-            }));*/
-            this.selectItem(this.selected);
+            this.selectItem(this.selected || 0);
         },
 
         // (event) Key input in search
@@ -180,15 +184,17 @@ templateFile, commandTemplateFile) {
         },
 
         selectItem: function(i) {
-            var boxH = this.$(".results").height();
+            var i, boxH = this.$(".results").height();
 
             this.selected = i;
 
             if (this.selected >= this.commands.collection.size()) this.selected = this.commands.collection.size() - 1;
             if (this.selected < 0) this.selected = 0;
 
-            this.commands.collection.each(function(model, i) {
+            i = 0;
+            this.commands.collection.each(function(model) {
                 var y, h, item = this.commands.items[model.id];
+                if (item.$el.hasClass("hr-list-fiter-on")) return;
                 item.$el.toggleClass("selected", i == this.selected);
 
                 if (i == this.selected) {
@@ -200,6 +206,7 @@ templateFile, commandTemplateFile) {
                     }
                 }
 
+                i = i + 1;
             }, this);
         },
 
