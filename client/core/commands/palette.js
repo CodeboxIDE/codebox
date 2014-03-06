@@ -10,7 +10,7 @@ define([
 
     commands.register("palette.toggle", {
         title: "Palette",
-        description: "Open Command Palette",
+        description: "Toggle Command Palette",
         icons: {
             'default': "search",
         },

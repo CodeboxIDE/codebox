@@ -16,8 +16,11 @@ define([
                 var filename = _.last(path.split("/"));
                 if (filename.length == 0) filename = path;
                 return {
-                    "text": filename,
-                    "callback": _.bind(function() {
+                    "title": filename,
+                    "icons": {
+                        "search": "file-o"
+                    },
+                    "action": _.bind(function() {
                         files.open(path);
                     }, this)
                 };

@@ -8,8 +8,11 @@ define([
 ], function(Q, _, hr, rpc, search, files) {
     var normalizeTag = function(tag) {
         return {
-            "text": tag.name,
-            "callback": _.bind(function() {
+            "title": tag.name,
+            "icons": {
+                "search": "code"
+            },
+            "action": _.bind(function() {
                 files.open(tag.file);
             }, this)
         };
@@ -24,6 +27,8 @@ define([
             'query': query
         }).then(function(data) {
             return _.map(data.results, normalizeTag);
+        }, function() {
+            return Q([]);
         });
     });
 });

@@ -22,7 +22,7 @@ define([
             'icons': {
                 'default': "sign-blank",
                 'menu': "sign-blank",
-                'search': "keyboard-o"
+                'search': "sign-blank"
             },
 
             // Command action handler
@@ -43,7 +43,7 @@ define([
             // Offline mode
             'offline': null,
 
-            // Bind keybaord
+            // Bind keyboard
             'bindKeyboard': true,
 
             // Others flags

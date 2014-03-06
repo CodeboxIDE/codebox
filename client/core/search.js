@@ -3,9 +3,10 @@ define([
     'hr/dom',
     'hr/utils',
     'hr/promise',
+    'models/command',
     'core/user',
     'core/settings'
-],function(hr, $, _, Q, user, settings) {
+],function(hr, $, _, Q, Command, user, settings) {
     var logging = hr.Logger.addNamespace("search");
 
     var Search = hr.Class.extend({
@@ -56,9 +57,23 @@ define([
         },
 
         /*
+         *  Normalize result
+         */
+        normResult: function(handler, result) {
+            if (result instanceof Command) {
+                return result;
+            } else {
+                return new Command({}, _.defaults(result, {
+                    'category': handler.title
+                }));
+            }
+        },
+
+        /*
          *  Search by query
          */
         query: function(query) {
+            var that = this;
             var d = Q.defer();
             var n = _.size(this.handlers), i = 0;
 
@@ -67,11 +82,14 @@ define([
 
                 var addResults = function(results) {
                     i = i + 1;
+                    console.log("search results", results);
                     d.notify({
                         'category': {
                             'title': handler.title
                         },
-                        'results': results, 
+                        'results': _.chain(results)
+                                   .map(_.partial(that.normResult, handler))
+                                   .value(), 
                         'query': query
                     });
                     if (i == n) {
@@ -89,7 +107,7 @@ define([
                         d.reject(err);
                     });
                 }
-            }, this);
+            });
 
             return d.promise;
         }

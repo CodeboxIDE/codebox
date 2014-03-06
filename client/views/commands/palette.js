@@ -121,13 +121,28 @@ templateFile, commandTemplateFile) {
 
         // Do search
         doSearch: function(query) {
+            var that = this;
             if (this.query == query) return;
             console.log("do search", query);
 
             this.query = query;
-            this.commands.collection.reset(Command.all.filter(function(command) {
+
+            this.commands.collection.reset([]);
+            this.options.searchHandler(this.query)
+            .then(function() {
+                console.log("search done");
+            },
+            function(err) {
+                console.log("search error", err);
+            },
+            function(result) {
+                console.log("results", result);
+                that.commands.collection.add(result.results);
+            });
+
+            /*this.commands.collection.reset(Command.all.filter(function(command) {
                 return command.get("search");
-            }));
+            }));*/
             this.selectItem(this.selected);
         },
 
