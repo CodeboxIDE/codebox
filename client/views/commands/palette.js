@@ -58,6 +58,7 @@ templateFile, commandTemplateFile) {
         template: templateFile,
         defaults: {},
         events: {
+            "keydown input": "keydown",
             "keyup input": "keyup",
             "mousedown": "mousedown"
         },
@@ -160,6 +161,12 @@ templateFile, commandTemplateFile) {
         },
 
         // (event) Key input in search
+        keydown: function(e) {
+            var key = e.which || e.keyCode;
+            if (key == 38 || key == 40 || key == 13) {
+                e.preventDefault();
+            }
+        },
         keyup: function(e) {
             var key = e.which || e.keyCode;
             var q = $(e.currentTarget).val();
