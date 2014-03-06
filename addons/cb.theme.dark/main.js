@@ -88,6 +88,28 @@ define([
                     'color': colorLight,
                     'border-color': "transparent"
                 }
+            },
+
+            // Palette
+            palette: {
+                'background': bgDark,
+                'border-color': bgDarker,
+
+                input: {
+                    'background': bgLight,
+                    'border-color': bgDarker,
+                    'color': colorLight
+                },
+
+                results: {
+                    'background': bgLight,
+                    'border-color': bgDarker,
+                    'color': colorLight,
+
+                    command: {
+                        'border-color': bgDarker
+                    }
+                }
             }
         }
     });
