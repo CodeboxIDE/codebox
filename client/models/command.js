@@ -1,8 +1,9 @@
 define([
     "hr/utils",
     "hr/hr",
-    "utils/keyboard"
-], function(_, hr, Keyboard) {
+    "utils/keyboard",
+    "utils/string"
+], function(_, hr, Keyboard, string) {
     var logging = hr.Logger.addNamespace("command");
 
     var Command = hr.Model.extend({
@@ -135,6 +136,13 @@ define([
         clearMenu: function() {
             this.menu.reset([]);
             return this;
+        },
+
+        // Text comparaison score
+        // for searching command, ordering, ...
+        textScore: function(q) {
+            var text = this.get("category")+" "+this.get("title")+" "+this.get("description");
+            return string.score(text, q);
         }
     }, {
         // Collection of all commands

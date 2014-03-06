@@ -5,11 +5,23 @@ define([
     "models/command",
     "collections/commands",
     "utils/keyboard",
+    "utils/string",
     "text!resources/templates/commands/palette/input.html",
     "text!resources/templates/commands/palette/command.html"
-], function(_, $, hr, Command, Commands, keyboard,
+], function(_, $, hr, Command, Commands, keyboard, string,
 templateFile, commandTemplateFile) {
 
+    // Collection for comparing command with a query string
+    var CommandsWithQuery = Commands.extend({
+        // Sort comparator
+        comparator: function(command) {
+            if (!this.query) return CommandsWithQuery.__super__.initialize.apply(this, arguments);
+            
+            return -command.textScore(this.query);
+        }
+    });
+
+    // View for one command result
     var CommandItem = hr.List.Item.extend({
         className: "command",
         template: commandTemplateFile,
@@ -37,7 +49,7 @@ templateFile, commandTemplateFile) {
     // Commands list
     var CommandsView = hr.List.extend({
         Item: CommandItem,
-        Collection: Commands,
+        Collection: CommandsWithQuery,
         className: "palette-commands"
     });
 
@@ -122,11 +134,9 @@ templateFile, commandTemplateFile) {
         // Do search
         doSearch: function(query) {
             var that = this;
-            if (this.query == query) return;
-            console.log("do search", query);
+            if (this.commands.collection.query == query) return;
 
-            this.query = query;
-
+            this.commands.collection.query = query;
             this.commands.collection.reset([]);
             this.options.searchHandler(this.query)
             .then(function() {
@@ -136,7 +146,6 @@ templateFile, commandTemplateFile) {
                 console.log("search error", err);
             },
             function(result) {
-                console.log("results", result);
                 that.commands.collection.add(result.results);
             });
 

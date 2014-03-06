@@ -11,7 +11,11 @@ define([
         'title': "Command"
     }, function(query) {
         return Command.all.filter(function(command) {
-            return command.get("type") == "action";
+            return (
+                command.get("type") == "action"
+                && !command.hasFlag("disabled")
+                && (!query || command.textScore(query) > 0)
+            );
         });
     });
 });

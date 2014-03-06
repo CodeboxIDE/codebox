@@ -60,7 +60,6 @@ define([
          *  Normalize result
          */
         normResult: function(handler, result) {
-            console.log((result instanceof Command), result);
             if (result instanceof Command) {
                 return result;
             } else {
@@ -83,7 +82,6 @@ define([
 
                 var addResults = function(results) {
                     i = i + 1;
-                    console.log("search results", handler.id, results.length);
                     d.notify({
                         'category': {
                             'title': handler.title
