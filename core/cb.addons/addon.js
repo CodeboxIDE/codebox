@@ -4,6 +4,9 @@ var path = require('path');
 var wrench = require('wrench');
 var child_process = require('child_process');
 var Q = require("q");
+var semver = require("semver");
+
+var pkg = require("../../package.json");
 
 var utils = require("../utils");
 
@@ -61,9 +64,11 @@ var Addon = function(_rootPath, options) {
     });
 
     // Valid the addon
+    // Valid data and valid codebox engine version
     this.isValid = function() {
         return !(!this.infos.name || !this.infos.version
-            || (!this.infos.main && !this.infos.client && !this.infos.client.main));
+            || (!this.infos.main && !this.infos.client && !this.infos.client.main)
+            || !this.infos.engines || !this.infos.engines.codebox || !semver.satisfies(pkg.version, this.infos.engines.codebox));
     };
 
     // Test is symlink

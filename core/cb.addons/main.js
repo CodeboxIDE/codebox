@@ -118,20 +118,22 @@ function setup(options, imports, register, app) {
         logger.log("Install add-on", git, "ref="+gitRef);
 
         tempDir = path.join(configTempPath, "t"+Date.now());
-        console.log(tempDir);
 
         // Create temporary dir
         return Q.nfcall(fs.mkdir, tempDir).then(function() {
             // Clone git repo
             return Gittle.clone(git, tempDir);
-        }).then(function(repo) {
+        })
+        .then(function(repo) {
             // Checkout the addon ref
             return repo.checkout(gitRef);
-        }).then(function() {
+        })
+        .then(function() {
             // Load addon
             addon = new Addon(tempDir, addonsOptions);
             return addon.load();
-        }).then(function() {
+        })
+        .then(function() {
             // Blacklist
             if (addon.isBlacklisted()) {
                 return Q.reject(new Error("Addon "+addon.infos.name+"is blacklisted"));
@@ -139,23 +141,29 @@ function setup(options, imports, register, app) {
 
             // Valid installation of addon with a hook
             return hooks.use("addons", addon.infos);
-        }).then(function() {
+        })
+        .then(function() {
             // Copy to addons dir
             return addon.transfer(configAddonsPath);
-        }).then(function(newAddon) {
+        })
+        .fin(function(newAddon) {
             addon = newAddon;
 
             // Remove temporary dir
             return Q.nfcall(wrench.rmdirRecursive, tempDir, false);
-        }).then(function() {
+        })
+        .then(function() {
             // Install node dependencies
             return addon.installDependencies();
-        }).then(function() {
+        })
+        .then(function() {
             // If client side addon then optimize it
             return addon.optimizeClient();
-        }).then(function() {
+        })
+        .then(function() {
             return addon.start(app);
-        }).then(function() {
+        })
+        .then(function() {
             // Emit events
             events.emit('addons.install', addon.infos);
 

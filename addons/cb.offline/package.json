@@ -12,5 +12,8 @@
     },
     "client": {
         "main": "client"
+    },
+    "engines": {
+        "codebox": ">=0.7.0"
     }
 }
