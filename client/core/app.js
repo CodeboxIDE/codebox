@@ -19,6 +19,7 @@ define([
     'core/operations',
     'core/localfs',
     'core/themes',
+    'core/search/commands',
     'core/search/files',
     'core/search/tags'
 ], function (hr, url, dialogs, alerts, loading, GridView, templateFile,

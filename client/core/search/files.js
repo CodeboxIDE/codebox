@@ -11,12 +11,15 @@ define([
         'id': "files",
         'title': "Files"
     }, function(query) {
+        if (!query) return [];
+
         return box.searchFiles(query).then(function(data) {
             return Q(_.map(data.files, _.bind(function(path) {
                 var filename = _.last(path.split("/"));
                 if (filename.length == 0) filename = path;
+
                 return {
-                    "title": filename,
+                    "title": path,
                     "icons": {
                         "search": "file-o"
                     },

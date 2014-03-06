@@ -60,6 +60,7 @@ define([
          *  Normalize result
          */
         normResult: function(handler, result) {
+            console.log((result instanceof Command), result);
             if (result instanceof Command) {
                 return result;
             } else {
@@ -82,7 +83,7 @@ define([
 
                 var addResults = function(results) {
                     i = i + 1;
-                    console.log("search results", results);
+                    console.log("search results", handler.id, results.length);
                     d.notify({
                         'category': {
                             'title': handler.title
@@ -97,16 +98,10 @@ define([
                     }
                 };
 
-                var _d = handler.getter(query);
-
-                if (_.isArray(_d)) {
-                    addResults(_d);
-                } else {
-                    _d
-                    .then(addResults, function(err) {
-                        d.reject(err);
-                    });
-                }
+                Q(handler.getter(query))
+                .then(addResults, function(err) {
+                    d.reject(err);
+                });
             });
 
             return d.promise;
