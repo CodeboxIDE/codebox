@@ -150,7 +150,7 @@ define([], function() {
         description: "Remove a solution",
         offline: false,
         action: function() {
-            dialogs.select("Remove Deployment Dolution",
+            dialogs.select("Remove Deployment Solution",
             "Select a solution, this solution and its configuration will be removed from your settings.",
             _.chain(settings.get("solutions", {}))
             .map(function(solution, id) {
