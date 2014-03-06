@@ -148,7 +148,7 @@ templateFile, commandTemplateFile) {
                 this.commands.collection.query = query;
                 this.commands.collection.reset([]);
                 this.commands.clearFilter();
-                this.options.searchHandler(this.query)
+                this.options.searchHandler(query)
                 .then(function() {},
                 function(err) {},
                 function(result) {
