@@ -74,31 +74,42 @@ define([
          */
         query: function(query) {
             var that = this;
+            var errors = [];
             var d = Q.defer();
             var n = _.size(this.handlers), i = 0;
 
             _.each(this.handlers, function(handler, name) {
-                if (!user.get("settings.search."+name, true)) return;
-
-                var addResults = function(results) {
+                var done = function(results) {
                     i = i + 1;
-                    d.notify({
-                        'category': {
-                            'title': handler.title
-                        },
-                        'results': _.chain(results)
-                                   .map(_.partial(that.normResult, handler))
-                                   .value(), 
-                        'query': query
-                    });
+                    if (results) {
+                        d.notify({
+                            'category': {
+                                'title': handler.title
+                            },
+                            'results': _.chain(results)
+                                       .map(_.partial(that.normResult, handler))
+                                       .value(), 
+                            'query': query
+                        });
+                    }
                     if (i == n) {
-                        d.resolve(n);
+                        if (errors.length == 0) {
+                            d.resolve(n);
+                        } else {
+                            d.reject(errors);
+                        }
                     }
                 };
 
-                Q(handler.getter(query))
-                .then(addResults, function(err) {
-                    d.reject(err);
+                if (!user.get("settings.search."+name, true)) return done();
+
+                Q()
+                .then(function() {
+                    return handler.getter(query);
+                })
+                .then(done, function(err) {
+                    errors.push(err);
+                    return done();
                 });
             });
 
