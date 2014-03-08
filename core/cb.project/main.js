@@ -10,29 +10,36 @@ var ProjectType = require('./project').ProjectType;
 // Supported project types
 // This list is ordered
 var SUPPORTED = [
+    // PaaS
     require("./appengine"),
-    require("./django"),
-    require("./makefile"),
     require("./procfile"),
+    require("./parse"),
+
+    // Frameworks
+    require("./django"),
+    require("./gradle"),
+    require("./grails"),
+    require("./meteor"),
+
+    // Languages
     require("./c"),
     require("./d"),
     require("./dart"),
     require("./go"),
     require("./clojure"),
-    require("./gradle"),
-    require("./grails"),
     require("./java"),
     require("./logo"),
     require("./php"),
     require("./node"),
-    require("./meteor"),
     require("./play"),
     require("./python"),
     require("./ruby"),
     require("./scala"),
     require("./lua"),
+
+    // Fallbacks
     require("./static"),
-    require("./parse")
+    require("./makefile")
 ];
 
 
