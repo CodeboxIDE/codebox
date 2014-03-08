@@ -117,7 +117,7 @@ ProjectType.prototype.define = function(types) {
     this.clear();
 
     // Merge new infos
-    return _.reduce(types.reverse(), function(prev, type) {
+    return _.reduce(types, function(prev, type) {
         return prev.then(function() {
             return that.merge(type);
         });
