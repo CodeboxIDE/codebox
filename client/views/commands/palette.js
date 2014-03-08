@@ -184,7 +184,7 @@ templateFile, commandTemplateFile) {
             } else if (key == 13) {
                 /* ENTER */
                 e.preventDefault();
-                this.openItem(this.selected);
+                this.openItem(this.getSelectedItem());
             }
             this.doSearch(q);
             this.selectItem(this.selected);
@@ -215,6 +215,15 @@ templateFile, commandTemplateFile) {
 
                 i = i + 1;
             }, this);
+        },
+
+        getSelectedItem: function() {
+            var _ret = 0;
+            this.commands.collection.each(function(model, i) {
+                var item = this.commands.items[model.id];
+                if (item.$el.hasClass("selected")) _ret = i;
+            }, this);
+            return _ret;
         },
 
         openItem: function(i) {
