@@ -10,6 +10,13 @@ function AddonsRPCService(addons, workspace) {
     _.bindAll(this);
 }
 
+AddonsRPCService.prototype.registry = function(args, meta) {
+    if (!args.url) {
+        return Q.reject(new Error("Need 'url' argument"));
+    }
+    return this.addons.registry(args.url);
+};
+
 AddonsRPCService.prototype.list = function(args, meta) {
     return this.addons.list().then(function(addons) {
         return _.map(addons, function(addon) {

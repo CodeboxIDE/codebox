@@ -252,9 +252,6 @@ var start = function(config) {
             // Search
             "./cb.search",
 
-            // Proxy
-            "./cb.proxy.http",
-
             // Watch (file modifications)
             "./cb.watch",
 

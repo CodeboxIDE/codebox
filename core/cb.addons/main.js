@@ -9,6 +9,7 @@ var exec = require('child_process').exec;
 
 var Addon = require("./addon");
 var manager = require("./manager");
+var registry = require("./registry");
 
 // GZIP static middleware
 var gzipStatic = require('connect-gzip-static');
@@ -222,6 +223,7 @@ function setup(options, imports, register, app) {
         logger.log("Addons are ready");
         return {
             'addons': {
+                'registry': registry.get,
                 'list': _.partial(loadAddonsInfos, configAddonsPath),
                 'install': installAddon,
                 'uninstall': uninstallAddon

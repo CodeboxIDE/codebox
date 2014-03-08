@@ -219,7 +219,10 @@ define([
             cached = hr.Cache.get("addons", indexKey);
             if (cached) return resetCollection(cached);
 
-            return hr.Requests.getJSON(box.proxyUrl(indexUrl+"/api/addons?limit=1000")).then(function(index) {
+            return rpc.execute("addons/registry", {
+                'url': indexUrl
+            })
+            .then(function(index) {
                 hr.Cache.set("addons", indexKey, index, 60*60);
                 return resetCollection(index);
             });
