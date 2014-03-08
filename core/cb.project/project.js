@@ -78,15 +78,11 @@ ProjectType.prototype.merge = function(type) {
                     'id': _id,
                     'script': runner.script,
                     'name': runner.name || _id,
-                    'score': runner.score || 1,
                     'type': runner.type || "run"
                 };
             })
         )
         .compact()
-        .sortBy(function(runner) {
-            return -runner.score;
-        })
         .value();
     }).then(function() {
         // Ignore rules

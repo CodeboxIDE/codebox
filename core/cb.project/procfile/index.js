@@ -8,10 +8,7 @@ module.exports = {
     runner: [
         {
             id: "run",
-            script: path.resolve(__dirname, "run.sh"),
-
-            // Prioritize procfile execution
-            score: 2
+            script: path.resolve(__dirname, "run.sh")
         }
     ]
 };

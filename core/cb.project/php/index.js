@@ -11,13 +11,7 @@ module.exports = {
         {
             name: "php",
             id: "run",
-            script: path.resolve(__dirname, "run.sh"),
-
-            // This has a higher priority
-            // because the apache runner is buggy for now
-            // because of SIGWINCH restarting apache
-            // causing the runner to be killed on terminal resizes
-            score: 2
+            script: path.resolve(__dirname, "run.sh")
         },
         {
             name: "apache",
