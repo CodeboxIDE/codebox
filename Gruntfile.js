@@ -244,10 +244,10 @@ module.exports = function (grunt) {
                     // Change main entry point
                     process: function (content, srcpath) {
                         grunt.log.write('processing '+ srcpath + '...\n');
-                        return content.replace(
-                            '"main": "index.html",',
-                            '"main": "desktop/index.html",'
-                        );
+                        var _pkg = JSON.parse(content);
+                        _pkg.main = "desktop/index.html";
+                        _pkg.version = pkg.version;
+                        return JSON.stringify(_pkg, null, 4);
                     }
                 }
             },
