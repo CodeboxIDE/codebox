@@ -203,6 +203,7 @@ define([
 
         // Create a temporary file
         var f = new File({
+            'newFileContent': content || "",
             'codebox': box
         }, {
             'name': name,
@@ -212,8 +213,6 @@ define([
             'href': location.protocol+"//"+location.host+"/vfs/"+name,
             'exists': false
         });
-
-        if (content) f.setCache(content);
 
         return openFile(f);
     };

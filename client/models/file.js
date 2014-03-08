@@ -35,6 +35,9 @@ define([
             File.__super__.initialize.apply(this, arguments);
             this.codebox = this.options.codebox || require("core/box");
 
+            // Content for new file
+            this.newFileContent = this.options.newFileContent || "";
+
             this.modified = false;
             this._loading = false;
             this._uniqueId = Date.now()+_.uniqueId("file");
@@ -411,7 +414,7 @@ define([
                 filename = null;
             }
 
-            if (this.isNewfile() && !filename) return Q("");
+            if (this.isNewfile() && !filename) return Q(this.newFileContent);
 
             options = _.defaults(options || {}, {
                 redirect: false
