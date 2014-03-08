@@ -10,7 +10,7 @@ Codebox is built with web technologies: `node.js`, `javascript`, `html` and `les
 The project is open source under the [Apache 2.0](https://github.com/FriendCode/codebox/blob/master/LICENSE) license.
 A screencast of the IDE is available on [Youtube](https://www.youtube.com/watch?v=xvPEngyXA2A).
 
-![Image](https://raw.github.com/FriendCode/codebox/master/docs/assets/base.png)
+![Image](https://raw.github.com/FriendCode/codebox/master/screenshot.png)
 
 ## How to install and run Codebox
 
@@ -36,11 +36,11 @@ $ codebox run ./myworkspace --open
 
 Use this command to run and open Codebox IDE. By default, Codebox uses GIT to identify you, you can use the option ```--email=john.doe@gmail.com``` to define the email you want to use during GIT operations.
 
-Others comand line options are available and can be list with: ```codebox --help```. For deeper configuration, take a look at the documentation about [environment variables](https://github.com/FriendCode/codebox/blob/master/docs/server/env.md).
+Others comand line options are available and can be list with: ```codebox --help```. For deeper configuration, take a look at the documentation about [environment variables](http://help.codebox.io/ide/env.html).
 
 #### Need help?
 
-The IDE's documentation can be found in the [docs](../master/docs) folder. Feel free to ask any questions or signal problems by adding issues.
+The IDE's documentation can be found at [help.codebox.io](http://help.codebox.io). Feel free to ask any questions or signal problems by adding issues.
 
 ## Helping Codebox
 
