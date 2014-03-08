@@ -43,7 +43,10 @@ define([
             maxTabsPerSection: -1,
 
             // Tabs are draggable
-            draggable: true
+            draggable: true,
+
+            // Enable keyboard shortcuts
+            keyboardShortcuts: true
         },
         events: {},
 

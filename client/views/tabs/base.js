@@ -62,6 +62,8 @@ define([
             var navs = {};
             container = container || this;
 
+            if (!this.tab.manager.options.keyboardShortcuts) return;
+
             _.each(navigations, function(method, key) {
                 navs[key] = _.bind(function() {
                     // Trigger only if active tab

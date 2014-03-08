@@ -26,6 +26,7 @@ define([
                 tabMenu: false,
                 newTab: false,
                 draggable: false,
+                keyboardShortcuts: false,
                 maxTabsPerSection: 1
             }, this);
             this.tabs.$el.appendTo(this.$el);
