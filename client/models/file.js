@@ -5,20 +5,15 @@ define([
     'core/backends/rpc',
     "core/backends/vfs",
     'models/command',
+    "utils/string",
     "utils/url",
     "utils/languages",
     "utils/filesync",
     "utils/dialogs",
     "utils/uploader",
     "core/operations"
-], function(Q, _, hr, rpc, vfs, Command, Url, Languages, FileSync, dialogs, Uploader, operations) {
+], function(Q, _, hr, rpc, vfs, Command, string, Url, Languages, FileSync, dialogs, Uploader, operations) {
     var logging = hr.Logger.addNamespace("files");
-
-    if (typeof String.prototype.endsWith !== 'function') {
-        String.prototype.endsWith = function(suffix) {
-            return this.indexOf(suffix, this.length - suffix.length) !== -1;
-        };
-    }
 
     var File = hr.Model.extend({
         defaults: {
@@ -166,7 +161,7 @@ define([
             path = this.path(path);
             var url = "/vfs"+path;
             if (force_directory == null) force_directory = this.isDirectory();
-            if (force_directory && !url.endsWith("/")) {
+            if (force_directory && !string.endsWith(url, "/")) {
                 url = url+"/";
             }
             return url;
@@ -181,7 +176,7 @@ define([
                 path = Url.parse(this.get("href")).pathname.replace("/vfs", "");
             }
             
-            if (path.endsWith("/")) {
+            if (string.endsWith(path, "/")) {
                 path = path.slice(0, -1)
             }
             if (path.length == 0) {

@@ -89,7 +89,12 @@ define([
         return finalScore;
     };
 
+    var endsWith = function(s, suffix) {
+        return s.indexOf(suffix, s.length - suffix.length) !== -1;
+    };
+
     return {
-        'score': score
+        'score': score,
+        'endsWith': endsWith
     };
 });

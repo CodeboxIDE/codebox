@@ -100,7 +100,8 @@ define([
             }
 
             $el.on("contextmenu", handler);
-            if (navigator.userAgent.match(/iPad/i) != null) $el.taphold(handler);
+            //if (navigator.userAgent.match(/iPad/i) != null) 
+                $el.taphold(handler);
         }
     };
 

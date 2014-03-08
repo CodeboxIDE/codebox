@@ -3,6 +3,24 @@ define([
     'hr/hr',
     'hr/dom'
 ], function (_, hr, $) {
+    // Evnts for tablet and desktop
+    var events = {
+        'start': "mousedown",
+        'stop': "mouseup",
+        'move': "mousemove",
+        'enter': "mouseenter",
+        'leave': "mouseleave"
+    };
+
+    if (navigator.userAgent.search('Mobile') > 0) {
+        events = {
+            'start': "touchstart",
+            'stop': "touchend",
+            'move': "touchmove",
+            'enter': "touchenter",
+            'leave': "touchleave"
+        };
+    }
 
     // Define cursor
     var storedStylesheet = null;
@@ -43,7 +61,7 @@ define([
 
             this.dragType = this.options.dragType;
 
-            this.$el.on('mouseenter', function(e) {
+            this.$el.on(events["enter"], function(e) {
                 if (that.dragType.isDragging()) {
                     e.stopPropagation();
                     that.dragType.enterDropArea(that);
@@ -51,7 +69,7 @@ define([
                 }
             });
 
-            this.$el.on('mouseleave', function(e) {
+            this.$el.on(events["leave"], function(e) {
                 that.$el.removeClass("dragover");
                 that.dragType.exitDropArea();
             });
@@ -133,7 +151,8 @@ define([
             if (options.view) $el = options.view.$el, data = options.view;
             if (options.data) data = options.data;
 
-            $el.mousedown(function(e) {
+            $el.on(events["start"], function(e) {
+                if (e.type == 'mousedown' && e.originalEvent.button != 0) return;
                 if (!that.state) return;
                 e.preventDefault();
 
@@ -196,9 +215,9 @@ define([
                     });
                 };
 
-                $document.mousemove(f);
-                $document.one("mouseup", function(e) {
-                    $document.unbind('mousemove', f);
+                $document.on(events["move"], f);
+                $document.one(events["stop"], function(e) {
+                    $document.unbind(events["move"], f);
                     resetCursor();
 
                     var _drop = that.getDrop();
@@ -224,6 +243,7 @@ define([
     });
 
     return {
+        events: events,
         cursor: {
             set: setCursor,
             reset: resetCursor
