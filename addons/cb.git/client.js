@@ -97,7 +97,9 @@ define(["views/dialog"], function(GitDialog) {
                 {
                     'title': "No GIT Repository detected",
                     'type': "label",
-                    'iconMenu': "warning"
+                    'icons': {
+                        'menu': "warning",
+                    }
                 },
                 {
                     'title': "Initialize Local Repository",

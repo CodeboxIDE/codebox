@@ -1,15 +1,17 @@
-define(["views/dialog"], function(HelpDialog) {
+define([], function() {
     var hr = codebox.require("hr/hr");
     var app = codebox.require("core/app");
     var menu = codebox.require("core/commands/menu");
     var files = codebox.require("core/files");
     var rpc = codebox.require("core/backends/rpc");
-    var dialogs = codebox.require("utils/dialogs");
     var Command = codebox.require("models/command");
 
+    // Help url
+    var helpUrl = "http://help.codebox.io/";
+
     // Command open changelog
-    var commandChanges = Command.register({
-        'id': "help.changes",
+    var commandChanges = Command.register("help.changes", {
+        'category': "Help",
         'title': "Open Release Notes",
         'action': function(title) {
             return rpc.execute("box/changes").then(function(changes) {
@@ -26,16 +28,20 @@ define(["views/dialog"], function(HelpDialog) {
         commandChanges,
         {
             'id': "help.documentation",
+            'category': "Help",
             'title': "Documentation",
+            'description': "Open Documentation",
             'shortcuts': ['?'],
+            'offline': false,
             'action': function() {
-                dialogs.open(HelpDialog);
+                window.open(helpUrl);
             }
         }
     ]).menuSection([
         {
             'id': "help.feedback",
-            'title': "Submit feedback",
+            'category': "Help",
+            'title': "Submit Feedback",
             'offline': false,
             'action': function() {
                 window.open("https://github.com/FriendCode/codebox/issues");

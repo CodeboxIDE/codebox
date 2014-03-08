@@ -24,5 +24,8 @@
             "events",
             "workspace"
         ]
+    },
+    "engines": {
+        "codebox": ">=0.7.0"
     }
 }

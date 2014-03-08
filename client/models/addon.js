@@ -12,7 +12,6 @@ define([
     var Addon = hr.Model.extend({
         defaults: {
             'name': "",
-            'title': "",
             'description': "",
             'version': "0.0.1",
             'author': "",
@@ -42,10 +41,7 @@ define([
                 'context': context,
                 'baseUrl': this.url(),
                 'waitSeconds': 200,
-                //'urlArgs': "version="+this.get("version"),
-                'paths': {
-                    "require-tools": "/static/require-tools"
-                },
+                'paths': {},
                 'map': {
                     '*': {
                         'css': 'require-tools/css/css',
@@ -58,12 +54,6 @@ define([
 
             // Require context
             addonRequire = require.config(addonRequireConfig);
-
-            // Ressources
-            hr.Resources.addNamespace(context+".templates", {
-                loader: "http",
-                base: "/addons/"+this.get("name")+"/templates"
-            });
 
             // Register addons
             var register = function(err, globals) {

@@ -2,9 +2,11 @@ define([
     'hr/hr',
     'hr/dom',
     'hr/utils',
+    'hr/promise',
+    'models/command',
     'core/user',
     'core/settings'
-],function(hr, $, _, user, settings) {
+],function(hr, $, _, Q, Command, user, settings) {
     var logging = hr.Logger.addNamespace("search");
 
     var Search = hr.Class.extend({
@@ -55,29 +57,63 @@ define([
         },
 
         /*
+         *  Normalize result
+         */
+        normResult: function(handler, result) {
+            if (result instanceof Command) {
+                return result;
+            } else {
+                return new Command({}, _.defaults(result, {
+                    'category': handler.title
+                }));
+            }
+        },
+
+        /*
          *  Search by query
          */
-        query: function(query, callback, context) {
-            callback = _.bind(callback, context);
+        query: function(query) {
+            var that = this;
+            var errors = [];
+            var d = Q.defer();
+            var n = _.size(this.handlers), i = 0;
 
             _.each(this.handlers, function(handler, name) {
-                if (!user.get("settings.search."+name, true)) {
-                    return;
-                }
-
-                var addResults = function(results) {
-                    callback({
-                        'title': handler.title
-                    }, results, query);
+                var done = function(results) {
+                    i = i + 1;
+                    if (results) {
+                        d.notify({
+                            'category': {
+                                'title': handler.title
+                            },
+                            'results': _.chain(results)
+                                       .map(_.partial(that.normResult, handler))
+                                       .value(), 
+                            'query': query
+                        });
+                    }
+                    if (i == n) {
+                        if (errors.length == 0) {
+                            d.resolve(n);
+                        } else {
+                            d.reject(errors);
+                        }
+                    }
                 };
-                var d = handler.getter(query);
 
-                if (_.isArray(d)) {
-                    addResults(d);
-                } else {
-                    d.done(addResults);
-                }
-            }, this);
+                if (!user.get("settings.search."+name, true)) return done();
+
+                Q()
+                .then(function() {
+                    return handler.getter(query);
+                })
+                .then(done, function(err) {
+                    errors.push(err);
+                    return done();
+                });
+            });
+
+            return d.promise;
         }
     });
     

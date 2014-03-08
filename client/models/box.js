@@ -36,6 +36,9 @@ define([
                 'codebox': this
             });
             this.root.getByPath("/");
+            this.on("change:name", function() {
+                this.root.set("name", this.get("name"));
+            }, this);
 
             // Active file
             this.activeFile = "/";

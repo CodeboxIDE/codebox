@@ -1,9 +1,11 @@
 <span class="name">
     <% if (file.isDirectory()) { %>
-    <i class="fa fa-caret-right"></i>
-    <i class="fa fa-caret-down"></i>
+    <i class="fa fa-angle-right"></i>
+    <i class="fa fa-angle-down"></i>
+    <i class="fa fa-<%- file.icon() %> file-icon"></i>
     <% } else { %>
-    <i class="fa fa-file"></i>
+    <i class="fa fa-angle-right invisible"></i>
+    <i class="fa fa-<%- file.icon() %> file-icon"></i>
     <% } %>
     <%- file.get("name") %>
 </span>

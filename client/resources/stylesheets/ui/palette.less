@@ -1,0 +1,66 @@
+.cb-commands-palette {
+    position: absolute;
+    top: 0px;
+    left: 50%;
+    z-index: 10;
+    width: @codeboxPaletteWidth;
+    margin-left: -(@codeboxPaletteWidth/2);
+    padding: 8px;
+    background: @codeboxPaletteBackground;
+    border: 1px solid #ccc;
+
+    &.close {
+        display: none;
+    }
+
+    input, input:focus, input:hover {
+        width: 100%;
+        margin-bottom: 10px;
+        box-shadow: none;
+        border-color: #ccc;
+    }
+
+    .results {
+        max-height: 300px;
+        overflow-y: auto;
+        background: #fff;
+        border: 1px solid #ccc;
+
+        .palette-commands {
+            list-style: none;
+            margin: 0px;
+            padding: 0px;
+
+            .command {
+                padding: 8px 6px;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+                border-bottom: 1px solid #ccc;
+                line-height: 26px;
+
+                .label {
+                    float: right;
+                    background: transparent;
+                    color: inherit;
+                    border: 1px solid #ccc;
+                    font-size: inherit;
+                    padding: 5px 5px;
+                }
+
+                &.hr-list-fiter-on {
+                    display: none;
+                }
+
+                &.selected {
+                    background: @codeboxActiveColor;
+                    color: #fff;
+
+                    .label {
+                        border-color: #fff;
+                    }
+                }
+            }
+        }
+    }
+}

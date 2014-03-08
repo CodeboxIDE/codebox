@@ -1,0 +1,52 @@
+.cb-panels {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
+    top: 0px;
+
+    .component-grid .grid-section {
+        @resizerHeight: 6px;
+
+        .grid-section-content.with-bar-v {
+            bottom: @resizerHeight;
+        }
+
+        .grid-resize-bar-v {
+            box-shadow: 0px -2px 4px rgba(0,0,0, 0.08);
+            border-top: 1px solid rgba(0,0,0, 0.16);
+            height: @resizerHeight;
+
+            &:after {
+                position: absolute;
+                width: 30px;
+                background: rgba(0, 0, 0, 0.08);
+                top: 1px;
+                bottom: 1px;
+                left: 50%;
+                margin-left: -15px;
+                content: " ";
+            }
+        }
+    }
+
+    .component-tab {
+        width: 100%;
+        max-width: 100%;
+        background: transparent !important;
+
+        .inner {
+            max-width: 100%;
+            text-transform: uppercase;
+            font-weight: 800;
+            font-size: 13px;
+            opacity: 0.65;
+            line-height: 28px;
+        }
+    }
+
+    .tabs-section-header, .tabs-section-content {
+        background: inherit !important;
+        color: inherit !important;
+    }
+}

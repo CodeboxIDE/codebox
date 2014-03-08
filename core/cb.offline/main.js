@@ -21,7 +21,8 @@ function setup(options, imports, register) {
     server.app.get("/manifest.appcache", function(req, res) {
         res.header("Content-Type", "text/cache-manifest");
 
-        addons.list().then(function(installedAddons) {
+        addons.list()
+        .then(function(installedAddons) {
             var revision = pkg.version+"-"+crc.hex32(crc.crc32(_.map(installedAddons, function(addon, addonName) {
                 return addonName+":"+addon.infos.version;
             }).sort().join("-")));
@@ -30,7 +31,8 @@ function setup(options, imports, register) {
 
             // Clear manifest
             return manifest.clear(revision);
-        }).then(function() {
+        })
+        .then(function() {
             // Add network
             manifest.add("NETWORK", [
                 '*'
@@ -42,10 +44,8 @@ function setup(options, imports, register) {
             return manifest.addFolder(path.resolve(__dirname + '/../../client/build'), '/', null, [
                 "/index.html"
             ]);
-        }).then(function() {
-            // Add static files
-            return manifest.addFolder(path.resolve(__dirname + '/../../docs'), '/docs/')
-        }).then(function() {
+        })
+        .then(function() {
             // Add addons
             return addons.list().then(function(addons) {
                 return Q.all(_.map(addons, function(addon) {

@@ -21,7 +21,15 @@
     }
 
     &.dragover {
-        padding-left: 150px;
+        &:before {
+            position: absolute;
+            left: 0px;
+            width: 2px;
+            top: 0px;
+            bottom: 0px;
+            background: @codeboxActiveColor;
+            content: " ";
+        }
     }
 
 

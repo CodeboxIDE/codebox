@@ -10,9 +10,12 @@ define([], function() {
 
     // Command to check connection
     var checkConnection = commands.register("offline.check", {
+        'category': "Offline",
         'title': "Check Connection",
         'offline': true,
-        'icon': "bolt"
+        'icons': {
+            'default': "bolt",
+        }
     }, function() {
         hr.Offline.check();
     });
@@ -33,6 +36,8 @@ define([], function() {
         checkConnection
     ]).menuSection([
         {
+            'id': "offline.changes.calcul",
+            'category': "Offline",
             'title': "Calcul Changes",
             'offline': false,
             'action': function() {
@@ -41,6 +46,8 @@ define([], function() {
         }
     ]).menuSection([
         {
+            'id': "offline.changes.reset",
+            'category': "Offline",
             'title': "Reset All Changes",
             'offline': false,
             'action': function() {
@@ -48,6 +55,8 @@ define([], function() {
             }
         },
         {
+            'id': "offline.changes.apply",
+            'category': "Offline",
             'title': "Apply All Changes",
             'offline': false,
             'action': function() {

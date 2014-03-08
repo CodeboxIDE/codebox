@@ -4,7 +4,9 @@ define([
     'hr/hr'
 ], function(_, $, hr) {
     var PanelBaseView = hr.View.extend({
-        defaults: {},
+        defaults: {
+            title: ""
+        },
         events: {},
 
         // Constructor
@@ -51,12 +53,6 @@ define([
             var that = this;
             command.set("action", function() {
                 that.toggle();
-            });
-            this.on("panel:open", function() {
-                command.toggleFlag("active", true);
-            });
-            this.on("panel:close", function() {
-                command.toggleFlag("active", false);
             });
             this.parent.panelsCommand.menu.add(command);
         }

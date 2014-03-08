@@ -3,10 +3,12 @@ define([
     'hr/dom',
     'hr/hr',
     'models/command',
-    'views/panels/base'
-], function(_, $, hr, Command, PanelBaseView) {
+    'views/panels/base',
+    'views/tabs/manager'
+], function(_, $, hr, Command, PanelBaseView, TabsManager) {
+
     var PanelsView = hr.View.extend({
-        className: "cb-panels-list",
+        className: "cb-panels",
         defaults: {},
         events: {},
 
@@ -15,25 +17,23 @@ define([
             var that = this;
             PanelsView.__super__.initialize.apply(this, arguments);
 
+            // Tabs
+            this.tabs = new TabsManager({
+                layout: 1,
+                layouts: {
+                    "Columns: 1": 1
+                },
+                tabMenu: false,
+                newTab: false,
+                draggable: false,
+                keyboardShortcuts: false,
+                maxTabsPerSection: 1
+            }, this);
+            this.tabs.$el.appendTo(this.$el);
+
             // Active panel
             this.activePanel = null;
             this.previousPanel = null;
-
-            // Panels visibility
-            this.visibilityCommand = new Command({}, {
-                'type': "checkbox",
-                'title': "Show Side Bar",
-                'action': function(state) {
-                    if (state) {
-                        that.show();
-                    } else {
-                        that.close();
-                    }
-                }
-            });
-            this.on("state", function(state) {
-                that.visibilityCommand.toggleFlag("active", state);
-            });
 
             // Menu of panels choice
             this.panelsCommand = new Command({}, {
@@ -48,71 +48,68 @@ define([
         },
 
         // Register a new panel
-        register: function(panelId, panelView, constructor, options) {
-            constructor = _.extend(constructor || {}, {
+        register: function(panelId, panelView, constructor) {
+            constructor = _.extend({
+                'title': panelId
+            }, constructor || {}, {
                 'panel': panelId
             });
 
             this.panels[panelId] = new panelView(constructor, this);
-
-            this.panels[panelId].$el.appendTo(this.$el);
-            this.panels[panelId].$el.hide();
-            this.panels[panelId].render();
+            this.panels[panelId].update();
 
             return this.panels[panelId];
         },
 
         // Render
         render: function() {
-            this.$el.empty();
-            _.each(this.panels, function(panel, panelId) {
-                panel.$el.appendTo(this.$el);
-                panel.render();
-            }, this);
-
             return this.ready();
         },
 
         // Open a panel
         open: function(pId) {
             var opened = false;
-            _.each(this.panels, function(panel, panelId) {
-                opened = opened || (panelId == pId);
 
-                // Change visibility of the panel
-                panel.$el.toggle(panelId == pId);
+            if (pId && this.panels[pId]) {
+                opened = true;
+                var tab = this.tabs.add(TabsManager.Panel, {}, {
+                    'title': this.panels[pId].options.title,
+                    'uniqueId': pId
+                });
 
-                // Trigger panel event
-                if (panelId != pId && panelId == this.activePanel) {
-                    panel.trigger("panel:close");
-                } else if (panelId == pId) {
-                    panel.trigger("panel:open");
+                // If new tab
+                if (tab.$el.is(':empty')) {
+                    tab.once("tab:close", function() {
+                        this.panels[pId].trigger("tab:close");
+                        this.panels[pId].$el.detach();
+                    }, this);
+
+                    this.panels[pId].$el.appendTo(tab.$el);
+                    this.panels[pId].update();
                 }
-            }, this);
+            }
 
-            // Change active panel
             this.previousPanel = this.activePanel || this.previousPanel;
             this.activePanel = pId;
-
-            // Trigger global event
+            
             if (opened) {
                 this.trigger("open", pId);
             } else {
                 this.trigger("close");
             }
-            this.trigger("state", opened);
 
             return this;
+        },
+
+        // Check if a panel is active
+        isActive: function(pId) {
+            var t = this.tabs.getById(pId);
+            return !(t == null || !t.isActive());
         },
 
         // Close panel
         close: function() {
             return this.open(null);
-        },
-
-        // Is active
-        isActive: function(pId) {
-            return this.activePanel == pId;
         },
 
         // Show panels

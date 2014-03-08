@@ -8,6 +8,7 @@ define([
 
     "collections/tabs",
 
+    "utils/dragdrop",
     "utils/keyboard",
     "utils/contextmenu",
 
@@ -15,37 +16,66 @@ define([
     "views/tabs/tab",
     "views/tabs/base",
     "views/tabs/section"
-], function(_, $, hr, Command, Tab , Tabs, Keyboard, ContextMenu, GridView, TabView, TabPanelView, TabsSectionView) {
+], function(_, $, hr, Command, Tab , Tabs, dnd, Keyboard, ContextMenu, GridView, TabView, TabPanelView, TabsSectionView) {
     // Complete tabs system
     var TabsView = hr.View.extend({
         className: "cb-tabs",
-        events: {
-            
+        defaults: {
+            // Base layout
+            layout: null,
+
+            // Available layouts
+            layouts: {
+                "Auto Grid": 0,
+                "Columns: 1": 1,
+                "Columns: 2": 2,
+                "Columns: 3": 3,
+                "Columns: 4": 4
+            },
+
+            // Enable tab menu
+            tabMenu: true,
+
+            // Enable open new tab
+            newTab: true,
+
+            // Max number of tabs per sections (-1 for unlimited)
+            maxTabsPerSection: -1,
+
+            // Tabs are draggable
+            draggable: true,
+
+            // Enable keyboard shortcuts
+            keyboardShortcuts: true
         },
-        layouts: {
-            "Auto Grid": 0,
-            "Columns: 1": 1,
-            "Columns: 2": 2,
-            "Columns: 3": 3,
-            "Columns: 4": 4
-        },
+        events: {},
 
         // Constructor
         initialize: function(options) {
             var that = this;
             TabsView.__super__.initialize.apply(this, arguments);
 
+            // Current actiev tab id
+            this.activeTab = null;
+
             // Current layout
-            this.layout = null; // null: mode auto
+            this.layout = this.options.layout; // null: mode auto
             this.grid = new GridView({}, this);
             this.grid.$el.appendTo(this.$el);
+
+            // Drag and drop of tabs
+            this.drag = new dnd.DraggableType();
+            this.drag.toggle(this.options.draggable);
+            this.drag.on("drop", function(section, tab) {
+                if (!section && tab) tab.splitSection();
+            })
 
             // Commands
             this.layoutCommand = new Command({}, {
                 'type': "menu",
                 'title': "Layout"
             });
-            _.each(this.layouts, function(layout, layoutName) {
+            _.each(this.options.layouts, function(layout, layoutName) {
                 var command = new Command({}, {
                     'type': "action",
                     'title': layoutName,
@@ -66,7 +96,7 @@ define([
             this.restorer = {};
 
             // Set base layout
-            this.setLayout(null);
+            this.setLayout(this.layout);
             return this;
         },
 
@@ -157,7 +187,16 @@ define([
                 tab.view.update();
 
                 // Add to section
-                this.getSection(options.section).addTab(tab);
+                var sectionId = options.section;
+                for (;;) {
+                    var section = this.getSection(sectionId);
+                    if (this.options.maxTabsPerSection > 0 && section.tabs.size() >= this.options.maxTabsPerSection) {
+                        sectionId = _.uniqueId("tabSection");
+                    } else {
+                        section.addTab(tab);
+                        break;
+                    }
+                }
             }
 
             if (options.open) tab.active();
@@ -173,9 +212,16 @@ define([
 
         // Define tabs layout
         setLayout: function(l) {
+            if (!_.contains(_.values(this.options.layouts), l)) return;
+
             this.grid.setLayout(l);
             this.trigger("layout", l);
             this.update();
+        },
+
+        // Check if tab is the active tab
+        isActiveTab: function(tab) {
+            return this.activeTab == tab.id;
         },
 
         // Check sections
@@ -204,6 +250,9 @@ define([
             if (!tab) return false;
 
             section = this.getSection(section);
+
+            // Check limit
+            if (this.options.maxTabsPerSection > 0 && section.tabs.size() >= this.options.maxTabsPerSection) return false;
 
             // Remove from old section
             tab.section.remove(tab);
@@ -259,7 +308,7 @@ define([
             return Q.all(
                 _.chain(state.sections || [])
                 .map(function(section) {
-                    if (section.tabs.length > 0) that.getSection(section.id);
+                    that.getSection(section.id);
                     return section.tabs;
                 })
                 .flatten()
@@ -285,6 +334,7 @@ define([
                 .value()
             )
             .then(function() {
+                that.checkSections();
                 return n;
             });
         }

@@ -15,9 +15,17 @@ define([
             TabItem.__super__.initialize.apply(this, arguments);
             this.$el.append(this.model.view.$el);
         },
+
+        // Render active state
         render: function() {
             this.$el.toggleClass("active", this.model.isActive());
             return this.ready();
+        },
+
+        // Detatch the tab before removing this item
+        remove: function() {
+            this.model.view.detach();
+            return TabItem.__super__.remove.apply(this, arguments);
         },
 
         // On click focus the tab
@@ -52,13 +60,12 @@ define([
             // Drop tabs
             this.dropArea = new dnd.DropArea({
                 view: this,
-                dragType: TabHeaderItem.drag,
+                dragType: this.parent.manager.drag,
                 constrain: {
                     x: 20,
                     y: 20
                 },
                 handler: function(tab) {
-                    console.log("drop tab at end");
                     tab.changeSection(that.parent.sectionId);
                 }
             });

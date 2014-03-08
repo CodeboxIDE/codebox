@@ -22,10 +22,10 @@ define([
             }
 
             // Bind file events
-            this.model.on("set", this.update, this);
-            this.model.on("destroy", function() {
+            this.listenTo(this.model, "set", this.update);
+            this.listenTo(this.model, "destroy", function() {
                 this.closeTab();
-            }, this);
+            });
             
             // When tab is ready : load file
             this.on("tab:ready", function() {

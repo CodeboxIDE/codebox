@@ -60,6 +60,7 @@ define([
         register: function(id, properties) {
             properties = _.extend({}, properties, {
                 'type': "menu",
+                'search': false,
                 'id': id
             });
 

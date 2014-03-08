@@ -21,5 +21,8 @@
     },
     "scripts": {
         "postinstall": "./download_ace.sh && ./build.sh"
+    },
+    "engines": {
+        "codebox": ">=0.7.0"
     }
 }

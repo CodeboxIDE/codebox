@@ -4,6 +4,11 @@ var path = require('path');
 var wrench = require('wrench');
 var child_process = require('child_process');
 var Q = require("q");
+var semver = require("semver");
+
+var pkg = require("../../package.json");
+
+var utils = require("../utils");
 
 var exec = function(command, options) {
 
@@ -59,9 +64,11 @@ var Addon = function(_rootPath, options) {
     });
 
     // Valid the addon
+    // Valid data and valid codebox engine version
     this.isValid = function() {
         return !(!this.infos.name || !this.infos.version
-            || (!this.infos.main && !this.infos.client && !this.infos.client.main));
+            || (!this.infos.main && !this.infos.client && !this.infos.client.main)
+            || !this.infos.engines || !this.infos.engines.codebox || !semver.satisfies(pkg.version, this.infos.engines.codebox));
     };
 
     // Test is symlink
@@ -111,14 +118,14 @@ var Addon = function(_rootPath, options) {
             return Q(this);
         }
 
-        // R.js bin
-        var rjs = path.resolve(__dirname, "../../node_modules/.bin/r.js");
-
         // Base directory for the addon
         var addonPath = this.root;
 
+        // R.js bin
+        var rjs = path.resolve(__dirname, "../../node_modules/.bin/r.js");
+
         // Path to the require-tools
-        var requiretoolsPath = path.resolve(__dirname, "../../client/build/static/require-tools");
+        var requiretoolsPath = path.resolve(__dirname, "require-tools");
 
         // Base main
         var main = this.infos.client.main;
@@ -126,15 +133,16 @@ var Addon = function(_rootPath, options) {
         // Output file
         var output = path.resolve(addonPath, "addon-built.js");
 
-        // Build config (todo: use this config for the command)
+        // Build config
         var optconfig = {
             'baseUrl': addonPath,
             'name': main,
             'out': output,
+            'logLevel': 4, // silent
             'paths': {
                 'require-tools': requiretoolsPath
             },
-            'optimize': "none",
+            'optimize': "uglify",
             'map': {
                 '*': {
                     'css': "require-tools/css/css",
@@ -144,7 +152,10 @@ var Addon = function(_rootPath, options) {
             }
         };
 
-        var command = rjs+" -o baseUrl="+addonPath+" paths.require-tools="+requiretoolsPath+" name="+main+" map.*.css=require-tools/css/css map.*.less=require-tools/less/less map.*.text=require-tools/text/text out="+output;
+        // Build command for r.js
+        var command = rjs+" -o "+_.reduce(utils.deepkeys(optconfig), function(s, value, key) {
+            return s+key+"="+value+" ";
+        }, "");
 
         // Run optimization
         logger.log("Optimizing", this.infos.name);
@@ -157,9 +168,8 @@ var Addon = function(_rootPath, options) {
             return Q(that);
         }, function(err) {
             logger.error("error for optimization of", that.infos.name);
-            logger.error("command=",command);
-            logger.error(err.stdout);
-            logger.exception(err, false);
+            logger.error("options=", optconfig);
+            logger.error(err);
             return Q.reject(err);
         });
     };

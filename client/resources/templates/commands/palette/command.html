@@ -1,0 +1,10 @@
+<i class="fa fa-<%- command.get('icons.search') %>"></i>
+<span class="title">
+<% if (command.get("category")) { %>
+<%- command.get("category") %>:
+<% } %>
+<%- command.get("description") || command.get("title") %>
+</span>
+<% if (command.label()) { %>
+<span class="label"><%= command.label() %></span>
+<% } %>

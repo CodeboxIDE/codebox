@@ -86,7 +86,7 @@ define([
                 // lateral bar
                 'lateralbar': ".cb-lateralbar",
                 'lateralbar commands': ".cb-lateralbar .lateral-commands",
-                'lateralbar body': ".cb-lateralbar .lateral-body",
+                'lateralbar body': ".cb-panels",
 
                 // body
                 'body': ".cb-body",
@@ -99,6 +99,12 @@ define([
 
                 // operations
                 'operations operation': ".cb-operations .operation-item",
+
+                // palette
+                'palette': ".cb-commands-palette",
+                'palette input': ".cb-commands-palette input",
+                'palette results': ".cb-commands-palette .results",
+                'palette results command': ".cb-commands-palette .results .command",
 
                 // alerts
                 'alerts': ".cb-alerts",

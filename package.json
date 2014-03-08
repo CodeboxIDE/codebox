@@ -12,7 +12,7 @@
         "event-stream": "3.0.11",
         "readable-stream": "1.0.2",
         "request": "2.27.0",
-        "hr.js": "0.6.2",
+        "hr.js": "git+https://github.com/FriendCode/hr.js.git#ec91c467883c8cb2d068ba9e3766edfff346a40d",
         "commander": "1.1.1",
         "googlediff": "0.1.0",
         "eventemitter2": "0.4.13",
@@ -20,7 +20,7 @@
         "express": "3.3.5",
         "socket.io": "0.9.16",
         "loadfire": "1.3.4",
-        "shux": "0.2.0",
+        "shux": "git+https://github.com/SamyPesse/shux.git#3abe4c6074013791eac0d055c63ed70b3197e7f4",
         "vfs-http-adapter": "git+https://github.com/AaronO/vfs-http-adapter.git#6c9934e4f2da7886310397170b6ebaf745833936",
         "vfs-local": "git+https://github.com/FriendCode/vfs-local.git#af6bafede0ccb9fb362a0c280e708648f7363f33",
         "watchr": "2.4.11",
@@ -29,7 +29,7 @@
         "glob": "3.2.6",
         "temp": "0.6.0",
         "wrench": "1.5.7",
-        "requirejs": "2.1.0",
+        "requirejs": "2.1.11",
         "less": "1.5.0",
         "csso": "1.3.9",
         "fstream": "0.1.25",
@@ -42,7 +42,8 @@
         "qpatch": "0.0.8",
         "ctags": "0.8.0",
         "connect-gzip-static": "0.1.1",
-        "minimatch": "0.2.14"
+        "minimatch": "0.2.14",
+        "semver": "2.2.1"
     },
     "devDependencies": {
         "codebox-io": "0.3.2",

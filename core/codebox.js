@@ -18,7 +18,7 @@ var start = function(config) {
     var prepare = Q();
 
     // Options
-    config = _.deepExtend({
+    config = _.merge({
         'root': process.env.WORKSPACE_DIR || process.cwd(),
         'title': process.env.WORKSPACE_NAME,
         'public': process.env.WORKSPACE_PUBLIC != "false",

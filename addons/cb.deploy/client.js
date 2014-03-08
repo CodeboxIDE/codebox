@@ -74,7 +74,9 @@ define([], function() {
                 box.openTerminal(data.shellId, {
                     id: "deploy."+solutionId(solution.name)+"."+actionId,
                     title: data.title || "Deployment to "+solution.name+" ("+actionId+")",
-                    icon: "fa-cloud-upload"
+                    icons: {
+                        'default': "fa-cloud-upload",
+                    }
                 });
             }
         }, function(err) {
@@ -108,7 +110,9 @@ define([], function() {
 
     // Command to add a new deployment solution
     var addCommand = Command.register("deploy.solutions.add", {
+        category: "Deployment",
         title: "Add Solution",
+        description: "Add a solution",
         offline: false,
         action: function(page) {
             getSolutionTypes().then(function(solutionTypes) {
@@ -141,10 +145,12 @@ define([], function() {
 
     // Command to remove a solution
     var removeCommand = Command.register("deploy.solutions.remove", {
+        category: "Deployment",
         title: "Remove Solution",
+        description: "Remove a solution",
         offline: false,
         action: function() {
-            dialogs.select("Remove Deployment Dolution",
+            dialogs.select("Remove Deployment Solution",
             "Select a solution, this solution and its configuration will be removed from your settings.",
             _.chain(settings.get("solutions", {}))
             .map(function(solution, id) {

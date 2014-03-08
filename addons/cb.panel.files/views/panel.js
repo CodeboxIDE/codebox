@@ -1,10 +1,8 @@
 define([
     "settings",
     "views/tree",
-    "views/list",
-    "text!templates/panel.html",
     "less!stylesheets/panel.less"
-], function(panelSettings, FilesTreeView, FilesListView, templateFile) {
+], function(panelSettings, FilesTreeView) {
     var _ = codebox.require("hr/utils");
     var $ = codebox.require("hr/dom");
     var hr = codebox.require("hr/hr");
@@ -16,28 +14,22 @@ define([
 
     var PanelFilesView = PanelBaseView.extend({
         className: "cb-panel-files",
-        templateLoader: "text",
-        template: templateFile,
 
         initialize: function() {
             PanelFilesView.__super__.initialize.apply(this, arguments);
 
-            this.listActive = new FilesListView({
-                collection: files.active
-            });
-
-            this.tree = new FilesTreeView({
+            this.tree = new FilesTreeView.Item({
                 model: box.root
-            });
+            }, this);
             this.tree.update();
+            this.tree.select();
 
-            this.tree.on("count", function(count) {
-                this.toggle(count > 0);
-            }, this);
 
-            this.listActive.on("add remove filter", function(item, state) {
-                this.$(".files-section-open").toggle(panelSettings.user.get("openfiles") && this.listActive.count() > 0);
-            }, this);
+            var $rootTree = $("<ul>", {
+                "class": "root-tree cb-files-tree"
+            });
+            $rootTree.appendTo(this.$el);
+            this.tree.$el.appendTo($rootTree);
 
             // Offline
             hr.Offline.on("state", function() {
@@ -49,31 +41,17 @@ define([
                 this.update();
             }, this);
 
+            this.on("tab:layout", function() {
+                //this.render();
+            }, this);
+
             // Context menu
             ContextMenu.add(this.$el, box.root.contextMenu());
         },
 
         render: function() {
-            this.tree.$el.detach();
-            this.listActive.$el.detach();
-
-            return PanelFilesView.__super__.render.apply(this, arguments);
-        },
-
-        finish: function() {
-            this.toggle(this.tree.countFiles > 0);
-
-            if (panelSettings.user.get("openfiles")) {
-                this.listActive.$el.appendTo(this.$(".files-section-open .section-content"));
-                this.$(".files-section-open").toggle(this.listActive.count() > 0);
-            } else {
-                this.$(".files-section-open").hide();
-            }
-            
-            this.tree.$el.appendTo(this.$(".files-section-tree .section-content"));
-
-            return PanelFilesView.__super__.finish.apply(this, arguments);
-        },
+            return this.ready();
+        }
     });
 
     return PanelFilesView;

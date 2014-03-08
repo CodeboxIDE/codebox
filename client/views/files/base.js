@@ -22,8 +22,10 @@ define([
             FilesBaseView.__super__.initialize.apply(this, arguments);
 
             // Create base model
-            if (this.model == null) this.model = new File({"codebox": box});
-            this.model.on("refresh set", this.update, this);
+            if (!this.model) this.model = new File({"codebox": box});
+
+            // Listen on model events
+            this.listenTo(this.model, "refresh set", this.update);
 
             // Load base file
             if (this.options.path != null) this.load(this.options.path);

@@ -95,7 +95,6 @@ function setup(options, imports, register) {
         return next();
     });
     app.use('/', gzipStatic(__dirname + '/../../client/build'));
-    app.use('/docs', gzipStatic(__dirname + '/../../docs'));
 
     // Block queries for unAuthenticated users
     //
@@ -127,7 +126,6 @@ function setup(options, imports, register) {
         authorizedPaths.push(path);
     };
     disableAuth("/static");
-    disableAuth("/docs");
 
     // Http Server
     var server = http.createServer(app);

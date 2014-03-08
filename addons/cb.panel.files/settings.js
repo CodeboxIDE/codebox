@@ -12,10 +12,6 @@ define([], function() {
             'gitfolder': false
         },
         'fields': {
-            'openfiles': {
-                'label': "Show Open Files",
-                'type': "checkbox"
-            },
             'hiddenfiles': {
                 'label': "Show Hidden Files",
                 'type': "checkbox"

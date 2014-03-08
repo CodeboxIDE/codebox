@@ -4,6 +4,8 @@ define([
     'utils/dialogs',
     'utils/alerts',
     'utils/loading',
+    'views/grid',
+    'text!resources/templates/main.html',
     'core/box',
     'core/session',
     'core/addons',
@@ -11,20 +13,23 @@ define([
     'core/files',
     'core/commands/toolbar',
     'core/commands/menu',
+    'core/commands/palette',
     'core/tabs',
     'core/panels',
     'core/operations',
     'core/localfs',
     'core/themes',
+    'core/search/commands',
     'core/search/files',
-    'core/search/tags'
-], function (hr, url, dialogs, alerts, loading,
-box, session, addons, box, files, commands, menu, tabs, panels, operations, localfs, themes) {
+    'core/search/tags',
+    'core/search/addons'
+], function (hr, url, dialogs, alerts, loading, GridView, templateFile,
+box, session, addons, box, files, commands, menu, palette, tabs, panels, operations, localfs, themes) {
 
     // Define base application
     var Application = hr.Application.extend({
         name: "Codebox",
-        template: "main.html",
+        template: templateFile,
         metas: {
             "robots": "noindex, nofollow",
             "description": "Cloud IDE on a box.",
@@ -46,17 +51,31 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
             this._autologin = true;
             this.loginError = null;
 
-            // Tabs
+            // Init base grid for UI
+            this.grid = new GridView({
+                columns: 1000
+            });
+
+            // Add lateral bar: panels and operations
+            var v = this.grid.addView(new hr.View(), {
+                width: 18
+            });
+            panels.$el.appendTo(v.$el);
+            operations.$el.appendTo(v.$el);
+
+            // Add operations
+            operations.on("add remove reset", function() {
+                setTimeout(function() {
+                    panels.$el.css("bottom", operations.$el.height());
+                }, 200);
+            });
+
+            // Add tabs
+            this.grid.addView(tabs);
+
+            // Default tab: new file
             tabs.on("tabs:default tabs:opennew", function() {
                 files.openNew();
-            }, this);
-
-            // Panels
-            panels.on("open", function() {
-                this.toggleMode("body-fullpage", false);
-            }, this);
-            panels.on("close", function() {
-                this.toggleMode("body-fullpage", true);
             }, this);
 
             // Offline: state/update
@@ -114,22 +133,12 @@ box, session, addons, box, files, commands, menu, tabs, panels, operations, loca
                 commands.$el.appendTo(this.$(".cb-commands"));
                 commands.render();
 
-                // Add tabs
-                tabs.$el.appendTo(this.$(".cb-body"));
-                tabs.render();
+                // Add grid
+                this.grid.$el.appendTo(this.$(".cb-body"));
 
-                // Add panels
-                panels.$el.appendTo(this.$(".cb-panels"));
-                panels.render();
-
-                // Add operations
-                operations.$el.appendTo(this.$(".lateral-operations"));
-                operations.render();
-                operations.on("add remove reset", function() {
-                    setTimeout(function() {
-                        that.$(".lateral-body").css("bottom", operations.$el.height());
-                    }, 200);
-                });
+                // Add palette
+                palette.$el.appendTo(this.$(".cb-body"));
+                palette.render();
 
                 // Load addons
                 loading.show(addons.loadAll()).fail(function(err) {

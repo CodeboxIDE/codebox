@@ -2,17 +2,12 @@
     .cb-body {
         position: absolute;
         top: @codeboxMenubarHeight;
-        left: @codeboxLateralbarWidth;
+         left: @codeboxToolbarWidth;
         right: 0px;
         bottom: 0px;
         z-index: 10;
-        background: #ddd;
+        background: @codeboxBodyBackground;
         .transition(left @lateralTransitionSpeed);
-    }
-
-    &.mode-body-fullpage:not(.mode-search) {
-        .cb-body {
-            left: @codeboxToolbarWidth;
-        }
+        overflow: hidden;
     }
 }

@@ -3,14 +3,14 @@
     top: 0px;
     right: 0px;
     left: 0px;
-    height: @codeboxMenubarHeight;
+    height: @codeboxMenubarHeight+1;
     border-bottom: 1px solid #ccc;
     z-index: 1000;
 
     .cb-commands-menubar {
         float: left;
         margin: 0px;
-        padding: 2px;
+        padding: 0px;
 
         .menu-command-item {
             color: inherit;
@@ -23,11 +23,13 @@
             & > .btn {
                 border-radius: 0px;
                 background: transparent;
-                padding: 2px 8px;
+                padding: 3px 8px;
                 cursor: default;
                 color: inherit;
                 -webkit-font-smoothing: antialiased;
                 border: 1px solid transparent;
+                border-top: 0px;
+                border-bottom: 0px;
             }
 
             &:hover {
@@ -44,7 +46,6 @@
                     box-shadow: none;
                     color: #333333;
                     border-color: rgba(0, 0, 0, 0.15);
-                    border-bottom-color: transparent;
                 }
             }
 

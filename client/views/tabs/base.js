@@ -39,18 +39,17 @@ define([
                 'title': this.menuTitle,
                 'position': 1
             });
-            menu.collection.add(this.menu);
+            if (this.tab.manager.options.tabMenu) menu.collection.add(this.menu);
 
             // Bind tab event
-            this.tab.on("destroy", function() {
-                this.menu.destroy();
-                this.trigger("tab:close");
-            }, this);
-            this.tab.manager.on("active", function(tab) {
+            this.listenTo(this.tab.manager, "active", function(tab) {
                 var state = tab.id == this.tab.id;
 
                 this.trigger("tab:state", state);
                 this.menu.toggleFlag("hidden", !state);
+            });
+            this.on("tab:close", function() {
+                this.menu.destroy();
             }, this);
 
             // Keyboard shortcuts
@@ -62,6 +61,8 @@ define([
         setShortcuts: function(navigations, container) {
             var navs = {};
             container = container || this;
+
+            if (!this.tab.manager.options.keyboardShortcuts) return;
 
             _.each(navigations, function(method, key) {
                 navs[key] = _.bind(function() {
@@ -119,7 +120,7 @@ define([
 
         // Return if is active
         isActiveTab: function() {
-            return this.tab.isActive();
+            return this.tab.manager.isActiveTab(this.tab);
         },
 
         // Check that tab can be closed

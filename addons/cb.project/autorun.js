@@ -18,8 +18,11 @@ define([
 
     // Run command
     var runCommand = commands.register("project.run", {
+        category: "Project",
         title: "Run",
-        icon: "play",
+        icons: {
+            'default': "play",
+        },
         offline: false,
         position: 1,
         shortcuts: [
@@ -30,7 +33,9 @@ define([
         return box.run(options).then(function(runInfo) {
             var op = operations.start("project.run."+runInfo.shellId, null, {
                 'title': runInfo.name+" running on port "+runInfo.port,
-                'icon':  typeIcons[runInfo.type] || "fa-play",
+                'icons': {
+                    'default': typeIcons[runInfo.type] || "fa-play",
+                },
                 'action': function() {
                     // Open the url
                     window.open(runInfo.url);

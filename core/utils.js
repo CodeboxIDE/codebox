@@ -4,112 +4,6 @@ var _ = require('lodash');
 
 var cp = require('child_process');
 
-var arrays, basicObjects, deepClone, deepExtend, deepExtendCouple, isBasicObject, sum, __slice = [].slice;
-
-deepClone = function(obj) {
-    var func, isArr;
-    if (!_.isObject(obj) || _.isFunction(obj)) {
-        return obj;
-    }
-    if (_.isDate(obj)) {
-        return new Date(obj.getTime());
-    }
-    if (_.isRegExp(obj)) {
-        return new RegExp(obj.source, obj.toString().replace(/.*\//, ""));
-    }
-    isArr = _.isArray(obj || _.isArguments(obj));
-    func = function(memo, value, key) {
-        if (isArr) {
-            memo.push(deepClone(value));
-        } else {
-            memo[key] = deepClone(value);
-        }
-        return memo;
-    };
-    return _.reduce(obj, func, isArr ? [] : {});
-};
-
-isBasicObject = function(object) {
-    return (object != null && (object.prototype === {}.prototype || object.prototype === Object.prototype) && _.isObject(object) && !_.isArray(object) && !_.isFunction(object) && !_.isDate(object) && !_.isRegExp(object) && !_.isArguments(object));
-};
-
-basicObjects = function(object) {
-    return _.filter(_.keys(object), function(key) {
-        return isBasicObject(object[key]);
-    });
-};
-
-arrays = function(object) {
-    return _.filter(_.keys(object), function(key) {
-        return _.isArray(object[key]);
-    });
-};
-
-deepExtendCouple = function(destination, source, maxDepth) {
-    var combine, recurse, sharedArrayKey, sharedArrayKeys, sharedObjectKey, sharedObjectKeys, _i, _j, _len, _len1;
-    if (maxDepth == null) {
-        maxDepth = 20;
-    }
-    if (maxDepth <= 0) {
-        console.warn('_.deepExtend(): Maximum depth of recursion hit.');
-        return _.extend(destination, source);
-    }
-    sharedObjectKeys = _.intersection(basicObjects(destination), basicObjects(source));
-    recurse = function(key) {
-        return source[key] = deepExtendCouple(destination[key], source[key], maxDepth - 1);
-    };
-    for (_i = 0, _len = sharedObjectKeys.length; _i < _len; _i++) {
-        sharedObjectKey = sharedObjectKeys[_i];
-        recurse(sharedObjectKey);
-    }
-    sharedArrayKeys = _.intersection(arrays(destination), arrays(source));
-    combine = function(key) {
-        return source[key];
-        // Replace array and not replaced
-        //return source[key] = _.union(destination[key], source[key]);
-    };
-    for (_j = 0, _len1 = sharedArrayKeys.length; _j < _len1; _j++) {
-        sharedArrayKey = sharedArrayKeys[_j];
-        combine(sharedArrayKey);
-    }
-    return _.extend(destination, source);
-};
-
-deepExtend = function() {
-    var finalObj, maxDepth, objects, _i;
-    objects = 2 <= arguments.length ? __slice.call(arguments, 0, _i = arguments.length - 1) : (_i = 0, []), maxDepth = arguments[_i++];
-    if (!_.isNumber(maxDepth)) {
-        objects.push(maxDepth);
-        maxDepth = 20;
-    }
-    if (objects.length <= 1) {
-        return objects[0];
-    }
-    if (maxDepth <= 0) {
-        return _.extend.apply(this, objects);
-    }
-    finalObj = objects.shift();
-    while (objects.length > 0) {
-        finalObj = deepExtendCouple(finalObj, deepClone(objects.shift()), maxDepth);
-    }
-    return finalObj;
-};
-
-sum = function(obj) {
-  if (!$.isArray(obj) || obj.length == 0) return 0;
-  return _.reduce(obj, function(sum, n) {
-    return sum += n;
-  });
-};
-
-_.mixin({
-    deepClone: deepClone,
-    isBasicObject: isBasicObject,
-    basicObjects: basicObjects,
-    arrays: arrays,
-    deepExtend: deepExtend,
-    sum: sum
-});
 
 // Generate callbacks for exec functions
 function _execHandler(deffered) {
@@ -276,6 +170,32 @@ var atob = function(s) {
     return (new Buffer(s, 'base64')).toString('utf8');
 };
 
+// Transform {a: {b: 1}} -> {"a.b": 1}
+var deepkeys = function(obj, all) {
+    var keys= {};
+    var getBase = function(base, key) {
+        if (_.size(base) == 0) return key;
+        return base+"."+key;
+    };
+
+    var addKeys = function(_obj, base) {
+        var _base, _isObject;
+        base = base || "";
+
+        _.each(_obj, function(value, key) {
+            _base = getBase(base, key);
+            _isObject = _.isObject(value) && !_.isArray(value);
+
+            if (_isObject) addKeys(value, _base);
+            if (all == true || !_isObject) keys[_base] = value;
+        });
+    };
+
+    addKeys(obj);
+
+    return keys;
+};
+
 // Exports
 exports.exec = exec;
 exports.qnode = qnode;
@@ -288,3 +208,4 @@ exports.timestamp = timestamp;
 exports.startsWith = startsWith;
 exports.atob = atob;
 exports.btoa = btoa;
+exports.deepkeys = deepkeys;

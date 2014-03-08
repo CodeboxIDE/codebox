@@ -57,6 +57,7 @@ define([
             this.section.each(function(tab) {
                 tab.set("active", tab.id == this.id);
             }, this);
+            this.manager.activeTab = this.id;
             this.manager.trigger("active", this);
         },
 
@@ -94,9 +95,7 @@ define([
 
                 // Triger in tab
                 that.view.trigger("tab:close");
-                that.view.off();
-
-                delete that.view;
+                that.view.remove();
 
                 // Trigger global
                 that.manager.trigger("tab:"+tabid+":close");

@@ -1,8 +1,9 @@
 define([
     "hr/utils",
     "hr/dom",
-    "hr/hr"
-], function(_, $, hr) {
+    "hr/hr",
+    "utils/dragdrop"
+], function(_, $, hr, dnd) {
     var GridView = hr.View.extend({
         className: "component-grid",
         defaults: {
@@ -24,9 +25,16 @@ define([
         /*
          *  Add a view
          */
-        addView: function(view) {
+        addView: function(view, options) {
+            view._grid = this;
+            view._gridOptions = _.defaults(options || {}, {
+                width: null
+            });
+
             this.views.push(view);
-            return this.render();
+            this.update();
+
+            return view;
         },
 
         /*
@@ -38,7 +46,7 @@ define([
             this.views = _.filter(this.views, function(_v) {
                 return _v.cid != view;
             });
-            return this.render();
+            this.update();
         },
 
         /*
@@ -46,7 +54,7 @@ define([
          */
         setLayout: function(n) {
             this.columns = n;
-            return this.render();
+            this.update();
         },
 
         /*
@@ -77,11 +85,11 @@ define([
          *  Re-render the complete layout
          */
         render: function() {
-            var x, y;
+            var x, y, lineW;
 
             // Detach view
             _.each(this.views, function(view) {
-                view.$el.detach();
+                view.detach();
             });
 
             // Clear the view
@@ -94,21 +102,30 @@ define([
             var sectionHeight = (100/layout.lines).toFixed(3);
 
             // Add grid content
-            x = 0; y = 0;
+            x = 0; y = 0; lineW = 100;
+
             _.each(this.views, function(view, i) {
-                var $section, $content;
+                var $section, $content, w, dw;
+
+                // Calcul width for this section using optional width
+                dw =  (lineW/(layout.columns - x));
+                w = view._gridOptions.width || dw
+
+                w = w.toFixed(3);
 
                 // Container object
                 $section = $("<div>", {
                     'class': 'grid-section',
                     'css': {
-                        'left': (x * sectionWidth)+"%",
+                        'left': (100 - lineW)+"%",
                         'top': (y * sectionHeight)+"%",
-                        'width': sectionWidth+"%",
+                        'width': w+"%",
                         'height': sectionHeight+"%"
                     }
                 });
                 $section.appendTo(this.$el);
+
+                lineW = lineW - w;
 
                 // Content
                 $content = $("<div>", {
@@ -144,6 +161,7 @@ define([
                 if (x >= layout.columns) {
                     x = 0;
                     y = y + 1;
+                    lineW = 100;
                 }
             }, this);
 
@@ -159,6 +177,8 @@ define([
                 e.preventDefault();
                 oX = e.pageX;
                 oY = e.pageY;
+
+                dnd.cursor.set(type == "h" ? "col-resize" : "row-resize");
 
                 var f = function(e) {
                     dx = oX - e.pageX;
@@ -177,6 +197,7 @@ define([
                 $document.mousemove(f);
                 $document.mouseup(function(e) {
                     $document.unbind('mousemove', f);
+                    dnd.cursor.reset();
                 });
             };
         },
