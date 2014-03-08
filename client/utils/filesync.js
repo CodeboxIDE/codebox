@@ -347,7 +347,9 @@ define([
                 if (options.reset) {
                     this.setMode(self.modes.READONLY);
 
-                    this.file.getCache().then(function(content) {
+                    this.file.download().then(function(content) {
+                        self.file.modifiedState(false);
+
                         // Update content
                         self.setContent(content);
 
@@ -838,6 +840,7 @@ define([
                 doSave = function(args) {
                     return that.file.write(that.content_value_t1, args.path)
                     .then(function(newPath) {
+                        that.file.modifiedState(false);
                         if (newPath != that.file.path()) {
                             that.trigger("file:path", newPath);
                         }

@@ -34,7 +34,7 @@ define([
         initialize: function() {
             File.__super__.initialize.apply(this, arguments);
             this.codebox = this.options.codebox || require("core/box");
-            this.content = null;
+
             this.modified = false;
             this._loading = false;
             this._uniqueId = Date.now()+_.uniqueId("file");
@@ -411,6 +411,8 @@ define([
                 filename = null;
             }
 
+            if (this.isNewfile() && !filename) return Q("");
+
             options = _.defaults(options || {}, {
                 redirect: false
             });
@@ -418,8 +420,6 @@ define([
                 window.open(this.exportUrl(),'_blank');
             } else {
                 return this.loading(this.vfsRequest("read", this.vfsUrl(filename, false)).then(function(content) {
-                    that.setCache(content);
-                    that.modifiedState(false);
                     return content;
                 }));
             }
@@ -431,39 +431,8 @@ define([
         write: function(content, filename) {
             var that = this;
             return this.loading(this.vfsRequest("write", this.vfsUrl(filename, false), content).then(function() {
-                if (!filename) {
-                    that.setCache(content);
-                    that.modifiedState(false);
-                }
                 return that.path(filename);
             }));
-        },
-
-        /*
-         *  Return content
-         */
-        getCache: function(callback) {
-            if (this.content != null) {
-                return Q(this.content);
-            } else {
-                //Download can't work for newfiles
-                if (this.isNewfile()) {
-                    return Q("");
-                }
-
-                return this.download();
-            }
-        },
-
-        /*
-         *  Define cache content content
-         */
-        setCache: function(content) {
-            var modified = this.content != content;
-            this.content = content;
-            this.modifiedState(modified);
-            this.trigger("cache", this.content);
-            return this;
         },
 
         /*
