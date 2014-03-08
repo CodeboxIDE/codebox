@@ -19,18 +19,24 @@ function setup(options, imports, register) {
         });
 
         glob("**/*"+args.query+"*", {
-            'cwd': workspace.root
+            'cwd': workspace.root,
+            'mark': true
         }, function (err, files) {
             if (err) {
                 d.reject(err);
             } else {
-                var results = _.map(files.slice(args.start, args.start+args.limit), function(path) {
+                var results = _.chain(files)
+                .filter(function(path) {
+                    return !(!path.length || path[path.length-1] == "/");
+                })
+                .map(function(path) {
                     return "/"+path;
-                });
+                })
+                .value();
 
                 d.resolve({
-                    'files': results,
-                    'n': _.size(files)
+                    'files': results.slice(args.start, args.start+args.limit),
+                    'n': _.size(results)
                 });
             }
         });
