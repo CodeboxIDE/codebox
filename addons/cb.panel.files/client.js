@@ -11,7 +11,7 @@ define([
 
     // Add files panels
     var panel = panels.register("files", PanelFilesView, {
-        title: "Folder"
+        title: "Folders"
     });
     
     // Open files panel
