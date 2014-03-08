@@ -324,7 +324,7 @@ define([
                     return memo;
                 }, "file-text-o");
             } else {
-                return "folder-o";
+                return "folder";
             }
         },
 
