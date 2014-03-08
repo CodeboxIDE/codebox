@@ -153,7 +153,9 @@ templateFile, commandTemplateFile) {
                 .then(function() {},
                 function(err) {},
                 function(result) {
-                    that.commands.collection.add(result.results);
+                    that.commands.collection.add(_.filter(result.results, function(command) {
+                        return !command.hasFlag("disabled");
+                    }));
                 });
             }
 

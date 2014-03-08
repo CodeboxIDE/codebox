@@ -53,6 +53,7 @@ define([
             'icons': {
                 'search': "puzzle-piece"
             },
+            'offline': false,
             'action': _.bind(function() {
                 return addons.install(addon.get("git"))
             }, this)
@@ -68,6 +69,7 @@ define([
             'icons': {
                 'search': "puzzle-piece"
             },
+            'offline': false,
             'action': _.bind(function() {
                 return Command.run("addon.install", addon.get("name"));
             }, this)

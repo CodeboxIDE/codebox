@@ -15,6 +15,7 @@ define([
         category: "Add-ons",
         title: "Install",
         description: "Install with GIT Url",
+        offline: false,
         action: function(url) {
             return Q()
             .then(function() {
