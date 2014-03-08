@@ -97,7 +97,7 @@ define([
         if (!query) return [];
 
         var addonsIndex = new Addons();
-
+        
         return addonsIndex.loadFromIndex(addonsSettings.user.get("registry"))
         .then(function() {
             return _.chain(

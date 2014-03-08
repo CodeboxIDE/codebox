@@ -213,7 +213,7 @@ define([
                         'git': addon.git
                     });
                 }));
-                return Q(addons);
+                return Q(index);
             };
 
             cached = hr.Cache.get("addons", indexKey);
