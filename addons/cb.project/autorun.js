@@ -10,6 +10,9 @@ define([
     var Command = codebox.require("models/command");
 
     // Currently running terminal
+    // undefined -> nothing is running
+    // null -> preparing the run
+    // {...} _> running
     var runningTerm = undefined;
 
     // Map type -> icon
@@ -32,17 +35,25 @@ define([
             "alt+r"
         ]
     }, function(options) {
-        options = options || {};
+        options = _.defaults(options || {}, {
+            'ignoreErrors': false
+        });
 
         if (runningTerm !== undefined) {
-            if (runningTerm != null) runningTerm.closeTab();
+            // For stopping: Close terminal
+            if (runningTerm != null) {
+                runningTerm.terminal.closeTab();
+            }
+
             return;
         }
 
         setRunTerminal(null);
 
         // Run
-        return box.run(options)
+        return box.run({
+            'type': options.type
+        })
         .then(function(runInfo) {
             var op = operations.start("project.run."+runInfo.shellId, null, {
                 'title': runInfo.name+" running on port "+runInfo.port,
@@ -76,17 +87,22 @@ define([
             });
 
             // Set active runningterminal
-            setRunTerminal(runInfo.terminal);
+            setRunTerminal(runInfo);
 
             // Update list of ports
             ports.update();
         }, function(err) {
-            dialogs.alert("Error running this project", "An error occurred when trying to run this project: "+(err.message || err));
+            setRunTerminal(undefined);
+            
+            if (!options.ignoreErrors) dialogs.alert("Error running this project", "An error occurred when trying to run this project: "+(err.message || err));
         });
     });
 
     var setRunTerminal = function(st) {
+        var previous = runningTerm;
         runningTerm = st;
+
+        // Change command state
         if (runningTerm != null) {
             runCommand.set({
                 'title': "Stop",
@@ -100,6 +116,16 @@ define([
                 'icons': {
                     'default': "play"
                 }
+            });
+        }
+
+        if (previous 
+        && previous.type == "run"
+        && runningTerm === undefined) {
+            // Run stop command
+            return runCommand.run({
+                'type': "stop",
+                'ignoreErrors': true
             });
         }
     };
