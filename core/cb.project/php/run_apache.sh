@@ -22,13 +22,13 @@ CONF="apache2.conf"
 # Platform specific apache extras
 EXTRA_CONF=''
 if [[ $platform == 'Linux' ]]; then
-    EXTRA_CONF="
+EXTRA_CONF="
 # Include module configuration:
 Include /etc/apache2/mods-enabled/*.load
 Include /etc/apache2/mods-enabled/*.conf
 "
 elif [[ $platform == 'Darwin' ]]; then
-    EXTRA_CONF="
+EXTRA_CONF="
 # Modules
 $(cat /etc/apache2/httpd.conf | grep LoadModule | sed 's/libexec/\/usr\/libexec/g')
 LoadModule php5_module /usr/libexec/apache2/libphp5.so
@@ -37,7 +37,7 @@ fi
 
 # Include phpmyadmin only if there
 if [[ -f "/etc/apache2/conf.d/phpmyadmin.conf" ]]; then
-  EXTRA_CONF+="
+EXTRA_CONF+="
 Include /etc/apache2/conf.d/phpmyadmin.conf
 "
 fi
@@ -64,9 +64,9 @@ MaxSpareServers 1
 # Serve our workspace
 DocumentRoot "${WORKSPACE}"
 <Directory />
-  AllowOverride all
-  Order allow,deny
-  Allow from all
+AllowOverride all
+Order allow,deny
+Allow from all
 </Directory>
 
 AddType application/x-httpd-php .php
@@ -77,29 +77,115 @@ ${EXTRA_CONF}
 
 EOF
 
+# Keep track of MySQL setup state
+SUDO_MYSQL=false
+MYSQL_STARTED=false
+MYSQL_PORT=3306
+
+function is_mysql_running() {
+# Check if there is a TCP server listening on MySQL's port
+netstat -nat | grep -i listen | grep -e "[\:\.]${MYSQL_ROOT}" &> /dev/null
+# Check for success
+if [ $? = 0 ]; then
+echo "true"
+fi
+}
+
+# Echoes sudo if the system supports sudo without password for current user (codebox.io boxes for example)
+function needs_sudo_pwd() {
+sudo -n echo | head -n 1 | grep -q -v "sudo:"
+local success=$?
+if [ success = 0 ]; then
+# No password needed
+echo "true"
+fi
+}
+
+# Start mysql and set SUDO_MYSQL
+function start_mysql() {
+echo "Starting MySQL server ..."
+
+# Exit if MySQL is not on $PATH
+if [ -z "$(which mysqld)" ]; then
+echo "Could not start MySQL because it is not installed on the system's \$PATH"
+fi
+
+# Check if MySQL is already running
+if [ -n "$(is_mysql_running)" ]; then
+echo "MySQL appears to already be running on PORT=${MYSQL_PORT}"
+return
+fi
+
+locals needs_pwd="$(needs_sudo_pwd)"
+# Try running in sudo or not
+if [ -n ${needs_pwd} ]; then
+sudo -n mysqld &
+SUDO_MYSQL=true
+else
+mysqld &
+fi
+
+# If MySQL is not running
+if [ -z "$(is_mysql_running)" ]; then
+# Try running with sudo (and passwd prompt)
+if [ ! $SUDO_MYSQL ]; then
+echo "Please enter sudo password for MySQL"
+sudo mysqld &
+fi
+else
+echo "MySQL is up and running"
+fi
+
+# After all our different tries is MySQL up ?
+if [ -n "$(is_mysql_running)" ]; then
+MYSQL_STARTED=true
+fi
+}
+
+# Stop MySQL started by "start_mysql"
+function stop_mysql() {
+echo "Killing MySQL"
+# MySQL wasn't started by this script
+# or is already dead
+if [ !${MYSQL_STARTED} || -z "$(is_mysql_running)" ]; then
+# So do nothing
+return
+fi
+
+# Force kill MySQL
+killall -s KILL mysqld
+}
 
 # Wait for a process or group of processes
 function anywait() {
-    for pid in "$@"; do
-        while kill -0 "$pid" &> /dev/null; do
-            sleep 0.5
-        done
-    done
+for pid in "$@"; do
+while kill -0 "$pid" &> /dev/null; do
+sleep 0.5
+done
+done
 }
 
 function cleanup {
-    if [[ -f ${PID_FILE} ]]; then
-        echo "Killed process"
-        # Kill process and all children
-        /bin/kill -s KILL -$(cat ${PID_FILE})
-    fi
-    # Remove folder on exit
-    echo "Cleaning up ${FOLDER}"
-    rm -rf ${FOLDER}
+# Kill Apache
+if [[ -f ${PID_FILE} ]]; then
+echo "Killed process"
+# Kill process and all children
+/bin/kill -s KILL -$(cat ${PID_FILE})
+fi
+
+# Kill MySQL
+stop_mysql
+
+# Remove folder on exit
+echo "Cleaning up ${FOLDER}"
+rm -rf ${FOLDER}
 }
 
 # Cleanup when killed
 trap cleanup EXIT INT KILL
+
+# Run MySQL
+start_mysql
 
 # Run apache process in foreground
 echo "Running apache2 on ${WORKSPACE} (${FOLDER})"
@@ -113,3 +199,6 @@ PID=$(cat ${PID_FILE})
 echo "Waiting for Apache2 process : ${PID}"
 anywait ${PID}
 echo "Apache is dead (pid=${PID})"
+
+# Cleanup on exit
+cleanup
