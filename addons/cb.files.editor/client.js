@@ -20,6 +20,7 @@ define([
             'theme': "github",
             'fontsize': "12",
             'printmargincolumn': 80,
+            'showinvisibles': false,
             'showprintmargin': false,
             'highlightactiveline': false,
             'wraplimitrange': 80,
@@ -66,6 +67,10 @@ define([
             },
             'showprintmargin': {
                 'label': "Show Print Margin",
+                'type': "checkbox"
+            },
+            'showinvisibles': {
+                'label': "Show Invisibles",
                 'type': "checkbox"
             },
             'highlightactiveline': {

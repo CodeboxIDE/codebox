@@ -402,6 +402,7 @@ define([
                 fontsize: "12",
                 printmargincolumn: 80,
                 showprintmargin: false,
+                showinvisibles: false,
                 highlightactiveline: false,
                 wraplimitrange: 80,
                 enablesoftwrap: false,
@@ -416,6 +417,7 @@ define([
             this.$editor.css("font-size", this.options.fontsize+"px");
             this.editor.setPrintMarginColumn(this.options.printmargincolumn);
             this.editor.setShowPrintMargin(this.options.showprintmargin);
+            this.editor.setShowInvisibles(this.options.showinvisibles);
             this.editor.setHighlightActiveLine(this.options.highlightactiveline);
             this.editor.getSession().setUseWrapMode(this.options.enablesoftwrap);
             this.editor.getSession().setWrapLimitRange(this.options.wraplimitrange, this.options.wraplimitrange);
