@@ -1,3 +1,17 @@
+2014-03-09  Samy Pessé  <samy.pesse@friendco.de>
+            Aaron O'Mullan <aaron.omullan@friendco.de>
+
+    * Bump version to 0.7.0
+    * New tabs system: grid system, resize, reorder
+    * New statusbar
+    * New command palette (test it using Command+Shift+P or Ctrl+Shift+P)
+    * Stop state for run button
+    * Apache runner is now working (with MySQL)
+    * Addons need an engine field
+    * Django support (auto-run)
+    * Performance improved (faster boot, ...)
+    * Editor uses .jshintrc file for JSHing worker configuration
+
 2014-02-25  Samy Pessé  <samy.pesse@friendco.de>
             Aaron O'Mullan <aaron.omullan@friendco.de>
 
