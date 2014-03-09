@@ -1,9 +1,10 @@
 define([
     "ace",
+    "jshint",
     "theme/textmate",
     "text!templates/file.html",
     "less!stylesheets/file.less",
-], function(ace, aceDefaultTheme, templateFile) {
+], function(ace, jshint, aceDefaultTheme, templateFile) {
     var _ = codebox.require("hr/utils");
     var $ = codebox.require("hr/dom");
     var hr = codebox.require("hr/hr");
@@ -191,6 +192,14 @@ define([
                 var cursor = that.editor.getSession().getSelection().getCursor();
                 that.sync.updateUserCursor(cursor.column, cursor.row);
                 that.editorStatusCommand.set("title", "Line "+(cursor.row+1)+", Column "+(cursor.column+1));
+            });
+            this.editor.getSession().on("changeMode", function() {
+                jshint.applySettings(that.editor)
+                .then(function(state) {
+                    console.log("jshint config", state);
+                }, function(state) {
+                    console.error("jshint error", state);
+                });
             });
 
             var $doc = this.editor.session.doc;
