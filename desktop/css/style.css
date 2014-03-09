@@ -78,6 +78,11 @@ body {
     margin: 9px 10px 0px 2px;
     width: 32px;
 }
+#projects .project .project-path {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
 #projects hr {
     margin: 20px 10px;
     border: 0px;

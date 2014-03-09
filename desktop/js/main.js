@@ -116,7 +116,7 @@ var updateProjects = function() {
         if (!fs.existsSync(path)) {
             projects = _.without(projects, path);
         }
-        addProjectItem(path.split("/").pop(), path, "icons/folder.png", function() {
+        addProjectItem(path.split("/").pop(), path.replace(process.env.HOME || "", "~"), "icons/folder.png", function() {
             runLocalCodebox(path);
         });
     });
