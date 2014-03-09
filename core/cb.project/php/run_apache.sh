@@ -112,6 +112,10 @@ function start_mysql() {
     if [ -z "$(which mysqld)" ]; then
         echo "Could not start MySQL because it is not installed on the system's \$PATH"
     fi
+    
+    # Specify that MySQL was started by this script
+    # And thus we handle it's termination
+    MYSQL_STARTED=true
 
     echo "MySQL RUNNING = $(is_mysql_running)"
     # Check if MySQL is already running
@@ -150,9 +154,10 @@ function start_mysql() {
 # Stop MySQL started by "start_mysql"
 function stop_mysql() {
     echo "Killing MySQL"
+
     # MySQL wasn't started by this script
     # or is already dead
-    if [ !${MYSQL_STARTED} ] || [ -z "$(is_mysql_running)" ]; then
+    if [ ! $MYSQL_STARTED ] || [ -z "$(is_mysql_running)" ]; then
         echo "No need to kill MySQL, it is not running"
         # So do nothing
         return
