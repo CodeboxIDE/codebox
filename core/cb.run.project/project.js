@@ -132,7 +132,7 @@ ProjectRunner.prototype.run = function(options) {
         runner = projectType.getRunner(_.extend({}, options, {
             pick: true
         }));
-        if (!runner) return Q.reject(new Error('No runner for project: '+projectType.id));
+        if (!runner) return Q.reject(new Error('No runner of type "'+(options.type || "default")+'" for project type: '+projectType.id));
         return runner;
     })
     .then(function(runner) {
