@@ -18,6 +18,7 @@ define([
         },
         events: {
             "mousedown .close": "close",
+            "dblclick": "open",
             "click .close": "close",
             "click": "open",
         },
@@ -142,7 +143,10 @@ define([
 
         // (event) open
         open: function(e) {
-            if (e != null) e.preventDefault();
+            if (e != null) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
             this.model.active();
         },
 
