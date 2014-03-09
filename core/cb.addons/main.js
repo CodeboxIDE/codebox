@@ -202,12 +202,6 @@ function setup(options, imports, register, app) {
         });
     })
     .then(manager.runAddonsOperation(function(addon) {
-        // Install node dependencies
-        return addon.installDependencies();
-    }, {
-        failOnError: false
-    }))
-    .then(manager.runAddonsOperation(function(addon) {
         // Build non optimized addons
         return addon.optimizeClient();
     }, {
