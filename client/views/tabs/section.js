@@ -74,6 +74,7 @@ define([
         },
 
         openNewtab: function() {
+            this.parent.manager.activeSection = this.parent.sectionId;
             this.parent.manager.openDefault();
         }
     });

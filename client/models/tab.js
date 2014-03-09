@@ -58,6 +58,7 @@ define([
                 tab.set("active", tab.id == this.id);
             }, this);
             this.manager.activeTab = this.id;
+            this.manager.activeSection = this.section.sectionId;
             this.manager.trigger("active", this);
         },
 

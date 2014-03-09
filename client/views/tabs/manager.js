@@ -57,6 +57,7 @@ define([
 
             // Current actiev tab id
             this.activeTab = null;
+            this.activeSection = 0;
 
             // Current layout
             this.layout = this.options.layout; // null: mode auto
@@ -159,7 +160,7 @@ define([
                 uniqueId: null,
 
                 // Base section id
-                section: 0
+                section: this.activeSection
             });
 
             if (options.uniqueId) {
@@ -206,7 +207,7 @@ define([
         },
 
         // Open default new tab
-        openDefault: function(e) {
+        openDefault: function() {
             this.trigger("tabs:opennew");
         },
 
