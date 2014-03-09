@@ -28,6 +28,7 @@ define([
             var that = this;
             TerminalTab.__super__.initialize.apply(this, arguments);
             this.connected = false;
+            this.setTabState("loading", true);
 
             // Init menu
             this.menu.menuSection([
@@ -80,6 +81,7 @@ define([
 
 
             this.shell.once('data', function() {
+                that.setTabState("loading", false);
                 that.resize();
             });
 
