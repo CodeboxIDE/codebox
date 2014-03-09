@@ -5,8 +5,9 @@ define([
     "utils/dragdrop",
     "utils/keyboard",
     "utils/contextmenu",
-    "models/command"
-], function(_, $, hr, DragDrop, Keyboard, ContextMenu, Command) {
+    "models/command",
+    "collections/commands"
+], function(_, $, hr, DragDrop, Keyboard, ContextMenu, Command, Commands) {
     // Tab body view
     var TabPanelView = hr.View.extend({
         className: "component-tab-panel",
@@ -29,6 +30,7 @@ define([
         initialize: function() {
             TabPanelView.__super__.initialize.apply(this, arguments);
             var menu = require("core/commands/menu");
+            var statusbar = require("core/commands/statusbar");
 
             this.tabs = this.parent;
             this.tab = this.options.tab;
@@ -41,15 +43,28 @@ define([
             });
             if (this.tab.manager.options.tabMenu) menu.collection.add(this.menu);
 
+            // Create statusbar commands
+            this.statusbar = new Commands();
+            this.statusbar.pipe(statusbar.collection);
+
             // Bind tab event
             this.listenTo(this.tab.manager, "active", function(tab) {
                 var state = tab.id == this.tab.id;
 
                 this.trigger("tab:state", state);
+
+                // Toggle visibility of commands
                 this.menu.toggleFlag("hidden", !state);
+                this.statusbar.each(function (command){
+                    command.toggleFlag("hidden", !state);
+                });
             });
             this.on("tab:close", function() {
                 this.menu.destroy();
+                this.statusbar.each(function (command){
+                    command.destroy();
+                });
+                this.statusbar.stopListening();
             }, this);
 
             // Keyboard shortcuts

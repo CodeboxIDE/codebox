@@ -83,6 +83,10 @@ define([
                 'menubar': ".cb-menubar",
                 'menubar button': ".cb-menubar .cb-commands-menubar .menu-command-item>.btn",
 
+                // statusbar
+                'statusbar': ".cb-statusbar",
+                'statusbar button': ".cb-statusbar .cb-commands-menubar .menu-command-item>.btn",
+
                 // lateral bar
                 'lateralbar': ".cb-lateralbar",
                 'lateralbar commands': ".cb-lateralbar .lateral-commands",

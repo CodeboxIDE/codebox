@@ -85,7 +85,7 @@ define([
 
             var $li = this.$el;
             $li.empty();
-            $li.attr("class", this.className+" "+this.getFlagsClass());
+            $li.attr("class", this.className+" "+this.getFlagsClass()+" menu-item-"+itemType);
 
             if (itemType == "action") {
                 var $a = this.buildAction();

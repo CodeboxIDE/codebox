@@ -34,6 +34,17 @@ define([
                 }
             },
 
+            // Statusbar
+            statusbar: {
+                'background': bgDarker,
+                'color': colorDark,
+                'border-color': "#111",
+
+                button: {
+                    'border-color': bgNormal
+                }
+            },
+
             // Lateral bar panels
             lateralbar: {
                 'background': bgDark,

@@ -1,51 +1,50 @@
-.cb-menubar {
+.cb-statusbar {
     position: fixed;
-    top: 0px;
+    bottom: 0px;
     right: 0px;
     left: 0px;
-    height: @codeboxMenubarHeight;
-    border-bottom: 1px solid #ccc;
+    height: @codeboxStatusbarHeight;
+    border-top: 1px solid #ccc;
     z-index: 1000;
 
     .cb-commands-menubar {
-        float: left;
         margin: 0px;
         padding: 0px;
+        list-style: none;
+        font-size: 13px;
 
-        .menu-command-item {
+        .menu-item {
             color: inherit;
             margin: 0px 4px;
             cursor: default;
             position: relative;
-            height: @codeboxMenubarHeight - 1;
+            height: @codeboxStatusbarHeight - 1;
             color: inherit;
+            float: right;
+            display: inline-block;
 
-            & > .btn {
+            &.menu-item-label {
+                float: left;
+                padding: 3px 3px;
+            }
+
+            & > a {
                 border-radius: 0px;
                 background: transparent;
-                padding: 3px 8px;
+                padding: 1px 8px;
                 cursor: default;
                 color: inherit;
                 -webkit-font-smoothing: antialiased;
                 border: 1px solid transparent;
                 border-top: 0px;
                 border-bottom: 0px;
+                display: inline-block;
             }
 
             &:hover {
-                & > .btn {
+                & > a {
                     background: rgba(0,0,0,0.10);
                     text-decoration: none;
-                }
-            }
-
-            &.open {
-                & > .btn {
-                    background: #fff;
-                    z-index: 1001;
-                    box-shadow: none;
-                    color: #333333;
-                    border-color: rgba(0, 0, 0, 0.15);
                 }
             }
 
@@ -53,12 +52,5 @@
                 opacity: 0.4;
             }
         }
-    }
-
-    .cb-user-email {
-        float: right;
-        line-height: @codeboxMenubarHeight;
-        opacity: 0.5;
-        padding: 0px 10px;
     }
 }

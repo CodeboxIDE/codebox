@@ -12,7 +12,7 @@
         "event-stream": "3.0.11",
         "readable-stream": "1.0.2",
         "request": "2.27.0",
-        "hr.js": "git+https://github.com/FriendCode/hr.js.git#ec91c467883c8cb2d068ba9e3766edfff346a40d",
+        "hr.js": "0.6.3",
         "commander": "1.1.1",
         "googlediff": "0.1.0",
         "eventemitter2": "0.4.13",

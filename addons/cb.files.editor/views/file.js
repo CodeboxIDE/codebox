@@ -81,6 +81,13 @@ define([
                 'flags': "disabled"
             });
 
+            // Statusbar
+            this.editorStatusCommand = new Command({}, {
+                'title': "Line 1, Column 1",
+                'type': "label"
+            });
+            this.tab.statusbar.add(this.editorStatusCommand);
+
             // Tab menu
             this.tab.menu.menuSection([
                 {
@@ -181,6 +188,7 @@ define([
             this.editor.getSession().selection.on('changeCursor', function(){
                 var cursor = that.editor.getSession().getSelection().getCursor();
                 that.sync.updateUserCursor(cursor.column, cursor.row);
+                that.editorStatusCommand.set("title", "Line "+(cursor.row+1)+", Column "+(cursor.column+1));
             });
 
             var $doc = this.editor.session.doc;
