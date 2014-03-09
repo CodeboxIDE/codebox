@@ -87,6 +87,8 @@ define([
                 'type': "label"
             });
             this.tab.statusbar.add(this.editorStatusCommand);
+            this.tab.statusbar.add(this.collaboratorsMenu);
+            this.tab.statusbar.add(syntaxMenu);
 
             // Tab menu
             this.tab.menu.menuSection([

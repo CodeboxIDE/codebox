@@ -61,10 +61,10 @@ define([
             });
             this.on("tab:close", function() {
                 this.menu.destroy();
+                this.statusbar.stopListening();
                 this.statusbar.each(function (command){
                     command.destroy();
                 });
-                this.statusbar.stopListening();
             }, this);
 
             // Keyboard shortcuts
