@@ -77,7 +77,6 @@ body {
     float: left;
     margin: 9px 10px 0px 2px;
     width: 32px;
-    -webkit-filter: grayscale(1);
 }
 #projects hr {
     margin: 20px 10px;
