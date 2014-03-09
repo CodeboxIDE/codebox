@@ -76,14 +76,10 @@ define([
                 }
             });
 
-            // Stop
-            op.on("destroy", function() {
-                setRunTerminal(undefined);
-            });
-
             // Terminal is close: finish the operation
             runInfo.terminal.on("tab:close", function() {
                 op.destroy();
+                setRunTerminal(undefined);
             });
 
             // Set active runningterminal
