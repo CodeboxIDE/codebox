@@ -9,6 +9,9 @@ define([
     var alerts = codebox.require("utils/alerts");
     var Command = codebox.require("models/command");
 
+    // Currently running terminal
+    var runningTerm = undefined;
+
     // Map type -> icon
     var typeIcons = {
         'run': "fa-play",
@@ -30,11 +33,21 @@ define([
         ]
     }, function(options) {
         options = options || {};
-        return box.run(options).then(function(runInfo) {
+
+        if (runningTerm !== undefined) {
+            if (runningTerm != null) runningTerm.closeTab();
+            return;
+        }
+
+        setRunTerminal(null);
+
+        // Run
+        return box.run(options)
+        .then(function(runInfo) {
             var op = operations.start("project.run."+runInfo.shellId, null, {
                 'title': runInfo.name+" running on port "+runInfo.port,
                 'icons': {
-                    'default': typeIcons[runInfo.type] || "fa-play",
+                    'default': typeIcons[runInfo.type] || "play",
                 },
                 'action': function() {
                     // Open the url
@@ -52,15 +65,46 @@ define([
                 }
             });
 
+            // Stop
+            op.on("destroy", function() {
+                setRunTerminal(undefined);
+            });
+
             // Terminal is close: finish the operation
             runInfo.terminal.on("tab:close", function() {
                 op.destroy();
             });
+
+            // Set active runningterminal
+            setRunTerminal(runInfo.terminal);
+
+            // Update list of ports
             ports.update();
         }, function(err) {
             dialogs.alert("Error running this project", "An error occurred when trying to run this project: "+(err.message || err));
         });
     });
+
+    var setRunTerminal = function(st) {
+        runningTerm = st;
+        if (runningTerm != null) {
+            runCommand.set({
+                'title': "Stop",
+                'icons': {
+                    'default': "stop"
+                }
+            });
+        } else {
+            runCommand.set({
+                'title': "Run",
+                'icons': {
+                    'default': "play"
+                }
+            });
+        }
+    };
+
+    setRunTerminal(undefined);
 
     return {
         'command': runCommand
