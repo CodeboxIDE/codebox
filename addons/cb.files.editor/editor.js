@@ -194,12 +194,7 @@ define([
                 that.editorStatusCommand.set("title", "Line "+(cursor.row+1)+", Column "+(cursor.column+1));
             });
             this.editor.getSession().on("changeMode", function() {
-                jshint.applySettings(that.editor)
-                .then(function(state) {
-                    console.log("jshint config", state);
-                }, function(state) {
-                    console.error("jshint error", state);
-                });
+                jshint.applySettings(that.editor);
             });
 
             var $doc = this.editor.session.doc;

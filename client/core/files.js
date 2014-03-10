@@ -64,7 +64,9 @@ define([
         }
 
         handler = _.defaults(handler, {
-            'setActive': false
+            'setActive': false,
+            'fallback': false,
+            'position': 10
         });
 
         handler.id = handlerId;
@@ -110,10 +112,15 @@ define([
     };
 
     // Get handler for a file
-    var getHandlers = function(file, defaultHandler) {
-        return _.filter(handlers, function(handler) {
+    var getHandlers = function(file) {
+        return _.chain(handlers)
+        .filter(function(handler) {
             return userSettings.get(handler.id, true) && handler.valid(file);
-        });
+        })
+        .sort(function(handler) {
+            return handler['position'];
+        })
+        .value();
     };
 
     // get fallback handlers for a file
@@ -177,7 +184,7 @@ define([
         if (_.size(possibleHandlers) == 0) {
             return openFileWith(file);
         }
-
+        
         if (_.size(possibleHandlers) == 1 || (options.userChoice != true)) {
             return Q(openFileHandler(_.first(possibleHandlers), file));
         }
