@@ -117,9 +117,9 @@ define([
                 $section = $("<div>", {
                     'class': 'grid-section',
                     'css': {
-                        'left': Math.ceil(100 - lineW)+"%",
+                        'left': (100 - lineW)+"%",
                         'top': (y * sectionHeight)+"%",
-                        'width': Math.floor(w)+"%",
+                        'width': w+"%",
                         'height': sectionHeight+"%"
                     }
                 });
@@ -209,8 +209,8 @@ define([
             return this.$("> .grid-section").filter(function() {
                 var r = false;
 
-                if ((sx != null && sx == x)
-                || (sy != null && sy == y)) {
+                if ((sx !== null && sx == x)
+                || (sy !== null && sy == y)) {
                     r = true;
                 }
 
@@ -228,40 +228,46 @@ define([
         _resize: function(type, i, d) {
             var getSection = _.bind(_.partialRight(this.getSection, null), this);
             var pixelToPercent = _.bind(_.partialRight(this.pixelToPercent, null), this);
-            var size = function(el, s) {
-                if (!s) return el.width();
-                return el.width(s);
-            };
             var position = "left";
+            var size = "width";
 
             if (type == "h") {
                 getSection = _.bind(_.partial(this.getSection, null), this);
                 pixelToPercent = _.bind(_.partial(this.pixelToPercent, null), this);
                 position = "top";
-                size = function(el, s) {
-                    if (!s) return el.height();
-                    return el.height(s);
-                }
+                size = "height";
             }
+
+            // Convert update to percent
+            d = pixelToPercent(d);
 
             var $sections = getSection(i);
             var $sectionsAfter = getSection(i+1);
 
             // New size for next sections
-            var sAfterN = pixelToPercent(size($sectionsAfter)-d);
+            // We use el.get(0).style and not el.css because el.css returns pixel and not the real value
+            var sAfterN = this.strToPercent($sectionsAfter.get(0).style[size])-d;
 
             // New size for current sections
-            var sCurrentN = pixelToPercent(size($sections)+d);
+            var sCurrentN = this.strToPercent($sections.get(0).style[size])+d;
 
             // Limited size
             if (sCurrentN < 10 || sAfterN < 10) return false;
 
             // Resize next line
-            $sectionsAfter.css(_.object([position], [pixelToPercent($sectionsAfter.position()[position]+d)+"%"]));
-            size($sectionsAfter, sAfterN+"%");
+            $sectionsAfter.css(_.object(
+                [position, size],
+                [
+                    (this.strToPercent($sectionsAfter.get(0).style[position])+d).toFixed(2)+"%",
+                    sAfterN.toFixed(2)+"%"
+                ]
+            ));
 
             // Resize current line
-            size($sections, sCurrentN+"%");
+            $sections.css(_.object(
+                [size],
+                [sCurrentN.toFixed(2)+"%"]
+            ));
 
             this.signalLayout();
 
@@ -277,8 +283,12 @@ define([
         },
 
         pixelToPercent: function(x, y) {
-            if (x != null) return ((x*100) / this.$el.width());
-            if (y != null) return ((y*100) / this.$el.height());
+            if (x !== null) return ((x*100) / this.$el.width());
+            if (y !== null) return ((y*100) / this.$el.height());
+        },
+
+        strToPercent: function(size) {
+            return parseFloat(size.replace("%", ""))
         }
     });
 
