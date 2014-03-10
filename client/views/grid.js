@@ -111,15 +111,15 @@ define([
                 dw =  (lineW/(layout.columns - x));
                 w = view._gridOptions.width || dw
 
-                w = w.toFixed(3);
+                w = w.toFixed(4);
 
                 // Container object
                 $section = $("<div>", {
                     'class': 'grid-section',
                     'css': {
-                        'left': (100 - lineW)+"%",
+                        'left': Math.ceil(100 - lineW)+"%",
                         'top': (y * sectionHeight)+"%",
-                        'width': w+"%",
+                        'width': Math.floor(w)+"%",
                         'height': sectionHeight+"%"
                     }
                 });
