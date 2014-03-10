@@ -109,6 +109,8 @@ define([
 
         // Register handler
         handlers[handlerId] = handler;
+
+        return handlers[handlerId];
     };
 
     // Get handler for a file
@@ -169,13 +171,13 @@ define([
                 'codebox': box
             });
             return nfile.getByPath(file).then(function() {
-                return openFile(nfile);
+                return openFile(nfile, options);
             });
         }
 
         var possibleHandlers = getHandlers(file);
 
-        // get fallbacks
+        // Get fallbacks
         if (_.size(possibleHandlers) == 0 && options.useFallback) {
             possibleHandlers = getFallbacks();
         }
@@ -184,7 +186,7 @@ define([
         if (_.size(possibleHandlers) == 0) {
             return openFileWith(file);
         }
-        
+
         if (_.size(possibleHandlers) == 1 || (options.userChoice != true)) {
             return Q(openFileHandler(_.first(possibleHandlers), file));
         }
