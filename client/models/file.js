@@ -647,20 +647,25 @@ define([
         // Return context menu
         contextMenu: function() {
             var that = this;
+            var files = require("core/files");
+
             return function() {
                 var menu = [];
 
                 // Open with
                 if (!that.isDirectory()) {
-                    menu.push({
-                        'id': "file.open.select",
-                        'type': "action",
-                        'title': "Open with...",
-                        'action': function() {
-                            that.open({
-                                'userChoice': true
-                            });
-                        }
+                    var handlers = files.getHandlers(that);
+                    _.each(handlers, function(handler) {
+                        menu.push({
+                            'type': "action",
+                            'title': handler.name,
+                            'icons': {
+                                'menu': handler.icon
+                            },
+                            'action': function() {
+                                return handler.open(that);
+                            }
+                        });
                     });
                     menu.push({ 'type': "divider" });
                 }
@@ -668,7 +673,6 @@ define([
                 // File or directory
                 if (!that.isRoot()) {
                     menu.push({
-                        'id': "file.rename",
                         'type': "action",
                         'title': "Rename...",
                         'action': function() {
@@ -676,7 +680,6 @@ define([
                         }
                     });
                     menu.push({
-                        'id': "file.remove",
                         'type': "action",
                         'title': "Remove",
                         'action': function() {
@@ -689,7 +692,6 @@ define([
                 if (that.isDirectory()) {
                     // Directory
                     menu.push({
-                        'id': "file.create",
                         'type': "action",
                         'title': "New file",
                         'action': function() {
@@ -697,7 +699,6 @@ define([
                         }
                     });
                     menu.push({
-                        'id': "file.mkdir",
                         'type': "action",
                         'title': "New folder",
                         'action': function() {
@@ -705,7 +706,6 @@ define([
                         }
                     });
                     menu.push({
-                        'id': "file.refresh",
                         'type': "action",
                         'title': "Refresh",
                         'action': function() {
@@ -713,13 +713,11 @@ define([
                         }
                     });
                     menu.push({
-                        'id': "file.upload",
                         'type': "menu",
                         'title': "Add",
                         'offline': false,
                         'menu': [
                             {
-                                'id': "file.upload.files",
                                 'type': "action",
                                 'title': "Files",
                                 'offline': false,
@@ -728,7 +726,6 @@ define([
                                 }
                             },
                             {
-                                'id': "file.upload.directory",
                                 'type': "action",
                                 'title': "Directories",
                                 'offline': false,
@@ -742,7 +739,6 @@ define([
                     });
                 } else {
                     menu.push({
-                        'id': "file.download",
                         'type': "action",
                         'title': "Download",
                         'action': function() {
@@ -751,7 +747,6 @@ define([
                     });
                     menu.push({ 'type': "divider" });
                     menu.push({
-                        'id': "file.run",
                         'type': "action",
                         'title': "Run",
                         'offline': false,

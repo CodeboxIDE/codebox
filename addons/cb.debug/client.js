@@ -8,6 +8,7 @@ define([
 
     // Add files handler
     var filesHandler = files.addHandler("debug", {
+        icon: "bug",
         name: "Debug",
         valid: function(file) {
             return (!file.isDirectory());

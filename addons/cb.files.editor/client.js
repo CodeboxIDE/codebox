@@ -13,7 +13,7 @@ define([
 
     // Add files handler
     files.addHandler("ace", {
-        'name': "Code Editor",
+        'name': "Edit",
         'fallback': true,
         'setActive': true,
         'position': 1,
