@@ -55,7 +55,7 @@ define([
             },
             'offline': false,
             'action': _.bind(function() {
-                return addons.install(addon.get("git"))
+                return Command.run("addons.install", addon.get("git"));
             }, this)
         };
     };
@@ -71,7 +71,7 @@ define([
             },
             'offline': false,
             'action': _.bind(function() {
-                return Command.run("addon.install", addon.get("name"));
+                return Command.run("addons.uninstall", addon.get("name"));
             }, this)
         };
     };

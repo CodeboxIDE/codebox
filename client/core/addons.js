@@ -22,11 +22,34 @@ define([
                 if (url) return url;
                 return dialogs.prompt("Install a new addon", "GIT url for the addon:", "");
             })
-            .then(function(url) {
+            .then(function(_url) {
                 return operations.start("addon.install", function(op) {
-                    return addons.install(url);
+                    return addons.install(_url);
                 }, {
                     title: "Installing add-on"
+                });
+            })
+        }
+    });
+
+    // Command to uninstall from a name
+    Command.register("addons.uninstall", {
+        category: "Add-ons",
+        title: "Uninstall",
+        description: "Uninstall with name",
+        offline: false,
+        search: false,
+        action: function(name) {
+            return Q()
+            .then(function() {
+                if (name) return name;
+                return dialogs.prompt("Uninstall an addon", "Name of the addon:", "");
+            })
+            .then(function(_name) {
+                return operations.start("addon.uninstall", function(op) {
+                    return addons.uninstall(_name);
+                }, {
+                    title: "Uinstalling add-on"
                 });
             })
         }
