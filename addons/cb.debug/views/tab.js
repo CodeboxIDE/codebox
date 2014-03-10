@@ -32,7 +32,7 @@ define([
             });
 
             this.grid.addView(new DebugSection({
-                title: "Breackpoints"
+                title: "Breakpoints"
             }));
             this.grid.addView(new DebugSection({
                 title: "Stack"
