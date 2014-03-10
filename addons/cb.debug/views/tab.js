@@ -4,6 +4,7 @@ define([
     var _ = codebox.require("hr/utils");
     var $ = codebox.require("hr/dom");
     var hr = codebox.require("hr/hr");
+    var Command = codebox.require("models/command");
     var Tab = codebox.require("views/tabs/base");
     var box = codebox.require("core/box");
     var user = codebox.require("core/user");
@@ -32,10 +33,40 @@ define([
             this.grid.addView(new hr.View());
             this.grid.addView(new hr.View());
             this.grid.appendTo(this);
+
+
+            // Base commands: start, stop, next, continue, restart
+            this.commandStart = new Command({}, {
+                title: "Start"
+            });
+            this.commandStop = new Command({}, {
+                title: "Stop"
+            });
+            this.commandNext = new Command({}, {
+                title: "Next"
+            });
+            this.commandContinue = new Command({}, {
+                title: "Continue"
+            });
+            this.commandRestart = new Command({}, {
+                title: "Restart"
+            });
             
             // Describe debug tab
             this.setTabTitle("Debugger");
-            this.menu.menuSection([
+
+            // Tab menu
+            this.menu
+            .menuSection([
+                this.commandStart,
+                this.commandStop,
+                this.commandRestart
+            ])
+            .menuSection([
+                this.commandNext,
+                this.commandContinue
+            ])
+            .menuSection([
                 {
                     'type': "checkbox",
                     'title': "Exit",
@@ -43,6 +74,15 @@ define([
                         that.closeTab();
                     }
                 }
+            ]);
+
+            // Statusbar menu
+            this.statusbar.add([
+                this.commandStart,
+                this.commandStop,
+                this.commandNext,
+                this.commandContinue,
+                this.commandRestart
             ]);
 
             return this;
