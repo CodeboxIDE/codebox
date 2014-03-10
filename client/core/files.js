@@ -119,8 +119,8 @@ define([
         .filter(function(handler) {
             return userSettings.get(handler.id, true) && handler.valid(file);
         })
-        .sort(function(handler) {
-            return handler['position'];
+        .sortBy(function(handler) {
+            return handler.position || 10;
         })
         .value();
     };
