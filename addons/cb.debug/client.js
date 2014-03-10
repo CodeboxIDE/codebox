@@ -23,7 +23,7 @@ define([
 
             // Create trminal tab
             var tab = tabs.add(DebugTab, {
-                
+                'path': file.path()
             }, {
                 'type': "debug",
                 'section': "debug"

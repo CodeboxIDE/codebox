@@ -60,7 +60,8 @@ define([
 
             // Body
             body: {
-                'background': bgDark
+                'background': bgDark,
+                'color': colorDark
             },
 
             // Tabs
@@ -73,7 +74,7 @@ define([
                     'color': colorDark
                 },
                 content: {
-                    'background': bgLight,
+                    'background': bgLight
                 },
                 tab: {
                     '&.active': {

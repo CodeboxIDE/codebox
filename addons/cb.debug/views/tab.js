@@ -1,6 +1,7 @@
 define([
+    "views/section",
     "less!stylesheets/tab.less"
-], function() {
+], function(DebugSection) {
     var _ = codebox.require("hr/utils");
     var $ = codebox.require("hr/dom");
     var hr = codebox.require("hr/hr");
@@ -29,9 +30,17 @@ define([
             this.grid = new GridView({
                 columns: 1000
             });
-            this.grid.addView(new hr.View());
-            this.grid.addView(new hr.View());
-            this.grid.addView(new hr.View());
+
+            this.grid.addView(new DebugSection({
+                title: "Breackpoints"
+            }));
+            this.grid.addView(new DebugSection({
+                title: "Stack"
+            }));
+            this.grid.addView(new DebugSection({
+                title: "Locals"
+            }));
+
             this.grid.appendTo(this);
 
 
@@ -53,7 +62,7 @@ define([
             });
             
             // Describe debug tab
-            this.setTabTitle("Debugger");
+            this.setTabTitle("Debugger "+this.options.path);
 
             // Tab menu
             this.menu
