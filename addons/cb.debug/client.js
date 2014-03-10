@@ -1,10 +1,12 @@
 define([
+    "views/tab",
     "settings"
-], function(settings) {
+], function(DebugTab, settings) {
     var File = codebox.require("models/file");
     var toolbar = codebox.require("core/commands/toolbar");
     var dialogs = codebox.require("utils/dialogs");
     var files = codebox.require("core/files");
+    var tabs = codebox.require("core/tabs");
 
     // Add files handler
     var filesHandler = files.addHandler("debug", {
@@ -19,7 +21,16 @@ define([
                 settings.user.save();
             }
 
-            alert("debug "+file.path());
+            // Create trminal tab
+            var tab = tabs.add(DebugTab, {
+                
+            }, {
+                'type': "debug",
+                'section': "debug"
+            });
+
+            // Return the tab
+            return tab;
         }
     });
 
@@ -44,9 +55,10 @@ define([
         }
 
         var f = new File();
-        f.getByPath(path)
+
+        return f.getByPath(path)
         .then(function() {
-            filesHandler.open(f);
+            return filesHandler.open(f);
         });
     });
 });
