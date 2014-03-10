@@ -147,9 +147,10 @@ function setup(options, imports, register, app) {
             // Copy to addons dir
             return addon.transfer(configAddonsPath);
         })
-        .fin(function(newAddon) {
+        .then(function(newAddon) {
             addon = newAddon;
-
+        })
+        .fin(function() {
             // Remove temporary dir
             return Q.nfcall(wrench.rmdirRecursive, tempDir, false);
         })
