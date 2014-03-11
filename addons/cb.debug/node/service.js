@@ -115,8 +115,14 @@ DebugRPCService.prototype.init = function(args, meta) {
 
 // Close a debugger
 DebugRPCService.prototype.close = function(args, meta) {
+    var that = this;
+
+    // Kill debugger
     return this._dbg(args.id).kill()
     .then(function() {
+
+        // remove debugger session
+        delete that.dbgs[args.id];
         return {};
     });
 };
