@@ -100,11 +100,12 @@ define([
 
             // Statusbar menu
             this.statusbar.add([
-                this.commandStart,
-                this.commandStop,
-                this.commandNext,
+                this.commandRestart,
                 this.commandContinue,
-                this.commandRestart
+                this.commandNext,
+                this.commandStop,
+                this.commandStart,
+                this.commandAddBreakpoint
             ]);
 
             // Start debugger
