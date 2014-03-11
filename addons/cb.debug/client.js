@@ -37,8 +37,7 @@ define([
 
                 // Create debug tab
                 debugTab = tabs.add(DebugTab, {
-                    'path': file.path(),
-                    'tool': "pdb"
+                    'path': file.path()
                 }, {
                     'type': "debug",
                     'section': "debug"

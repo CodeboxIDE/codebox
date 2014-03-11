@@ -4,9 +4,18 @@ var _ = require('lodash');
 var path = require('path');
 var bugs = require('bugs');
 
-var debuggers = [
-    "pdb", "gdb", "jdb", "rdb"
-];
+var debuggers = {
+    // Python
+    "pdb": ["py"],
+
+    // Native
+    "gdb": ["o"],
+
+    // Java
+    "jdb": ["java"],
+
+    "rdb": ["rb"]
+};
 
 function DebugRPCService(workspace, events) {
     this.workspace = workspace;
@@ -32,8 +41,22 @@ DebugRPCService.prototype._dbg = function(id) {
 // Prepare the debugger
 DebugRPCService.prototype.init = function(args, meta) {
     var that = this;
-    if (!args.tool || !args.path) throw "Need 'tool' and 'path' arguments";
-    if (!_.contains(debuggers, args.tool)) throw "Invalid debugger";
+    if (!args.path) throw "Need 'tool' and 'path' arguments";
+
+    // Auto choice debugger
+    if (!args.tool) {
+        var ext = args.path.split('.').pop();
+        args.tool = _.chain(debuggers)
+        .pairs()
+        .find(function(d) {
+            return _.contains(d[1], ext)
+        })
+        .value();
+        args.tool = args.tool ? args.tool[0] : null;
+    }
+
+    // Check debugger is valide
+    if (!_.contains(_.keys(debuggers), args.tool)) throw "Invalid debugger";
 
     args.id = args.id || _.uniqueId("debugger");
 
