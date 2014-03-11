@@ -4,8 +4,9 @@ define([
     "views/locals",
     "views/backtrace",
     "views/breakpoints",
+    "views/console",
     "less!stylesheets/tab.less"
-], function(Debugger, DebugSection, LocalsSection, BacktraceSection, BreakpointsSection) {
+], function(Debugger, DebugSection, LocalsSection, BacktraceSection, BreakpointsSection, ConsoleSection) {
     var _ = codebox.require("hr/utils");
     var $ = codebox.require("hr/dom");
     var hr = codebox.require("hr/hr");
@@ -38,6 +39,9 @@ define([
             });
 
             // Create sections
+            this.console = new ConsoleSection({
+                dbg: this.dbg
+            });
             this.locals = new LocalsSection({
                 dbg: this.dbg
             });
@@ -48,16 +52,21 @@ define([
                 dbg: this.dbg
             });
 
-            // Create grid for sections
-            this.grid = new GridView({
+            // Create grids for sections
+            this.gridV = new GridView({
+                columns: 1
+            });
+            this.gridH = new GridView({
                 columns: 1000
             });
 
-            this.grid.addView(this.breakpoints);
-            this.grid.addView(this.backtrace);
-            this.grid.addView(this.locals);
+            this.gridH.addView(this.breakpoints);
+            this.gridH.addView(this.backtrace);
+            this.gridH.addView(this.locals);
 
-            this.grid.appendTo(this);
+            this.gridV.addView(this.gridH);
+            this.gridV.addView(this.console);
+            this.gridV.appendTo(this);
 
 
             // Base commands: start, stop, next, continue, restart

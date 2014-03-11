@@ -142,6 +142,27 @@ define([], function() {
                 that.trigger("update:restart");
             });
         },
+
+        // Eval code
+        eval: function(code) {
+            var that = this;
+
+            var handle = function(type, data) {
+                that.trigger("update:eval:"+type);
+                return {
+                    'type': type,
+                    'content': data
+                };
+            };
+
+            return this.execute("eval", {
+                'code': code
+            })
+            .then(
+                _.partial(handle, "log"),
+                _.partial(handle, "error")
+            );
+        },
     });
 
     return Debugger;

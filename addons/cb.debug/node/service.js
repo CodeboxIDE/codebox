@@ -163,6 +163,13 @@ DebugRPCService.prototype.locals = function(args, meta) {
     return this._dbg(args.id).locals();
 };
 
+// Eval code
+DebugRPCService.prototype.eval = function(args, meta) {
+    if (!args.code) throw "Need 'code' arguments";
+
+    return this._dbg(args.id).eval(args.code);
+};
+
 // Get breakpoints
 DebugRPCService.prototype.breakpoints = function(args, meta) {
     var that = this;

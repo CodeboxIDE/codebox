@@ -6,7 +6,6 @@ define([], function() {
     var DebugSection = hr.View.extend({
         className: "debug-section",
         defaults: {
-            title: "",
             dbg: null
         },
         events: {},
