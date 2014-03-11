@@ -1,14 +1,14 @@
 define([
+    "debugger",
     "views/section",
     "views/locals",
     "views/backtrace",
     "views/breakpoints",
     "less!stylesheets/tab.less"
-], function(DebugSection, LocalsSection, BacktraceSection, BreakpointsSection) {
+], function(Debugger, DebugSection, LocalsSection, BacktraceSection, BreakpointsSection) {
     var _ = codebox.require("hr/utils");
     var $ = codebox.require("hr/dom");
     var hr = codebox.require("hr/hr");
-    var rpc = codebox.require("core/backends/rpc");
     var breakpoints = codebox.require("core/debug/breakpoints");
     var Command = codebox.require("models/command");
     var Tab = codebox.require("views/tabs/base");
@@ -32,10 +32,21 @@ define([
             var that = this;
             DebugTab.__super__.initialize.apply(this, arguments);
 
+            this.dbg = new Debugger();
+            this.listenTo(this.dbg, "update", function() {
+                this.updateState();
+            });
+
             // Create sections
-            this.locals = new LocalsSection();
-            this.backtrace = new BacktraceSection();
-            this.breakpoints = new BreakpointsSection();
+            this.locals = new LocalsSection({
+                dbg: this.dbg
+            });
+            this.backtrace = new BacktraceSection({
+                dbg: this.dbg
+            });
+            this.breakpoints = new BreakpointsSection({
+                dbg: this.dbg
+            });
 
             // Create grid for sections
             this.grid = new GridView({
@@ -100,67 +111,30 @@ define([
             ]);
 
             // Start debugger
-            this.initDebugger();
+            this.dbg.init({
+                'tool': this.options.tool,
+                'path': this.options.path,
+                'breakpoints': breakpoints.all()
+            });
 
             // Bind event on breakponts changements
             this.listenTo(breakpoints, "change", function(e) {
                 if (e.change == "add") {
-                    this.breakpointAdd({
+                    this.dbg.breakpointAdd({
                         'path': e.path,
                         'line': e.line
                     });
                 } else {
-                    var point = this.getBreakpoint({
+                    var point = this.dbg.getBreakpoint({
                         'path': e.path,
                         'line': e.line
                     });
 
-                    if (point) this.breakpointRemove(point.num);
+                    if (point) this.dbg.breakpointRemove(point.num);
                 }
             });
 
             return this;
-        },
-
-        // Initialize the debugger
-        initDebugger: function() {
-            var that = this;
-            return rpc.execute("debug/init", {
-                'tool': this.options.tool,
-                'path': this.options.path,
-                'breakpoints': breakpoints.all()
-            })
-            // Update states
-            .then(function() {
-                return that.updateState();
-            })
-        },
-
-        // Get a breapoint id from its location
-        getBreakpoint: function(location) {
-            return _.find(this.breakpoints.list, function(point) {
-                return point.filename == location.path && point.line == location.line;
-            });
-        },
-
-        // Add a breakpoint
-        breakpointAdd: function(args) {
-            var that = this;
-            rpc.execute("debug/breakpoint/add", args)
-            .then(function() {
-                return that.updateState();
-            });
-        },
-
-        // Remove a breakpoint
-        breakpointRemove: function(num) {
-            var that = this;
-            rpc.execute("debug/breakpoint/clear", {
-                'id': num
-            })
-            .then(function() {
-                return that.updateState();
-            });
         },
 
         // Render

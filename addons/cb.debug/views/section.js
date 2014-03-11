@@ -6,7 +6,8 @@ define([], function() {
     var DebugSection = hr.View.extend({
         className: "debug-section",
         defaults: {
-            title: ""
+            title: "",
+            dbg: null
         },
         events: {},
         formats: [],
@@ -14,6 +15,9 @@ define([], function() {
         initialize: function(options) {
             DebugSection.__super__.initialize.apply(this, arguments);
             
+            // Debugger client
+            this.dbg = this.options.dbg;
+
             this.$title = $("<h4>", {
                 'text': this.title
             });

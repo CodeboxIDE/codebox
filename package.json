@@ -44,7 +44,7 @@
         "connect-gzip-static": "0.1.1",
         "minimatch": "0.2.14",
         "semver": "2.2.1",
-        "bugs": "git+https://github.com/FriendCode/bugs.js.git#cbcff1d1480bbde214a1b50e3234fc4c4a4b99b8"
+        "bugs": "git+https://github.com/FriendCode/bugs.js.git#a8831f169b657f1a0b9b28860d4aaac5ee65f863"
     },
     "devDependencies": {
         "codebox-io": "0.3.2",

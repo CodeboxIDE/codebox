@@ -80,10 +80,4 @@ define([
             return filesHandler.open(f);
         });
     });
-
-
-    // Bind debug event
-    box.on("box:debug", function() {
-        console.log("debugegr event !!!!", arguments);
-    });
 });

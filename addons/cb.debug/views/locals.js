@@ -21,7 +21,8 @@ define([
 
         update: function() {
             var that = this;
-            rpc.execute("debug/locals")
+            
+            return this.dbg.locals()
             .then(function(locals) {
                 that.clearLines();
                 _.each(locals, function(value, key) {

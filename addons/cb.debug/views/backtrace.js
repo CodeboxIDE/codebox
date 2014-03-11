@@ -21,7 +21,8 @@ define([
 
         update: function() {
             var that = this;
-            rpc.execute("debug/backtrace")
+            
+            return this.dbg.backtrace()
             .then(function(stack) {
                 that.clearLines();
                 _.each(stack, that.addLine, that);
