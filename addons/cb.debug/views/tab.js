@@ -62,19 +62,34 @@ define([
 
             // Base commands: start, stop, next, continue, restart
             this.commandStart = new Command({}, {
-                title: "Start"
+                title: "Start",
+                action: function() {
+                    that.dbg.start();
+                }
             });
             this.commandStop = new Command({}, {
-                title: "Stop"
+                title: "Stop",
+                action: function() {
+                    that.dbg.stop();
+                }
             });
             this.commandNext = new Command({}, {
-                title: "Next"
+                title: "Next",
+                action: function() {
+                    that.dbg.next();
+                }
             });
             this.commandContinue = new Command({}, {
-                title: "Continue"
+                title: "Continue",
+                action: function() {
+                    that.dbg.cont();
+                }
             });
             this.commandRestart = new Command({}, {
-                title: "Restart"
+                title: "Restart",
+                action: function() {
+                    that.dbg.restart();
+                }
             });
             
             // Describe debug tab
@@ -133,6 +148,11 @@ define([
                     if (point) this.dbg.breakpointRemove(point.num);
                 }
             });
+
+            // Bind close tab
+            this.on("tab:close", function() {
+                this.dbg.close();
+            }, this);
 
             return this;
         },

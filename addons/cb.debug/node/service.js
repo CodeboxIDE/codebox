@@ -95,6 +95,31 @@ DebugRPCService.prototype.close = function(args, meta) {
     });
 };
 
+// Start the debugger
+DebugRPCService.prototype.start = function(args, meta) {
+    return this._dbg(args.id).start(args.arg || "");
+};
+
+// Stop the debugger
+DebugRPCService.prototype.stop = function(args, meta) {
+    return this._dbg(args.id).stop();
+};
+
+// Next
+DebugRPCService.prototype.next = function(args, meta) {
+    return this._dbg(args.id).next();
+};
+
+// Continue
+DebugRPCService.prototype.cont = function(args, meta) {
+    return this._dbg(args.id).continue();
+};
+
+// Restart the debugger
+DebugRPCService.prototype.restart = function(args, meta) {
+    return this._dbg(args.id).restart();
+};
+
 // Add breakpoint
 DebugRPCService.prototype.breakpoint_add = function(args, meta) {
     if (!args.line || !args.path) throw "Need 'line' and 'path' arguments";
@@ -105,9 +130,9 @@ DebugRPCService.prototype.breakpoint_add = function(args, meta) {
 
 // Remove breakpoint
 DebugRPCService.prototype.breakpoint_clear = function(args, meta) {
-    if (!args.id) throw "Need 'id' argument";
+    if (!args.num) throw "Need 'num' argument";
     
-    return this._dbg(args.id).clear(args.id);
+    return this._dbg(args.id).clear(args.num);
 };
 
 // Get locals

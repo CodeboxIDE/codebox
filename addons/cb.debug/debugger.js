@@ -23,8 +23,18 @@ define([], function() {
             var that = this;
             return rpc.execute("debug/init", args)
             .then(function(dbg) {
-                console.log("init !!", dbg);
                 that.id = dbg.id;
+                that.trigger("update:init");
+            });
+        },
+
+        // Close debugger
+        close: function() {
+            var that = this;
+
+            return this.execute("close")
+            .then(function() {
+                that.stopListening();
             });
         },
 
@@ -68,7 +78,7 @@ define([], function() {
             var that = this;
             return this.execute("breakpoint/add", args)
             .then(function(point) {
-                that.trigger("update");
+                that.trigger("update:breakpoints:add");
                 return point;
             });
         },
@@ -78,11 +88,58 @@ define([], function() {
             var that = this;
 
             return this.execute("breakpoint/clear", {
-                'id': num
+                'num': num
             })
             .then(function(point) {
-                that.trigger("update");
+                that.trigger("update:breakpoints:clear");
                 return point;
+            });
+        },
+
+        // Start
+        start: function(arg) {
+            var that = this;
+            return this.execute("start", {
+                'arg': arg
+            })
+            .then(function() {
+                that.trigger("update:start");
+            });
+        },
+
+        // Stop
+        stop: function() {
+            var that = this;
+            return this.execute("stop")
+            .then(function() {
+                that.trigger("update:stop");
+            });
+        },
+
+        // Next
+        next: function() {
+            var that = this;
+            return this.execute("next")
+            .then(function() {
+                that.trigger("update:next");
+            });
+        },
+
+        // Continue
+        cont: function() {
+            var that = this;
+            return this.execute("cont")
+            .then(function() {
+                that.trigger("update:cont");
+            });
+        },
+
+        // Restart
+        restart: function() {
+            var that = this;
+            return this.execute("restart")
+            .then(function() {
+                that.trigger("update:restart");
             });
         },
     });
