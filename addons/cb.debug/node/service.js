@@ -85,11 +85,11 @@ DebugRPCService.prototype.breakpoint_add = function(args, meta) {
 
 
 // Remove breakpoint
-DebugRPCService.prototype.breakpoint_delete = function(args, meta) {
+DebugRPCService.prototype.breakpoint_clear = function(args, meta) {
     if (!args.id) throw "Need 'id' argument";
     if (!this.dbg) throw "No active debugger";
     
-    return this.dbg.delete(args.id);
+    return this.dbg.clear(args.id);
 };
 
 // Get locals

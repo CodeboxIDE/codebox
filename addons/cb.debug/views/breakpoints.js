@@ -23,12 +23,21 @@ define([
             }
         ],
 
+        initialize: function(options) {
+            BreakpointsSection.__super__.initialize.apply(this, arguments);
+            
+            this.list = [];
+
+            return this;
+        },
+
         update: function() {
             var that = this;
             rpc.execute("debug/breakpoints")
-            .then(function(stack) {
+            .then(function(breakpoints) {
+                that.list = breakpoints;
                 that.clearLines();
-                _.each(stack, that.addLine, that);
+                _.each(breakpoints, that.addLine, that);
             });
         }
     });
