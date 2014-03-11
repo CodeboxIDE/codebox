@@ -13,6 +13,7 @@ define([
     var Tab = codebox.require("views/tabs/base");
     var box = codebox.require("core/box");
     var user = codebox.require("core/user");
+    var dialogs = codebox.require("utils/dialogs");
 
     var GridView = codebox.require("views/grid");
 
@@ -63,12 +64,21 @@ define([
             this.commandRestart = new Command({}, {
                 title: "Restart"
             });
+            this.commandAddBreakpoint = new Command({}, {
+                title: "Add Breakpoint",
+                action: function() {
+                    return that.breakpointAdd();
+                }
+            });
             
             // Describe debug tab
             this.setTabTitle("Debugger "+this.options.path);
 
             // Tab menu
             this.menu
+            .menuSection([
+                this.commandAddBreakpoint
+            ])
             .menuSection([
                 this.commandStart,
                 this.commandStop,
@@ -103,6 +113,7 @@ define([
             return this;
         },
 
+        // Initialize the debugger
         initDebugger: function() {
             var that = this;
             return rpc.execute("debug/init", {
@@ -112,6 +123,34 @@ define([
             .then(function() {
                 return that.updateState();
             })
+        },
+
+        // Add a breakpoint
+        breakpointAdd: function(options) {
+            var that = this;
+            return Q()
+            .then(function() {
+                if (!options) return dialogs.fields("Add a breakpoint", {
+                    'path': {
+                        'label': "Path",
+                        'type': "text",
+                        'default': that.options.path
+                    },
+                    'line': {
+                        'label': "Line",
+                        'type': "number",
+                        'default': 0
+                    }
+                });
+
+                return options;
+            })
+            .then(function(args) {
+                return rpc.execute("debug/breakpoint/add", args)
+            })
+            .then(function() {
+                return that.updateState();
+            });
         },
 
         // Render

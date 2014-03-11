@@ -10,6 +10,10 @@ define([
         title: "Breakpoints",
         formats: [
             {
+                id: "num",
+                title: "#"
+            },
+            {
                 id: "filename",
                 title: "File"
             },
@@ -20,7 +24,12 @@ define([
         ],
 
         update: function() {
-            this.clearLines();
+            var that = this;
+            rpc.execute("debug/breakpoints")
+            .then(function(stack) {
+                that.clearLines();
+                _.each(stack, that.addLine, that);
+            });
         }
     });
 

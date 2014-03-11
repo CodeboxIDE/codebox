@@ -13,12 +13,23 @@ define([], function() {
 
         initialize: function(options) {
             DebugSection.__super__.initialize.apply(this, arguments);
-            this.$el.html("<h4>"+this.title+"</h4>");
+            
+            this.$title = $("<h4>", {
+                'text': this.title
+            });
+
+            this.$container = $("<div>", {
+                'class': "table-container"
+            });
 
             this.$table = $("<table>", {
                 'class': "table"
             });
-            this.$table.appendTo(this.$el);
+
+            this.$title.appendTo(this.$el);
+            this.$container.appendTo(this.$el);
+            this.$table.appendTo(this.$container);
+
             this.clearLines();
 
             return this;
