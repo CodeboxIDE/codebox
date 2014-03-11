@@ -5,8 +5,6 @@ var express = require('express');
 
 var path = require('path');
 
-var wireFriendly = require('../utils').wireFriendly;
-
 
 function HttpRPCManager(server, baseUrl, logger) {
     // Bind all methods

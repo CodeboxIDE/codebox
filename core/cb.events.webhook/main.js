@@ -1,7 +1,5 @@
 // Requires
 var _ = require('lodash');
-
-var wireFriendly = require('../utils').wireFriendly;
 var timestamp = require('../utils').timestamp;
 
 
@@ -42,7 +40,7 @@ function setup(options, imports, register) {
             event: this.event,
 
             // Data of event
-            data: wireFriendly(data),
+            data: data,
 
             // Workspace ID
             workspaceId: workspace.id,
