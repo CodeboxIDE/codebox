@@ -47,7 +47,7 @@ HttpRPCManager.prototype.methodHandler = function(method, methodUrl, opts) {
         }).then(function(data) {
             res.send(200, {
                 'ok': true,
-                'data': wireFriendly(data),
+                'data': data,
                 'method': methodUrl,
             });
         }, function(err) {
