@@ -49,6 +49,10 @@ define([
             var that = this;
             FileEditorView.__super__.initialize.apply(this, arguments);
 
+            this.markersS = {};
+            this.markersC = {};
+            this._op_set = false;
+
             // Syntax menu command
             var syntaxMenu = new Command({}, {
                 'title': "Syntax",
@@ -157,22 +161,23 @@ define([
                 this.collaboratorsMenu.toggleFlag("disabled", !options.sync);
             }, this);
 
-            // Create base ace editor instance
+            // Create base ace editor instance and configure it
             this.$editor = $("<div>", {
                 'class': "editor-ace"
             });
             this.editor = ace.edit(this.$editor.get(0));
+            var $doc = this.editor.session.doc;
+
+            // Set base options
             this.editor.session.setUseWorker(true);
             this.editor.setOptions({
                 enableBasicAutocompletion: true,
                 enableSnippets: true
             });
-            this.setOptions();
 
-            
-            this.markersS = {};
-            this.markersC = {};
-            this._op_set = false;
+            // Force unix newline mode (for cursor position calcul)
+            $doc.setNewLineMode("unix");
+            this.setOptions();
 
             // Breakpoints
             this.breakpoints = new Breakpoints({
@@ -203,11 +208,6 @@ define([
             this.editor.getSession().on("changeMode", function() {
                 jshint.applySettings(that.editor);
             });
-
-            var $doc = this.editor.session.doc;
-
-            // Force unix newline mode (for cursor position calcul)
-            $doc.setNewLineMode("unix");
 
             // Send change
             $doc.on('change', function(d) {

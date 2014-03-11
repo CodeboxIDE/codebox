@@ -10,13 +10,9 @@ define([], function() {
             this.editor = this.options.editor;
             this.$editor = this.editor.editor;
 
-
             // Breakpoints list change, it signals the change to the box
             this.$editor.session.on("changeBreakpoint", function() {
-                box.trigger("debug:breakpoints", {
-                    'path': that.editor.model.path(),
-                    'list': that.getBreakpoints()
-                });
+                that.signalBreakpoints();
             });
 
             // Add remove breakpoints by clicking the gutter
@@ -38,6 +34,47 @@ define([], function() {
                 }
                 e.stop();
             });
+
+            // Document change -> update breakpoints list
+            this.$editor.session.doc.on("change", function(e) {
+                var delta = e.data;
+                var range = delta.range;
+                var changed = false;
+
+                if (range.end.row == range.start.row)
+                    return;
+
+                var len, firstRow;
+                len = range.end.row - range.start.row;
+                if (delta.action == "insertText") {
+                    firstRow = range.start.column ? range.start.row + 1 : range.start.row;
+                }
+                else {
+                    firstRow = range.start.row;
+                }
+
+                if (delta.action[0] == "i") {
+                    var args = Array(len);
+                    args.unshift(firstRow, 0);
+                    changed = true;
+                    that.$editor.session.$breakpoints.splice.apply(that.$editor.session.$breakpoints, args);
+                }
+                else {
+                    var rem = that.$editor.session.$breakpoints.splice(firstRow + 1, len);
+
+                    if (!that.$editor.session.$breakpoints[firstRow]) {
+                        for (var i = rem.length; i--; ) {
+                            if (rem[i]) {
+                                changed = true;
+                                that.$editor.session.$breakpoints[firstRow] = rem[i];
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (changed) that.signalBreakpoints();
+            });
         },
 
         // Return list of active breakpoints in ace
@@ -48,6 +85,14 @@ define([], function() {
                 return parseInt(row);
             })
             .value();
+        },
+
+        // Signal breakpoints list
+        signalBreakpoints: function() {
+            box.trigger("debug:breakpoints", {
+                'path': this.editor.model.path(),
+                'list': this.getBreakpoints()
+            });
         }
     });
 
