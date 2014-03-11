@@ -340,8 +340,18 @@ define([
                 if (state) this.focus();
             }, this);
             this.tab.on("tab:close", function() {
+                // Clear breakpoints
+                this.model.clearBreakpoints();
+
+                // Finish sync
                 this.sync.close();
+
+                // Destroy the editor
+                this.editor.destroy();
+
+                // Destroy events and instance
                 this.off();
+                this.stopListening();
             }, this);
 
             // Bind editor sync state changements

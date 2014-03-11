@@ -1,15 +1,15 @@
 define([
-    "breakpoints",
     "views/section",
     "views/locals",
     "views/backtrace",
     "views/breakpoints",
     "less!stylesheets/tab.less"
-], function(breakpoints, DebugSection, LocalsSection, BacktraceSection, BreakpointsSection) {
+], function(DebugSection, LocalsSection, BacktraceSection, BreakpointsSection) {
     var _ = codebox.require("hr/utils");
     var $ = codebox.require("hr/dom");
     var hr = codebox.require("hr/hr");
     var rpc = codebox.require("core/backends/rpc");
+    var breakpoints = codebox.require("core/debug/breakpoints");
     var Command = codebox.require("models/command");
     var Tab = codebox.require("views/tabs/base");
     var box = codebox.require("core/box");
@@ -104,7 +104,6 @@ define([
 
             // Bind event on breakponts changements
             this.listenTo(breakpoints, "change", function(e) {
-                console.log("send to debugger breakpoint", e.change, e.path, e.line);
                 if (e.change == "add") {
                     this.breakpointAdd({
                         'path': e.path,

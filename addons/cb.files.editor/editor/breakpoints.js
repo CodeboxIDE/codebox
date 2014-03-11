@@ -1,6 +1,5 @@
 define([], function() {
     var hr = codebox.require("hr/hr");
-    var box = codebox.require("core/box");
 
     var EditorBreakpoints = hr.Class.extend({
         initialize: function() {
@@ -95,10 +94,7 @@ define([], function() {
 
         // Signal breakpoints list
         signalBreakpoints: function() {
-            box.trigger("debug:breakpoints", {
-                'path': this.editor.model.path(),
-                'breakpoints': this.getBreakpoints()
-            });
+            this.editor.model.setBreakpoints(this.getBreakpoints());
         }
     });
 

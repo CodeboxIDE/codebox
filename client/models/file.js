@@ -4,6 +4,7 @@ define([
     "hr/hr",
     'core/backends/rpc',
     "core/backends/vfs",
+    "core/debug/breakpoints",
     'models/command',
     "utils/string",
     "utils/url",
@@ -12,7 +13,7 @@ define([
     "utils/dialogs",
     "utils/uploader",
     "core/operations"
-], function(Q, _, hr, rpc, vfs, Command, string, Url, Languages, FileSync, dialogs, Uploader, operations) {
+], function(Q, _, hr, rpc, vfs, breakpoints, Command, string, Url, Languages, FileSync, dialogs, Uploader, operations) {
     var logging = hr.Logger.addNamespace("files");
 
     var File = hr.Model.extend({
@@ -296,6 +297,27 @@ define([
          */
         extension: function() {
             return "."+this.get("name").split('.').pop();
+        },
+
+        /*
+         *  Return current breakpoints for this file
+         */
+        getBreakpoints: function() {
+            return breakpoints.getFileBreakpoints(this.path());
+        },
+
+        /*
+         *  Set breakpoints for this file
+         */
+        setBreakpoints: function(points) {
+            return breakpoints.setFileBreakpoints(this.path(), points);
+        },
+
+        /*
+         *  Clear breakpoints for this file
+         */
+        clearBreakpoints: function() {
+            return this.setBreakpoints([]);
         },
 
         /*
