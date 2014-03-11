@@ -23,7 +23,8 @@ define([
 
             // Create trminal tab
             var tab = tabs.add(DebugTab, {
-                'path': file.path()
+                'path': file.path(),
+                'tool': "pdb"
             }, {
                 'type': "debug",
                 'section': "debug"

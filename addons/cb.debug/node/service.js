@@ -71,9 +71,22 @@ DebugRPCService.prototype.breakpoints = function(args, meta) {
 
 // Get backtrace
 DebugRPCService.prototype.backtrace = function(args, meta) {
+    var that = this;
     if (!this.dbg) throw "No active debugger";
 
-    return this.dbg.backtrace();
+    return this.dbg.backtrace()
+    .then(function(stack) {
+        return _.map(stack, function(item) {
+            var itemPath = item.filename;
+
+            if (itemPath.indexOf(that.workspace.root) == 0) itemPath = itemPath.replace(that.workspace.root, "");
+
+            return {
+                'filename': itemPath,
+                'line': item.line
+            }
+        });
+    });
 };
 
 

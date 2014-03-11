@@ -1,10 +1,14 @@
 define([
     "views/section",
+    "views/locals",
+    "views/backtrace",
+    "views/breakpoints",
     "less!stylesheets/tab.less"
-], function(DebugSection) {
+], function(DebugSection, LocalsSection, BacktraceSection, BreakpointsSection) {
     var _ = codebox.require("hr/utils");
     var $ = codebox.require("hr/dom");
     var hr = codebox.require("hr/hr");
+    var rpc = codebox.require("core/backends/rpc");
     var Command = codebox.require("models/command");
     var Tab = codebox.require("views/tabs/base");
     var box = codebox.require("core/box");
@@ -26,20 +30,19 @@ define([
             var that = this;
             DebugTab.__super__.initialize.apply(this, arguments);
 
+            // Create sections
+            this.locals = new LocalsSection();
+            this.backtrace = new BacktraceSection();
+            this.breakpoints = new BreakpointsSection();
+
             // Create grid for sections
             this.grid = new GridView({
                 columns: 1000
             });
 
-            this.grid.addView(new DebugSection({
-                title: "Breakpoints"
-            }));
-            this.grid.addView(new DebugSection({
-                title: "Stack"
-            }));
-            this.grid.addView(new DebugSection({
-                title: "Locals"
-            }));
+            this.grid.addView(this.breakpoints);
+            this.grid.addView(this.backtrace);
+            this.grid.addView(this.locals);
 
             this.grid.appendTo(this);
 
@@ -94,12 +97,34 @@ define([
                 this.commandRestart
             ]);
 
+            // Start debugger
+            this.initDebugger();
+
             return this;
+        },
+
+        initDebugger: function() {
+            var that = this;
+            return rpc.execute("debug/init", {
+                'tool': this.options.tool,
+                'path': this.options.path
+            })
+            .then(function() {
+                return that.updateState();
+            })
         },
 
         // Render
         render: function() {
             return this.ready();
+        },
+
+
+        // Update debugegr state: stack, locals
+        updateState: function() {
+            this.locals.update();
+            this.backtrace.update();
+            this.breakpoints.update();
         }
     });
 
