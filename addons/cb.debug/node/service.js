@@ -12,11 +12,13 @@ function DebugRPCService(workspace, events) {
     this.workspace = workspace;
     this.events = events;
 
+    this.path = null;
     this.dbg = null;
 
     _.bindAll(this);
 }
 
+// Normalize an absolute path
 DebugRPCService.prototype._normPath = function(_path) {
     if (_path.indexOf(this.workspace.root) == 0) _path = _path.replace(this.workspace.root, "");
     return _path;
@@ -24,17 +26,27 @@ DebugRPCService.prototype._normPath = function(_path) {
 
 // Prepare the debugger
 DebugRPCService.prototype.init = function(args, meta) {
+    var that = this;
     if (!args.tool || !args.path) throw "Need 'tool' and 'path' arguments";
     if (!_.contains(debuggers, args.tool)) throw "Invalid debugger";
 
     // Create debugger interface
+    this.path = args.path;
     this.dbg = bugs[args.tool](
-        path.join(this.workspace.root, args.path)
+        path.join(this.workspace.root, this.path)
     );
 
     // Signal it
     this.events.emit('debug.init', {
-        userId: meta.user.userId
+        'path': this.path,
+        'userId': meta.user.userId
+    });
+
+    // Bind events
+    this.dbg.runner.on('update', function() {
+        that.events.emit('debug.update', {
+            'path': that.path
+        });
     });
 
     return this.dbg.init()

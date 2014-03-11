@@ -2,11 +2,16 @@ define([
     "views/tab",
     "settings"
 ], function(DebugTab, settings) {
+    var Q = codebox.require("hr/promise");
     var File = codebox.require("models/file");
     var toolbar = codebox.require("core/commands/toolbar");
     var dialogs = codebox.require("utils/dialogs");
     var files = codebox.require("core/files");
     var tabs = codebox.require("core/tabs");
+    var box = codebox.require("core/box");
+
+    // Current debugger tab
+    var debugTab = null;
 
     // Add files handler
     var filesHandler = files.addHandler("debug", {
@@ -21,17 +26,30 @@ define([
                 settings.user.save();
             }
 
-            // Create trminal tab
-            var tab = tabs.add(DebugTab, {
-                'path': file.path(),
-                'tool': "pdb"
-            }, {
-                'type': "debug",
-                'section': "debug"
-            });
+            return Q()
+            .then(function() {
+                if (debugTab) return dialogs.confirm("Do you wan to close current debugger?",
+                    "There is already a debugger running, are you sure you want to close it for opening a new one.")
+                return Q();
+            })
+            .then(function() {
+                if (debugTab) debugTab.closeTab();
 
-            // Return the tab
-            return tab;
+                // Create debug tab
+                debugTab = tabs.add(DebugTab, {
+                    'path': file.path(),
+                    'tool': "pdb"
+                }, {
+                    'type': "debug",
+                    'section': "debug"
+                });
+                debugTab.on("tab:close", function() {
+                    debugTab = null;
+                });
+
+                // Return the tab
+                return debugTab;
+            });
         }
     });
 
@@ -61,5 +79,11 @@ define([
         .then(function() {
             return filesHandler.open(f);
         });
+    });
+
+
+    // Bind debug event
+    box.on("box:debug", function() {
+        console.log("debugegr event !!!!", arguments);
     });
 });
