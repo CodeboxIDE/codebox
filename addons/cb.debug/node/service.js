@@ -97,7 +97,10 @@ DebugRPCService.prototype.init = function(args, meta) {
             })
             .flatten()
             .map(function(point) {
-                return that.dbgs[args.id].break(path.join(that.workspace.root, point.path), point.line);
+                return that.dbgs[args.id].break(path.join(that.workspace.root, point.path), point.line)
+                .fail(function() {
+                    return Q();
+                })
             })
             .value()
         );
