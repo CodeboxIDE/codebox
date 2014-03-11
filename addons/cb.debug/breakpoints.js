@@ -33,7 +33,7 @@ define([], function() {
             this.breakpoints[e.path] = _.clone(e.breakpoints);
             
             var added = _.difference(this.breakpoints[e.path], oldBreakpoints);
-            var removed = _.difference(this.breakpoints[e.path], oldBreakpoints);
+            var removed = _.difference(oldBreakpoints, this.breakpoints[e.path]);
 
             _.each(added, _.partial(_.bind(this.signalChange, this), "add", e.path));
             _.each(removed, _.partial(_.bind(this.signalChange, this), "remove", e.path));

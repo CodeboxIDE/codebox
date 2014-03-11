@@ -27,7 +27,7 @@ define([], function() {
 
                 var row = e.getDocumentPosition().row;
 
-                if (_.contains(that.getBreakpoints(), row)) {
+                if (that.hasBreakpoint(row)) {
                     e.editor.session.clearBreakpoint(row) 
                 } else {
                     e.editor.session.setBreakpoint(row);
@@ -86,6 +86,11 @@ define([], function() {
             })
             .compact()
             .value();
+        },
+
+        // Check if has breakpoint at a line
+        hasBreakpoint: function(row) {
+            return _.contains(this.getBreakpoints(), row+1)
         },
 
         // Signal breakpoints list
