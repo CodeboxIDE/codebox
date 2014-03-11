@@ -39,10 +39,22 @@ define([], function() {
         },
 
         // Execute a RPC requests
-        execute: function(method, args) {
+        execute: function(method, args, options) {
+            var that = this;
+            options = _.defaults(options || {}, {
+                error: true
+            });
+
             return rpc.execute("debug/"+method, _.extend(args || {}, {
                 'id': this.id
-            }));
+            }))
+            .then(function(data) {
+                return data;
+            },
+            function(err) {
+                if (options.error) that.trigger("error", err);
+                return Q.reject(err);
+            });
         },
 
         // Get locals
@@ -151,12 +163,14 @@ define([], function() {
                 that.trigger("update:eval:"+type);
                 return {
                     'type': type,
-                    'content': data
+                    'content': data.message || data
                 };
             };
 
             return this.execute("eval", {
                 'code': code
+            }, {
+                'error': false
             })
             .then(
                 _.partial(handle, "log"),

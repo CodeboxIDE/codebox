@@ -34,9 +34,7 @@ define([
             DebugTab.__super__.initialize.apply(this, arguments);
 
             this.dbg = new Debugger();
-            this.listenTo(this.dbg, "update", function() {
-                this.updateState();
-            });
+            
 
             // Create sections
             this.console = new ConsoleSection({
@@ -50,6 +48,17 @@ define([
             });
             this.breakpoints = new BreakpointsSection({
                 dbg: this.dbg
+            });
+
+            // Listen events
+            this.listenTo(this.dbg, "update", function() {
+                this.updateState();
+            });
+            this.listenTo(this.dbg, "error", function(err) {
+                this.console.addLine({
+                    type: "error",
+                    content: err.message || err
+                });
             });
 
             // Create grids for sections
