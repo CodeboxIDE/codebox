@@ -114,7 +114,13 @@ define([
 
             // Bind event on breakponts changements
             this.listenTo(breakpoints, "change", function(e) {
-                console.log("send to debugger breakpoint", e.change, e.path, e.line)
+                console.log("send to debugger breakpoint", e.change, e.path, e.line);
+                if (e.change == "add") {
+                    this.breakpointAdd({
+                        'path': e.path,
+                        'line': e.line
+                    });
+                }
             });
 
             return this;
