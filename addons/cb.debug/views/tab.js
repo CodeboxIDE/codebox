@@ -1,10 +1,11 @@
 define([
+    "breakpoints",
     "views/section",
     "views/locals",
     "views/backtrace",
     "views/breakpoints",
     "less!stylesheets/tab.less"
-], function(DebugSection, LocalsSection, BacktraceSection, BreakpointsSection) {
+], function(breakpoints, DebugSection, LocalsSection, BacktraceSection, BreakpointsSection) {
     var _ = codebox.require("hr/utils");
     var $ = codebox.require("hr/dom");
     var hr = codebox.require("hr/hr");
@@ -111,6 +112,11 @@ define([
             // Start debugger
             this.initDebugger();
 
+            // Bind event on breakponts changements
+            this.listenTo(breakpoints, "change", function(e) {
+                console.log("send to debugger breakpoint", e.change, e.path, e.line)
+            });
+
             return this;
         },
 
@@ -119,8 +125,10 @@ define([
             var that = this;
             return rpc.execute("debug/init", {
                 'tool': this.options.tool,
-                'path': this.options.path
+                'path': this.options.path,
+                'breakpoints': breakpoints.all()
             })
+            // Update states
             .then(function() {
                 return that.updateState();
             })

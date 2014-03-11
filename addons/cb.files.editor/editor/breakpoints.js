@@ -79,11 +79,12 @@ define([], function() {
 
         // Return list of active breakpoints in ace
         getBreakpoints: function() {
-            return _.chain(this.$editor.session.getBreakpoints())
-            .keys()
-            .map(function(row) {
-                return parseInt(row);
+            return _.chain(this.$editor.session.getBreakpoints() || {})
+            .map(function(value, key) {
+                if (!value) return null;
+                return parseInt(key)+1;
             })
+            .compact()
             .value();
         },
 
@@ -91,7 +92,7 @@ define([], function() {
         signalBreakpoints: function() {
             box.trigger("debug:breakpoints", {
                 'path': this.editor.model.path(),
-                'list': this.getBreakpoints()
+                'breakpoints': this.getBreakpoints()
             });
         }
     });
