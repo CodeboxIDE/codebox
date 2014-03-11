@@ -1,9 +1,7 @@
 define([
     "ace",
-    "editor",
-    "codecomplete",
-    "settings"
-], function(ace, FileEditorView, codecomplete, userSettings) {
+    "editor/view"
+], function(ace, FileEditorView) {
     var $ = codebox.require("hr/dom");
     var commands = codebox.require("core/commands/toolbar");
     var files = codebox.require("core/files");

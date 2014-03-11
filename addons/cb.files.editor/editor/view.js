@@ -1,10 +1,13 @@
 define([
     "ace",
-    "jshint",
+    "editor/breakpoints",
+    "editor/codecomplete",
+    "editor/jshint",
+    "editor/settings",
     "theme/textmate",
     "text!templates/file.html",
     "less!stylesheets/file.less",
-], function(ace, jshint, aceDefaultTheme, templateFile) {
+], function(ace, Breakpoints, codecomplete, jshint, editorSettings, aceDefaultTheme, templateFile) {
     var _ = codebox.require("hr/utils");
     var $ = codebox.require("hr/dom");
     var hr = codebox.require("hr/hr");
@@ -21,7 +24,6 @@ define([
     var keyboard = codebox.require("utils/keyboard");
 
     var logging = hr.Logger.addNamespace("editor");
-    var userSettings = user.settings("editor");
 
     // Import ace
     var aceRange =  ace.require("ace/range");
@@ -123,13 +125,13 @@ define([
                 {
                     'title': "Convert Indentation to Spaces",
                     'action': function() {
-                        that.convertIndentation(" ", userSettings.get("tabsize", 4));
+                        aceWhitespace.convertIndentation(that.editor.session, " ", editorSettings.user.get("tabsize", 4));
                     }
                 },
                 {
                     'title': "Convert Indentation to Tabs",
                     'action': function() {
-                        that.convertIndentation("\t", 1);
+                        aceWhitespace.convertIndentation(that.editor.session, "\t", 1);
                     }
                 }
             ]).menuSection([
@@ -161,15 +163,20 @@ define([
             });
             this.editor = ace.edit(this.$editor.get(0));
             this.editor.session.setUseWorker(true);
+            this.editor.setOptions({
+                enableBasicAutocompletion: true,
+                enableSnippets: true
+            });
             this.setOptions();
+
+            
             this.markersS = {};
             this.markersC = {};
             this._op_set = false;
 
-            // Configure editor
-            this.editor.setOptions({
-                enableBasicAutocompletion: true,
-                enableSnippets: true
+            // Breakpoints
+            this.breakpoints = new Breakpoints({
+                editor: this
             });
 
             // Bind settings changement
@@ -180,7 +187,7 @@ define([
                 });
                 this.setOptions(ops);
             };
-            userSettings.change(update, this);
+            editorSettings.user.change(update, this);
             user.settings("themes").change(update, this);
 
             // Bind editor changement -> sync
@@ -366,8 +373,9 @@ define([
 
             // Define file for code editor
             this.sync.setFile(this.model, {
-                'sync': userSettings.get("autocollaboration") ? collaborators.size() > 1 : false
+                'sync': editorSettings.user.get("autocollaboration") ? collaborators.size() > 1 : false
             });
+
             this.focus();
 
             var $input = this.editor.textInput.getElement();
@@ -382,7 +390,6 @@ define([
 
         // Finish rendering
         finish: function() {
-            // Add editor to content
             this.$editor.appendTo(this.$(".editor-inner"));
             this.editor.resize();
             this.editor.renderer.updateFull();
@@ -390,6 +397,7 @@ define([
             return FileEditorView.__super__.finish.apply(this, arguments);
         },
 
+        // Focus editor
         focus: function() {
             this.editor.resize();
             this.editor.renderer.updateFull();
@@ -397,11 +405,10 @@ define([
             return this;
         },
 
-        /*
-         *  Set editor options: theme, fontsize, ...
-         */
+        // Define editor options
         setOptions: function(opts) {
-            this.options = _.defaults(opts || {}, userSettings.all({}), {
+            var that = this;
+            this.options = _.defaults(opts || {}, editorSettings.user.all({}), {
                 mode: "text",
                 fontsize: "12",
                 printmargincolumn: 80,
@@ -415,9 +422,15 @@ define([
                 tabsize: 4
             });
 
+            // Ste mode
             this.setMode(this.options.mode);
-            this.setKeyboardmode(this.options.keyboard);
-            this.setTheme(themes.current().editor.theme || aceDefaultTheme);
+
+            // Det keyboard mode
+            ace.config.loadModule(["keybinding", "ace/keyboard/"+this.options.keyboard], function(binding) {
+                if (binding && binding.handler) that.editor.setKeyboardHandler(binding.handler);
+            });
+
+            this.editor.setTheme(themes.current().editor.theme || aceDefaultTheme);
             this.$editor.css("font-size", this.options.fontsize+"px");
             this.editor.setPrintMarginColumn(this.options.printmargincolumn);
             this.editor.setShowPrintMargin(this.options.showprintmargin);
@@ -430,6 +443,13 @@ define([
             return this;
         },
 
+        // Define mdoe option
+        setMode: function(lang) {
+            this.options.mode = lang;
+            this.editor.getSession().setMode("ace/mode/"+lang);
+        },
+
+        // Get position (row, column) from index in file
         posFromIndex: function(index) {
             var row, lines;
             lines = this.editor.session.doc.getAllLines();
@@ -445,79 +465,19 @@ define([
             };
         },
 
-        /*
-         *  Get editor mode
-         */
-        getMode: function() {
-            return this.options.mode;
-        },
-
-        /*
-         *  Set editor mode
-         *  @lang : editor lang mode
-         */
-        setMode: function(lang) {
-            this.options.mode = lang;
-            this.editor.getSession().setMode("ace/mode/"+lang);
-            this.trigger("change:mode");
-            return this;
-        },
-
-        /*
-         *  Set editor keyboard mode
-         *  @mode: keyboard mode (vim, emacs)
-         */
-        setKeyboardmode: function(mode) {
-            var self = this;
-            this.options.keyboard = mode;
-            ace.config.loadModule(["keybinding", "ace/keyboard/"+self.options.keyboard], function(binding) {
-                if (binding && binding.handler) {
-                    self.editor.setKeyboardHandler(binding.handler);
-                    self.trigger("change:keyboardmode");
-                }
-            });
-            return this;
-        },
-
-        /*
-         *  Set theme
-         *  @theme_name : name of the theme
-         */
-        setTheme: function(theme) {
-            if (_.isString(theme)) {
-                theme = "ace/theme/" + theme;
-            }
-            this.editor.setTheme(theme);
-            this.trigger("change:theme");
-            return this;
-        },
-
-        /*
-         *  Convert indentations to
-         */
-        convertIndentation: function(ch, len) {
-            aceWhitespace.convertIndentation(this.editor.session, ch, len);
-        },
-
-        /*
-         *  Save file
-         */
+        // (action) Save file
         saveFile: function(e) {
             if (e) e.preventDefault();
             this.sync.save();
         },
 
-        /*
-         *  Run this file
-         */
+        // (action) Run this file
         runFile: function(e) {
             if (e) e.preventDefault();
             this.model.run();
         },
 
-        /*
-         *  Open search box in code editor
-         */
+        // (action) Open search box
         searchInFile: function(e) {
             if (e) e.preventDefault();
             this.editor.execCommand("find");
