@@ -50,6 +50,26 @@ DebugRPCService.prototype.init = function(args, meta) {
     });
 
     return this.dbg.init()
+    // Add breakpoints
+    .then(function() {
+        return Q.all(
+            _.chain(args.breakpoints || {})
+            .map(function(lines, path) {
+                return _.map(lines, function(line) {
+                    return {
+                        'line': line,
+                        'path': path
+                    };
+                })
+            })
+            .flatten()
+            .map(function(point) {
+                return that.dbg.break(path.join(that.workspace.root, point.path), point.line);
+            })
+            .value()
+        );
+    })
+    // Return
     .then(function() {
         return {};
     });
