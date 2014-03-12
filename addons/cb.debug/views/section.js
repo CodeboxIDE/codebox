@@ -3,6 +3,8 @@ define([], function() {
     var $ = codebox.require("hr/dom");
     var hr = codebox.require("hr/hr");
 
+    var files = codebox.require("core/files");
+
     var DebugSection = hr.View.extend({
         className: "debug-section",
         defaults: {
@@ -63,9 +65,25 @@ define([], function() {
             var $line = $("<tr>");
 
             _.each(this.formats, function(key) {
-                $("<td>", {
-                    'text': item[key.id]
-                }).appendTo($line);
+                var $e;
+                var value = item[key.id];
+
+                if (key.type == "file") {
+                    $e = $("<a>", {
+                        'href': "#",
+                        'text': value,
+                        'click': function(e) {
+                            e.preventDefault();
+                            files.open(value);
+                        }
+                    })
+                } else {
+                    $e = $("<span>", {
+                        'text': value
+                    });
+                }
+
+                $e.appendTo($("<td>").appendTo($line));
             });
             $line.appendTo(this.$table);
         },

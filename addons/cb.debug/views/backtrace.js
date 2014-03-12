@@ -11,7 +11,8 @@ define([
         formats: [
             {
                 id: "filename",
-                title: "File"
+                title: "File",
+                type: "file"
             },
             {
                 id: "line",
