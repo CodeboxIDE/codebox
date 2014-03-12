@@ -57,7 +57,7 @@ define([
             }, this);
 
             // Listen to codebox event
-            this.codebox.on("box:watch:change", function(e) {
+            this.listenTo(this.codebox, "box:watch:change", function(e) {
                 // Event on this file itself
                 if (e.data.path == this.path()) {
                     this.trigger("file:change:"+e.data.change, e.data);
@@ -67,12 +67,12 @@ define([
                 if (_.contains(["create", "delete"], e.data.change) && this.isChild(e.data.path)) {
                     this.trigger("files:change:"+e.data.change, e.data);
                 }
-            }, this);
-            this.codebox.on("box:files:write", function(e) {
+            });
+            this.listenTo(this.codebox, "box:files:write", function(e) {
                 if (e.data.path == this.path()) {
                     this.trigger("file:write", e.data);
                 }
-            }, this);
+            });
             return this;
         },
 
