@@ -24,7 +24,7 @@ function setup(options, imports, register) {
 	var error = _.partial(print, 'error');
 	var log = _.partial(print, 'log');
 	var exception = _.wrap(error, function(func, logEmit, logSection, err, kill) {
-		func(logEmit, logSection, "Error ", err.message);
+		func(logEmit, logSection, "Error ", err.message || err);
 		console.error(err.stack);
 
         // Kill process

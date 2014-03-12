@@ -27,6 +27,8 @@ HttpRPCManager.prototype.urlFor = function(serviceName, methodName) {
 
 // Build a handler to handle requests for this specific request
 HttpRPCManager.prototype.methodHandler = function(method, methodUrl, opts) {
+    var that = this;
+
     return function _methodHandler(req, res, next) {
         // Extract arguments
         var args = _.clone(req.query);
@@ -49,6 +51,8 @@ HttpRPCManager.prototype.methodHandler = function(method, methodUrl, opts) {
                 'method': methodUrl,
             });
         }, function(err) {
+            that.logger.exception(err, false);
+
             // Error response
             res.send(500, {
                 'ok': false,
@@ -56,8 +60,6 @@ HttpRPCManager.prototype.methodHandler = function(method, methodUrl, opts) {
                 'code': err.code || 500,
                 'method': methodUrl,
             });
-
-            logger.exception(err, false);
         });
     };
 };
