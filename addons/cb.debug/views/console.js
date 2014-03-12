@@ -81,6 +81,9 @@ define([], function() {
             $pre.appendTo($line);
 
             $line.appendTo(this.$body);
+
+            // Scroll
+            this.$container.animate({ scrollTop: this.$container[0].scrollHeight}, 100);
         },
 
         // Eval some code
