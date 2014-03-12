@@ -82,7 +82,7 @@ define([
             this.commandStart = new Command({}, {
                 title: "Start",
                 action: function() {
-                    that.dbg.start();
+                    that.dbg.start(that.options.argument);
                 }
             });
             this.commandStop = new Command({}, {

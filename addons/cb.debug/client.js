@@ -40,13 +40,14 @@ define([
             .then(function() {
                 // Create debug tab
                 debugTab = tabs.add(DebugTab, {
-                    'path': file.path()
+                    'path': file.path(),
+                    'tool': settings.user.get("tool") == "auto" ? null : settings.user.get("tool"),
+                    'argument': settings.user.get("argument")
                 }, {
                     'type': "debug",
                     'section': "debug"
                 });
                 debugTab.on("tab:close", function() {
-                    console.log("close debug tab", debugTab);
                     debugTab = null;
                 });
 
