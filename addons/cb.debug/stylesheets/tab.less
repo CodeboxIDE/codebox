@@ -37,56 +37,58 @@
         }
 
         &.debug-console {
-            .console-body {
-                .line {
-                    padding-bottom: 3px;
-                    border-bottom: 1px solid rgba(0,0,0, 0.05);
+            .line {
+                padding-bottom: 3px;
+                border-bottom: 1px solid rgba(0,0,0, 0.05);
 
-                    * {
-                        line-height: 1.4em;
-                        font-size: 14px;
-                    }
+                * {
+                    line-height: 1.4em;
+                    font-size: 14px;
+                }
 
-                    i {
-                        float: left;
-                        width: 24px;
-                        text-align: center;
-                    }
+                i {
+                    float: left;
+                    width: 24px;
+                    text-align: center;
+                }
 
-                    pre {
-                        margin: 0px;
-                        padding: 0px;
-                        background: none;
-                        color: inherit;
-                        border: none;
-                        display: block;
-                        margin-left: 24px;
-                        font-family: inherit;
-                    }
+                pre {
+                    margin: 0px;
+                    padding: 0px;
+                    background: none;
+                    color: inherit;
+                    border: none;
+                    display: block;
+                    margin-left: 24px;
+                    font-family: inherit;
+                }
 
-                    &.error {
-                        color: #a94442;
-                    }
-                    &.input {
-                        padding-top: 3px;
-                        padding-bottom: 0px;
-                        border-color: transparent;
-                    }
+                &.error {
+                    color: #a94442;
+                }
+                &.input {
+                    padding-top: 3px;
+                    padding-bottom: 0px;
+                    border-color: transparent;
+                }
+
+                input, input:focus {
+                    color: inherit;
+                    background: transparent;
+                    box-shadow: none;
+                    font-size: 14px;
+                    line-height: 1.4em;
+                    padding: 0px;
+                    margin: 0px;
+                    height: 19px;
+                    margin-right: 24px;
+                    width: 90%;
+                    border: none;
                 }
             }
 
-            input, input:focus {
-                color: inherit;
-                background: transparent;
-                border-color: transparent;
-                box-shadow: none;
-                font-size: 14px;
-                line-height: 1.4em;
-                padding: 0px;
-                margin: 0px;
-                height: 23px;
-                padding-left: 24px;
-                position: relative;
+            .console-body {
+                
             }
         }
     }

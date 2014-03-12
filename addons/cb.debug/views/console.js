@@ -55,7 +55,10 @@ define([], function() {
 
             
             this.$body.appendTo(this.$container);
-            this.$input.appendTo(this.$container);
+            this.$input.appendTo($("<div>", {
+                'class': "line input",
+                'html': '<i class="fa fa-angle-right"></i>'
+            }).appendTo(this.$container));
 
             this.$title.appendTo(this.$el);
             this.$container.appendTo(this.$el);
