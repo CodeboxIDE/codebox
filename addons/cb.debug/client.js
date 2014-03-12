@@ -28,13 +28,16 @@ define([
 
             return Q()
             .then(function() {
-                if (debugTab) return dialogs.confirm("Do you wan to close current debugger?",
+                if (debugTab) {
+                    return dialogs.confirm("Do you wan to close current debugger?",
                     "There is already a debugger running, are you sure you want to close it for opening a new one.")
+                    .then(function() {
+                        return debugTab.closeTab();
+                    });
+                }
                 return Q();
             })
             .then(function() {
-                if (debugTab) debugTab.closeTab();
-
                 // Create debug tab
                 debugTab = tabs.add(DebugTab, {
                     'path': file.path()
@@ -43,6 +46,7 @@ define([
                     'section': "debug"
                 });
                 debugTab.on("tab:close", function() {
+                    console.log("close debug tab", debugTab);
                     debugTab = null;
                 });
 
