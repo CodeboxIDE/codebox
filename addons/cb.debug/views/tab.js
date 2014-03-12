@@ -60,6 +60,12 @@ define([
                     content: err.message || err
                 });
             });
+            this.listenTo(this.dbg, "log", function(message) {
+                this.console.addLine({
+                    type: "log",
+                    content: message
+                });
+            });
 
             // Create grids for sections
             this.gridV = new GridView({

@@ -114,7 +114,8 @@ define([], function() {
             return this.execute("start", {
                 'arg': arg
             })
-            .then(function() {
+            .then(function(output) {
+                that.trigger("log", output);
                 that.trigger("update:start");
             });
         },
@@ -123,7 +124,8 @@ define([], function() {
         stop: function() {
             var that = this;
             return this.execute("stop")
-            .then(function() {
+            .then(function(output) {
+                that.trigger("log", output);
                 that.trigger("update:stop");
             });
         },
@@ -132,7 +134,8 @@ define([], function() {
         next: function() {
             var that = this;
             return this.execute("next")
-            .then(function() {
+            .then(function(output) {
+                that.trigger("log", output);
                 that.trigger("update:next");
             });
         },
@@ -141,7 +144,8 @@ define([], function() {
         cont: function() {
             var that = this;
             return this.execute("cont")
-            .then(function() {
+            .then(function(output) {
+                that.trigger("log", output);
                 that.trigger("update:cont");
             });
         },
@@ -150,7 +154,8 @@ define([], function() {
         restart: function() {
             var that = this;
             return this.execute("restart")
-            .then(function() {
+            .then(function(output) {
+                that.trigger("log", output);
                 that.trigger("update:restart");
             });
         },
