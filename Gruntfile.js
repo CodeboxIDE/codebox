@@ -13,15 +13,14 @@ module.exports = function (grunt) {
     // Load grunt modules
     grunt.loadNpmTasks('hr.js');
     grunt.loadNpmTasks('grunt-exec');
-    grunt.loadNpmTasks('grunt-node-webkit-builder');
     grunt.loadNpmTasks('grunt-contrib-compress');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
 
     // Init GRUNT configuraton
     grunt.initConfig({
-        'pkg': grunt.file.readJSON('package.json'),
-        'hr': {
+        pkg: grunt.file.readJSON('package.json'),
+        hr: {
             build: {
                 // Base directory for the application
                 "base": clientPath,
@@ -98,55 +97,7 @@ module.exports = function (grunt) {
                 }
             }
         },
-        nodewebkit: {
-            mac: {
-                options: {
-                    build_dir: './appBuilds',
-                    mac: true,
-                    win: false,
-                    linux32: false,
-                    linux64: false,
-                    mac_icns: "./desktop/icons/mac.icns",
-                    credits: "./desktop/credits.html",
-                    version: NW_VERSION,
-                    zip: false
-                },
-                src: [
-                    ".tmp/**",
-
-                    // grunt.file.copy duplicates symbolic and hard links
-                    // so we need to copy it with the shell
-                    "!.tmp/extras/**",
-                ]
-            },
-            linux: {
-                options: {
-                    build_dir: './appBuilds',
-                    mac: false,
-                    win: false,
-                    linux32: true,
-                    linux64: false,
-                    version: NW_VERSION,
-                    zip: false
-                },
-                src: [
-                    ".tmp/**"
-                ]
-            }
-        },
         exec: {
-            nwbuild: {
-                command: "./scripts/nwbuild.sh "+NW_VERSION,
-                cwd: '.tmp/',
-                stdout: true,
-                stderr: true
-            },
-            build_extras: {
-                command: "./scripts/build_extras.sh",
-                cwd: '.tmp/',
-                stdout: true,
-                stderr: true
-            },
             publish: {
                 command: "npm publish",
                 cwd: '.tmp/',
@@ -156,25 +107,6 @@ module.exports = function (grunt) {
             build_files_editor: {
                 command: "npm install",
                 cwd: './addons/cb.files.editor/',
-                stdout: true,
-                stderr: true
-            },
-            copy_extras: {
-                // Copy and preserve symbolic links
-                command: "mv .tmp/extras ./appBuilds/releases/Codebox/mac/Codebox.app/Contents/Resources/app.nw/extras",
-                cwd: '.',
-                stdout: true,
-                stderr: true
-            },
-            build_mac_release: {
-                command: "./scripts/build_mac_dmg.sh",
-                cwd: './',
-                stdout: true,
-                stderr: true
-            },
-            build_linux_release: {
-                command: "./scripts/build_linux_tar.sh",
-                cwd: './',
                 stdout: true,
                 stderr: true
             },
@@ -233,38 +165,7 @@ module.exports = function (grunt) {
                 options: {
                     mode: true
                 }
-            },
-
-            // Change the package.json to use node-webkit's
-            desktopPKG: {
-                cwd: './',
-                src: '.tmp/desktop/package.json',
-                dest: '.tmp/package.json',
-                options: {
-                    // Change main entry point
-                    process: function (content, srcpath) {
-                        grunt.log.write('processing '+ srcpath + '...\n');
-                        var _pkg = JSON.parse(content);
-                        _pkg.main = "desktop/index.html";
-                        _pkg.version = pkg.version;
-                        return JSON.stringify(_pkg, null, 4);
-                    }
-                }
-            },
-
-            // Installer for linux
-            linuxInstaller: {
-                cwd: './',
-                src: 'scripts/install_linux.sh',
-                dest: './appBuilds/releases/Codebox/linux32/Codebox/install.sh'
-            },
-
-            // Installer for linux
-            linuxIcon: {
-                cwd: './',
-                src: './desktop/icons/128.png',
-                dest: './appBuilds/releases/Codebox/linux32/Codebox/icon.png'
-            },
+            }
         },
         compress: {
             tmp: {
@@ -342,35 +243,6 @@ module.exports = function (grunt) {
         'exec:clean_addons_tmp',
         'buildAddons:tmp',
         'compress:tmp'
-    ]);
-
-    // Desktop app generation
-    grunt.registerTask('build-app-mac', [
-        'tmp',
-        'copy:desktopPKG',
-        'exec:nwbuild',
-        'exec:build_extras',
-        'nodewebkit:mac',
-        'exec:copy_extras',
-        'clean:tmp',
-        'exec:build_mac_release'
-    ]);
-    grunt.registerTask('build-app-linux', [
-        'tmp',
-        'copy:desktopPKG',
-        'exec:nwbuild',
-        'nodewebkit:linux',
-        'copy:linuxInstaller',
-        'copy:linuxIcon',
-        'clean:tmp',
-        'exec:build_linux_release'
-    ]);
-
-    // Desktop app test
-    grunt.registerTask('testApps', [
-        'tmp',
-        'copy:desktopPKG',
-        'exec:nwbuild'
     ]);
 
     // Publish to NPM
