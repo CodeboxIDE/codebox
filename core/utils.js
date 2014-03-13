@@ -79,31 +79,6 @@ function methodObj(obj) {
     return newObj;
 }
 
-function wireFriendly(obj) {
-    if(_.isArray(obj)) {
-        return _.map(obj, wireFriendly);
-    } else if(_.isString(obj) || _.isNumber(obj)) {
-        return obj;
-    }
-
-    var newObj = {};
-    var pairs = _.pairs(obj);
-
-    pairs.forEach(function(pair) {
-        var key = pair[0], value = pair[1];
-
-        // Skip functions and keys starting with a lower dash
-        if(_.isFunction(value) || key[0] == '_') {
-            return;
-        }
-
-        // Set
-        newObj[key] = value;
-    });
-
-    return newObj;
-}
-
 // Return a timestamp of the curent time
 function timestamp() {
     return Math.floor(Date.now() / 1000);
@@ -203,7 +178,6 @@ exports.batch = batch;
 exports.execFile = execFile;
 exports.constant = constant;
 exports.methodObj = methodObj;
-exports.wireFriendly = wireFriendly;
 exports.timestamp = timestamp;
 exports.startsWith = startsWith;
 exports.atob = atob;

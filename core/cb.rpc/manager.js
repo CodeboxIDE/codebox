@@ -5,8 +5,6 @@ var express = require('express');
 
 var path = require('path');
 
-var wireFriendly = require('../utils').wireFriendly;
-
 
 function HttpRPCManager(server, baseUrl, logger) {
     // Bind all methods
@@ -29,6 +27,8 @@ HttpRPCManager.prototype.urlFor = function(serviceName, methodName) {
 
 // Build a handler to handle requests for this specific request
 HttpRPCManager.prototype.methodHandler = function(method, methodUrl, opts) {
+    var that = this;
+
     return function _methodHandler(req, res, next) {
         // Extract arguments
         var args = _.clone(req.query);
@@ -47,10 +47,12 @@ HttpRPCManager.prototype.methodHandler = function(method, methodUrl, opts) {
         }).then(function(data) {
             res.send(200, {
                 'ok': true,
-                'data': wireFriendly(data),
+                'data': data,
                 'method': methodUrl,
             });
         }, function(err) {
+            that.logger.exception(err, false);
+
             // Error response
             res.send(500, {
                 'ok': false,
@@ -58,8 +60,6 @@ HttpRPCManager.prototype.methodHandler = function(method, methodUrl, opts) {
                 'code': err.code || 500,
                 'method': methodUrl,
             });
-
-            logger.exception(err, false);
         });
     };
 };

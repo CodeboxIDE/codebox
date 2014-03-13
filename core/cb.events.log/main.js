@@ -1,5 +1,4 @@
 // Requires
-var wireFriendly = require('../utils').wireFriendly;
 var timestamp = require('../utils').timestamp;
 
 function setup(options, imports, register) {
@@ -14,7 +13,7 @@ function setup(options, imports, register) {
         workspace.mtime = timestamp();
 
         // Log events to console
-        logger.log(this.event, ':', wireFriendly(data));
+        logger.log(this.event, ':', data);
     });
 
     // Register

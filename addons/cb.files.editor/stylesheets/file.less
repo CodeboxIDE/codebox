@@ -86,6 +86,22 @@
                 border-right: 3px solid #0ff;
                 border-bottom: 3px solid #0ff;
             }
+
+            .ace_gutter-cell.ace_breakpoint {
+                position: relative;
+
+                &:before {
+                    content: " ";
+                    width: 10px;
+                    height: 10px;
+                    border-radius: 16px;
+                    border: 2px solid #fff;
+                    position: absolute;
+                    left: 4px;
+                    background: #5E9EF3;
+                    top: 3px;
+                }
+            } 
         }
     }
 }

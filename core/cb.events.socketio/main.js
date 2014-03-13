@@ -1,5 +1,3 @@
-// Requires
-var wireFriendly = require('../utils').wireFriendly;
 
 
 function setup(options, imports, register) {
@@ -13,7 +11,7 @@ function setup(options, imports, register) {
         var handler = function(data) {
             socket.emit("event", {
                 "event": this.event, 
-                "data": wireFriendly(data)
+                "data": data
             });
         };
 

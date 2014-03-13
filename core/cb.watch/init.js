@@ -45,7 +45,6 @@ function init(logger, events, rootPath) {
                     watching: isWatching,
                     state: watcherInstance.state,
                     path: normalize(watcherInstance.path),
-                    _instance: watcherInstance,
                     error: err || null
                 };
 

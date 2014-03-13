@@ -55,9 +55,12 @@ define([
             var that = this;
             TabsView.__super__.initialize.apply(this, arguments);
 
-            // Current actiev tab id
+            // Current active tab id
             this.activeTab = null;
             this.activeSection = 0;
+
+            // Has been restored
+            this._restored = false;
 
             // Current layout
             this.layout = this.options.layout; // null: mode auto
@@ -217,7 +220,7 @@ define([
 
             this.grid.setLayout(l);
             this.trigger("layout", l);
-            this.update();
+            this.saveTabs();
         },
 
         // Check if tab is the active tab
@@ -272,13 +275,15 @@ define([
 
         // Save tabs
         saveTabs: function() {
+            if (!this._restored) return;
+
             var state = {};
 
             // Snapshot sections and tabs
             state.sections = _.map(this.grid.views, function(section) {
                 return {
                     'id': section.sectionId,
-                    'tabs':section.tabs.map(function(tab) {
+                    'tabs': section.tabs.map(function(tab) {
                         return tab.snapshot();
                     })
                 };
@@ -286,7 +291,6 @@ define([
 
             // Snapshot layout
             state.layout = this.grid.columns;
-
             hr.Storage.set("tabs", state);
         },
 
@@ -335,6 +339,7 @@ define([
                 .value()
             )
             .then(function() {
+                that._restored = true;
                 that.checkSections();
                 return n;
             });

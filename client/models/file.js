@@ -4,6 +4,7 @@ define([
     "hr/hr",
     'core/backends/rpc',
     "core/backends/vfs",
+    "core/debug/breakpoints",
     'models/command',
     "utils/string",
     "utils/url",
@@ -12,7 +13,7 @@ define([
     "utils/dialogs",
     "utils/uploader",
     "core/operations"
-], function(Q, _, hr, rpc, vfs, Command, string, Url, Languages, FileSync, dialogs, Uploader, operations) {
+], function(Q, _, hr, rpc, vfs, breakpoints, Command, string, Url, Languages, FileSync, dialogs, Uploader, operations) {
     var logging = hr.Logger.addNamespace("files");
 
     var File = hr.Model.extend({
@@ -56,7 +57,7 @@ define([
             }, this);
 
             // Listen to codebox event
-            this.codebox.on("box:watch:change", function(e) {
+            this.listenTo(this.codebox, "box:watch:change", function(e) {
                 // Event on this file itself
                 if (e.data.path == this.path()) {
                     this.trigger("file:change:"+e.data.change, e.data);
@@ -66,12 +67,12 @@ define([
                 if (_.contains(["create", "delete"], e.data.change) && this.isChild(e.data.path)) {
                     this.trigger("files:change:"+e.data.change, e.data);
                 }
-            }, this);
-            this.codebox.on("box:files:write", function(e) {
+            });
+            this.listenTo(this.codebox, "box:files:write", function(e) {
                 if (e.data.path == this.path()) {
                     this.trigger("file:write", e.data);
                 }
-            }, this);
+            });
             return this;
         },
 
@@ -296,6 +297,27 @@ define([
          */
         extension: function() {
             return "."+this.get("name").split('.').pop();
+        },
+
+        /*
+         *  Return current breakpoints for this file
+         */
+        getBreakpoints: function() {
+            return breakpoints.getFileBreakpoints(this.path());
+        },
+
+        /*
+         *  Set breakpoints for this file
+         */
+        setBreakpoints: function(points) {
+            return breakpoints.setFileBreakpoints(this.path(), points);
+        },
+
+        /*
+         *  Clear breakpoints for this file
+         */
+        clearBreakpoints: function() {
+            return this.setBreakpoints([]);
         },
 
         /*
@@ -647,20 +669,25 @@ define([
         // Return context menu
         contextMenu: function() {
             var that = this;
+            var files = require("core/files");
+
             return function() {
                 var menu = [];
 
                 // Open with
                 if (!that.isDirectory()) {
-                    menu.push({
-                        'id': "file.open.select",
-                        'type': "action",
-                        'title': "Open with...",
-                        'action': function() {
-                            that.open({
-                                'userChoice': true
-                            });
-                        }
+                    var handlers = files.getHandlers(that);
+                    _.each(handlers, function(handler) {
+                        menu.push({
+                            'type': "action",
+                            'title': handler.name,
+                            'icons': {
+                                'menu': handler.icon
+                            },
+                            'action': function() {
+                                return handler.open(that);
+                            }
+                        });
                     });
                     menu.push({ 'type': "divider" });
                 }
@@ -668,7 +695,6 @@ define([
                 // File or directory
                 if (!that.isRoot()) {
                     menu.push({
-                        'id': "file.rename",
                         'type': "action",
                         'title': "Rename...",
                         'action': function() {
@@ -676,7 +702,6 @@ define([
                         }
                     });
                     menu.push({
-                        'id': "file.remove",
                         'type': "action",
                         'title': "Remove",
                         'action': function() {
@@ -689,7 +714,6 @@ define([
                 if (that.isDirectory()) {
                     // Directory
                     menu.push({
-                        'id': "file.create",
                         'type': "action",
                         'title': "New file",
                         'action': function() {
@@ -697,7 +721,6 @@ define([
                         }
                     });
                     menu.push({
-                        'id': "file.mkdir",
                         'type': "action",
                         'title': "New folder",
                         'action': function() {
@@ -705,7 +728,6 @@ define([
                         }
                     });
                     menu.push({
-                        'id': "file.refresh",
                         'type': "action",
                         'title': "Refresh",
                         'action': function() {
@@ -713,13 +735,11 @@ define([
                         }
                     });
                     menu.push({
-                        'id': "file.upload",
                         'type': "menu",
                         'title': "Add",
                         'offline': false,
                         'menu': [
                             {
-                                'id': "file.upload.files",
                                 'type': "action",
                                 'title': "Files",
                                 'offline': false,
@@ -728,7 +748,6 @@ define([
                                 }
                             },
                             {
-                                'id': "file.upload.directory",
                                 'type': "action",
                                 'title': "Directories",
                                 'offline': false,
@@ -742,7 +761,6 @@ define([
                     });
                 } else {
                     menu.push({
-                        'id': "file.download",
                         'type': "action",
                         'title': "Download",
                         'action': function() {
@@ -751,7 +769,6 @@ define([
                     });
                     menu.push({ 'type': "divider" });
                     menu.push({
-                        'id': "file.run",
                         'type': "action",
                         'title': "Run",
                         'offline': false,

@@ -64,7 +64,9 @@ define([
         }
 
         handler = _.defaults(handler, {
-            'setActive': false
+            'setActive': false,
+            'fallback': false,
+            'position': 10
         });
 
         handler.id = handlerId;
@@ -107,13 +109,20 @@ define([
 
         // Register handler
         handlers[handlerId] = handler;
+
+        return handlers[handlerId];
     };
 
     // Get handler for a file
-    var getHandlers = function(file, defaultHandler) {
-        return _.filter(handlers, function(handler) {
+    var getHandlers = function(file) {
+        return _.chain(handlers)
+        .filter(function(handler) {
             return userSettings.get(handler.id, true) && handler.valid(file);
-        });
+        })
+        .sortBy(function(handler) {
+            return handler.position || 10;
+        })
+        .value();
     };
 
     // get fallback handlers for a file
@@ -162,13 +171,13 @@ define([
                 'codebox': box
             });
             return nfile.getByPath(file).then(function() {
-                return openFile(nfile);
+                return openFile(nfile, options);
             });
         }
 
         var possibleHandlers = getHandlers(file);
 
-        // get fallbacks
+        // Get fallbacks
         if (_.size(possibleHandlers) == 0 && options.useFallback) {
             possibleHandlers = getFallbacks();
         }

@@ -65,8 +65,8 @@ define([
             this.menu.reset(this.get("menu", []));
 
             if (this.get("offline") !== null) {
-                hr.Offline.on("state", function() {
-                    that.toggleFlag("disabled", that.get("offline") == hr.Offline.isConnected())
+                this.listenTo(hr.Offline, "state", function() {
+                    this.toggleFlag("disabled", this.get("offline") == hr.Offline.isConnected());
                 });
                 that.toggleFlag("disabled", that.get("offline") == hr.Offline.isConnected())
             }
