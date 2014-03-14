@@ -1,12 +1,11 @@
 define([
-    "debugger",
     "views/section",
     "views/locals",
     "views/backtrace",
     "views/breakpoints",
     "views/console",
     "less!stylesheets/tab.less"
-], function(Debugger, DebugSection, LocalsSection, BacktraceSection, BreakpointsSection, ConsoleSection) {
+], function( DebugSection, LocalsSection, BacktraceSection, BreakpointsSection, ConsoleSection) {
     var _ = codebox.require("hr/utils");
     var $ = codebox.require("hr/dom");
     var hr = codebox.require("hr/hr");
@@ -16,6 +15,7 @@ define([
     var box = codebox.require("core/box");
     var user = codebox.require("core/user");
     var dialogs = codebox.require("utils/dialogs");
+    var Debugger = codebox.require("core/debug/debugger");
 
     var GridView = codebox.require("views/grid");
 

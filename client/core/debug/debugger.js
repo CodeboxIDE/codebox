@@ -1,8 +1,9 @@
-define([], function() {
-    var hr = codebox.require("hr/hr");
-    var Q = codebox.require("hr/promise");
-    var box = codebox.require("core/box");
-    var rpc = codebox.require("core/backends/rpc");
+define([
+    "hr/hr",
+    "hr/promise",
+    "core/box",
+    "core/backends/rpc"
+], function(hr, Q, box, rpc) {
     
     var Debugger = hr.Class.extend({
         initialize: function(options) {
