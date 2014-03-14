@@ -1,6 +1,6 @@
 // Requires
 var _ = require('lodash');
-var init = require('./init').init;
+var Watcher= require('./watcher');
 
 
 function setup(options, imports, register) {
@@ -8,10 +8,10 @@ function setup(options, imports, register) {
     var events = imports.events;
     var logger = imports.logger.namespace("watch");
 
+    var watcher = new Watcher(logger, events);
+
     register(null, {
-        "watch": {
-            init: _.partial(init, logger, events)
-        }
+        "watch": watcher
     });
 }
 
