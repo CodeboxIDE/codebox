@@ -15,14 +15,5 @@
     },
     "engines": {
         "codebox": ">=0.7.0"
-    },
-    "plugin": {
-        "provides": [],
-        "consumes": [
-            "rpc",
-            "events",
-            "workspace"
-        ]
-    },
-    "main": "node/main"
+    }
 }

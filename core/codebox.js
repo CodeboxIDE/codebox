@@ -268,6 +268,7 @@ var start = function(config) {
             "./cb.rpc.box",
             "./cb.rpc.shells",
             "./cb.rpc.auth",
+            "./cb.rpc.debug",
             "./cb.rpc.search",
             "./cb.rpc.addons",
             "./cb.rpc.deploy",

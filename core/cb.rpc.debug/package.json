@@ -1,0 +1,16 @@
+{
+    "name": "cb.rpc.debug",
+    "version": "0.0.1",
+
+    "main": "./main.js",
+    "private": true,
+
+    "plugin": {
+        "consumes": [
+            "rpc",
+            "events",
+            "workspace",
+            "project"
+        ]
+    }
+}
