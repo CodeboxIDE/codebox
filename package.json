@@ -44,7 +44,7 @@
         "connect-gzip-static": "0.1.1",
         "minimatch": "0.2.14",
         "semver": "2.2.1",
-        "bugs": "git+https://github.com/FriendCode/bugs.js.git#bd503163abe59feceff4613a6203a779f7a4efff"
+        "bugs": "git+https://github.com/FriendCode/bugs.js.git#99dbbc53213d00893921a212d9dba7674dc67a54"
     },
     "devDependencies": {
         "grunt-exec": "0.4.5",
