@@ -1,22 +1,15 @@
 define([
     "hr/hr",
     "hr/promise",
-    "core/box",
     "core/backends/rpc"
-], function(hr, Q, box, rpc) {
+], function(hr, Q, rpc) {
     
-    var Debugger = hr.Class.extend({
+    var DebuggerSession = hr.Class.extend({
         initialize: function(options) {
-            Debugger.__super__.initialize.apply(this, arguments);
+            DebuggerSession.__super__.initialize.apply(this, arguments);
 
             this.id = null;
             this._breakpoints = [];
-
-            // Bind debug event
-            this.listenTo(box, "box:debug", function() {
-                console.log("debugger event !!!!", arguments);
-                //this.trigger("update");
-            });
         },
 
         // Initialize the debugger
@@ -30,12 +23,17 @@ define([
         },
 
         // Close debugger
-        close: function() {
+        close: function(options) {
             var that = this;
+            options = _.defaults(options || {}, {
+                silent: false
+            });
 
             return this.execute("close")
             .then(function() {
+                if (!options.silent) that.trigger("close");
                 that.stopListening();
+                that.off();
             });
         },
 
@@ -185,5 +183,5 @@ define([
         },
     });
 
-    return Debugger;
+    return DebuggerSession;
 });

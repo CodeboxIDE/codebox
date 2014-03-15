@@ -22,6 +22,7 @@ define([
     var box = codebox.require("core/box");
     var collaborators = codebox.require("core/collaborators");
     var keyboard = codebox.require("utils/keyboard");
+    var debugManager = codebox.require("core/debug/manager");
 
     var logging = hr.Logger.addNamespace("editor");
 
@@ -179,10 +180,14 @@ define([
             $doc.setNewLineMode("unix");
             this.setOptions();
 
-            // Breakpoints
+            // Debug and Breakpoints
             this.breakpoints = new Breakpoints({
                 editor: this
             });
+            this.listenTo(debugManager, "state", function(state) {
+                this.editor.setReadOnly(state);
+            });
+            this.editor.setReadOnly(debugManager.isActive());
 
             // Bind settings changement
             var update = function() {

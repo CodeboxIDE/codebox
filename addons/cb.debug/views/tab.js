@@ -9,13 +9,12 @@ define([
     var _ = codebox.require("hr/utils");
     var $ = codebox.require("hr/dom");
     var hr = codebox.require("hr/hr");
-    var breakpoints = codebox.require("core/debug/breakpoints");
     var Command = codebox.require("models/command");
     var Tab = codebox.require("views/tabs/base");
     var box = codebox.require("core/box");
     var user = codebox.require("core/user");
     var dialogs = codebox.require("utils/dialogs");
-    var Debugger = codebox.require("core/debug/debugger");
+    var debugManager = codebox.require("core/debug/manager");
 
     var GridView = codebox.require("views/grid");
 
@@ -33,7 +32,7 @@ define([
             var that = this;
             DebugTab.__super__.initialize.apply(this, arguments);
 
-            this.dbg = new Debugger();
+            this.dbg = this.options.dbg;
             
 
             // Create sections
@@ -51,6 +50,9 @@ define([
             });
 
             // Listen events
+            this.listenTo(this.dbg, "close", function() {
+                this.closeTab();
+            });
             this.listenTo(this.dbg, "update", function() {
                 this.updateState();
             });
@@ -153,11 +155,11 @@ define([
             this.dbg.init({
                 'tool': this.options.tool,
                 'path': this.options.path,
-                'breakpoints': breakpoints.all()
+                'breakpoints': debugManager.breakpoints.all()
             });
 
             // Bind event on breakponts changements
-            this.listenTo(breakpoints, "change", function(e) {
+            this.listenTo(debugManager.breakpoints, "change", function(e) {
                 if (e.change == "add") {
                     this.dbg.breakpointAdd({
                         'path': e.path,
@@ -175,7 +177,7 @@ define([
 
             // Bind close tab
             this.on("tab:close", function() {
-                this.dbg.close();
+                this.dbg.close({silent:true});
             }, this);
 
             return this;

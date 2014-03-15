@@ -43,5 +43,5 @@ define([
         }
     });
 
-    return new Breakpoints();
+    return Breakpoints;
 });

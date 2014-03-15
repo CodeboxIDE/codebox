@@ -9,9 +9,7 @@ define([
     var files = codebox.require("core/files");
     var tabs = codebox.require("core/tabs");
     var box = codebox.require("core/box");
-
-    // Current debugger tab
-    var debugTab = null;
+    var debugManager = codebox.require("core/debug/manager");
 
     // Add files handler
     var filesHandler = files.addHandler("debug", {
@@ -26,20 +24,10 @@ define([
                 settings.user.save();
             }
 
-            return Q()
-            .then(function() {
-                if (debugTab) {
-                    return dialogs.confirm("Do you wan to close current debugger?",
-                    "There is already a debugger running, are you sure you want to close it for opening a new one.")
-                    .then(function() {
-                        return debugTab.closeTab();
-                    });
-                }
-                return Q();
-            })
-            .then(function() {
-                // Create debug tab
-                debugTab = tabs.add(DebugTab, {
+            return debugManager.open()
+            .then(function(dbg) {
+                return tabs.add(DebugTab, {
+                    'dbg': dbg,
                     'path': file.path(),
                     'tool': settings.user.get("tool") == "auto" ? null : settings.user.get("tool"),
                     'argument': settings.user.get("argument")
@@ -47,12 +35,6 @@ define([
                     'type': "debug",
                     'section': "debug"
                 });
-                debugTab.on("tab:close", function() {
-                    debugTab = null;
-                });
-
-                // Return the tab
-                return debugTab;
             });
         }
     });
