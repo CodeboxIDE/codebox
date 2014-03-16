@@ -743,23 +743,24 @@ define([
                     menu.push({ 'type': "divider" });
                 }
 
-                menu.push({
-                    'type': "action",
-                    'title': "Copy",
-                    'action': function() {
-                        clipboard.setData("file", that.path());
-                    }
-                });
-                menu.push({
-                    'type': "action",
-                    'title': "Cut",
-                    'action': function() {
-                        clipboard.setData("file", that.path(), {
-                            cut: true
-                        });
-                    }
-                });
-                if (that.isDirectory()) {
+                if (!that.isDirectory()) {
+                    menu.push({
+                        'type': "action",
+                        'title': "Copy",
+                        'action': function() {
+                            clipboard.setData("file", that.path());
+                        }
+                    });
+                    menu.push({
+                        'type': "action",
+                        'title': "Cut",
+                        'action': function() {
+                            clipboard.setData("file", that.path(), {
+                                cut: true
+                            });
+                        }
+                    });
+                } else {
                     menu.push({
                         'type': "action",
                         'title': "Paste",
