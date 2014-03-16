@@ -36,6 +36,9 @@ define([
                 this.activeDebugger = null;
                 this.trigger("state", false);
             });
+            this.listenTo(this.activeDebugger, "position", function(position) {
+                this.trigger("position", position);
+            });
 
             return Q(this.activeDebugger);
         },
@@ -43,6 +46,12 @@ define([
         // Return if debug is active
         isActive: function(st) {
             return this.activeDebugger != null;
+        },
+
+        // Get current debug position
+        getPosition: function() {
+            if (!this.isActive()) return null;
+            return this.activeDebugger.position;
         }
     });
 

@@ -177,7 +177,7 @@ define([
 
             // Bind close tab
             this.on("tab:close", function() {
-                this.dbg.close({silent:true});
+                this.dbg.close();
             }, this);
 
             return this;

@@ -8,8 +8,14 @@ define([
         initialize: function(options) {
             DebuggerSession.__super__.initialize.apply(this, arguments);
 
+            // Session id for this debugger
             this.id = null;
+
+            // Breakpoints
             this._breakpoints = [];
+
+            // Position
+            this.position = null;
         },
 
         // Initialize the debugger
@@ -23,15 +29,14 @@ define([
         },
 
         // Close debugger
-        close: function(options) {
+        close: function() {
             var that = this;
-            options = _.defaults(options || {}, {
-                silent: false
-            });
+            if (!that.id) return Q.reject(new Error("Session not yet initialized"));
 
             return this.execute("close")
             .then(function() {
-                if (!options.silent) that.trigger("close");
+                that.id = null;
+                that.trigger("close");
                 that.stopListening();
                 that.off();
             });
@@ -74,7 +79,14 @@ define([
 
         // Get backtrace
         backtrace: function() {
-            return this.execute("backtrace");
+            return this.execute("backtrace")
+            .then(_.bind(function(trace) {
+                this.position = _.last(trace);
+                console.log("current position", this.position);
+                this.trigger("position", this.position);
+
+                return trace;
+            }, this));
         },
 
         // Get a breapoint id from its location
