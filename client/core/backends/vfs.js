@@ -18,7 +18,8 @@ define([
             'event': eventName,
             'data': _.extend({}, {
                 'path': path,
-                'change': name
+                'change': name,
+                'source': "fakeVfs"
             }, data)
         });
     };
@@ -34,7 +35,7 @@ define([
         "write": "put",
         "mkdir": "put",
         "create": "put",
-        "rename": "post",
+        "special": "post",
         "remove": "delete",
         "read": "get"
     };
@@ -55,9 +56,15 @@ define([
                 case "remove":
                     triggerWatchEvent("delete", path);
                     break;
-                case "rename":
-                    triggerWatchEvent("delete", args.renameFrom);
-                    triggerWatchEvent("create", path);
+                case "special":
+                    // Rename
+                    if (args.renameFrom) {
+                        triggerWatchEvent("delete", args.renameFrom);
+                        triggerWatchEvent("create", path);
+                    } else if (args.copyFrom){
+                        triggerWatchEvent("create", path);
+                    }
+                    
                     break;
                 case "create":
                     triggerWatchEvent("create", path);
@@ -117,13 +124,26 @@ define([
     });
 
     // Rename a file
-    vfs.addMethod('rename', {
+    vfs.addMethod('special', {
         fallback: function(args, options) {
-            var to = localfs.urlToPath(options.url);
-            var from = args.renameFrom;
+            // Rename
+            if (args.renameFrom) {
+                var to = localfs.urlToPath(options.url);
+                var from = args.renameFrom;
 
-            if (!from) return Q.reject("need 'renameFrom'");
-            return localfs.mv(from, to);
+                if (!from) return Q.reject("need 'renameFrom'");
+                return localfs.mv(from, to);
+            }
+            // Copy
+            else if (args.copyFrom) {
+                var to = localfs.urlToPath(options.url);
+                var from = args.copyFrom;
+
+                if (!from) return Q.reject("need 'copyFrom'");
+                return localfs.cp(from, to);
+            } else {
+                return Q.reject("Invalid special operations");
+            }
         },
         after: function(args, results, options) {
             localfs.autoSync();

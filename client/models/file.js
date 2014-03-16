@@ -59,6 +59,8 @@ define([
 
             // Listen to codebox event
             this.listenTo(this.codebox, "box:watch:change", function(e) {
+                if (!this.isValid()) return;
+
                 // Event on this file itself
                 if (e.data.path == this.path()) {
                     this.trigger("file:change:"+e.data.change, e.data);
@@ -180,7 +182,7 @@ define([
                 if (this.get("href").length == 0) { return null; }
                 path = Url.parse(this.get("href")).pathname.replace("/vfs", "");
             }
-            
+
             if (string.endsWith(path, "/")) {
                 path = path.slice(0, -1)
             }
@@ -380,7 +382,7 @@ define([
                     "size": 0,
                     "mtime": 0,
                     "mime": "inode/directory",
-                    "href": "/vfs/",
+                    "href": location.protocol+"//"+location.host+"/vfs/",
                     "exists": true
                 };
                 this.set(fileData);
@@ -530,7 +532,7 @@ define([
         rename: function(name) {
             var parentPath = this.parentPath();
             var newPath = parentPath+"/"+name;
-            return this.loading(this.vfsRequest("rename", this.vfsUrl(newPath), {
+            return this.loading(this.vfsRequest("special", this.vfsUrl(newPath), {
                 "renameFrom": this.path()
             }));
         },
@@ -543,9 +545,9 @@ define([
          */
         copyTo: function(to, newName) {
             newName = newName || this.get("name");
-            var toPath = path+"/"+newName;
+            var toPath = to+"/"+newName;
 
-            return this.loading(this.vfsRequest("rename", this.vfsUrl(toPath), {
+            return this.loading(this.vfsRequest("special", this.vfsUrl(toPath), {
                 "copyFrom": this.path()
             }));
         },
@@ -559,7 +561,7 @@ define([
             newName = newName || from.split("/").pop();
             var toPath = this.path()+"/"+newName;
 
-            return this.loading(this.vfsRequest("rename", this.vfsUrl(toPath, false), {
+            return this.loading(this.vfsRequest("special", this.vfsUrl(toPath, false), {
                 "copyFrom": from
             }));
         },
@@ -765,17 +767,32 @@ define([
                         'action': function() {
                             if (clipboard.hasData("file")) {
                                 var path = clipboard.getData("file");
-                                var cut = clipboard.getRaw().options.cut;
-                                
-                                return that.copyFile(path)
+                                var cut = clipboard.getRaw().options.cut == true;
+
+                                // Load file we are copying
+                                var toCopy = new File();
+                                return toCopy.getByPath(path)
                                 .then(function() {
-                                    // If cut then delete the previsous file and clear clipboard
-                                    if (!cut) return;
+                                    // Copy file
+                                    return toCopy.copyTo(that.path());
                                 })
                                 .then(function() {
-                                    // Refresh folder
-                                    return that.actionRefresh();
-                                });
+                                    // If cut then delete the previsous file and clear clipboard
+                                    if (cut == false) return;
+
+                                    // Clear clipboard
+                                    clipboard.clear();
+
+                                    // Remove file copied
+                                    return toCopy.remove();
+                                })
+                                .fail(function(err) {
+                                    logging.error("error copy", err.stack, err);
+                                })
+                                .done(function() {
+                                    // Clear temporary model
+                                    toCopy.destroy();
+                                })
                             }
                         }
                     });
