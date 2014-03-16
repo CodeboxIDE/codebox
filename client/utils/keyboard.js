@@ -3,7 +3,7 @@ define([
     'hr/utils',
     'vendors/mousetrap'
 ], function (hr, _, Mousetrap) {
-    var Keyboard = new (hr.Class.extend({
+    var Keyboard = hr.Class.extend({
         /*
          *  Initialize the keyboard navigation
          */
@@ -87,6 +87,7 @@ define([
 
             return shortcut.toUpperCase();
         }
-    }));
-    return Keyboard;
+    });
+
+    return new Keyboard();
 });
