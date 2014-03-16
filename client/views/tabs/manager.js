@@ -304,7 +304,7 @@ define([
         restoreTabs: function(state) {
             var n = 0, that = this;
 
-            state = state || hr.Storage.get("tabs");
+            state = state || hr.Storage.get("tabs") || {};
 
             // Set layout
             this.setLayout(state.layout);
@@ -332,9 +332,9 @@ define([
                         _tab.changeSection(tab.section);
                         n = n + 1;
                     })
-                    .fin(function() {
+                    .fail(function() {
                         return Q();
-                    })
+                    });
                 })
                 .value()
             )
