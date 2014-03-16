@@ -184,10 +184,16 @@ define([
             this.breakpoints = new Breakpoints({
                 editor: this
             });
+
+            // Read-only when debugger is active
             this.listenTo(debugManager, "state", function(state) {
                 this.editor.setReadOnly(state);
             });
             this.editor.setReadOnly(debugManager.isActive());
+
+            // Show active debug line
+            this.listenTo(debugManager, "position", this.updateDebugLine);
+            this.updateDebugLine();
 
             // Bind settings changement
             var update = function() {
@@ -496,6 +502,23 @@ define([
         searchInFile: function(e) {
             if (e) e.preventDefault();
             this.editor.execCommand("find");
+        },
+
+        // Show active line in debug
+        updateDebugLine: function() {
+            var position = debugManager.getPosition();
+
+            console.log("update debug position: ", position);
+
+            // Clear previous marker
+            if (this.debugMarker != null) {
+                this.editor.session.removeMarker(this.debugMarker);
+                this.debugMarker = null;
+            }
+            if (position && position.filename == this.model.path()) {
+                this.debugMarker = this.editor.session.addMarker(new aceRange.Range(parseInt(position.line) - 1, 0, parseInt(position.line) - 1, 2000), "marker-debug", "line", false);
+                console.log(this.debugMarker);
+            }
         }
     });
 

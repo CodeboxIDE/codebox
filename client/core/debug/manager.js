@@ -35,6 +35,7 @@ define([
             this.listenTo(this.activeDebugger, "close", function() {
                 this.activeDebugger = null;
                 this.trigger("state", false);
+                this.trigger("position", null);
             });
             this.listenTo(this.activeDebugger, "position", function(position) {
                 this.trigger("position", position);
