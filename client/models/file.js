@@ -12,8 +12,9 @@ define([
     "utils/filesync",
     "utils/dialogs",
     "utils/uploader",
+    "utils/clipboard",
     "core/operations"
-], function(Q, _, hr, rpc, vfs, debugManager, Command, string, Url, Languages, FileSync, dialogs, Uploader, operations) {
+], function(Q, _, hr, rpc, vfs, debugManager, Command, string, Url, Languages, FileSync, dialogs, Uploader, clipboard, operations) {
     var logging = hr.Logger.addNamespace("files");
 
     var File = hr.Model.extend({
@@ -535,6 +536,35 @@ define([
         },
 
         /*
+         *  Copy this file
+         *
+         *  @to: folder to copy to
+         *  @newName: (optional) new name in the to folder
+         */
+        copyTo: function(to, newName) {
+            newName = newName || this.get("name");
+            var toPath = path+"/"+newName;
+
+            return this.loading(this.vfsRequest("rename", this.vfsUrl(toPath), {
+                "copyFrom": this.path()
+            }));
+        },
+
+        /*
+         *  Copy a file in this folder
+         *
+         *  @from: file to copy
+         */
+        copyFile: function(from, newName) {
+            newName = newName || from.split("/").pop();
+            var toPath = this.path()+"/"+newName;
+
+            return this.loading(this.vfsRequest("rename", this.vfsUrl(toPath, false), {
+                "copyFrom": from
+            }));
+        },
+
+        /*
          * Run the file
          */
         run: function() {
@@ -710,6 +740,47 @@ define([
                     });
                     menu.push({ 'type': "divider" });
                 }
+
+                menu.push({
+                    'type': "action",
+                    'title': "Copy",
+                    'action': function() {
+                        clipboard.setData("file", that.path());
+                    }
+                });
+                menu.push({
+                    'type': "action",
+                    'title': "Cut",
+                    'action': function() {
+                        clipboard.setData("file", that.path(), {
+                            cut: true
+                        });
+                    }
+                });
+                if (that.isDirectory()) {
+                    menu.push({
+                        'type': "action",
+                        'title': "Paste",
+                        'flags': (!clipboard.hasData("file") ? "disabled" : ""),
+                        'action': function() {
+                            if (clipboard.hasData("file")) {
+                                var path = clipboard.getData("file");
+                                var cut = clipboard.getRaw().options.cut;
+                                
+                                return that.copyFile(path)
+                                .then(function() {
+                                    // If cut then delete the previsous file and clear clipboard
+                                    if (!cut) return;
+                                })
+                                .then(function() {
+                                    // Refresh folder
+                                    return that.actionRefresh();
+                                });
+                            }
+                        }
+                    });
+                }
+                menu.push({ 'type': "divider" });
 
                 if (that.isDirectory()) {
                     // Directory
