@@ -703,7 +703,7 @@ define([
                     });
                     menu.push({
                         'type': "action",
-                        'title': "Remove",
+                        'title': "Delete "+(that.isDirectory() ? "Folder" : "File"),
                         'action': function() {
                             return that.actionRemove();
                         }
