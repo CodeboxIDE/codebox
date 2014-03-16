@@ -246,6 +246,17 @@ define([
     });
 
     /*
+     *  Copy a file
+     */
+    var copy = needFsReady(function(from, to) {
+        from = adaptPath(from);
+        to = adaptPath(to);
+
+        logger.log("copy:", from, "to", to);
+        return fsCall(filer.cp, [from, '.', to], filer);
+    });
+
+    /*
      *  Remove a file or directory
      */
     var remove = needFsReady(function(path, adapt) {
@@ -490,6 +501,7 @@ define([
         'write': writeFile,
         'read': readFile,
         'mv': move,
+        'cp': copy,
         'rm': remove,
         'reset': syncFileBoxToLocal,
         'sync': sync,
