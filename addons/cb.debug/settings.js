@@ -29,8 +29,12 @@ define([], function() {
                     'auto': "Auto",
                     'pdb': "Python Debugger",
                     'gdb': "Native Debugger (GDB)",
+
+                    // Still unstable:
+                    /*
                     'jdb': "Java Debugger",
                     'rdb': "Ruby Debugger"
+                    */
                 }
             }
         }

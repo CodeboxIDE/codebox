@@ -11,10 +11,13 @@ var debuggers = {
     // Native
     "gdb": ["o"],
 
+    // Still unstable
+    /*
     // Java
     "jdb": ["java"],
 
-    "rdb": ["rb"]
+    // Ruby
+    "rdb": ["rb"]*/
 };
 
 function DebugRPCService(workspace, events) {
