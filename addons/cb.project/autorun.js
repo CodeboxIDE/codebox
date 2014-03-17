@@ -1,6 +1,7 @@
 define([
+    'settings',
     'ports'
-], function(ports) {
+], function(settings, ports) {
     var _ = codebox.require("hr/utils");
     var commands = codebox.require("core/commands/toolbar");
     var operations = codebox.require("core/operations");
@@ -87,6 +88,16 @@ define([
 
             // Update list of ports
             ports.update();
+
+            // Open url if settings is set for
+            if (settings.user.get("openrundialog", true)) {
+                dialogs.confirm("Application is now running on port "+runInfo.port, "Open <b>"+_.escape(runInfo.url)+"</b> in a new window? (This dialog can be disabled in the settings).")
+                .progress(function(diag) {
+                    diag.once("close", function(result, e) {
+                        if (result) window.open(runInfo.url);
+                    })
+                });
+            }
         }, function(err) {
             setRunTerminal(undefined);
             

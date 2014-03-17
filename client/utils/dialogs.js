@@ -15,13 +15,16 @@ define([
             cls = cls || DialogView;
             var diag = new cls(options);
 
-            diag.on("close", function(result) {
+            diag.once("close", function(result, e) {
                 if (result != null) {
                     d.resolve(result);
                 } else {
                     d.reject(result);
                 }
             });
+            setTimeout(function() {
+                d.notify(diag);
+            }, 1);
             diag.update();
 
             return d.promise;

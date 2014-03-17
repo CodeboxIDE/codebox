@@ -82,17 +82,18 @@ define([
             // Unbind dowument keydown
             $(document).unbind("keydown", this.keydownHandler);
 
+            this.trigger("close", this.value, e);
+
             // Hide modal
             this.$el.modal('hide');
-            DialogView.current = null;
         },
 
         /*
          *  (event) Modal is hidden
          */
-        hidden: function() {
-            this.trigger("close", this.value);
-            this.$el.remove();
+        hidden: function(e) {
+            this.remove();
+            DialogView.current = null;
         },
 
         /*
@@ -112,7 +113,7 @@ define([
                 e.preventDefault();
             }
             this.value = this._getValue();
-            this.close();
+            this.close(e);
         },
 
         /*
