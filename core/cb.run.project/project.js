@@ -50,6 +50,8 @@ ProjectRunner.prototype.runScript = function(runner, port) {
     // Spawn the new shell
     return this.shells.createShellCommand(
         shellId, [
+            '/bin/bash',
+
             // Script itself
             runner.script,
 
