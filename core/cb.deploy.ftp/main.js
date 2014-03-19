@@ -55,7 +55,7 @@ function setup(options, imports, register) {
 
                     return shells.createShellCommand(
                         shellId,
-                        [scriptUpload, config.host, config.remoteBase || "/", localPath, config.username, config.password]
+                        ['/bin/bash', scriptUpload, config.host, config.remoteBase || "/", localPath, config.username, config.password]
                     ).then(function(shell) {
                         return {
                             'shellId': shellId
