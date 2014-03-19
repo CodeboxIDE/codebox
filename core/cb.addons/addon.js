@@ -153,7 +153,7 @@ var Addon = function(_rootPath, options) {
         };
 
         // Build command for r.js
-        var command = rjs+" -o "+_.reduce(utils.deepkeys(optconfig), function(s, value, key) {
+        var command = "node "+rjs+" -o "+_.reduce(utils.deepkeys(optconfig), function(s, value, key) {
             return s+key+"="+value+" ";
         }, "");
 
