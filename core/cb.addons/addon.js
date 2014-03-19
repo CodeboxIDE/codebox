@@ -122,7 +122,7 @@ var Addon = function(_rootPath, options) {
         var addonPath = this.root;
 
         // R.js bin
-        var rjs = path.resolve(__dirname, "../../node_modules/.bin/r.js");
+        var rjs = path.resolve(__dirname, "../../node_modules/requirejs/bin/r.js");
 
         // Path to the require-tools
         var requiretoolsPath = path.resolve(__dirname, "require-tools");
