@@ -1,6 +1,13 @@
 2014-03-19  Samy Pessé  <samy.pesse@friendco.de>
             Aaron O'Mullan <aaron.omullan@friendco.de>
 
+    * Bump version to 0.7.2
+    * Fix addons installation on linux desktop
+    * Fix runner and project detection on linux desktop
+
+2014-03-19  Samy Pessé  <samy.pesse@friendco.de>
+            Aaron O'Mullan <aaron.omullan@friendco.de>
+
     * Bump version to 0.7.1
     * Graphical debugger with supports of python (pdb) and native (gdb), coming soon: Java, PHP, Ruby and HHVM
     * Add copy/cut/paste for files
