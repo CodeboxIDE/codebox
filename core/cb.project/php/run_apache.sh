@@ -124,7 +124,7 @@ function start_mysql() {
         return
     fi
 
-    locals needs_pwd="$(needs_sudo_pwd)"
+    local needs_pwd="$(needs_sudo_pwd)"
     # Try running in sudo or not
     if [ -n ${needs_pwd} ]; then
         sudo -n ${sudo_mysql} &
