@@ -51,7 +51,7 @@ function supports(projectDir, projectType) {
     }
 
     // Detection script
-    return utils.execFile(projectType.detector, [projectDir])
+    return utils.execFile('/bin/bash', [projectType.detector, projectDir])
     .then(
         utils.constant(true),
         utils.constant(false)
