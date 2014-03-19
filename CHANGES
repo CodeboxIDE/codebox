@@ -1,3 +1,13 @@
+2014-03-19  Samy Pessé  <samy.pesse@friendco.de>
+            Aaron O'Mullan <aaron.omullan@friendco.de>
+
+    * Bump version to 0.7.1
+    * Graphical debugger with supports of python (pdb) and native (gdb), coming soon: Java, PHP, Ruby and HHVM
+    * Add copy/cut/paste for files
+    * Fix tabs restoration
+    * Improve stability of grid UI
+    * Fix addons installation
+
 2014-03-09  Samy Pessé  <samy.pesse@friendco.de>
             Aaron O'Mullan <aaron.omullan@friendco.de>
 
