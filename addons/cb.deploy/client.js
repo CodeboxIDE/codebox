@@ -79,8 +79,12 @@ define([], function() {
                     }
                 });
             }
+            // Handle message
+            else if (data.message) {
+                dialogs.alert("Deployment to "+solution.name+" ("+actionId+")", data.message);
+            }
         }, function(err) {
-            dialogs.alert("Error with "+_.escape(solution.name), err.message || err);
+            dialogs.alert("Error with "+solution.name, err.message || err);
         });
     };
 
