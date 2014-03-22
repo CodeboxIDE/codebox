@@ -43,7 +43,7 @@ function setup(options, imports, register) {
                             }
                         })
                         .then(function() {
-                            return "SSH key ("+content.slice(0, 20)+"......"+content.slice(-4)+") added to Heroku";
+                            return "SSH key ("+content.slice(0, 20)+"......"+content.slice(-4)+") added to your Heroku account.";
                         });
                     });
                 }
