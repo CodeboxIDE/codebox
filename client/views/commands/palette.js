@@ -144,6 +144,7 @@ templateFile, commandTemplateFile) {
                 this.commands.filter(function(command) {
                     return command.textScore(query) > 0;
                 });
+                this.selectItem(this.selected || 0);
             } else {
                 // Different search
                 this.commands.collection.query = query;
@@ -156,10 +157,9 @@ templateFile, commandTemplateFile) {
                     that.commands.collection.add(_.filter(result.results, function(command) {
                         return !command.hasFlag("disabled");
                     }));
+                    that.selectItem(that.selected || 0);
                 });
             }
-
-            this.selectItem(this.selected || 0);
         },
 
         // (event) Key input in search
