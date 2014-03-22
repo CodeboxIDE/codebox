@@ -14,7 +14,7 @@ var method = function(key, httpMethod, endpoint, options) {
         }
     }, options || {}),
     function(error, response, body) {
-        if (!error && response.statusCode == 200) {
+        if (!error && (response.statusCode == 200 || response.statusCode == 201)) {
             d.resolve(body);
         } else {
             d.reject(error || body.message || body);

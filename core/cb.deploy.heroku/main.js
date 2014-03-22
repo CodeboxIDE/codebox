@@ -37,15 +37,14 @@ function setup(options, imports, register) {
                     var publickey_file = path.join(process.env.HOME, '.ssh/id_rsa.pub');
                     return Q.nfcall(fs.readFile, publickey_file, 'utf8')
                     .then(function(content) {
-                        console.log("add api key", config.key, content);
                         return api.method(config.key, "POST", "account/keys", {
                             body: {
                                 'public_key': content
                             }
+                        })
+                        .then(function() {
+                            return "SSH key ("+content.slice(0, 20)+"......"+content.slice(-4)+") added to Heroku";
                         });
-                    })
-                    .then(function() {
-                        return "SSH key added to Heroku";
                     });
                 }
             },
@@ -54,10 +53,11 @@ function setup(options, imports, register) {
                 name: "Push",
                 action: function(config) {
                     var shellId = "heroku:deploy";
+                    var url = "git@heroku.com:"+config.name+".git";
 
                     return shells.createShellCommand(
                         shellId,
-                        ["git", "push", "heroku", "master"]
+                        ["git", "push", url, "master"]
                     ).then(function(shell) {
                         return {
                             'shellId': shellId
