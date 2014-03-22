@@ -18,9 +18,9 @@ define([
 
     // Run offline cache update operation
     var op = operations.start("offline.update", null, {
-        'title': "Downloading new version",
+        'title': "Updating",
         'icons': {
-            'default': "fa-download",
+            'default': "fa-cog fa-spin",
         },
         'state': window.applicationCache.status == window.applicationCache.IDLE ? "idle" : "running",
         'progress': 0
