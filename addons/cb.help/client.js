@@ -1,4 +1,6 @@
-define([], function() {
+define([
+    "text!welcome.md"
+], function(welcomeText) {
     var hr = codebox.require("hr/hr");
     var app = codebox.require("core/app");
     var menu = codebox.require("core/commands/menu");
@@ -9,7 +11,7 @@ define([], function() {
     // Help url
     var helpUrl = "http://help.codebox.io/";
 
-    // Command open changelog
+    // Command to open changelog
     var commandChanges = Command.register("help.changes", {
         'category': "Help",
         'title': "Open Release Notes",
@@ -19,6 +21,16 @@ define([], function() {
             });
         }
     });
+
+    // Command to open welcome
+    var commandWelcome = Command.register("help.welcome", {
+        'category': "Help",
+        'title': "Welcome",
+        'action': function(title) {
+            return files.openNew(title || "Welcome.md", welcomeText);
+        }
+    });
+
 
     // Add menu
     menu.register("help", {
@@ -51,10 +63,15 @@ define([], function() {
 
     // Open changes if version changes
     app.once("ready", function() {
+        //  Show release not if version increased
+        //  If first time show welcome message
+
         var currentVersion = hr.configs.args.version;
         var lastVersion = hr.Storage.get("codeboxVersion");
 
-        if (currentVersion != lastVersion) {
+        if (lastVersion == null) {
+            commandWelcome.run();
+        } else if (currentVersion != lastVersion) {
             commandChanges.run();
         }
         hr.Storage.set("codeboxVersion", currentVersion);
