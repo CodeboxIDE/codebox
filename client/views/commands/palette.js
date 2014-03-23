@@ -210,8 +210,10 @@ templateFile, commandTemplateFile) {
                     h = item.$el.outerHeight();
                     y = item.$el.position().top;
 
-                    if (y > (boxH-(h/2)) || y < 0) {
+                    if (y > (boxH-(h/2))) {
                         this.$(".results").scrollTop((i+1)*h - boxH)
+                    } else if (y <= (h/2)) {
+                        this.$(".results").scrollTop((i)*h)
                     }
                 }
 
