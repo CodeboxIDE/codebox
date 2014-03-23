@@ -84,8 +84,16 @@ define([
                 'label': "Find",
                 'type': "text"
             },
+            'regexp': {
+                'label': "Regular expression",
+                'type': "checkbox"
+            },
             'casesensitive': {
-                'label': "Case Sensitive",
+                'label': "Case sensitive",
+                'type': "checkbox"
+            },
+            'wholeword': {
+                'label': "Whole word",
                 'type': "checkbox"
             }
         })
@@ -105,8 +113,16 @@ define([
                 'label': "Replace",
                 'type': "text"
             },
+            'regexp': {
+                'label': "Regular expression",
+                'type': "checkbox"
+            },
             'casesensitive': {
                 'label': "Case Sensitive",
+                'type': "checkbox"
+            },
+            'wholeword': {
+                'label': "Whole word",
                 'type': "checkbox"
             }
         }, {
