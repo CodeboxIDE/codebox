@@ -14,6 +14,7 @@ var SUPPORTED = [
     require("./appengine"),
     require("./procfile"),
     require("./parse"),
+    require("./maven"),
 
     // Frameworks
     require("./django"),
