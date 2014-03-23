@@ -23,7 +23,8 @@ define([
     'core/search/commands',
     'core/search/files',
     'core/search/tags',
-    'core/search/addons'
+    'core/search/addons',
+    'core/search/code'
 ], function (hr, url, dialogs, alerts, loading, GridView, templateFile,
 box, session, addons, box, files, commands, menu, statusbar, palette, tabs, panels, operations, localfs, themes) {
 
