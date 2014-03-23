@@ -10,32 +10,6 @@ var pkg = require("../../package.json");
 
 var utils = require("../utils");
 
-var exec = function(command, options) {
-
-    var deferred = Q.defer();
-    var childProcess;
-
-    var args = Array.prototype.slice.call(arguments, 0);
-    args.push(function(err, stdout, stderr) {
-        if (err) {
-            err.message += command + ' (exited with error code ' + err.code + ')';
-            err.stdout = stdout;
-            err.stderr = stderr;
-            deferred.reject(err);
-        }
-        else {
-            deferred.resolve({
-                childProcess: childProcess,
-                stdout: stdout,
-                stderr: stderr
-            });
-        }
-    });
-
-    childProcess = child_process.exec.apply(child_process, args);
-
-    return deferred.promise;
-}
 
 var Addon = function(_rootPath, options) {
     this.root = _rootPath;
@@ -167,7 +141,9 @@ var Addon = function(_rootPath, options) {
         return Q.nfcall(fs.unlink, output).fail(function() {
             return Q();
         }).then(function() {
-            return exec(command)
+            return utils.exec(command, {
+                env: process.env
+            })
         }).then(function() {
             logger.log("Finished", that.infos.name, "optimization");
             return Q(that);
@@ -188,7 +164,10 @@ var Addon = function(_rootPath, options) {
             }
         }
         logger.log("Install dependencies for", this.root);
-        return exec("cd "+this.root+" && npm install .").then(function() {
+        return utils.exec("npm install .", {
+            cwd: this.root,
+            env: process.env
+        }).then(function() {
             return Q(that);
         });
     };
