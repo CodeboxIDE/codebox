@@ -111,7 +111,7 @@ module.exports = function (grunt) {
                 stderr: true
             },
             clean_addons: {
-                command: "rm -rf */**/addon-built.js",
+                command: "rm -rf */**/addon-built.js ./addons/**/node_modules",
                 cwd: '.',
                 stdout: true,
                 stderr: true

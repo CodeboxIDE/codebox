@@ -19,6 +19,14 @@ module.exports = function(grunt) {
 
         addonsManager.loadAddonsInfos({}, folder)
         .then(addonsManager.runAddonsOperation(function(addon) {
+            if (!addon.hasDependencies() || addon.areDependenciesInstalled()) return;
+
+            // Install dependencies
+            return addon.installDependencies();
+        }, {
+            failOnError: false
+        }))
+        .then(addonsManager.runAddonsOperation(function(addon) {
             return addon.optimizeClient(force);
         }, {
             failOnError: false

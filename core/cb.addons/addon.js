@@ -93,6 +93,11 @@ var Addon = function(_rootPath, options) {
         return fs.existsSync(path.join(this.root, "addon-built.js"));
     };
 
+    // Check if node dependencies seems to be installed
+    this.areDependenciesInstalled = function() {
+        return fs.existsSync(path.join(this.root, "node_modules"));
+    };
+
     // Check if an addon has node dependencies
     this.hasDependencies = function() {
         return _.size(this.infos.dependencies || {}) > 0;

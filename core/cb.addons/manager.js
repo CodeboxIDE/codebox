@@ -73,7 +73,7 @@ var runAddonsOperation = function(operation, options) {
 
     return function(addons) {
         return Q.all(_.map(addons, function(addon) {
-            return operation(addon).then(function() {
+            return Q(operation(addon)).then(function() {
                 return addon;
             }, function(err) {
                 if (options.failOnError) {
