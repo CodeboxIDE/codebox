@@ -53,6 +53,7 @@ define([
 
         // Run
         return box.run({
+            'id': options.id,
             'type': options.type
         })
         .then(function(runInfo) {
