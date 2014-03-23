@@ -1,5 +1,5 @@
 define([
-    "vendors/sh",
+    "node_modules/sh.js/build/sh",
     "less!stylesheets/tab.less"
 ], function(Terminal) {
     var _ = codebox.require("hr/utils");

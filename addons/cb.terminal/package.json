@@ -15,5 +15,8 @@
     },
     "engines": {
         "codebox": ">=0.7.0"
+    },
+    "dependencies": {
+        "sh.js": "git+https://github.com/FriendCode/sh.js#daebbe7a4c450cd0a157416c1ce4c64e7260f907"
     }
 }

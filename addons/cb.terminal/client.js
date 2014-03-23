@@ -1,5 +1,5 @@
 define([
-    "vendors/sh",
+    "node_modules/sh.js/build/sh",
     "views/tab"
 ], function(Terminal, TerminalTab) {
     var Command = codebox.require("models/command");
