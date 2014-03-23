@@ -81,6 +81,7 @@ var assembleCommand = function(options) {
 var search = function(root, args) {
     var d = Q.defer(), prevfile = null;
     var results = {};
+    var nMatches = 0;
 
     args = _.defaults(args || {}, {
         pattern: null,
@@ -124,6 +125,7 @@ var search = function(root, args) {
                 'line': _line,
                 'content': parts.join(":")
             });
+            nMatches = nMatches + 1;
         }
     });
 
@@ -134,7 +136,11 @@ var search = function(root, args) {
         if (code !== 0) {
             d.reject(new Error("ack exited with code "+code));
         } else {
-            d.resolve(results);
+            d.resolve({
+                'options': args,
+                'files': results,
+                'matches': nMatches
+            });
         }
     });
 
