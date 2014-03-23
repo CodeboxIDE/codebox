@@ -11,6 +11,11 @@ module.exports = {
             name: "npm start",
             id: "run",
             script: path.resolve(__dirname, "run.sh")
+        },
+        {
+            name: "npm install",
+            id: "install",
+            script: path.resolve(__dirname, "install.sh")
         }
     ],
 
