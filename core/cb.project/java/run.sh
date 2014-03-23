@@ -1,5 +1,4 @@
-#!/usr/bin/env bash
-# bin/use <build-dir>
+#!/bin/bash
 
 # Constants
 FGREP="fgrep"
@@ -10,11 +9,17 @@ if [ $? = 0 ]; then
    FGREP="ag"
 fi
 
+# Script args
 WORKSPACE=$1
+PORT=$2
+
+# Get plausible entry point
 entry_point=$(${FGREP} " main(" -R ${WORKSPACE} | tr ':' '\n' | grep ".java" | head -n 1)
 
-if [ -f "$entry_point" ]; then
-   echo "Java" && exit 0
+if [ -f ${entry_point} ]; then
+    echo "Compiling ${entry_point}"
+    exec javac ${entry_point}
 else
-  echo "no" && exit 1
+    # Exit
+    exit 1
 fi
