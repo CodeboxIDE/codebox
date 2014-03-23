@@ -11,7 +11,7 @@ if [ $? = 0 ]; then
 fi
 
 WORKSPACE=$1
-entry_point=$(${FGREP} " main(" -R ${WORKSPACE} | tr ':' '\n' | grep ".java" | head -n 1)
+entry_point=$(${FGREP} " public static void main" -R ${WORKSPACE} | tr ':' '\n' | grep ".java" | head -n 1)
 
 if [ -f "$entry_point" ]; then
    echo "Java" && exit 0
