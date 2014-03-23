@@ -79,7 +79,7 @@ var assembleCommand = function(options) {
 
 
 var search = function(root, args) {
-    var d = Q.defer();
+    var d = Q.defer(), prevfile = null;
     var results = {};
 
     args = _.defaults(args || {}, {
@@ -103,19 +103,28 @@ var search = function(root, args) {
     var proc = spawn(command.command, command);
     proc.stdout.on('data', function(data) {
         data = data.toString();
+        var lines = data.toString().split(/([\n\r]+)/g);
 
-        _.each(data.toString().split("\n"), function(line) {
-            var parts = line.split(":");
-            if (parts.length < 3) return;
+        for (var i = 0, l = lines.length; i < l; ++i) {
+            var parts = lines[i].split(":");
+            if (parts.length < 3) continue;
 
-            var _path = path.normalize(parts[0]);
+            var _path = path.normalize(parts.shift().replace(root, "").trimRight());
+            var _line = parseInt(parts.shift());
+            if (!_line) {
+                if (prevfile) {
+                    results[prevfile][results[prevfile].length - 1].content += "\n\r"+lines[i];
+                }
+                continue;
+            }
 
+            prevfile = _path;
             results[_path] = results[_path] || [];
             results[_path].push({
-                'line': parseInt(parts[1]),
-                'content': parts[2]
+                'line': _line,
+                'content': parts.join(":")
             });
-        });
+        }
     });
 
     proc.on('error', function(err) {
