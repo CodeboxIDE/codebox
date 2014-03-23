@@ -42,18 +42,35 @@ define([
         return rpc.execute("search/code", _.pick(options, OPTIONS));
     };
 
-    var doSearch = function(_args) {
-        return searchCode(_args)
-        .then(function(results) {
-            return normResults(results);
-        })
-        .then(function(buffer) {
-            return files.openNew("Find Results", buffer);
-        })
-        .fail(function(err) {
-            console.error("error", err);
-        });
+    
+
+    var searchCommandHandler = function(title, fields, forceOptions) {
+        return function(args) {
+            if (_.isString(args)) args = {'query': args};
+            args = _.defaults(args || {}, {});
+
+            var doSearch = function(_args) {
+                return searchCode(_.extend(_args, forceOptions || {}))
+                .then(function(results) {
+                    return normResults(results);
+                })
+                .then(function(buffer) {
+                    return files.openNew("Find Results", buffer);
+                })
+                .fail(function(err) {
+                    console.error("error", err);
+                });
+            };
+
+            if (!args.query) {
+                return dialogs.fields(title, fields, args)
+                .then(doSearch);
+            }
+
+            return doSearch(args);
+        }
     };
+
 
     // Command search code
     var commandSearch = Command.register("code.search", {
@@ -62,26 +79,16 @@ define([
         shortcuts: [
             "mod+shift+f"
         ],
-        action: function(args) {
-            if (_.isString(args)) args = {'query': args};
-            args = _.defaults(args || {}, {});
-
-            if (!args.query) {
-                return dialogs.fields("Find in Files", {
-                    'query': {
-                        'label': "Find",
-                        'type': "text"
-                    },
-                    'casesensitive': {
-                        'label': "Case Sensitive",
-                        'type': "checkbox"
-                    }
-                }, args)
-                .then(doSearch);
+        action: searchCommandHandler("Find in Files", {
+            'query': {
+                'label': "Find",
+                'type': "text"
+            },
+            'casesensitive': {
+                'label': "Case Sensitive",
+                'type': "checkbox"
             }
-
-            return doSearch(args);
-        }
+        })
     });
 
     // Command replace code
@@ -89,30 +96,22 @@ define([
         title: "Replace in Files",
         category: "Find",
         shortcuts: [],
-        action: function(args) {
-            if (_.isString(args)) args = {'query': args};
-            args = _.defaults(args || {}, {});
-
-            if (!args.query) {
-                return dialogs.fields("Find and Replace in Files", {
-                    'query': {
-                        'label': "Find",
-                        'type': "text"
-                    },
-                    'replacement': {
-                        'label': "Replace",
-                        'type': "text"
-                    },
-                    'casesensitive': {
-                        'label': "Case Sensitive",
-                        'type': "checkbox"
-                    }
-                }, args)
-                .then(doSearch);
+        action: searchCommandHandler("Find and Replace in Files", {
+            'query': {
+                'label': "Find",
+                'type': "text"
+            },
+            'replacement': {
+                'label': "Replace",
+                'type': "text"
+            },
+            'casesensitive': {
+                'label': "Case Sensitive",
+                'type': "checkbox"
             }
-
-            return doSearch(args);
-        }
+        }, {
+            replaceAll: true
+        })
     })
 
 
