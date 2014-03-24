@@ -15,5 +15,10 @@ SearchRPCService.prototype.files = function(args) {
     return this.search.files(args);
 };
 
+SearchRPCService.prototype.code = function(args) {
+    _.defaults(args, {});
+    return this.search.code(args);
+};
+
 // Exports
 exports.SearchRPCService = SearchRPCService;

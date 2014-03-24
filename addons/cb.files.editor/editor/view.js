@@ -508,8 +508,6 @@ define([
         updateDebugLine: function() {
             var position = debugManager.getPosition();
 
-            console.log("update debug position: ", position);
-
             // Clear previous marker
             if (this.debugMarker != null) {
                 this.editor.session.removeMarker(this.debugMarker);
