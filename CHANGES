@@ -1,3 +1,17 @@
+2014-03-23  Samy Pessé  <samy.pesse@friendco.de>
+            Aaron O'Mullan <aaron.omullan@friendco.de>
+
+    * Bump version to 0.7.3
+    * Fix addons build when node used from desktop extras
+    * Add Find/Replace in files
+    * Add Maven project support
+    * Add base runner for Java
+    * Improve command palette: selection, scrolling
+    * Add action "npm install" for node projects
+    * Fix run of long process command in terminal
+    * Fix heroku deployment (push key and git push)
+    * Add welcome message
+
 2014-03-19  Samy Pessé  <samy.pesse@friendco.de>
             Aaron O'Mullan <aaron.omullan@friendco.de>
 
