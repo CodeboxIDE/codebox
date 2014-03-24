@@ -100,7 +100,7 @@ define([
          */
         shown: function() {
             if (this.options.autoFocus) {
-                this.$("input").focus();
+                $(this.$("input").get(0)).focus();
             }
         },
 
