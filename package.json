@@ -73,7 +73,7 @@
         }
     ],
     "scripts": {
-        "start": "[ -f .env ] && source .env || echo 'Store your environment config in .env'; ./node_modules/.bin/grunt"
+        "start": "[ -f .env ] && . ./.env || echo 'Store your environment config in .env'; ./node_modules/.bin/grunt"
     },
     "main": "index.js"
 }
