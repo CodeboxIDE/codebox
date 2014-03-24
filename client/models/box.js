@@ -96,8 +96,13 @@ define([
             if (this.baseUrl == null) {
                 return Q.reject(new Error("Need a 'baseUrl'"));
             }
+
+            var resource = window.location.pathname;
+            resource = resource.substring(1, resource.lastIndexOf("/")+1) + "socket.io";
+
             var socket = io.connect([window.location.protocol, '//', window.location.host].join('')+"/"+namespace, {
-                'force new connection': forceCreate
+                'force new connection': forceCreate,
+                'resource': resource
             });
 
             return Q(socket);

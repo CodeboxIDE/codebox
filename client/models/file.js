@@ -166,7 +166,9 @@ define([
          */
         vfsUrl: function(path, force_directory) {
             path = this.path(path);
-            var url = "/vfs"+path;
+            var basePath = window.location.pathname;
+            basePath.substring(0, basePath.lastIndexOf('/')+1);
+            var url = basePath+"vfs"+path;
             if (force_directory == null) force_directory = this.isDirectory();
             if (force_directory && !string.endsWith(url, "/")) {
                 url = url+"/";

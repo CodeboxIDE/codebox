@@ -115,7 +115,9 @@ define([
      *  Convert a vfs url in a path
      */
     var urlToPath = function(url) {
-        var path = url.replace("/vfs/", "");
+        var basePath = window.location.pathname;
+        basePath = basePath.substring(0, basePath.lastIndexOf("/")+1) + "vfs/";
+        var path = url.substr(basePath.length-1);
         if (path.length == 0) path = '/';
         if (path[0] != '/') path = "/" + path;
         return path;
