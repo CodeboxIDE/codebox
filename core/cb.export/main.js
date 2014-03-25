@@ -9,9 +9,9 @@ function setup(options, imports, register) {
     var workspace = imports.workspace;
 
     // Export as zip
-    server.app.get("/export/zip", function(req, res) {
+    server.app.get("/export/targz", function(req, res) {
         res.header('Content-Type', 'application/octet-stream');
-        res.header('Content-Disposition', 'attachment; filename="workspace.zip"');
+        res.header('Content-Disposition', 'attachment; filename="workspace.tar.gz"');
         res.header('Content-Encoding', 'gzip');
 
         fstream.Reader({ 'path' : workspace.root, 'type' : 'Directory' })

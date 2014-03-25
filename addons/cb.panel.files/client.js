@@ -72,10 +72,10 @@ define([
         {
             'id': "workspace.save.zip",
             'category': "Files",
-            'title': "Save Project As ZIP",
+            'title': "Save Project As TAR.GZ",
             'offline': false,
             'action': function() {
-                window.open("/export/zip");
+                window.open("/export/targz");
             }
         }
     ]);
