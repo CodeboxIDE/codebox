@@ -511,6 +511,7 @@ define([
             return autoSync();
         },
         'enableSync': enableSync,
+        'isSyncEnabled': function() { return _syncIsEnable; },
         'filer': filer,
         'syncDuration': syncDuration,
         'setIgnoredFiles': setIgnoredFiles
