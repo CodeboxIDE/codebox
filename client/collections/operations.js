@@ -48,7 +48,7 @@ define([
 
                 // Progress
                 d.progress(function(p) {
-                    op.progress(p);
+                    if (_.isNumber(p)) op.progress(p);
                 });
 
                 // Destroy the operation
