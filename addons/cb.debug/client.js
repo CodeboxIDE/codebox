@@ -3,6 +3,7 @@ define([
     "settings"
 ], function(DebugTab, settings) {
     var Q = codebox.require("hr/promise");
+    var _ = codebox.require("hr/utils");
     var File = codebox.require("models/file");
     var toolbar = codebox.require("core/commands/toolbar");
     var dialogs = codebox.require("utils/dialogs");
@@ -55,7 +56,7 @@ define([
         path = path || settings.user.get("path");
 
         if (!path) {
-            dialogs.alert("No file specified", "Click left on a file and select 'Debug' to open it with debugger, it'll be saved in your settings as last debugged file.");
+            dialogs.alert("No file specified", "Click left on a file and select 'Debug' to open it with the debugger, it'll be saved in your settings as last debugged file.");
             return;
         }
 
@@ -64,6 +65,8 @@ define([
         return f.getByPath(path)
         .then(function() {
             return filesHandler.open(f);
+        }, function() {
+            dialogs.alert("File not found", "File "+_.escape(path)+" doesn't exists. Click left on an another file and select 'Debug' to open it with the debugger.");
         });
     });
 });
