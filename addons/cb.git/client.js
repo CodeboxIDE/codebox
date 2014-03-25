@@ -15,7 +15,7 @@ define(["views/dialog"], function(GitDialog) {
         return rpc.execute("git/status")
         .then(function() {
             updateMenu(true);
-            return updateBranchesMenu();
+            return updateBranchesMenu(false);
         }, function(err) {
             updateMenu(false);
         })
@@ -27,7 +27,7 @@ define(["views/dialog"], function(GitDialog) {
         'type': "menu",
         'offline': false
     });
-    var updateBranchesMenu = function() {
+    var updateBranchesMenu = function(doUpdateStatus) {
         return rpc.execute("git/branches")
         .then(function(branches) {
             branchesMenu.menu.reset(_.map(branches, function(branch) {
@@ -42,10 +42,14 @@ define(["views/dialog"], function(GitDialog) {
                             })
                         }, {
                             title: "Checkout '"+ref+"'"
-                        }).then(updateBranchesMenu);
+                        })
+                        .then(updateBranchesMenu);
                     }
                 }
             }));
+        }, function(err) {
+            if (doUpdateStatus !== false) updateStatus();
+            return Q.reject(err);
         });
     };
 
