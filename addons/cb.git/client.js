@@ -1,4 +1,5 @@
 define(["views/dialog"], function(GitDialog) {
+    var Q = codebox.require("hr/promise");
     var commands = codebox.require("core/commands/toolbar");
     var app = codebox.require("core/app");
     var box = codebox.require("core/box");
@@ -77,6 +78,8 @@ define(["views/dialog"], function(GitDialog) {
 
                 return dialogs.fields("Need authentication:", fields)
                 .then(method);
+            } else {
+                return Q.reject(err);
             }
         })
     };
@@ -117,7 +120,8 @@ define(["views/dialog"], function(GitDialog) {
                     'offline': false,
                     'action': function() {
                         return operations.start("git.clone", function(op) {
-                            return dialogs.prompt("Clone Remote Repository", "Remote repository URI:").then(function(url) {
+                            return dialogs.prompt("Clone Remote Repository", "Remote repository URI:")
+                            .then(function(url) {
                                 if (!url) return;
                                 return handleHttpAuth(function(creds) {
                                     return rpc.execute("git/clone", {
