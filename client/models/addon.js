@@ -23,7 +23,9 @@ define([
 
         // Return base url for the addon
         url: function() {
-            return "/static/addons/"+this.get("name");
+            var basePath = window.location.pathname;
+            basePath = basePath.substring(0, basePath.lastIndexOf('/')+1);
+            return basePath+"static/addons/"+this.get("name");
         },
 
         // Load the addon

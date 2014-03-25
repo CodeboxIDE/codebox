@@ -38,11 +38,11 @@ function setup(options, imports, register) {
                 '*'
             ]);
 
-            manifest.add("CACHE", "/");
+            manifest.add("CACHE", ["./"]);
 
             // Add static files
-            return manifest.addFolder(path.resolve(__dirname + '/../../client/build'), '/', null, [
-                "/index.html"
+            return manifest.addFolder(path.resolve(__dirname + '/../../client/build'), './', null, [
+                "./index.html"
             ]);
         })
         .then(function() {
@@ -54,7 +54,7 @@ function setup(options, imports, register) {
 
                     // Addon cached resources
                     return Q.all(_.map(addon.resources(), function(resource) {
-                        return manifest.addFolder(addon.root, path.join("/static/addons/", addon.infos.name), resource);
+                        return manifest.addFolder(addon.root, path.join("static/addons/", addon.infos.name), resource);
                     }));
                 }));
             });
