@@ -89,8 +89,8 @@ define([
 
         /* Set file options: line to highlight, ... */
         setFileOptions: function(fileOptions) {
-            this.fileOptions = fileOptions;
-            if (this.fileView) this.fileView.trigger("file:options", fileOptions);
+            this.fileOptions = fileOptions || {};
+            if (this.fileView) this.fileView.trigger("file:options", this.fileOptions);
         }
     });
 
