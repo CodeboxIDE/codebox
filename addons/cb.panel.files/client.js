@@ -16,9 +16,9 @@ define([
     
     // Open files panel
     panel.connectCommand(commands.register("files.tree.open", {
-        category: "Files",
+        category: "Panels",
         title: "Files",
-        description: "Open files tree",
+        description: "Open Files Panel",
         icons: {
             'default': "folder-o",
         },

@@ -16,7 +16,7 @@ define([
     panel.connectCommand(commands.register("outline.open", {
         category: "Panels",
         title: "Outline",
-        description: "Open outline panel",
+        description: "Open Outline Panel",
         icons: {
             'default': "code",
         },
