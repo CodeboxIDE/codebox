@@ -139,25 +139,37 @@ define([
         },
 
         // Update complete tree
-        updateTags: function() {
-            var that = this, tree;
-            if (box.activeFile == "/") {
+        updateTags: function(refresh) {
+            var that = this, tree, path = box.activeFile;
+
+            //Detach current tree
+            _.each(this.$trees, function(_$tree) {
+                _$tree.detach();
+            });
+            this.$treeContainer.empty();
+
+            // No current file
+            if (!path || path == "/") {
                 var message = "No outline available for the current file.";
                 this.$treeContainer.text(message);
                 return Q.reject(message);
             }
 
+            // No cache for the tags tree
+            if (!this.$trees[path]) {
+                this.$trees[path] = $("<ul>", {
+                    'class': "tags-tree"
+                });
+                refresh = true;
+            }
 
-            var $tree = $("<ul>", {
-                'class': "tags-tree"
-            });
-            this.$trees[box.activeFile] = $tree;
-
-            this.$treeContainer.empty();
+            // Add tags
+            $tree = this.$trees[path];
             $tree.appendTo(this.$treeContainer);
 
+            if (refresh !== true) return Q();
             return rpc.execute("codecomplete/get", {
-                'file': box.activeFile
+                'file': path
             })
             .then(function(tags) {
                 tree = that.convertTagsToTree(tags.results);
@@ -173,8 +185,6 @@ define([
             })
             .then(function() {
                 that.ready();
-            }, function(err) {
-                console.error(err);
             });
         },
 
