@@ -50,7 +50,7 @@ define([
         },
 
         // Add tag
-        addTag: function(tag, $parent, hasChildren, className) {
+        addTag: function(tag, $parent, hasChildren) {
             var $tags;
 
             var open = function() {
@@ -62,7 +62,7 @@ define([
 
             var $tag = $("<li>", {
                 'data-tag': tag.name,
-                'class': className,
+                'class': "type-"+(tag.kind || "v"),
                 'click': function(e) {
                     e.stopPropagation();
 
