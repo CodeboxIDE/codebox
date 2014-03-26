@@ -79,7 +79,7 @@ define([
                 return false;
             }
             
-            var result = this.get("action").apply(this, [args]);
+            var result = this.get("action").apply(this, arguments);
 
             if (Q.isPromise(result)) {
                 this.toggleFlag("running", true);

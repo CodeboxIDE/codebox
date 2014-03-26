@@ -15,7 +15,8 @@ define([
         className: Tab.prototype.className+ " addon-terminal-tab",
         defaults: {
             shellId: null,
-            resize: true
+            resize: true,
+            cwd: null
         },
         menuTitle: "Terminal",
         events: {
@@ -59,7 +60,8 @@ define([
             // Init codebox stream
             this.sessionId = this.options.shellId || _.uniqueId("term");
             this.shell = box.openShell({
-                'shellId': this.options.shellId ? this.sessionId : this.sessionId+"-"+(new Date()).getSeconds()
+                'shellId': this.options.shellId ? this.sessionId : this.sessionId+"-"+(new Date()).getSeconds(),
+                'cwd': this.options.cwd
             });
 
             this.on("tab:close", function() {

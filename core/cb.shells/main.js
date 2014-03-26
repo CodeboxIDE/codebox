@@ -1,7 +1,7 @@
 // Requires
 var Q = require('q');
 var _ = require('lodash');
-
+var path = require('path');
 var os = require('os');
 var shux = require('shux');
 
@@ -17,7 +17,7 @@ function setup(options, imports, register) {
     var oldCreateShell = manager.createShell.bind(manager);
 
     // Monkey patch createShell
-    manager.createShell = function(id, opts) {
+    manager.createShell = function(id, opts) {  
         opts = opts || {};
         return (
             (opts.command || opts.args)?
@@ -26,10 +26,12 @@ function setup(options, imports, register) {
         )
         .then(function(shellCmd) {
             // Build opts
-            opts.command = shellCmd;
-            return _.defaults(opts, {
-                cwd: workspace.root
+            opts = _.defaults(opts, {
+                cwd: "/"
             });
+            opts.command = shellCmd;
+            opts.cwd = path.join(workspace.root, opts.cwd);
+            return opts;
         })
         .then(function(opts) {
             return oldCreateShell(id, opts);

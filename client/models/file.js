@@ -860,6 +860,15 @@ define([
                             });
                         }
                     });
+                    menu.push({
+                        'type': "action",
+                        'title': "Open Terminal",
+                        'action': function() {
+                            return Command.run("terminal.open", null, {
+                                'cwd': that.path()
+                            });
+                        }
+                    });
                 } else {
                     menu.push({
                         'type': "action",

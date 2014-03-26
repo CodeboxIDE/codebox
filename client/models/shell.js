@@ -48,7 +48,8 @@ define([
                     "opts": {
                         "rows": 80,
                         "columns": 24,
-                        "id": that.shellId
+                        "id": that.shellId,
+                        "cwd": that.options.cwd
                     }
                 });
 

@@ -76,10 +76,15 @@ define([
         shortcuts: [
             "alt+t"
         ]
-    }, function(shellId) {
+    }, function(shellId, options) {
+        options = _.defaults(options || {}, {
+            cwd: null
+        });
+
         // Create trminal tab
         var tab = tabs.add(TerminalTab, {
-            'shellId': shellId
+            'shellId': shellId,
+            'cwd': options.cwd
         }, {
             'type': "terminal",
             'section': "terminals"
