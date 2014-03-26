@@ -9,6 +9,7 @@ define([
     'core/files',
     'utils/dialogs'
 ], function(Q, _, hr, Command, menu, rpc, search, files, dialogs) {
+    var logging = hr.Logger.addNamespace("codeSearch");
     var OPTIONS = [
         'query', 'path', 'casesensitive', 'replacement', 'pattern', 'maxresults',
         'wholeword', 'regexp', 'replaceAll'
@@ -53,12 +54,12 @@ define([
                 return searchCode(_.extend(_args, forceOptions || {}))
                 .then(function(results) {
                     return normResults(results);
+                }, function(err) {
+                    logging.error("error", err);
+                    return "Error during search: "+(err.message || err);
                 })
                 .then(function(buffer) {
                     return files.openNew("Find Results", buffer);
-                })
-                .fail(function(err) {
-                    console.error("error", err);
                 });
             };
 
