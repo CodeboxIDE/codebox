@@ -10,7 +10,8 @@ var normalizeTag = function(tag) {
     return {
         'name': tag.name,
         'file': "/"+tag.file,
-        'pattern': tag.pattern
+        'pattern': tag.pattern,
+        'kind': tag.kind
     }
 };
 

@@ -40,7 +40,7 @@
         "grunt-cli": "0.1.11",
         "harbor": "0.2.0",
         "qpatch": "0.0.8",
-        "ctags": "0.10.0",
+        "ctags": "0.11.0",
         "connect-gzip-static": "0.1.1",
         "minimatch": "0.2.14",
         "semver": "2.2.1",
