@@ -853,7 +853,7 @@ define([
                     });
                     menu.push({
                         'type': "action",
-                        'title': "Search In This Folder",
+                        'title': "Find in Folder",
                         'action': function() {
                             return Command.run("code.search", {
                                 'path': that.path()
