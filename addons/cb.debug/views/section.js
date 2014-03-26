@@ -74,7 +74,9 @@ define([], function() {
                         'text': value,
                         'click': function(e) {
                             e.preventDefault();
-                            files.open(value);
+                            files.open(value, {
+                                line: item.line
+                            });
                         }
                     })
                 } else {

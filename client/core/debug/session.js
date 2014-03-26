@@ -82,7 +82,6 @@ define([
             return this.execute("backtrace")
             .then(_.bind(function(trace) {
                 this.position = _.last(trace);
-                console.log("current position", this.position);
                 this.trigger("position", this.position);
 
                 return trace;

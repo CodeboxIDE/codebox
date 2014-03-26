@@ -397,6 +397,9 @@ define([
                 'sync': editorSettings.user.get("autocollaboration") ? collaborators.size() > 1 : false
             });
 
+            // Options chnagements
+            this.on("file:options", this.adaptOptions, this);
+
             this.focus();
 
             var $input = this.editor.textInput.getElement();
@@ -414,6 +417,7 @@ define([
             this.$editor.appendTo(this.$(".editor-inner"));
             this.editor.resize();
             this.editor.renderer.updateFull();
+            this.adaptOptions();
 
             return FileEditorView.__super__.finish.apply(this, arguments);
         },
@@ -517,6 +521,11 @@ define([
                 this.debugMarker = this.editor.session.addMarker(new aceRange.Range(parseInt(position.line) - 1, 0, parseInt(position.line) - 1, 2000), "marker-debug", "line", false);
                 console.log(this.debugMarker);
             }
+        },
+
+        // Update current line according to options
+        adaptOptions: function() {
+            if (this.fileOptions.line) this.editor.gotoLine(this.fileOptions.line);
         }
     });
 

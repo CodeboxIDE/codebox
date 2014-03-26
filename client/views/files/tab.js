@@ -15,6 +15,11 @@ define([
             // Related tab
             this.tab = this.parent;
             this.tab.setShortcuts(this.shortcuts || {}, this);
+            this.fileOptions = {};
+
+            this.on("file:options", function(_options) {
+                this.fileOptions = _options;
+            }, this);
 
             return this;
         }

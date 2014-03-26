@@ -16,6 +16,8 @@ define([
             var that = this;
 
             this.fileHandler = this.options.handler;
+            this.fileOptions = this.options.fileOptions;
+            this.fileView = null;
 
             if (!this.fileHandler || !this.fileHandler.View) {
                 throw "Invalid handler for file tab";
@@ -37,13 +39,16 @@ define([
 
         /* Render */
         render: function() {
+            if (this.fileView) this.fileView.remove();
+
             this.$el.empty();
             this.menu.clearMenu();
-            var f = new this.fileHandler.View({
+
+            this.fileView = new this.fileHandler.View({
                 model: this.model
             }, this);
-            f.update();
-            f.$el.appendTo(this.$el);
+            this.fileView.update();
+            this.fileView.$el.appendTo(this.$el);
             this.adaptFile();
             return this.ready();
         },
@@ -64,6 +69,7 @@ define([
         adaptFile: function() {
             this.setTabTitle(this.model.get("name", "loading..."));
             this.setTabId(this.fileHandler.id+":"+this.model.syncEnvId());
+            this.setFileOptions(this.fileOptions);
             return this;
         },
 
@@ -79,6 +85,12 @@ define([
                 });
             }
             return true;
+        },
+
+        /* Set file options: line to highlight, ... */
+        setFileOptions: function(fileOptions) {
+            this.fileOptions = fileOptions;
+            if (this.fileView) this.fileView.trigger("file:options", fileOptions);
         }
     });
 
