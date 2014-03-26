@@ -1,10 +1,17 @@
 var Q = require('q');
+var _ = require("lodash");
 var ctags = require("ctags");
 var path = require("path");
 var os = require("os");
 var fs = require("fs");
 var exec = require("../utils").exec;
 
+var normalizeTag = function(tag) {
+    return {
+        'name': tag.name,
+        'file': "/"+tag.file
+    }
+};
 
 var execCTags = function(folder, files, output) {
     return exec(
@@ -26,7 +33,7 @@ var getTags = function(folder, files) {
         stream = ctags.createReadStream(tempFile);
 
         stream.on("data", function(_tags) {
-            tags = tags.concat(_tags);
+            tags = tags.concat(_.map(_tags, normalizeTag));
         });
 
         stream.on("error", function(err) {
