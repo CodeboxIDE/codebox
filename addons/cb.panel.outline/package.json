@@ -1,0 +1,19 @@
+{
+    "name": "cb.panel.outline",
+    "version": "0.1.0",
+    "title": "Outline Panel",
+    "description": "Panel for exploring tags in current file",
+    "homepage": "https://github.com/FriendCode/codebox",
+    "license": "Apache",
+    "author": {
+        "name": "Codebox",
+        "email": "contact@friendco.de",
+        "url": "https://www.codebox.io"
+    },
+    "client": {
+        "main": "client"
+    },
+    "engines": {
+        "codebox": ">=0.7.0"
+    }
+}
