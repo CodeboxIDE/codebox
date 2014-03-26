@@ -819,13 +819,6 @@ define([
                         }
                     });
                     menu.push({
-                        'type': "action",
-                        'title': "Refresh",
-                        'action': function() {
-                            return that.actionRefresh();
-                        }
-                    });
-                    menu.push({
                         'type': "menu",
                         'title': "Add",
                         'offline': false,
@@ -849,6 +842,23 @@ define([
                                 }
                             }
                         ]
+                    });
+                    menu.push({ 'type': "divider" });
+                    menu.push({
+                        'type': "action",
+                        'title': "Refresh",
+                        'action': function() {
+                            return that.actionRefresh();
+                        }
+                    });
+                    menu.push({
+                        'type': "action",
+                        'title': "Search In This Folder",
+                        'action': function() {
+                            return Command.run("code.search", {
+                                'path': that.path()
+                            });
+                        }
                     });
                 } else {
                     menu.push({

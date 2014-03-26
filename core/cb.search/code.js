@@ -84,6 +84,8 @@ var search = function(root, args) {
     var nMatches = 0;
 
     args = _.defaults(args || {}, {
+        path: "/",
+
         pattern: null,
         casesensitive: false,
         maxresults: null,
@@ -97,8 +99,11 @@ var search = function(root, args) {
 
     if (!args.query) return Q.reject(new Error("Need a query to search for code"));
 
+    var _path = path.join(root, args.path);
+    if (_path.indexOf(root) !== 0) _path = root;
+    
     var command = assembleCommand(_.extend({}, args, {
-        path: root
+        path: _path
     }));
 
     var proc = spawn(command.command, command);

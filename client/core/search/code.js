@@ -10,7 +10,7 @@ define([
     'utils/dialogs'
 ], function(Q, _, hr, Command, menu, rpc, search, files, dialogs) {
     var OPTIONS = [
-        'query', 'casesensitive', 'replacement', 'pattern', 'maxresults',
+        'query', 'path', 'casesensitive', 'replacement', 'pattern', 'maxresults',
         'wholeword', 'regexp', 'replaceAll'
     ];
 
@@ -84,6 +84,10 @@ define([
                 'label': "Find",
                 'type': "text"
             },
+            'path': {
+                'label': "Where",
+                'type': "text"
+            },
             'regexp': {
                 'label': "Regular expression",
                 'type': "checkbox"
@@ -107,6 +111,10 @@ define([
         action: searchCommandHandler("Find and Replace in Files", {
             'query': {
                 'label': "Find",
+                'type': "text"
+            },
+            'path': {
+                'label': "Where",
                 'type': "text"
             },
             'replacement': {
