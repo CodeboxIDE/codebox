@@ -528,7 +528,7 @@ define([
             if (this.fileOptions.line) {
                 this.editor.gotoLine(this.fileOptions.line);
             } else if (this.fileOptions.pattern) {
-                this.editor.find(this.fileOptions.pattern.slice(2, -2),{
+                this.editor.find(this.fileOptions.pattern,{
                     regExp: false,
                     backwards: false,
                     wrap: true

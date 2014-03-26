@@ -55,7 +55,8 @@ define([
 
             var open = function() {
                 files.open(box.activeFile, {
-                    pattern: tag.pattern
+                    // Open content "/^ foo $/"" _> "foo" in editor
+                    pattern: tag.pattern.slice(2, -2)
                 });
             };
 
