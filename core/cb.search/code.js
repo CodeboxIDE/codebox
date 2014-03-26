@@ -138,15 +138,12 @@ var search = function(root, args) {
         d.reject(err)
     });
     proc.on('exit', function(code) {
-        if (code !== 0) {
-            d.reject(new Error("ack exited with code "+code));
-        } else {
-            d.resolve({
-                'options': args,
-                'files': results,
-                'matches': nMatches
-            });
-        }
+        d.resolve({
+            'code': code,
+            'options': args,
+            'files': results,
+            'matches': nMatches
+        });
     });
 
     return d.promise;
