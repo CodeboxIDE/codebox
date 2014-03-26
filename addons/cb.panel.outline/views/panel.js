@@ -12,15 +12,27 @@ define([
 
     var PanelOutlineView = PanelBaseView.extend({
         className: "cb-panel-outline",
+        events: {
+            "click": "onClick",
+            "keyup input": "onKeyup"
+        },
 
         initialize: function() {
             PanelOutlineView.__super__.initialize.apply(this, arguments);
 
             this.listenTo(box, "file.active", this.render);
             this.tagSeparator = ".";
+            
+            this.$filterInput = $("<input>", {
+                'type': "text",
+                'class': "form-control input-sm",
+                "placeholder": "Filter Tags"
+            });
             this.$tree = $("<ul>", {
                 'class': "tags-tree"
             });
+
+            this.$filterInput.appendTo(this.$el);
             this.$tree.appendTo(this.$el);
         },
 
@@ -34,22 +46,39 @@ define([
         },
 
         // Add tag
-        addTag: function(tag, $parent) {
+        addTag: function(tag, $parent, hasChildren, className) {
+            var $tags;
             var $tag = $("<li>", {
-                'text': tag.showName,
                 'data-tag': tag.name,
+                'class': className,
                 'click': function(e) {
                     e.stopPropagation();
-                    
-                    $tags.toggle();
+
+                    $tag.toggleClass("open");
                 }
             });
 
-            var $tags = $("<ul>", {
-                'class': "tags-tree"
+            var $span = $("<span>", {
+                'text': tag.showName
             });
-            $tags.appendTo($tag);
+            $span.appendTo($tag);
 
+            if (hasChildren) {
+                $tags = $("<ul>", {
+                    'class': "tags-tree"
+                }).appendTo($tag);
+                $("<i>", {
+                    'class': "fa fa-angle-right tag-icon-close"
+                }).prependTo($span);
+                $("<i>", {
+                    'class': "fa fa-angle-down tag-icon-open"
+                }).prependTo($span);
+            } else {
+                $("<i>", {
+                    'class': "fa fa-blank"
+                }).prependTo($span);
+            }
+            
             $tag.appendTo($parent);
 
             return {
@@ -114,7 +143,7 @@ define([
 
                 var addChildren = function($parent, tags) {
                     _.each(tags, function(tag, name) {
-                        var vTag = that.addTag(tag, $parent);
+                        var vTag = that.addTag(tag, $parent, _.size(tag.children) > 0);
 
                         addChildren(vTag.$children, tag.children);
                     });
@@ -125,6 +154,16 @@ define([
                 that.ready();
             }, function(err) {
                 console.error(err);
+            });
+        },
+
+        onClick: function() {
+            this.$filterInput.focus();
+        },
+        onKeyup: function(e) {
+            var query = this.$filterInput.val().toLowerCase();
+            this.$("li").each(function() {
+                $(this).toggle(!query || $(this).text().toLowerCase().indexOf(query) !== -1);
             });
         }
     });

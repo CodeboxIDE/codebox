@@ -5,9 +5,97 @@
     left: 0px;
     width: 100%;
     z-index: 10;
-    overflow-y: auto;
+
+    input, input:focus {
+        position: absolute;
+        bottom: 6px;
+        left: 4px;
+        right: 4px;
+        width: calc(~"100% - 8px");
+        box-shadow: none;
+    }
 
     .tags-tree {
+        margin: 0px;
+        padding: 0px;
+        list-style: none;
 
+        li {
+            span {
+                display: block;
+                padding: 2px 8px;
+                cursor: default;
+                position: relative;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+
+                &:hover {
+                    background: rgba(0, 0, 0, 0.05);
+                }
+
+                &:before {
+                    content: " ";
+                    background: #b55761;
+                    width: 8px;
+                    height: 8px;
+                    position: absolute;
+                    border-radius: 16px;
+                    top: 8px;
+                    left: 19px;
+                    border: 1px solid #000;
+                }
+            }
+
+            &.type-V {
+                .span:before {
+                    background: #81a2be;
+                }
+            }
+            &.type-F {
+                .span:before {
+                    background: #9dbe8c;
+                }
+            }
+
+            i {
+                width: 24px;
+            }
+
+            .tags-tree {
+                padding-left: 15px;
+                display: none;
+            }
+
+            .tag-icon-close {
+                display: inline-block;
+            }
+            .tag-icon-open {
+                display: none;
+            }
+
+            &.open {
+                > .tag-icon-open {
+                    display: inline-block;
+                }
+                > .tag-icon-close {
+                    display: none;
+                }
+
+                > .tags-tree {
+                    display: block;
+                }
+            }
+        }
+    }
+
+    > .tags-tree {
+        position: absolute;
+        top: 0px;
+        bottom: 40px;
+        left: 5px;
+        right: 5px;
+        z-index: 10;
+        overflow-y: auto;
     }
 }
