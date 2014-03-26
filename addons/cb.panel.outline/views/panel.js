@@ -38,7 +38,9 @@ define([
             var $tag = $("<li>", {
                 'text': tag.showName,
                 'data-tag': tag.name,
-                'click': function() {
+                'click': function(e) {
+                    e.stopPropagation();
+                    
                     $tags.toggle();
                 }
             });
@@ -67,7 +69,11 @@ define([
         convertTagsToTree: function(tags) {
             var that = this, tree = {};
 
-            _.each(tags, function(tag) {
+            _.chain(tags)
+            .sortBy(function(tag) {
+                return tag.name.length;
+            })
+            .each(function(tag) {
                 var parent = tree;
                 var parts = tag.name.split(that.tagSeparator);
                 var _name = _.last(parts);
