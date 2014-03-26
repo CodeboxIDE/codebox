@@ -9,6 +9,7 @@ define([
     var PanelBaseView = codebox.require("views/panels/base");
     var rpc = codebox.require("core/backends/rpc");
     var box = codebox.require("core/box");
+    var files = codebox.require("core/files");
 
     var PanelOutlineView = PanelBaseView.extend({
         className: "cb-panel-outline",
@@ -22,18 +23,21 @@ define([
 
             this.listenTo(box, "file.active", this.render);
             this.tagSeparator = ".";
-            
+
+            // Map path -> tree
+            this.$trees = {};
+                
             this.$filterInput = $("<input>", {
                 'type': "text",
                 'class': "form-control input-sm",
                 "placeholder": "Filter Tags"
             });
-            this.$tree = $("<ul>", {
-                'class': "tags-tree"
+            this.$treeContainer = $("<div>", {
+                'class': "tree-container"
             });
 
             this.$filterInput.appendTo(this.$el);
-            this.$tree.appendTo(this.$el);
+            this.$treeContainer.appendTo(this.$el);
         },
 
         render: function() {
@@ -48,6 +52,13 @@ define([
         // Add tag
         addTag: function(tag, $parent, hasChildren, className) {
             var $tags;
+
+            var open = function() {
+                files.open(box.activeFile, {
+                    pattern: tag.pattern
+                });
+            };
+
             var $tag = $("<li>", {
                 'data-tag': tag.name,
                 'class': className,
@@ -55,7 +66,9 @@ define([
                     e.stopPropagation();
 
                     $tag.toggleClass("open");
-                }
+                    if (!hasChildren) open();
+                },
+                'dblclick': open
             });
 
             var $span = $("<span>", {
@@ -129,17 +142,24 @@ define([
             var that = this, tree;
             if (box.activeFile == "/") {
                 var message = "No outline available for the current file.";
-                this.$tree.text(message);
+                this.$treeContainer.text(message);
                 return Q.reject(message);
             }
+
+
+            var $tree = $("<ul>", {
+                'class': "tags-tree"
+            });
+            this.$trees[box.activeFile] = $tree;
+
+            this.$treeContainer.empty();
+            $tree.appendTo(this.$treeContainer);
 
             return rpc.execute("codecomplete/get", {
                 'file': box.activeFile
             })
             .then(function(tags) {
                 tree = that.convertTagsToTree(tags.results);
-
-                that.$tree.empty();
 
                 var addChildren = function($parent, tags) {
                     _.each(tags, function(tag, name) {
@@ -148,7 +168,7 @@ define([
                         addChildren(vTag.$children, tag.children);
                     });
                 }
-                addChildren(that.$tree, tree);
+                addChildren($tree, tree);
             })
             .then(function() {
                 that.ready();

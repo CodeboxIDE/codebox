@@ -525,7 +525,15 @@ define([
 
         // Update current line according to options
         adaptOptions: function() {
-            if (this.fileOptions.line) this.editor.gotoLine(this.fileOptions.line);
+            if (this.fileOptions.line) {
+                this.editor.gotoLine(this.fileOptions.line);
+            } else if (this.fileOptions.pattern) {
+                this.editor.find(this.fileOptions.pattern.slice(2, -2),{
+                    regExp: false,
+                    backwards: false,
+                    wrap: true
+                });
+            }
         }
     });
 

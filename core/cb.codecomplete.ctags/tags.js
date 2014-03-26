@@ -9,7 +9,8 @@ var exec = require("../utils").exec;
 var normalizeTag = function(tag) {
     return {
         'name': tag.name,
-        'file': "/"+tag.file
+        'file': "/"+tag.file,
+        'pattern': tag.pattern
     }
 };
 

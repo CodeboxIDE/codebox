@@ -142,7 +142,8 @@ define([
 
         // Options for the file handler
         fileOptions = _.defaults(fileOptions || {}, {
-            line: null
+            line: null,
+            pattern: null
         });
 
         return Q(handler.open(file, fileOptions)).then(function() {
@@ -176,7 +177,7 @@ define([
         });
 
         // Options for the file handler
-        var fileOptions = _.pick(options, ["line"]);
+        var fileOptions = _.pick(options, ["line", "pattern"]);
 
         if (_.isString(file)) {
             var nfile = new File({
