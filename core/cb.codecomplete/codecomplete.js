@@ -114,10 +114,6 @@ CodeComplete.prototype.get = function(options) {
 
     var results = [];
 
-    if (!options.query) {
-        return Q.reject(new Error("Cannot get codecomplete results with not query"));
-    }
-
     // Get all results from all the handlers
     return Q.allSettled(_.map(this.handlers, function(handler, i) {
         return Q(handler.handler(options, handler.name)).then(function(_results) {

@@ -23,6 +23,8 @@ define([
         'id': "tags",
         'title': "Tags"
     }, function(query) {
+        if (!query) return [];
+
         return rpc.execute("codecomplete/get", {
             'query': query
         }).then(function(data) {
