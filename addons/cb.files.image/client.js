@@ -10,6 +10,7 @@ define([
 
     files.addHandler("imageviewer", {
         name: "Image Viewer",
+        position: 1,
         View: FileImageView,
         valid: function(file) {
             return (!file.isDirectory() && _.contains(imageExts, file.extension()));

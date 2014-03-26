@@ -14,7 +14,7 @@ define([
         'name': "Edit",
         'fallback': true,
         'setActive': true,
-        'position': 1,
+        'position': 5,
         'View': FileEditorView,
         'valid': function(file) {
             return (!file.isDirectory());

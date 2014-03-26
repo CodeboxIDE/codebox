@@ -64,8 +64,13 @@ define([
         }
 
         handler = _.defaults(handler, {
+            // Mark this file as active when open with
             'setActive': false,
+
+            // Fallback when no correct handler
             'fallback': false,
+
+            // Priority of this handler
             'position': 10
         });
 
