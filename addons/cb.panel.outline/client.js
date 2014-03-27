@@ -7,12 +7,12 @@ define([
     var menu = codebox.require("core/commands/menu");
     var box = codebox.require("core/box");
 
-    // Add files panels
+    // Add outline panel
     var panel = panels.register("outline", PanelOutlineView, {
         title: "Outline"
     });
     
-    // Open files panel
+    // Add command to open outline panel
     panel.connectCommand(commands.register("outline.open", {
         category: "Panels",
         title: "Outline",
@@ -24,6 +24,6 @@ define([
         shortcuts: []
     }));
 
-    // Open panel
+    // Open panel during startup
     panel.open();
 });

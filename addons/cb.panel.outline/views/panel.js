@@ -22,6 +22,7 @@ define([
         initialize: function() {
             PanelOutlineView.__super__.initialize.apply(this, arguments);
 
+            // Update tags when file changes
             this.listenTo(box, "file.active", this.render);
 
             // Map path -> tree
@@ -44,6 +45,9 @@ define([
             var that = this;
 
             return this.updateTags()
+            .fail(function(err) {
+                that.$treeContainer.html("<div class='alert'>"+(err.message || err)+"</div>");
+            })
             .fin(function() {
                 that.ready();
             });
@@ -141,6 +145,7 @@ define([
 
         // Update complete tree
         updateTags: function(refresh) {
+            var message = "No outline available for the current file.";
             var that = this, tree, path = box.activeFile;
 
             //Detach current tree
@@ -151,8 +156,6 @@ define([
 
             // No current file
             if (!path || path == "/") {
-                var message = "No outline available for the current file.";
-                this.$treeContainer.html("<div class='alert'>"+message+"</div>");
                 return Q.reject(message);
             }
 
@@ -173,6 +176,7 @@ define([
                 'file': path
             })
             .then(function(tags) {
+                if (tags.results.length == 0) return Q.reject(message);
                 tree = that.convertTagsToTree(tags.results);
 
                 var addChildren = function($parent, tags) {
