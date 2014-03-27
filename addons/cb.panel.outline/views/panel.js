@@ -152,7 +152,7 @@ define([
             // No current file
             if (!path || path == "/") {
                 var message = "No outline available for the current file.";
-                this.$treeContainer.text(message);
+                this.$treeContainer.html("<div class='alert'>"+message+"</div>");
                 return Q.reject(message);
             }
 
