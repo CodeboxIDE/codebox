@@ -13,7 +13,10 @@ define([
                 "search": "code"
             },
             "action": _.bind(function() {
-                files.open(tag.file);
+                files.open(tag.file, {
+                    // Open content "/^ foo $/"" _> "foo" in editor
+                    pattern: tag.pattern.slice(2, -2)
+                });
             }, this)
         };
     };
