@@ -5,6 +5,9 @@
 <% } %>
 <%- command.get("description") || command.get("title") %>
 </span>
-<% if (command.label()) { %>
-<span class="label"><%= command.label() %></span>
+<% if (command.get("label").length > 0) { %>
+<span class="command-label"><%- command.get("label") %></span>
+<% } %>
+<% if (_.size(command.get("shortcuts")) > 0) { %>
+<span class="label shortcut"><%= command.shortcutText() %></span>
 <% } %>

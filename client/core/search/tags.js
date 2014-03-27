@@ -9,6 +9,7 @@ define([
     var normalizeTag = function(tag) {
         return {
             "title": tag.name,
+            "label": tag.file,
             "icons": {
                 "search": "code"
             },
