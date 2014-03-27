@@ -1,6 +1,7 @@
 define([
+    "settings",
     "less!stylesheets/panel.less"
-], function() {
+], function(panelSettings) {
     var _ = codebox.require("hr/utils");
     var Q = codebox.require("hr/promise");
     var $ = codebox.require("hr/dom");
@@ -22,7 +23,6 @@ define([
             PanelOutlineView.__super__.initialize.apply(this, arguments);
 
             this.listenTo(box, "file.active", this.render);
-            this.tagSeparator = ".";
 
             // Map path -> tree
             this.$trees = {};
@@ -111,6 +111,7 @@ define([
         // Convert tags as a tree
         convertTagsToTree: function(tags) {
             var that = this, tree = {};
+            var tagSeparator = panelSettings.user.get("separator");
 
             _.chain(tags)
             .sortBy(function(tag) {
@@ -118,14 +119,14 @@ define([
             })
             .each(function(tag) {
                 var parent = tree;
-                var parts = tag.name.split(that.tagSeparator);
+                var parts = tag.name.split(tagSeparator);
                 var _name = _.last(parts);
 
                 _.each(parts, function(part, i) {
                     if (parent[part]) {
                         parent = parent[part].children;
                     } else {
-                        _name = parts.slice(i, parts.length).join(that.tagSeparator);
+                        _name = parts.slice(i, parts.length).join(tagSeparator);
                         return false;
                     }
                 });
