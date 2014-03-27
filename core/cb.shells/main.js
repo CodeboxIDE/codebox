@@ -30,7 +30,7 @@ function setup(options, imports, register) {
                 cwd: "/"
             });
             opts.command = shellCmd;
-            opts.cwd = path.join(workspace.root, opts.cwd);
+            opts.cwd = path.join(workspace.root, opts.cwd || "/");
             return opts;
         })
         .then(function(opts) {
