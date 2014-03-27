@@ -392,6 +392,10 @@ define([
                 this.tab.setTabState("loading", state);
             }, this);
 
+            this.sync.once("content", function() {
+                this.adaptOptions();
+            }, this);
+
             // Define file for code editor
             this.sync.setFile(this.model, {
                 'sync': editorSettings.user.get("autocollaboration") ? collaborators.size() > 1 : false
@@ -417,7 +421,6 @@ define([
             this.$editor.appendTo(this.$(".editor-inner"));
             this.editor.resize();
             this.editor.renderer.updateFull();
-            this.adaptOptions();
 
             return FileEditorView.__super__.finish.apply(this, arguments);
         },
