@@ -3,9 +3,10 @@ define([
     'hr/dom',
     'hr/hr',
     'models/command',
+    'views/tabs/manager',
     'views/panels/base',
-    'views/tabs/manager'
-], function(_, $, hr, Command, PanelBaseView, TabsManager) {
+    'views/panels/file'
+], function(_, $, hr, Command, TabsManager) {
 
     var PanelsView = hr.View.extend({
         className: "cb-panels",
