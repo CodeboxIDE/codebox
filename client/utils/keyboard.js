@@ -3,6 +3,14 @@ define([
     'hr/utils',
     'vendors/mousetrap'
 ], function (hr, _, Mousetrap) {
+    var originalStopCallback = Mousetrap.stopCallback;
+    Mousetrap.stopCallback = function(e, element) {
+        if (e.mousetrap) {
+            return false;
+        }
+        return originalStopCallback(e, element);
+    };
+
     /**
      * Keyboard shortcuts manager
      *
@@ -22,16 +30,6 @@ define([
          */
         enableKeyEvent: function(e) {
             e.mousetrap = true;
-        },
-
-        /**
-         * Handle manually a keyboard event
-         *
-         * @param {jqueryEvent} e
-         */
-        handleKeyEvent: function(e) {
-            e.mousetrap = true;
-            return Mousetrap.handleKeyEvent(e);
         },
 
         /*

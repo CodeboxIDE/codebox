@@ -850,7 +850,6 @@
     _addEvent(document, 'keyup', _handleKeyEvent);
 
     var Mousetrap = {
-        handleKeyEvent: _handleKeyEvent,
 
         /**
          * binds an event to mousetrap
@@ -928,9 +927,6 @@
         * @return {boolean}
         */
         stopCallback: function(e, element) {
-            if (e.mousetrap == true) {
-                return false;
-            }
 
             // if the element has the class "mousetrap" then no need to stop
             if ((' ' + element.className + ' ').indexOf(' mousetrap ') > -1) {
