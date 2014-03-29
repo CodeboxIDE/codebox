@@ -66,6 +66,17 @@ define([
         },
 
         /*
+         * Prevent default browser shortcut
+
+         * @param {string|array} keys shortcut to ignore
+         */
+        preventDefault: function(keys) {
+            return this.bind(keys, function(e) {
+                e.preventDefault();
+            }, this);
+        },
+
+        /*
          * Convert shortcut or list of shortcut to a string
 
          * @param {string|array} shortcut shortcut or list of shortcuts
@@ -99,5 +110,10 @@ define([
         }
     });
 
-    return new Keyboard();
+    var keyboard = new Keyboard();
+
+    // Prevent some browser default keyboard interactions
+    keyboard.preventDefault("mod+r");
+
+    return keyboard;
 });
