@@ -3,24 +3,31 @@ define([
     'hr/utils',
     'vendors/mousetrap'
 ], function (hr, _, Mousetrap) {
+    /**
+     * Keyboard shortcuts manager
+     *
+     * @class
+     * @constructor
+     */
     var Keyboard = hr.Class.extend({
-        /*
-         *  Initialize the keyboard navigation
-         */
         initialize: function() {
             this.bindings = {};
             return this;
         },
 
-        /*
-         *  Enable key event
+        /**
+         * Enable keyboard shortcut for a specific event
+         *
+         * @param {jqueryEvent} e
          */
         enableKeyEvent: function(e) {
             e.mousetrap = true;
         },
 
-        /*
-         *  Handle manually a keyboard event
+        /**
+         * Handle manually a keyboard event
+         *
+         * @param {jqueryEvent} e
          */
         handleKeyEvent: function(e) {
             e.mousetrap = true;
@@ -28,9 +35,11 @@ define([
         },
 
         /*
-         *  Bind keyboard shortcuts to callback
-         *  @keys : shortcut or list of shortcuts
-         *  @callback : function to call
+         * Bind keyboard shortcuts to callback
+
+         * @param {string|array} keys shortcut or list of shortcuts
+         * @param {function} callback function to call for this shortcut
+         * @param {object} context object which is binding key
          */
         bind: function(keys, callback, context) {
             // List of shortcuts for same action
@@ -42,7 +51,7 @@ define([
             // Map shortcut -> action
             if (_.isObject(keys)) {
                 _.each(keys, function(method, key) {
-                    this.bind(key, method);
+                    this.bind(key, method, callback);
                 }, this)
                 return;
             }
@@ -54,12 +63,15 @@ define([
                     this.bindings[keys].trigger("action", e);
                 }, this));
             }
-            this.bindings[keys].on("action", callback, context);
+            context.listenTo(this.bindings[keys], "action", callback);
             return;
         },
 
         /*
-         *  Convert shortcut or list of shortcut to a string
+         * Convert shortcut or list of shortcut to a string
+
+         * @param {string|array} shortcut shortcut or list of shortcuts
+         * @return {string}
          */
         toText: function(shortcut) {
             if (_.isArray(shortcut)) shortcut = _.first(shortcut);

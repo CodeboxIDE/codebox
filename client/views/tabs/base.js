@@ -100,7 +100,7 @@ define([
             if (!this.tab.manager.options.keyboardShortcuts) return;
 
             _.each(navigations, function(method, key) {
-                navs[key] = _.bind(function() {
+                navs[key] = function() {
                     // Trigger only if active tab
                     if (!this.isActiveTab()) return;
 
@@ -110,10 +110,10 @@ define([
                     // Apply method
                     if (!method) return;
                     method.apply(container, arguments);
-                }, this);
+                };
             }, this);
             
-            Keyboard.bind(navs);
+            Keyboard.bind(navs, this);
         },
 
         /**

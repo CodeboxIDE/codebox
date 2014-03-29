@@ -173,8 +173,8 @@ define([
                     _.each(command.get("shortcuts", []), function(shortcut) {
                         Keyboard.bind(shortcut, function(e) {
                             e.preventDefault();
-                            command.run();
-                        });
+                            this.run();
+                        }, command);
                     });
                 }
 
