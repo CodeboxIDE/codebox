@@ -220,6 +220,20 @@ define([
                 jshint.applySettings(that.editor);
             });
 
+
+            // Clear command on Windows/ChromeOS Ctrl-Shift-P
+            this.editor.commands.addCommands([{
+                name: "commandpalette",
+                bindKey: {
+                    win: "Ctrl-Shift-P",
+                    mac: "Command-Shift-P"
+                },
+                exec: function(editor, line) {
+                    return false;
+                },
+                readOnly: true
+            }]);
+
             // Send change
             $doc.on('change', function(d) {
                 if (that._op_set) return;
