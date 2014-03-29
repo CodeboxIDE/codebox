@@ -18,9 +18,6 @@ define([
         },
 
         open: function(e) {
-            var panels = require("core/panels");
-            panels.show();
-
             this.model.run();
         }
     });
