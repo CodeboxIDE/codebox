@@ -8,34 +8,45 @@ define([
     "models/command",
     "collections/commands"
 ], function(_, $, hr, DragDrop, Keyboard, ContextMenu, Command, Commands) {
-    // Tab body view
+    /**
+     * Tab body base view
+     *
+     * @class
+     * @constructor
+     */
     var TabPanelView = hr.View.extend({
         className: "component-tab-panel",
         events: {
             "click": "openTab"
         },
 
-        // Keyboard shortcuts inside the tab
+        /**
+         * Keyboard shortcuts inside the tab
+         */
         shortcuts: {
             "alt+w": "closeTab",
             "alt+shift+tab": "tabGotoPrevious",
             "alt+tab": "tabGotoNext"
         },
 
-        // Menu title
+        /**
+         * Title in the menu bar
+         */
         menuTitle: "Tab",
 
-
-        // Constructor
         initialize: function() {
             TabPanelView.__super__.initialize.apply(this, arguments);
+
             var menu = require("core/commands/menu");
             var statusbar = require("core/commands/statusbar");
 
             this.tabs = this.parent;
             this.tab = this.options.tab;
 
-            // Create tab menu
+            /**
+             * Menu for this tab in the menu bar
+             * @property
+             */
             this.menu = new Command({}, {
                 'type': "menu",
                 'title': this.menuTitle,
@@ -43,7 +54,10 @@ define([
             });
             if (this.tab.manager.options.tabMenu) menu.collection.add(this.menu);
 
-            // Create statusbar commands
+            /**
+             * Collection of commands for this tab in the statusbar
+             * @property
+             */
             this.statusbar = new Commands();
             this.statusbar.pipe(statusbar.collection);
 
@@ -69,10 +83,16 @@ define([
 
             // Keyboard shortcuts
             this.setShortcuts(this.shortcuts || {});
+
             return this;
         },
 
-        // Define keyboard shortcuts
+        /**
+         * Define (add) new keyboard shortcuts
+         *
+         * @param {object} navigations map of keyboard shortcut -> method
+         * @param {object} [container] object to get method from if the method is a string 
+         */
         setShortcuts: function(navigations, container) {
             var navs = {};
             container = container || this;
@@ -96,24 +116,38 @@ define([
             Keyboard.bind(navs);
         },
 
-        // Close the tab
+        /**
+         * Close this tab
+         */
         closeTab: function(e, force) {
             if (e != null) e.preventDefault();
             this.tab.close(force);
         },
 
-        // Open the tab
+        /**
+         * Set this tab as active
+         */
         openTab: function(e) {
             this.tab.active();
         },
 
-        // Set tab title
-        setTabTitle: function(t) {
-            this.tab.set("title", t);
+        /**
+         * Set tab title
+         *
+         * @param {string} title new title to set
+         */
+        setTabTitle: function(title) {
+            this.tab.set("title", title);
             return this;
         },
 
-        // Set tab state
+        /**
+         * Set a tab state, states are used to signal
+         * for example that the file is loading, ...
+         *
+         * @param {string} state state id to define
+         * @param {boolean} value value for this state
+         */
         setTabState: function(state, value) {
             var states = (this.tab.get("state") || "").split(" ");
 
@@ -127,23 +161,36 @@ define([
             return this;
         },
 
-        // Set tab title
-        setTabId: function(t) {
-            this.tab.set("id", t);
+        /**
+         * Set tab id
+         *
+         * @param {string} id new id for this tab
+         */
+        setTabId: function(id) {
+            this.tab.set("id", id);
             return this;
         },
 
-        // Return if is active
+        /**
+         * Check if the tab is active
+         *
+         * @return {boolean}
+         */
         isActiveTab: function() {
             return this.tab.manager.isActiveTab(this.tab);
         },
 
-        // Check that tab can be closed
+        /**
+         * Check if the tab can be closed,
+         * this method can be overided
+         *
+         * @return {boolean}
+         */
         tabCanBeClosed: function() {
             return true;
         },
 
-        // Goto
+        // Navigation between tabs
         tabGotoPrevious: function(e) {
             if (e) e.preventDefault();
             var that = this;
