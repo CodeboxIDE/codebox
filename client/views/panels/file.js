@@ -7,6 +7,7 @@ define([
     /**
      * Panel related to the current file
      *
+     * @class
      * @constructor
      */
     var PanelFileView = PanelBaseView.extend({
@@ -23,7 +24,6 @@ define([
         /**
          * Displays a popup list of hints for a given editor context.
          *
-         * @constructor
          * @param {Object} options
          */
         initialize: function(options) {

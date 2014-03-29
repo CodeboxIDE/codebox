@@ -7,13 +7,17 @@ define([
     'views/panels/base',
     'views/panels/file'
 ], function(_, $, hr, Command, TabsManager) {
-
+    /**
+     * Manager view for panels
+     *
+     * @class
+     * @constructor
+     */
     var PanelsView = hr.View.extend({
         className: "cb-panels",
         defaults: {},
         events: {},
 
-        // Constructor
         initialize: function(options) {
             var that = this;
             PanelsView.__super__.initialize.apply(this, arguments);
@@ -34,7 +38,6 @@ define([
 
             // Active panel
             this.activePanel = null;
-            this.previousPanel = null;
 
             // Menu of panels choice
             this.panelsCommand = new Command({}, {
@@ -48,7 +51,18 @@ define([
             return this;
         },
 
-        // Register a new panel
+        render: function() {
+            return this.ready();
+        },
+
+        /**
+         * Register a new panel
+         *
+         * @property {string} panelId unique id to identify the panel
+         * @property {PanelBaseView} panelView view constructor for this panel
+         * @property {object} constructor options for construction of the panel view
+         * @return {PanelBaseView} panel just created
+         */
         register: function(panelId, panelView, constructor) {
             constructor = _.extend({
                 'title': panelId
@@ -62,12 +76,11 @@ define([
             return this.panels[panelId];
         },
 
-        // Render
-        render: function() {
-            return this.ready();
-        },
-
-        // Open a panel
+        /**
+         * Open a panel by its id
+         *
+         * @property {string} pId unique id to identify the panel to open
+         */
         open: function(pId) {
             var opened = false;
 
@@ -89,8 +102,6 @@ define([
                     this.panels[pId].update();
                 }
             }
-
-            this.previousPanel = this.activePanel || this.previousPanel;
             this.activePanel = pId;
             
             if (opened) {
@@ -102,20 +113,24 @@ define([
             return this;
         },
 
-        // Check if a panel is active
+        /**
+         * Check the visibility of a specific panel
+         *
+         * @property {string} pId unique id to identify the panel
+         */
         isActive: function(pId) {
             var t = this.tabs.getById(pId);
             return !(t == null || !t.isActive());
         },
 
-        // Close panel
-        close: function() {
-            return this.open(null);
-        },
-
-        // Show panels
-        show: function() {
-            return this.open(this.activePanel || this.previousPanel || _.first(_.keys(this.panels)));
+        /**
+         * Close a panel
+         *
+         * @property {string} pId unique id to identify the panel
+         */
+        close: function(pId) {
+            var tab = this.tabs.getById(pId);
+            if (tab) tab.close();
         }
     });
 
