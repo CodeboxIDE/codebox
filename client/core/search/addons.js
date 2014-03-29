@@ -37,6 +37,20 @@ define([
         });
     };
 
+    // Transform an addon to a basic command
+    var addonToCommand = function(preText, addon, callback) {
+        return {
+            'category': "Add-ons",
+            'title': preText+" "+addon.get("name"),
+            'label': addon.get("version")+ " - "+addon.get("author.name"),
+            'icons': {
+                'search': "puzzle-piece"
+            },
+            'offline': false,
+            'action': callback
+        };
+    };
+
     // Transform an addon to an install command
     var addonToInstallCommand = function(addon) {
         var preText = "Install";
@@ -46,34 +60,18 @@ define([
             } else {
                 return null;
             }
-        } 
-        return {
-            'category': "Add-ons",
-            'title': preText+" "+addon.get("name"),
-            'icons': {
-                'search': "puzzle-piece"
-            },
-            'offline': false,
-            'action': _.bind(function() {
-                return Command.run("addons.install", addon.get("git"));
-            }, this)
-        };
+        }
+        return addonToCommand(preText, addon, function() {
+            return Command.run("addons.install", addon.get("git"));
+        });
     };
 
     // Transform an addon to an uninstall command
     var addonToUninstallCommand = function(addon) {
         if (addons.isDefault(addon)) return null;
-        return {
-            'category': "Add-ons",
-            'title': "Uninstall "+addon.get("name"),
-            'icons': {
-                'search': "puzzle-piece"
-            },
-            'offline': false,
-            'action': _.bind(function() {
-                return Command.run("addons.uninstall", addon.get("name"));
-            }, this)
-        };
+        return addonToCommand("Uninstall", addon, function() {
+            return Command.run("addons.uninstall", addon.get("name"));
+        });
     };
 
     // Search for add-ons to uninstall
