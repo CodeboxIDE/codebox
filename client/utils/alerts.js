@@ -2,18 +2,24 @@ define([
     'hr/hr',
     'hr/dom'
 ], function (hr, $) {
-    return _.bindAll({
-        /*
-         *  Clear alerts
+    /**
+     * Show alert messages in the top of the window
+     *
+     * @class
+     */
+    var alert = {
+        /**
+         * Clear all alerts
          */
         clear: function() {
             $(".cb-alerts").empty();
         },
 
-        /*
-         *  Show an alert
-         *  @content: html content for the alert
-         *  @duration: show duration
+        /**
+         * Show an alert
+         *
+         * @param {string} content html content for the alert
+         * @param {number} duration duration before the alert disapear
          */
         show: function(content, duration) {
             var that = this;
@@ -32,5 +38,7 @@ define([
                 that.clear();
             }, duration);
         }
-    }, 'show', 'clear');
+    };
+
+    return _.bindAll(alert);
 });

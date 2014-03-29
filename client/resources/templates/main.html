@@ -1,5 +1,8 @@
 <% if (session.box.isAuth()) { %>
 <div id="codebox" class="mode-body-fullpage">
+	<!-- Alerts -->
+	<div class="cb-alerts"></div>
+
 	<!-- Menu bar -->
 	<div class="cb-menubar">
 		<span class="cb-user-email"><%- session.user.get("email") %></span>
