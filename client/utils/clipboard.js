@@ -12,26 +12,34 @@ define([
         }
     };
 
-
+    /**
+     * Virtual clipboard manager
+     *
+     * @class
+     * @constructor
+     */
     var Clipboard = hr.Class.extend({
-        /*
-         *  Initialize the clipboard
-         */
         initialize: function() {
             this.data = null;
             return this;
         },
 
-        /*
-         *  Check if has some data avilable and type
+        /**
+         * Check if has some data available and type is valid
+         *
+         * @param {string} type
          */
         hasData: function(type) {
             if (!this.data) return false;
             return !this.type || this.type == this.data.type;
         },
 
-        /*
-         *  Set data in clipboard
+        /**
+         * Set data in virtual clipboard
+         *
+         * @param {string} type
+         * @param {object} value
+         * @param {object} options
          */
         setData: function(type, value, options) {
             this.data = {
@@ -42,7 +50,7 @@ define([
             this.trigger("data", this.data);
         },
 
-        /*
+        /**
          *  Clear clipboard
          */
         clear: function() {
@@ -50,15 +58,17 @@ define([
             this.trigger("data", this.data);
         },
 
-        /*
+        /**
          *  Get raw data
          */
         getRaw: function() {
             return this.data;
         },
 
-        /*
+        /**
          *  Get data from clipboard and convert to the right type
+         *
+         * @param {string} type
          */
         getData: function(type) {
             // No data
