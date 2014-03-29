@@ -3,24 +3,29 @@ define([
     'hr/utils',
     'views/commands/menu'
 ], function ($, _, MenuView) {
-
+    /**
+     * Context menu manager
+     *
+     * @class
+     */
     var ContextMenu = {
         lastTimeOpened: 0,
         origin: null,
 
-        /*
-         * Clear context menus
+        /**
+         * Clear current context menu
          */
         clear: function() {
             $(".ui-context-menu").removeClass("ui-context-menu");
             $("#ui-context-menu").remove();
         },
 
-        /*
-         *  Generate menu
+        /**
+         * Generate menu from menuItems or a generator function
+         *
+         * @param {array} menuItems
          */
         generateMenu: function(menuItems) {
-            // Handle dynamic menu
             if (_.isFunction(menuItems)) menuItems = menuItems();
 
             var menu = new MenuView();
@@ -33,8 +38,11 @@ define([
             return menu;
         },
 
-        /*
+        /**
          *  Create a new context menu
+         *
+         * @param {array} menuItems
+         * @param {object} pos position for the menu
          */
         open: function(menuItems, pos) {
             ContextMenu.clear();
@@ -65,9 +73,13 @@ define([
             menu.open();
         },
 
-        /*
-         *  Add a context menu to an element
+        /**
+         * Add a context menu to an element
+         * the menu can be open by left click and tap hold on ipad
          *
+         * @param {jqueryElement} el
+         * @param {array} menu menu items
+         * @param {object} options
          */
         add: function(el, menu, options) {
             var $el = $(el);
