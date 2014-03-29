@@ -134,22 +134,25 @@ templateFile, commandTemplateFile) {
 
         // Do search
         doSearch: function(query) {
-            var that = this;
+            var that = this, toRemove = [];
             if (this.commands.collection.query == query) return;
 
             if (this.commands.collection.query && query
             && query.indexOf(this.commands.collection.query) == 0) {
                 // Continue current search
                 this.commands.collection.query = query;
-                this.commands.filter(function(command) {
-                    return command.textScore(query) > 0;
+                this.commands.collection.each(function(model) {
+                    if (model.textScore(query) == 0) {
+                        toRemove.push(model);
+                    }
                 });
-                this.selectItem(this.selected || 0);
+                this.commands.collection.remove(toRemove);
+                this.commands.collection.sort();
+                this.selectItem(this.getSelectedItem());
             } else {
                 // Different search
                 this.commands.collection.query = query;
                 this.commands.collection.reset([]);
-                this.commands.clearFilter();
                 this.options.searchHandler(query)
                 .then(function() {},
                 function(err) {},
@@ -157,7 +160,7 @@ templateFile, commandTemplateFile) {
                     that.commands.collection.add(_.filter(result.results, function(command) {
                         return !command.hasFlag("disabled");
                     }));
-                    that.selectItem(that.selected || 0);
+                    that.selectItem(that.getSelectedItem());
                 });
             }
         },
@@ -172,6 +175,8 @@ templateFile, commandTemplateFile) {
         keyup: function(e) {
             var key = e.which || e.keyCode;
             var q = $(e.currentTarget).val();
+            var selected = this.getSelectedItem();
+            var pSelected = selected;
 
             if (key == 27) {
                 /* ESC */
@@ -179,17 +184,17 @@ templateFile, commandTemplateFile) {
                 return;
             } else if (key == 38) {
                 /* UP */
-                this.selected = this.selected - 1;
+                selected = selected - 1;
             } else if (key == 40) {
                 /* DOWN */
-                this.selected = this.selected + 1;
+                selected = selected + 1;
             } else if (key == 13) {
                 /* ENTER */
                 e.preventDefault();
-                this.openItem(this.getSelectedItem());
+                this.openItem(selected);
             }
             this.doSearch(q);
-            this.selectItem(this.selected);
+            if (selected != pSelected) this.selectItem(selected);
         },
 
         selectItem: function(i) {
@@ -203,7 +208,6 @@ templateFile, commandTemplateFile) {
             i = 0;
             this.commands.collection.each(function(model) {
                 var y, h, item = this.commands.items[model.id];
-                if (item.$el.hasClass("hr-list-fiter-on")) return;
                 item.$el.toggleClass("selected", i == this.selected);
 
                 if (i == this.selected) {
@@ -225,7 +229,10 @@ templateFile, commandTemplateFile) {
             var _ret = 0;
             this.commands.collection.each(function(model, i) {
                 var item = this.commands.items[model.id];
-                if (item.$el.hasClass("selected")) _ret = i;
+                if (item.$el.hasClass("selected")) {
+                    _ret = i;
+                    return false;
+                }
             }, this);
             return _ret;
         },
