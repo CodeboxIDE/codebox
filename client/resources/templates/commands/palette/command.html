@@ -1,3 +1,7 @@
+<% if (_.size(command.get("shortcuts")) > 0) { %>
+<span class="label shortcut"><%= command.shortcutText() %></span>
+<% } %>
+
 <i class="fa fa-<%- command.get('icons.search') %>"></i>
 <span class="title">
 <% if (command.get("category")) { %>
@@ -7,7 +11,4 @@
 </span>
 <% if (command.get("label").length > 0) { %>
 <span class="command-label"><%- command.get("label") %></span>
-<% } %>
-<% if (_.size(command.get("shortcuts")) > 0) { %>
-<span class="label shortcut"><%= command.shortcutText() %></span>
 <% } %>
