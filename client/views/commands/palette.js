@@ -21,7 +21,7 @@ templateFile, commandTemplateFile) {
         }
     });
 
-    // View for one command result
+    // View for a command in teh command palette
     var CommandItem = hr.List.Item.extend({
         className: "command",
         template: commandTemplateFile,
@@ -46,29 +46,36 @@ templateFile, commandTemplateFile) {
         }
     });
 
-    // Commands list
+    // View for the list of comamdns in the command palette
     var CommandsView = hr.List.extend({
         Item: CommandItem,
         Collection: CommandsWithQuery,
         className: "palette-commands"
     });
 
+    /**
+     * Command palette view
+     */
     var PaletteView = hr.View.extend({
         className: "cb-commands-palette close",
         template: templateFile,
         defaults: {},
         events: {
-            "keydown input": "keydown",
-            "keyup input": "keyup",
-            "mousedown": "mousedown"
+            "keydown input": "onKeydown",
+            "keyup input": "onKeyup",
+            "mousedown": "onMousedown"
         },
 
         initialize: function(options) {
             PaletteView.__super__.initialize.apply(this, arguments);
 
+            /* Collection of commands currently in the command palette */
             this.commands = new CommandsView({}, this);
-            this.selected = 0;
 
+            /* Key navigation interval */
+            this.keydownInterval = null;
+
+            /* Document keydown binding for ESC */
             this._keydown = _.bind(function(e) {
                 var key = e.which || e.keyCode;
                 if (key == 27) {
@@ -76,6 +83,7 @@ templateFile, commandTemplateFile) {
                 }
             }, this);
 
+            /* Document mousedown binding */
             this._mousedown = _.bind(function(e) {
                 this.close();
             }, this);
@@ -93,7 +101,9 @@ templateFile, commandTemplateFile) {
             return !this.$el.hasClass("close");
         },
 
-        // Open the command palette
+        /**
+         * Open the command palette
+         */
         open: function() {
             if (this.isOpen()) return;
 
@@ -106,7 +116,9 @@ templateFile, commandTemplateFile) {
             $(document).bind("mousedown", this._mousedown);
         },
 
-        // Close the command palette
+        /**
+         * Close the command palette
+         */
         close: function() {
             if (!this.isOpen()) return;
 
@@ -117,7 +129,9 @@ templateFile, commandTemplateFile) {
             $(document).unbind("mousedown", this._mousedown);
         },
 
-        // Toggle the command palette
+        /**
+         * Toggle the command palette
+         */
         toggle: function() {
             if (this.isOpen()) {
                 this.close();
@@ -126,13 +140,19 @@ templateFile, commandTemplateFile) {
             }
         },
 
-        // Clear results
+        /**
+         * Clear results
+         */
         clearResults: function() {
             this.commands.collection.clear();
             return this;
         },
 
-        // Do search
+        /**
+         * Do search
+         *
+         * @param {string} query
+         */
         doSearch: function(query) {
             var that = this, toRemove = [];
             if (this.commands.collection.query == query) return;
@@ -165,38 +185,11 @@ templateFile, commandTemplateFile) {
             }
         },
 
-        // (event) Key input in search
-        keydown: function(e) {
-            var key = e.which || e.keyCode;
-            if (key == 38 || key == 40 || key == 13) {
-                e.preventDefault();
-            }
-        },
-        keyup: function(e) {
-            var key = e.which || e.keyCode;
-            var q = $(e.currentTarget).val();
-            var selected = this.getSelectedItem();
-            var pSelected = selected;
-
-            if (key == 27) {
-                /* ESC */
-                e.preventDefault();
-                return;
-            } else if (key == 38) {
-                /* UP */
-                selected = selected - 1;
-            } else if (key == 40) {
-                /* DOWN */
-                selected = selected + 1;
-            } else if (key == 13) {
-                /* ENTER */
-                e.preventDefault();
-                this.openItem(selected);
-            }
-            this.doSearch(q);
-            if (selected != pSelected) this.selectItem(selected);
-        },
-
+        /**
+         *  Select a specific item
+         *
+         * @param {number} i
+         */
         selectItem: function(i) {
             var i, boxH = this.$(".results").height();
 
@@ -225,6 +218,11 @@ templateFile, commandTemplateFile) {
             }, this);
         },
 
+        /**
+         * Return index of the current selected item
+         *
+         * @return {number}
+         */
         getSelectedItem: function() {
             var _ret = 0;
             this.commands.collection.each(function(model, i) {
@@ -237,15 +235,71 @@ templateFile, commandTemplateFile) {
             return _ret;
         },
 
+        /**
+         *  Open current selected item or a specific one
+         *
+         * @param {number} i
+         */
         openItem: function(i) {
+            if (i == null) i = this.getSelectedItem();
+
             var item, model = this.commands.collection.at(i);
             if (!model) return false;
+
             item = this.commands.items[model.id];
             return item.run();
         },
 
-        // (event) Mouse down
-        mousedown: function(e) {
+        onKeydown: function(e) {
+            var key = e.which || e.keyCode;
+
+            if (key == 38 || key == 40 || key == 13) {
+                e.preventDefault();
+            }
+
+            var interval = function() {
+                var selected = this.getSelectedItem();
+                var pSelected = selected;
+
+                if (key == 38) {
+                    /* UP */
+                    selected = selected - 1;
+                } else if (key == 40) {
+                    /* DOWN */
+                    selected = selected + 1;
+                } 
+                if (selected != pSelected) this.selectItem(selected);
+            }.bind(this);
+
+            if (this.keydownInterval) {
+                clearInterval(this.keydownInterval);
+                this.keydownInterval = null;
+            }
+            interval();
+            this.keydownInterval = setInterval(interval, 600);
+        },
+        onKeyup: function(e) {
+            var key = e.which || e.keyCode;
+            var q = $(e.currentTarget).val();
+
+            if (key == 27) {
+                /* ESC */
+                e.preventDefault();
+                return;
+            } else if (key == 13) {
+                /* ENTER */
+                e.preventDefault();
+                this.openItem();
+            }
+
+            if (this.keydownInterval) {
+                clearInterval(this.keydownInterval);
+                this.keydownInterval = null;
+            }
+
+            this.doSearch(q);
+        },
+        onMousedown: function(e) {
             e.stopPropagation();
         }
     });
