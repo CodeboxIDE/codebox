@@ -17,6 +17,6 @@
         "codebox": ">=0.7.0"
     },
     "dependencies": {
-        "sh.js": "git+https://github.com/FriendCode/sh.js#1.1.0"
+        "sh.js": "git+https://github.com/FriendCode/sh.js#1.1.1"
     }
 }
