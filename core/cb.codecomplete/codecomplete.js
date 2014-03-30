@@ -48,18 +48,16 @@ CodeComplete.prototype.addHandler = function(name, handler) {
 CodeComplete.prototype.addIndex = function(name, populate, options) {
     var that = this;
     var index = null;
-    var _isPopulating = false;
+    var inProgress = null;
 
     options = _.defaults({}, options || {}, {
-        'interval': 1*60*1000 // 1 minute
+        'interval': 60*1000 //1min
     })
 
     var populateIndex = function() {
-        if (_isPopulating) {
-            return Q.reject(new Error(name+": Already working on populating the index"));
-        }
-        _isPopulating = true;
-        return Q(populate({
+        if (inProgress) return inProgress;
+
+        inProgress = Q(populate({
             'root': that.workspace.root,
             'project': that.project
         })).then(function(items) {
@@ -68,8 +66,10 @@ CodeComplete.prototype.addIndex = function(name, populate, options) {
             index = null;
             return Q.reject(err);
         }).fin(function() {
-            _isPopulating = false;
-        })
+            inProgress = null;
+        });
+
+        return inProgress;
     };
 
     // Populate the index when there are changes
@@ -83,10 +83,13 @@ CodeComplete.prototype.addIndex = function(name, populate, options) {
     this.addHandler(name, function(options) {
         var prepare = Q();
 
-        // if no ndex yet: populate the index
+        // if no index yet: populate the index
         if (!index) {
             prepare = populateIndex();
         }
+
+        // If processing new data, wait for new update
+        if (inProgress) prepare = inProgress;
 
         // Filter the index for getting the results
         return prepare.then(function() {
