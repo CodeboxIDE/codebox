@@ -15,7 +15,7 @@ templateFile, commandTemplateFile) {
     var CommandsWithQuery = Commands.extend({
         // Sort comparator
         comparator: function(command) {
-            if (!this.query) return CommandsWithQuery.__super__.initialize.apply(this, arguments);
+            if (!this.query) return CommandsWithQuery.__super__.comparator.apply(this, arguments);
             
             return -command.textScore(this.query);
         }
