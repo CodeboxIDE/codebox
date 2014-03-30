@@ -21,14 +21,18 @@ define([
             'state': "notloaded"  // addons state: "notloaded", "loaded", "error"
         },
 
-        // Return base url for the addon
+        /**
+         * Return base url for the addon
+         */
         url: function() {
             var basePath = window.location.pathname;
             basePath = basePath.substring(0, basePath.lastIndexOf('/')+1);
             return basePath+"static/addons/"+this.get("name");
         },
 
-        // Load the addon
+        /**
+         * Load the addon
+         */
         load: function(config, imports) {
             var context, main, addonRequireConfig,
             addonRequire, that = this
@@ -82,7 +86,9 @@ define([
             return d.promise.timeout(5000, "This addon took to long to load (> 5seconds)");
         },
 
-        // Return version as an int
+        /**
+         * Return version as a number
+         */
         version: function() {
             return parseInt(this.get("version").replace(/\./g,""));
         }

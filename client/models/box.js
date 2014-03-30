@@ -21,17 +21,15 @@ define([
             'auth': false
         },
 
-        /*
-         *  Client interface to a codebox
-         */
         initialize: function() {
             Codebox.__super__.initialize.apply(this, arguments);
 
             this.baseUrl = this.options.baseUrl || "";
 
+            /** Current authenticated user */
             this.user = null;
 
-            // Root file
+            /** Root file */
             this.root = new File({
                 'codebox': this
             });
@@ -40,17 +38,17 @@ define([
                 this.root.set("name", this.get("name"));
             }, this);
 
-            // Active file
+            /** Active file */
             this.activeFile = "/";
 
-            // Connect to events
+            /** Connect to events stream */
             this.listenEvents();
 
             return this;
         },
 
-        /*
-         *  Subscribe to events from codebox using socket.io
+        /**
+         * Subscribe to events from codebox using socket.io
          */
         listenEvents: function() {
             var that = this;
@@ -86,11 +84,11 @@ define([
             });
         },
 
-        /*
-         *  Socket for the connection
+        /**
+         * Socket for the connection
          *
-         *  @namespace : namespace for the socket
-         *  @forceCreate : force creation of a new socket
+         * @param {string} namespace namespace for the socket
+         * @param {boolean} forceCreate force creation of a new socket
          */
         socket: function(namespace, forceCreate) {
             if (this.baseUrl == null) {
@@ -108,8 +106,11 @@ define([
             return Q(socket);
         },
 
-        /*
-         *  Join the box
+        /**
+         * Join the box
+         *
+         * @param {object} authInfos argument for authentication service
+         * @param {User} user
          */
         auth: function(authInfo, user) {
             var that = this;
@@ -126,15 +127,19 @@ define([
             });
         },
 
-        /*
-         *  test if logged to the box
+        /**
+         * Check if user is logged to the box
+         *
+         * @return {boolean}
          */
         isAuth: function() {
             return this.get("auth", false);
         },
 
-        /*
-         *  Get box status
+        /**
+         * Get box status
+         *
+         * @return {promise}
          */
         status: function() {
             var that = this;
@@ -144,15 +149,20 @@ define([
             });
         },
 
-        /*
-         *  Get list of collaborators
+        /**
+         * Get list of collaborators
+         *
+         * @return {promise}
          */
         collaborators: function() {
             return rpc.execute("users/list");
         },
 
-        /*
-         *  Search files
+        /**
+         * Search files
+         *
+         * @param q query string
+         * @return {promise}
          */
         searchFiles: function(q) {
             return rpc.execute("search/files", {
@@ -160,15 +170,19 @@ define([
             });
         },
 
-        /*
+        /**
          * Get a runner
+         *
+         * @return {promise}
          */
         runner: function(options) {
             return rpc.execute("run/list", options);
         },
 
-        /*
-         *  Open a shell
+        /**
+         * Open a shell
+         *
+         * @return {TerminalView}
          */
         openTerminal: function(shellId, _op) {
             var terminal = Command.run("terminal.open", shellId);
@@ -190,7 +204,7 @@ define([
             return terminal;
         },
 
-        /*
+        /**
          * Run the project
          */
         run: function(options) {
@@ -201,8 +215,10 @@ define([
             });
         },
 
-        /*
-         *  Open a shell
+        /**
+         * Open a shell
+         *
+         * @return {Shell}
          */
         openShell: function(args) {
             args = args || {};
@@ -210,22 +226,26 @@ define([
             return new Shell(args);
         },
 
-        /*
+        /**
          * List shells open
+         *
+         * @return {promise}
          */
         listShells: function() {
             return rpc.execute("shells/list");
         },
 
-        /*
-         *  Return running http process
+        /**
+         * Return running http process
+         *
+         * @return {promise}
          */
         procHttp: function() {
             return rpc.execute("proc/http");
         },
 
-        /*
-         *  Set active file
+        /**
+         * Set a file (by its path) as active
          */
         setActiveFile: function(path) {
             if (!_.isString(path)) {

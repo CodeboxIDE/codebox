@@ -21,7 +21,7 @@ define([
             'offline': false
         },
 
-        // apply the change
+        // Apply the change
         apply: function() {
             var that = this;
             var vfs = require("core/backends/vfs");
