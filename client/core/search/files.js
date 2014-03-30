@@ -31,4 +31,24 @@ define([
             }, this)));
         });
     });
+
+    // Search for recent opned files
+    search.handler({
+        'id': "recentfiles",
+        'title': "Recent Files"
+    }, function(query) {
+        return files.recent.map(function(file) {
+            return {
+                "category": "Recent Files",
+                "title": file.path(),
+                "position": 0,
+                "icons": {
+                    "search": "file-o"
+                },
+                "action": _.bind(function() {
+                    files.open(file);
+                }, this)
+            };
+        });
+    });
 });
