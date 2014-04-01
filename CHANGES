@@ -1,3 +1,18 @@
+2014-04-01  Samy Pessé  <samy.pesse@friendco.de>
+            Aaron O'Mullan <aaron.omullan@friendco.de>
+            Mark Achée <mark@achee.com>
+
+    * Bump version to 0.7.4
+    * New outline panel
+    * Improve the terminal (resize, themes)
+    * Improve command palette (navigation and display)
+    * Add recent files to command palette
+    * Fix reload of browser when ctrl+r or cmd+r and non in file
+    * Open tags from command palette select the correct pattern
+    * Images open by default width image viewer
+    * Add command for searching code in a specific folder
+    * Fix export as archive (tar.gz instead of zip)
+
 2014-03-23  Samy Pessé  <samy.pesse@friendco.de>
             Aaron O'Mullan <aaron.omullan@friendco.de>
 
