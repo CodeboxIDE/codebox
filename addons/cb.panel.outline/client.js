@@ -1,6 +1,7 @@
 define([
+    "settings",
     "views/panel"
-], function(PanelOutlineView) {
+], function(settings, PanelOutlineView) {
     var commands = codebox.require("core/commands/toolbar");
     var app = codebox.require("core/app");
     var panels = codebox.require("core/panels");
@@ -25,5 +26,5 @@ define([
     }));
 
     // Open panel during startup
-    panel.open();
+    if (settings.user.get("startup")) panel.open();
 });

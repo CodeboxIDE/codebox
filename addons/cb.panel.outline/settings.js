@@ -6,12 +6,17 @@ define([], function() {
         'namespace': "outline",
         'title': "Outline",
         'defaults': {
-            'separator': "."
+            'separator': ".",
+            'startup': false
         },
         'fields': {
             'separator': {
                 'label': 'Tag Parts Separator',
                 'type': "text"
+            },
+            'startup': {
+                'label': 'Show Outline Panel at Startup',
+                'type': "checkbox"
             }
         }
     });
