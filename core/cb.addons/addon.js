@@ -69,7 +69,7 @@ var Addon = function(_rootPath, options) {
 
     // Check if node dependencies seems to be installed
     this.areDependenciesInstalled = function() {
-        return fs.existsSync(path.join(this.root, "node_modules"));
+        return fs.existsSync(path.join(this.root, "node_modules")) || this.isOptmized();
     };
 
     // Check if an addon has node dependencies
