@@ -38,8 +38,6 @@ function setup(options, imports, register) {
                 '*'
             ]);
 
-            manifest.add("CACHE", ["./"]);
-
             // Add static files
             return manifest.addFolder(path.resolve(__dirname + '/../../client/build'), './', null, [
                 "./index.html"
