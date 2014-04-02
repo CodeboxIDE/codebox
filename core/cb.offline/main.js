@@ -40,7 +40,7 @@ function setup(options, imports, register) {
 
             // Add static files
             return manifest.addFolder(path.resolve(__dirname + '/../../client/build'), './', null, [
-                "./index.html"
+                "index.html"
             ]);
         })
         .then(function() {
