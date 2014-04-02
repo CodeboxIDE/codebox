@@ -18,7 +18,7 @@ function setup(options, imports, register) {
     server.disableAuth("/manifest.appcache");
 
     // Generate manifest
-    server.app.get("/manifest.appcache", function(req, res) {
+    server.app.get("/manifest.appcache", function(req, res, next) {
         res.header("Content-Type", "text/cache-manifest");
 
         addons.list()
@@ -28,7 +28,7 @@ function setup(options, imports, register) {
             }).sort().join("-")));
 
             if (options.dev) revision = revision+"-"+startTime;
-
+            
             // Clear manifest
             return manifest.clear(revision);
         })
@@ -62,9 +62,7 @@ function setup(options, imports, register) {
             return manifest.content();
         }).then(function(content) {
             res.send(content);
-        }, function(err) {
-            res.send(500, err.message);
-        });
+        }, next);
     });
 
     // Register

@@ -27,17 +27,7 @@ function setup(options, imports, register) {
         'secret': workspace.secret,
     }));
 
-    // Error handling
-    app.use(function(err, req, res, next) {
-        if(!err) return next();
-
-        logger.error("Error:");
-        res.send({
-            'error': err.message
-        }, 500);
-
-        logger.error(err.stack);
-    });
+    
 
     // Get User and set it to res object
     app.use(function getUser(req, res, next) {
@@ -95,6 +85,21 @@ function setup(options, imports, register) {
         return next();
     });
     app.use('/', gzipStatic(__dirname + '/../../client/build'));
+
+    // Router
+    app.use(app.router);
+
+    // Error handling
+    app.use(function(err, req, res, next) {
+        if(!err) return next();
+
+        logger.error("Error:");
+        res.send({
+            'error': err.message
+        }, 500);
+
+        logger.error(err.stack);
+    });
 
     // Block queries for unAuthenticated users
     //
