@@ -1059,6 +1059,12 @@ define([
                 "primary_extension":".php",
                 "type":"programming"
             },
+            "Hack":{
+                "ace_mode":"php",
+                "color":"#6e03c1",
+                "primary_extension":".hh",
+                "type":"programming"
+            },
             "Parrot":{
                 "color":"#f3ca0a",
                 "lexer":"Text only",
