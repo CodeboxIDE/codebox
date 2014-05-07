@@ -49,7 +49,7 @@ define([
                 return operations.start("addon.uninstall", function(op) {
                     return addons.uninstall(_name);
                 }, {
-                    title: "Uinstalling add-on"
+                    title: "Uninstalling add-on"
                 });
             })
         }
