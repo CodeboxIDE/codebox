@@ -1,0 +1,19 @@
+{
+    "name": "cb.files.preview",
+    "version": "0.0.1",
+    "title": "HTML Preview",
+    "description": "Adds option to preview file in a new tab.",
+    "homepage": "https://github.com/invokr/codebox",
+    "license": "Apache",
+    "author": {
+        "name": "Robin Dietrich",
+        "email": "me@invokr.org",
+        "url": ""
+    },
+    "client": {
+        "main": "client"
+    },
+    "engines": {
+        "codebox": ">=0.7.0"
+    }
+}
