@@ -10,6 +10,7 @@ define([
 
     files.addHandler("preview", {
         name: "Preview",
+        icon: "eye",
         position: 10,
         View: PreviewView,
         valid: function(file) {
