@@ -1,7 +1,8 @@
 define([
+    "../settings",
     "text!templates/preview.html",
     "less!stylesheets/preview.less"
-], function(templateFile) {
+], function(settings, templateFile) {
     var _ = codebox.require("hr/utils");
     var $ = codebox.require("hr/dom");
     var box = codebox.require("core/box");
@@ -34,7 +35,9 @@ define([
             
             // bind save event 
             box.on("box:watch:change:update", function() {
-                that.refresh();
+                if (settings.user.get("refresh")) {
+                    that.refresh();
+                }
             }, this);
             
             return this;
