@@ -1,6 +1,6 @@
 define([
-    "../settings",
-    "text!templates/preview.html",
+    "settings",
+    "text!templates/preview_html.html",
     "less!stylesheets/preview.less"
 ], function(settings, templateFile) {
     var _ = codebox.require("hr/utils");

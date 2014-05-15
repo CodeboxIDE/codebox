@@ -1,6 +1,6 @@
 define([
-    "views/preview"
-], function(PreviewView) {
+    "views/preview_html"
+], function(PreviewHtml) {
     var _ = codebox.require("hr/utils");
     var files = codebox.require("core/files");
 
@@ -12,7 +12,7 @@ define([
         name: "Preview",
         icon: "eye",
         position: 10,
-        View: PreviewView,
+        View: PreviewHtml,
         valid: function(file) {
             return (!file.isDirectory() && _.contains(htmlExts, file.extension()));
         }
