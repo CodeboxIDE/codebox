@@ -10,7 +10,7 @@ define([
     ];
 
     files.addHandler("preview", {
-        name: "Preview",
+        name: "HTML Preview",
         icon: "eye",
         position: 10,
         View: PreviewHtml,
@@ -24,7 +24,7 @@ define([
     ];
     
     files.addHandler("preview-markdown", {
-        name: "Preview",
+        name: "Markdown Preview",
         icon: "eye",
         position: 10,
         View: PreviewMarkdown,
