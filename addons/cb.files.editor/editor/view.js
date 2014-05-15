@@ -321,11 +321,11 @@ define([
                 this.markersC[cId] = this.editor.getSession().addMarker(range, "marker-cursor marker-"+c.color.replace("#", ""), function(html, range, left, top, config){
                     html.push("<div class='marker-cursor' style='top: "+top+"px; left: "+left+"px; border-left-color: "+c.color+"; border-bottom-color: "+c.color+";'>"
                     + "<div class='marker-cursor-nametag' style='background: "+c.color+";'>&nbsp;"+name+"&nbsp;<div class='marker-cursor-nametag-flag' style='border-right-color: "+c.color+"; border-bottom-color: "+c.color+";'></div>"
-                    + "</div>&nbsp;</div>");  
+                    + "</div>&nbsp;</div>");
                 }, true);
             }, this);
 
-            // Participant selection 
+            // Participant selection
             this.sync.on("selection:move", function(cId, c) {
                 var range = new aceRange.Range(c.start.y, c.start.x, c.end.y, c.end.x);
                 if (this.markersS[cId]) this.editor.getSession().removeMarker(this.markersS[cId]);
@@ -510,6 +510,19 @@ define([
         // (action) Save file
         saveFile: function(e) {
             if (e) e.preventDefault();
+            
+            if (editorSettings.user.get("stripspaces")) {
+                // strip all whitespaces from the current document
+                var doc = this.editor.session.doc;
+                var lines = doc.getAllLines();
+                
+                for (var i = 0; i < lines.length; ++i) {
+                    var index = lines[i].search(/\s+$/);
+                    if (index !== -1 && index != 0)
+                        doc.removeInLine(i, index, lines[i].length);
+                }
+            }
+            
             this.sync.save();
         },
 
