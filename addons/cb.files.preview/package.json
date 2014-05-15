@@ -1,19 +1,22 @@
 {
     "name": "cb.files.preview",
     "version": "0.0.1",
-    "title": "HTML Preview",
-    "description": "Adds option to preview file in a new tab.",
+    "title": "HTML / Markdown Preview",
+    "description": "Adds option to preview files in a new tab.",
     "homepage": "https://github.com/invokr/codebox",
     "license": "Apache",
     "author": {
         "name": "Robin Dietrich",
         "email": "me@invokr.org",
-        "url": ""
+        "url": "https://github.com/invokr"
     },
     "client": {
         "main": "client"
     },
     "engines": {
         "codebox": ">=0.7.0"
+    },
+    "dependencies": {
+        "markdown": "git+https://github.com/evilstreak/markdown-js"
     }
 }
