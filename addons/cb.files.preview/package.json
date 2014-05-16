@@ -17,6 +17,6 @@
         "codebox": ">=0.7.0"
     },
     "dependencies": {
-        "markdown": "git+https://github.com/evilstreak/markdown-js"
+        "markdown": "0.5.0"
     }
 }

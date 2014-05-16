@@ -1,6 +1,6 @@
 define([
     "settings",
-    "node_modules/markdown/src/markdown",
+    "node_modules/markdown/lib/markdown",
     "text!templates/preview_markdown.html",
     "less!stylesheets/preview.less"
 ], function(settings, markdown, templateFile) {
@@ -14,11 +14,11 @@ define([
         templateLoader: "text",
         template: templateFile,
         events: {},
-        
+
         initialize: function() {
             MarkdownView.__super__.initialize.apply(this, arguments);
             var that = this;
-            
+
             // add refresh menu option
             this.tab.menu.menuSection([
                 {
@@ -33,17 +33,17 @@ define([
                     }
                 }
             ]);
-            
+
             this.model.on("file:change:update", function() {
                 if (settings.user.get("refresh")) {
                     that.refresh();
                 }
             }, this);
-            
+
             this.refresh();
             return this;
         },
-        
+
         refresh: function() {
             var that = this;
             this.model.download().then(function (content) {
