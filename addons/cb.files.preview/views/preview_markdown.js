@@ -3,11 +3,13 @@ define([
     "node_modules/markdown/lib/markdown",
     "text!templates/preview_markdown.html",
     "less!stylesheets/preview.less"
-], function(settings, markdown, templateFile) {
+], function(settings, _markdown, templateFile) {
     var _ = codebox.require("hr/utils");
     var $ = codebox.require("hr/dom");
     var box = codebox.require("core/box");
     var FilesTabView = codebox.require("views/files/tab");
+
+    var markdown = window.markdown;
 
     var MarkdownView = FilesTabView.extend({
         className: "addon-files-previewviewer",
