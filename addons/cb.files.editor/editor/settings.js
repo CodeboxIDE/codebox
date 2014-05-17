@@ -15,6 +15,7 @@ define([], function() {
             'wraplimitrange': 80,
             'enablesoftwrap': false,
             'enablesofttabs': true,
+            'stripspaces': false,
             'autocollaboration': true,
             'tabsize': 4,
             'keyboard': "textinput"
@@ -72,6 +73,10 @@ define([], function() {
             },
             'enablesofttabs': {
                 'label': "Use Soft Tabs",
+                'type': "checkbox"
+            },
+            'stripspaces': {
+                'label': "Strip Whitespaces",
                 'type': "checkbox"
             },
             'tabsize': {
