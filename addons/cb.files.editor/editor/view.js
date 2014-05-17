@@ -138,6 +138,12 @@ define([
                     'action': function() {
                         aceWhitespace.convertIndentation(that.editor.session, "\t", 1);
                     }
+                },
+                {
+                    'title':"Strip Whitespaces",
+                    'action': function() {
+                        that.stripspaces();
+                    }
                 }
             ]).menuSection([
                 this.collaboratorsMenu
@@ -512,18 +518,24 @@ define([
             if (e) e.preventDefault();
             
             if (editorSettings.user.get("stripspaces")) {
-                // strip all whitespaces from the current document
-                var doc = this.editor.session.doc;
-                var lines = doc.getAllLines();
-                
-                for (var i = 0; i < lines.length; ++i) {
-                    var index = lines[i].search(/\s+$/);
-                    if (index !== -1 && index != 0)
-                        doc.removeInLine(i, index, lines[i].length);
-                }
+                this.stripspaces();
             }
             
             this.sync.save();
+        },
+        
+        stripspaces: function(e) {
+            if (e) e.preventDefault();
+            
+            // strip all whitespaces from the current document
+            var doc = this.editor.session.doc;
+            var lines = doc.getAllLines();
+            
+            for (var i = 0; i < lines.length; ++i) {
+                var index = lines[i].search(/\s+$/);
+                if (index !== -1 && index != 0)
+                    doc.removeInLine(i, index, lines[i].length);
+            }
         },
 
         // (action) Run this file
