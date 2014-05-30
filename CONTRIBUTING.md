@@ -11,7 +11,7 @@ Please also sign the [Codebox contributor license agreement](https://www.codebox
 ## How to prepare
 
 * You need a [GitHub account](https://github.com/signup/free)
-* Submit an [issue ticket](https://github.com/FriendCode/codebox/issues) for your issue if the is no one yet.
+* Submit an [issue ticket](https://github.com/FriendCode/codebox/issues) for your issue if there is not one yet.
 	* Describe the issue and include steps to reproduce if it's a bug.
 	* Ensure to mention the earliest version that you know is affected.
 * If you are able and want to fix this, fork the repository on GitHub
