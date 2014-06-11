@@ -20,7 +20,7 @@ cli.option('-t, --title [project title]', 'Title for the project.');
 cli.option('-s, --sample [project type]', 'Replace directory content by a sample (warning: erase content).');
 cli.option('-o, --open', 'Open the IDE in your favorite browser');
 cli.option('-e, --email [email address]', 'Email address to use as a default authentication');
-cli.option('-u, --users [list users]', 'List of coma seperated users and password (formatted as "username:passowrd")');
+cli.option('-u, --users [list users]', 'List of coma seperated users and password (formatted as "username:password")');
 
 
 // An authentication hook that uses a dictionary of users
