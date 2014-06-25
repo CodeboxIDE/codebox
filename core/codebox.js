@@ -2,7 +2,6 @@
 var Q = require('q');
 var _ = require('lodash');
 
-var urils = require('./utils');
 var os = require('os');
 var path = require('path');
 var Gittle = require('gittle');
