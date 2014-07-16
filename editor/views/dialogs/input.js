@@ -7,10 +7,12 @@ define([
         className: "",
         defaults: {
             className: "",
-            template: ""
+            template: "",
+            value: true
         },
         events: {
-
+            "click .do-close": "onClose",
+            "click .do-confirm": "onConfirm"
         },
 
         initialize: function(options) {
@@ -18,6 +20,9 @@ define([
 
             // Adapt style
             this.$el.addClass(this.options.className);
+
+            // Value
+            this.value = null;
         },
 
         template: function() {
@@ -28,6 +33,30 @@ define([
                 options: this.options
             };
         },
+
+        getValue: function() {
+            var selector = this.options.value;
+            if (_.isFunction(selector)) {
+                this.value = selector(this);
+            } else if (_.isString(selector)) {
+                this.value = this[selector]();
+            } else {
+                this.value = selector;
+            }
+            return this.value;
+        },
+
+        onConfirm: function(e) {
+            if (e) e.preventDefault();
+
+            this.value = this.getValue();
+            this.parent.close(e);
+        },
+        onClose: function(e) {
+            if (e) e.preventDefault();
+
+            this.parent.close();
+        }
     });
 
     return DialogInputView;

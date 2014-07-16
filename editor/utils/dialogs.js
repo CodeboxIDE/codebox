@@ -27,14 +27,23 @@ define([
         return d.promise;
     };
 
+    // Input dialog
+    var input = function(viewOptions, options) {
+        return open(DialogInputView, _.extend(options || {}, {
+            view: viewOptions || {}
+        }))
+        .then(function(view) {
+            if (view.value == null) return Q.reject(new Error(""));
+            return view.value;
+        });
+    };
+
     // Alert
     var openAlert = function(text, options) {
-        return open(DialogInputView, _.extend(options || {}, {
-            view: {
-                template: alertTemplate,
-                text: text
-            }
-        }));
+        return input({
+            template: alertTemplate,
+            text: text
+        });
     };
 
     return {
