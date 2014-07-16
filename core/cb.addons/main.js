@@ -11,9 +11,6 @@ var Addon = require("./addon");
 var manager = require("./manager");
 var registry = require("./registry");
 
-// GZIP static middleware
-var gzipStatic = require('connect-gzip-static');
-
 
 function setup(options, imports, register, app) {
     var logger = imports.logger.namespace("addons", false);
@@ -192,7 +189,7 @@ function setup(options, imports, register, app) {
     };
 
     // Init addons
-    server.app.use('/static/addons', gzipStatic(configAddonsPath));
+    server.app.use('/static/addons', express.static(configAddonsPath));
 
     // Prepare defaults addons
     return copyDefaultsAddons()

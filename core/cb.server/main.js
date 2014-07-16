@@ -3,9 +3,6 @@ var http = require('http');
 var express = require('express');
 var _ = require('lodash');
 
-// GZIP static middleware
-var gzipStatic = require('connect-gzip-static');
-
 function setup(options, imports, register) {
     var workspace = imports.workspace;
     var logger = imports.logger.namespace("web");
@@ -27,7 +24,7 @@ function setup(options, imports, register) {
         'secret': workspace.secret,
     }));
 
-    
+
 
     // Get User and set it to res object
     app.use(function getUser(req, res, next) {
@@ -84,7 +81,7 @@ function setup(options, imports, register) {
         }
         return next();
     });
-    app.use('/', gzipStatic(__dirname + '/../../client/build'));
+    app.use('/', express.static(__dirname + '/../../client/build'));
 
     // Router
     app.use(app.router);
