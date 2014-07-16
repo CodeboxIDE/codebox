@@ -3,6 +3,7 @@ var Q = require('q');
 var codebox = require("../lib");
 
 var config = {
+    log: false,
     root: __dirname
 };
 
