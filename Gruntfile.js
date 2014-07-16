@@ -8,10 +8,18 @@ module.exports = function (grunt) {
 
     // Load grunt modules
     grunt.loadNpmTasks('grunt-hr-builder');
+    grunt.loadNpmTasks("grunt-bower-install-simple");
 
     // Init GRUNT configuraton
     grunt.initConfig({
         "pkg": pkg,
+        "bower-install-simple": {
+            options: {
+                color:       true,
+                production:  false,
+                directory:   "editor/vendors"
+            }
+        },
         "hr": {
             "app": {
                 "source": path.resolve(__dirname, "node_modules/happyrhino"),
@@ -41,11 +49,15 @@ module.exports = function (grunt) {
     });
 
     // Build
+    grunt.registerTask("prepare", [
+        "bower-install-simple"
+    ]);
     grunt.registerTask('build', [
         'hr:app'
     ]);
 
     grunt.registerTask('default', [
+        'prepare',
         'build'
     ]);
 };

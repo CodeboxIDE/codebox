@@ -1,0 +1,6 @@
+{
+    "name": "Codebox",
+    "dependencies": {
+        "mousetrap": "1.4.6"
+    }
+}
