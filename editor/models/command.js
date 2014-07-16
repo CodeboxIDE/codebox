@@ -3,6 +3,7 @@ define([
     "hr/utils",
     "utils/keyboard"
 ], function(hr, _, keyboard) {
+    var logging = hr.Logger.addNamespace("command");
     var ARGS = {
         'number': parseInt
     };
@@ -55,6 +56,8 @@ define([
 
         // Run a command
         run: function(cmd) {
+            logging.log("Run", this.get("id"));
+
             var parts, args, cargs, that = this;
             cmd = cmd || "";
             parts = cmd.split(" ");

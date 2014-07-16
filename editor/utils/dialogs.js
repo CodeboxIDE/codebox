@@ -47,6 +47,7 @@ define([
     };
 
     return {
+        open: open,
         alert: openAlert
     };
 });
