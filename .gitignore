@@ -27,4 +27,5 @@ settings.json
 */**/addon-built.js
 */**/node_modules/
 /extras/
-
+packages
+build
