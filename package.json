@@ -19,6 +19,6 @@
         "about": "CodeboxIDE/package-about"
     },
     "scripts": {
-        "test": "grunt build; cd build && python -m SimpleHTTPServer"
+
     }
 }
