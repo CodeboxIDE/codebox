@@ -50,9 +50,10 @@ define([
 
             // Load main module
             pkgRequire([main], function(globals) {
-                logging.log(globals);
+                d.resolve()
             }, function(err) {
                 logging.error(err);
+                d.resolve(err);
             });
 
             return d.promise.timeout(5000, "This addon took to long to load (> 5seconds)");

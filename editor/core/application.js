@@ -20,12 +20,6 @@ define([
 
             this.grid = new GridView({}, this);
             this.grid.appendTo(this);
-
-            packages.reset([{ name: "about" }]);
-            packages.loadAll()
-            .then(function() {
-                console.log(packages.toJSON());
-            });
         },
 
         render: function() {

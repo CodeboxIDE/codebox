@@ -6,8 +6,9 @@ require([
     "hr/args",
     "resources/init",
     "core/application",
+    "core/packages",
     "utils/dialogs"
-], function(_, $, Q, hr, args, resources, app) {
+], function(_, $, Q, hr, args, resources, app, packages) {
 
     window.codebox = {
         require: require
@@ -16,5 +17,6 @@ require([
 
     resources()
     .then(app.run.bind(app))
+    .then(packages.loadAll.bind(packages))
     //.then(app.router.start.bind(app.router));
 });

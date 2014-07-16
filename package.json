@@ -17,7 +17,8 @@
         "happyrhino": "1.0.2"
     },
     "packageDependencies": {
-        "about": "CodeboxIDE/package-about"
+        "about": "CodeboxIDE/package-about",
+        "command-palette": "CodeboxIDE/package-command-palette"
     },
     "scripts": {
         "test": "export TESTING=true; mocha --reporter list"
