@@ -1,4 +1,8 @@
 var path = require("path");
+var Q = require("q");
+var _ = require("lodash");
+var fs = require("fs");
+var wrench = require("wrench");
 var pkg = require("./package.json");
 
 module.exports = function (grunt) {
@@ -49,10 +53,35 @@ module.exports = function (grunt) {
     });
 
     // Build
-    grunt.registerTask("prepare", [
+    grunt.registerTask('link', 'Link a folder containing packages at packages folder', function() {
+        var origin = grunt.option('origin');
+        var prefix = grunt.option('prefix') || "package-";
+
+        if (!origin) {
+            grunt.log.error('Need --origin');
+            return false;
+        }
+
+        origin = path.resolve(process.cwd(), origin);
+        var filenames = fs.readdirSync(origin);
+
+        _.each(filenames, function(filename) {
+            if (filename.slice(0, prefix.length) != prefix) return;
+
+            var from = path.resolve(origin, filename);
+            var to = path.resolve(__dirname, "packages", filename.slice(prefix.length));
+
+            grunt.log.writeln('Link', filename, 'to', to);
+            if (fs.existsSync(to)) {
+                wrench.rmdirSyncRecursive(to);
+            }
+            fs.linkSync(from, to);
+        });
+    });
+    grunt.registerTask("prepare", 'Prepare client build', [
         "bower-install-simple"
     ]);
-    grunt.registerTask('build', [
+    grunt.registerTask('build', 'Build client code', [
         'hr:app'
     ]);
 

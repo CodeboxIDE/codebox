@@ -7,7 +7,8 @@
         "q": "1.0.1",
         "lodash": "2.4.1",
         "pkgm": "1.2.0",
-        "express": "4.6.1"
+        "express": "4.6.1",
+        "wrench": "1.5.8"
     },
     "devDependencies": {
         "mocha": "1.18.2",
