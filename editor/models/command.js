@@ -1,6 +1,7 @@
 define([
-    "hr/hr"
-], function(hr) {
+    "hr/hr",
+    "utils/keyboard"
+], function(hr, keyboard) {
     var ARGS = {
         'number': parseInt
     };
@@ -20,14 +21,40 @@ define([
             context: [],
 
             // Arguments
-            arguments: []
+            arguments: [],
+
+            // Keyboard shortcuts
+            shortcuts: []
+        },
+
+        // Constructor
+        initialize: function() {
+            Command.__super__.initialize.apply(this, arguments);
+
+            this.listenTo(this, "change:shortcuts", this.bindKeyboard);
+            this.listenTo(this, "destroy", this.unbindKeyboard);
+            this.bindKeyboard();
+        },
+
+        // Unbind keyboard shortcuts
+        unbindKeyboard: function() {
+            if (!this._shortcuts) return;
+
+            keyboard.unbind(this._shortcuts, this, this.run);
+        },
+
+        // Bind keyboard shortcuts
+        bindKeyboard: function() {
+            this.unbindKeyboard();
+            this._shortcuts = this.get("shortcuts", []);
+            keyboard.bind(this._shortcuts, this.run, this);
         },
 
         // Run a command
         run: function(cmd) {
             var parts, args, cargs, that;
-
-            parts = this.split(" ");
+            cmd = cmd || "";
+            parts = cmd.split(" ");
 
             args = this.get("arguments");
             parts = _.map(parts, function(part, i) {
