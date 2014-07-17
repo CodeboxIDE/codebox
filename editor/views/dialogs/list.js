@@ -40,6 +40,7 @@ define([
             this.$filterInput = $("<input>", {
                 'type': "text"
             });
+            this.$filterInput.on("keyup", this.onFilterKeyup.bind(this));
             this.$filterInput.appendTo(this.$el);
 
             // Items list
@@ -56,6 +57,16 @@ define([
 
         render: function() {
             return this.ready();
+        },
+
+        onFilterKeyup: function(e) {
+            var q = this.$filterInput.val().toLowerCase();
+
+            this.list.filter(function(model, item) {
+                var text = item.$el.text().toLowerCase();
+                console.log(text, text.search(q));
+                return text.search(q) !== -1;
+            });
         }
     });
 
