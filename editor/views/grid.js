@@ -5,12 +5,12 @@ define([
     "utils/dragdrop"
 ], function(_, $, hr, dnd) {
     var GridView = hr.View.extend({
-        className: "grid",
+        className: "component-grid",
         defaults: {
             columns: 0 // 0 means auto
         },
         events: {
-            
+
         },
 
         initialize: function() {
@@ -50,7 +50,7 @@ define([
         },
 
         /*
-         *  Change layout by defining 
+         *  Change layout by defining
          */
         setLayout: function(n) {
             this.columns = n;
