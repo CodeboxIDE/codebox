@@ -47,6 +47,8 @@ define([
             this.$el.appendTo($("body"));
             DialogView.current = this;
 
+            this.trigger("open");
+
             return this;
         },
 

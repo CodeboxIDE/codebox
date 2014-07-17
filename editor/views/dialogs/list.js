@@ -47,6 +47,11 @@ define([
                 collection: this.options.collection
             }, this);
             this.list.appendTo(this.$el);
+
+            // Focus input
+            this.listenTo(this.parent, "open", function() {
+                this.$filterInput.focus();
+            });
         },
 
         render: function() {
