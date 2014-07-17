@@ -49,7 +49,6 @@ define([
         onConfirm: function(e) {
             if (e) e.preventDefault();
 
-            this.value = this.getValue();
             this.parent.close(e);
         },
         onClose: function(e) {

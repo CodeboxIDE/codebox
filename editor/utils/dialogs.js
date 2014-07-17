@@ -18,7 +18,8 @@ define([
         }));
 
         // Bind close
-        diag.on("close", function() {
+        diag.on("close", function(force) {
+            if (force) return d.reject(new Error("Dialog was been closed"));
             d.resolve(diag.view);
         });
 
@@ -34,8 +35,10 @@ define([
             view: viewOptions || {}
         }))
         .then(function(view) {
-            if (view.value == null) return Q.reject(new Error(""));
-            return view.value;
+            var value = view.getValue();
+
+            if (value == null) return Q.reject(new Error("Dialog return empty value"));
+            return value;
         });
     };
 

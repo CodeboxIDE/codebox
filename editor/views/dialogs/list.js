@@ -103,6 +103,10 @@ define([
             return _ret;
         },
 
+        getValue: function() {
+            return this.list.collection.at(this.getSelectedItem());
+        },
+
         filterBy: function(q) {
             this.list.filter(function(model, item) {
                 var text = item.$el.text().toLowerCase();

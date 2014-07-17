@@ -7,6 +7,8 @@ define([
         className: "component-dialog",
         defaults: {
             keyboard: true,
+            keyboardEnter: true,
+
             View: hr.View,
             view: {},
             size: "medium"
@@ -52,14 +54,14 @@ define([
             return this;
         },
 
-        close: function(e) {
+        close: function(e, force) {
             if (e) e.preventDefault();
 
             // Unbind document keydown
             $(document).unbind("keydown", this.keydownHandler);
 
             // Hide modal
-            this.trigger("close", this.value, e);
+            this.trigger("close", force);
             this.remove();
 
             DialogView.current = null;
@@ -72,11 +74,11 @@ define([
 
             // Enter: valid
             if (key == 13 && this.options.keyboardEnter) {
-                this.actionConfirm(e);
+                this.close(e);
             } else
             // Esc: close
             if (key == 27) {
-                this.close(e);
+                this.close(e, true);
             }
         }
     }, {
