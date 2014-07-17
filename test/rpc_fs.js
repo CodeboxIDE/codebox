@@ -23,4 +23,15 @@ describe('RPC fs', function() {
             })
         , done);
     });
+
+    it("can list content of a folder", function(done) {
+        qdone(
+            fs.list({ path: "test" })
+            .then(function(files) {
+                var filenames = _.pluck(files, "name");
+                assert(_.contains(filenames, "test2.txt"));
+            })
+        , done);
+    });
+
 });
