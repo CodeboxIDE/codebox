@@ -1,10 +1,10 @@
 var Q = require('q');
-
+var path = require("path");
 var codebox = require("../lib");
 
 var config = {
     log: false,
-    root: __dirname
+    root: path.resolve(__dirname, "workspace")
 };
 
 // Expose assert globally
