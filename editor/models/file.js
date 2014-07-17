@@ -14,6 +14,11 @@ define([
         },
         idAttribute: "name",
 
+        // Check if is a directory
+        isDirectory: function() {
+            return this.get("directory");
+        },
+
         // List files in this directory
         list: function() {
             return rpc.execute("fs/list", {
