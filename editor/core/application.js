@@ -18,7 +18,9 @@ define([
         initialize: function() {
             Application.__super__.initialize.apply(this, arguments);
 
-            this.grid = new GridView({}, this);
+            this.grid = new GridView({
+                columns: 10
+            }, this);
             this.grid.appendTo(this);
         },
 
