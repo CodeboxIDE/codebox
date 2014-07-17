@@ -50,8 +50,6 @@ define([
         },
 
         render: function() {
-
-
             return this.ready();
         }
     });

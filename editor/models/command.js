@@ -76,6 +76,11 @@ define([
             .then(function() {
                 return that.get("run").apply(that, cargs);
             });
+        },
+
+        // Shortcut text
+        shortcutText: function() {
+            return keyboard.toText(this.get("shortcuts"));
         }
     });
 
