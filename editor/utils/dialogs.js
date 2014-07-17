@@ -5,8 +5,9 @@ define([
     "views/dialogs/container",
     "views/dialogs/input",
     "views/dialogs/list",
-    "text!resources/templates/dialogs/alert.html"
-], function(_, Q, hr, Dialog, DialogInputView, DialogListView, alertTemplate) {
+    "text!resources/templates/dialogs/alert.html",
+    "text!resources/templates/dialogs/confirm.html"
+], function(_, Q, hr, Dialog, DialogInputView, DialogListView, alertTemplate, confirmTemplate) {
 
     // Open a dialog
     var open = function(View, options) {
@@ -50,6 +51,14 @@ define([
         });
     };
 
+    // Confirm
+    var openConfirm = function(text, options) {
+        return openInput({
+            template: confirmTemplate,
+            text: text
+        });
+    };
+
     // List
     var openList = function(collection, options) {
         if (_.isArray(collection)) {
@@ -74,6 +83,7 @@ define([
     return {
         open: open,
         alert: openAlert,
+        confirm: openConfirm,
         list: openList
     };
 });
