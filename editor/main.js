@@ -12,7 +12,8 @@ require([
 ], function(_, $, Q, hr, args, resources, app, packages) {
 
     window.codebox = {
-        require: require
+        require: require,
+        app: app
     };
 
 
