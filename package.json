@@ -22,7 +22,8 @@
     "packageDependencies": {
         "about": "CodeboxIDE/package-about",
         "command-palette": "CodeboxIDE/package-command-palette",
-        "files-tree": "CodeboxIDE/package-files-tree"
+        "files-tree": "CodeboxIDE/package-files-tree",
+        "tabs": "CodeboxIDE/package-tabs"
     },
     "scripts": {
         "test": "export TESTING=true; mocha --reporter list"
