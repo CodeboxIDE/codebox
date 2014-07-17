@@ -14,4 +14,13 @@ describe('RPC fs', function() {
             })
         , done);
     });
+
+    it("can get stat on a file", function(done) {
+        qdone(
+            fs.stat({ path: "test.txt" })
+            .then(function(file) {
+                assert(file.name == "test.txt");
+            })
+        , done);
+    });
 });
