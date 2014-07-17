@@ -4,8 +4,9 @@ define([
     "hr/hr",
     "views/dialogs/container",
     "views/dialogs/input",
+    "views/dialogs/list",
     "text!resources/templates/dialogs/alert.html"
-], function(_, Q, hr, Dialog, DialogInputView, alertTemplate) {
+], function(_, Q, hr, Dialog, DialogInputView, DialogListView, alertTemplate) {
 
     // Open a dialog
     var open = function(View, options) {
@@ -28,8 +29,8 @@ define([
     };
 
     // Input dialog
-    var input = function(viewOptions, options) {
-        return open(DialogInputView, _.extend(options || {}, {
+    var openInput = function(viewOptions, options, View) {
+        return open(View || DialogInputView, _.extend(options || {}, {
             view: viewOptions || {}
         }))
         .then(function(view) {
@@ -40,14 +41,36 @@ define([
 
     // Alert
     var openAlert = function(text, options) {
-        return input({
+        return openInput({
             template: alertTemplate,
             text: text
         });
     };
 
+    // List
+    var openList = function(collection, options) {
+        if (_.isArray(collection)) {
+            collection = new hr.Collection({
+                models: _.map(collection, function(item) {
+                    if (!_.isObject(item)) return { value: item };
+                    return item;
+                })
+            });
+        }
+
+        options = _.defaults(options || {}, {
+            template: "<%- item.get('value') %>"
+        });
+
+        return openInput({
+            collection: collection,
+            template: options.template,
+        }, {}, DialogListView);
+    };
+
     return {
         open: open,
-        alert: openAlert
+        alert: openAlert,
+        list: openList
     };
 });
