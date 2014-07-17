@@ -14,12 +14,20 @@ define([
 
         loadAll: function() {
             var that = this;
+            var errors = {};
 
             return this.listAll()
             .then(function() {
                 return that.reduce(function(prev, pkg) {
-                    return prev.then(pkg.load.bind(pkg));
+                    return prev.then(pkg.load.bind(pkg))
+                    .fail(function(err) {
+                        errors[pkg.get("name")] = err;
+                        return Q();
+                    });
                 }, Q());
+            })
+            .then(function() {
+                if (_.size(errors) > 0) return Q.reject(errors);
             });
         }
     });
