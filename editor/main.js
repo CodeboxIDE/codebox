@@ -9,16 +9,18 @@ require([
     "core/packages",
     "utils/dialogs",
     "models/file"
-], function(_, $, Q, hr, args, resources, app, packages) {
+], function(_, $, Q, hr, args, resources, app, packages, dialogs, File) {
 
     window.codebox = {
         require: require,
-        app: app
+        app: app,
+        root: new File()
     };
 
 
     resources()
     .then(app.run.bind(app))
+    .then(codebox.root.stat(""))
     .then(packages.loadAll.bind(packages))
     //.then(app.router.start.bind(app.router));
 });

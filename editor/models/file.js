@@ -24,16 +24,26 @@ define([
                     return new File({}, file);
                 });
             });
+        },
+
+        // Get a specific file
+        stat: function(path) {
+            var that = this;
+
+            return rpc.execute("fs/stat", {
+                'path': path
+            })
+            .then(function(file) {
+                return that.set(file);
+            })
+            .thenResolve(that);
         }
     }, {
         // Get a specific file
         get: function(path) {
-            return rpc.execute("fs/get", {
-                'path': path
-            })
-            .then(function(file) {
-                return new File({}, file);
-            });
+            var f = new File();
+
+            return f.stat(path);
         }
     });
 
