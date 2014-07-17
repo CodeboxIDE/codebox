@@ -16,7 +16,7 @@ define([
 
         // List files in this directory
         list: function() {
-            return rpc.execute("fs/get", {
+            return rpc.execute("fs/list", {
                 'path': this.get("path")
             })
             .then(function(files) {
