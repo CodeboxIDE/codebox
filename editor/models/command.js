@@ -55,26 +55,13 @@ define([
         },
 
         // Run a command
-        run: function(cmd) {
+        run: function(args) {
+            var that = this;
             logging.log("Run", this.get("id"));
-
-            var parts, args, cargs, that = this;
-            cmd = cmd || "";
-            parts = cmd.split(" ");
-
-            args = this.get("arguments");
-            parts = _.map(parts, function(part, i) {
-                if (args.length <= i) return part;
-
-                return ARGS[args[i]](part);
-            });
-
-            cargs = parts.slice(0, args.length);
-            cargs.push(parts.slice(args.length).join(" "));
 
             return Q()
             .then(function() {
-                return that.get("run").apply(that, cargs);
+                return that.get("run").apply(that, [ args || {} ]);
             });
         },
 

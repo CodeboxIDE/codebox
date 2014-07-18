@@ -16,15 +16,12 @@ define([
         },
 
         // Run a command
-        run: function(cmd) {
-            var parts;
+        run: function(cmd, args) {
 
-            parts = cmd.split(" ");
-
-            cmd = this.get(parts[0]);
+            cmd = this.get(cmd);
             if (!cmd) return Q.reject(new Error("Command not found: '"+parts[0]+"'"));
 
-            return cmd.run(parts.slice(1).join(" "));
+            return cmd.run(args);
         }
     });
 

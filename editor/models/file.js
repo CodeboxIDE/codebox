@@ -1,8 +1,9 @@
 define([
     "hr/hr",
     "hr/utils",
-    "core/rpc"
-], function(hr, _, rpc) {
+    "core/rpc",
+    "core/commands"
+], function(hr, _, rpc, commands) {
     var File = hr.Model.extend({
         defaults: {
             path: null,
@@ -13,6 +14,13 @@ define([
             atime: 0
         },
         idAttribute: "name",
+
+        // Open this file
+        open: function() {
+            return commands.run("file.open", {
+                path: this.get("path")
+            });
+        },
 
         // Check if is a directory
         isDirectory: function() {
