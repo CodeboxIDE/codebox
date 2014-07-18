@@ -13,6 +13,7 @@ module.exports = function (grunt) {
     // Load grunt modules
     grunt.loadNpmTasks('grunt-hr-builder');
     grunt.loadNpmTasks("grunt-bower-install-simple");
+    grunt.loadNpmTasks('grunt-exec');;
 
     // Init GRUNT configuraton
     grunt.initConfig({
@@ -49,6 +50,13 @@ module.exports = function (grunt) {
                 // Stylesheet entry point
                 "style": path.resolve(srcPath, "resources/stylesheets/main.less")
             }
+        },
+        "exec": {
+            "clear_packages_build": {
+                command: 'rm -f packages/**/pkg-build.js',
+                stdout: false,
+                stderr: false
+            }
         }
     });
 
@@ -82,7 +90,8 @@ module.exports = function (grunt) {
         "bower-install-simple"
     ]);
     grunt.registerTask('build', 'Build client code', [
-        'hr:app'
+        'hr:app',
+        'exec:clear_packages_build'
     ]);
 
     grunt.registerTask('default', [
