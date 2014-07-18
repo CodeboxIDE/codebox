@@ -45,7 +45,9 @@ module.exports = function (grunt) {
                 "build": buildPath,
 
                 // Static files map
-                "static": {},
+                "static": {
+                    "fonts": path.resolve(srcPath, "resources/fonts")
+                },
 
                 // Stylesheet entry point
                 "style": path.resolve(srcPath, "resources/stylesheets/main.less")
