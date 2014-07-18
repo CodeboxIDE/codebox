@@ -49,6 +49,11 @@ module.exports = function (grunt) {
                     "fonts": path.resolve(srcPath, "resources/fonts")
                 },
 
+                // Vendors
+                "paths": {
+                    "sockjs": path.resolve(__dirname, "node_modules/sockjs-client/lib/sockjs-client")
+                },
+
                 // Stylesheet entry point
                 "style": path.resolve(srcPath, "resources/stylesheets/main.less")
             }

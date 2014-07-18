@@ -3,8 +3,9 @@ define([
     "hr/utils",
     "hr/promise",
     "core/rpc",
-    "core/commands"
-], function(hr, _, Q, rpc, commands) {
+    "core/commands",
+    "core/events"
+], function(hr, _, Q, rpc, commands, events) {
     var File = hr.Model.extend({
         defaults: {
             path: null,
@@ -16,6 +17,15 @@ define([
             buffer: null
         },
         idAttribute: "name",
+
+        // Initialize
+        initialize: function() {
+            File.__super__.initialize.apply(this, arguments);
+
+            this.listenTo(events, "e:fs", function(e) {
+                if (e != this.get("path")) return;
+            });
+        },
 
         // Open this file
         open: function() {

@@ -18,8 +18,6 @@ define([
 
             this.columns = this.options.columns;
             this.views = [];
-
-            return this;
         },
 
         /*
