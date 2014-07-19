@@ -65,7 +65,7 @@ define([
 
             return Q()
             .then(function() {
-                return that.get("run").apply(that, [ args || {} ]);
+                return that.get("run").apply(that, [ args || {}, this.collection.context.data ]);
             });
         },
 
