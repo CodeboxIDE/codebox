@@ -6,7 +6,7 @@
     "dependencies": {
         "q": "1.0.1",
         "lodash": "2.4.1",
-        "pkgm": "1.4.0",
+        "pkgm": "1.4.1",
         "express": "4.6.1",
         "wrench": "1.5.8",
         "body-parser": "1.0.2",
