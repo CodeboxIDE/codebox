@@ -88,12 +88,16 @@ module.exports = function (grunt) {
 
             grunt.log.writeln('Link', filename, 'to', to);
 
-            var stat = fs.lstatSync(to);
+            var stat = null;
+
+            try { stat = fs.lstatSync(to); } catch (e) {};
+
             if (stat && stat.isSymbolicLink()) {
                 fs.unlinkSync(to);
             } else if (fs.existsSync(to)) {
                 wrench.rmdirSyncRecursive(to);
             }
+
             fs.symlinkSync(from, to, 'dir');
         });
     });
