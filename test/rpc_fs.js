@@ -38,6 +38,7 @@ describe('RPC fs', function() {
         qdone(
             fs.read({ path: "test.txt" })
             .then(function(file) {
+                assert(_.isString(file.content));
                 assert(file.content == "Hello World");
             })
         , done);
