@@ -20,7 +20,7 @@ define([
             run: function(context) {},
 
             // Context needed for the command
-            context: [],
+            context: null,
 
             // Arguments
             arguments: [],
@@ -77,7 +77,7 @@ define([
         // Valid context
         isValidContext: function() {
             var context = this.get("context");
-            return (!context || !this.collection|| this.collection.context || this.collection.context.type == context);
+            return (!context || !this.collection || !this.collection.context || this.collection.context.type == context);
         }
     });
 

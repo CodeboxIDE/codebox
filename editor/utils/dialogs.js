@@ -71,12 +71,14 @@ define([
         }
 
         options = _.defaults(options || {}, {
-            template: "<%- item.get('value') %>"
+            template: "<%- item.get('value') %>",
+            filter: function() { return true; }
         });
 
         return openInput({
             collection: collection,
             template: options.template,
+            filter: options.filter
         }, {}, DialogListView);
     };
 

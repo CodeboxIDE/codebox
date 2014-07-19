@@ -108,7 +108,11 @@ define([
         },
 
         filterBy: function(q) {
+            var that = this;
+
             this.list.filter(function(model, item) {
+                if (!that.options.filter(model)) return false;
+
                 var text = item.$el.text().toLowerCase();
                 return text.search(q) !== -1;
             });
