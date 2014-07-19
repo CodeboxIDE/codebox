@@ -87,6 +87,11 @@ define([
                 'path': this.get("path"),
                 'content': content
             });
+        },
+
+        // Get by extension
+        getExtension: function() {
+            return "."+this.get("name").split('.').pop();
         }
     }, {
         // Get a specific file
