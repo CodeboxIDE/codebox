@@ -66,6 +66,9 @@ define([
             return Q()
             .then(function() {
                 return that.get("run").apply(that, [ args || {}, that.collection.context.data ]);
+            })
+            .fail(function(err) {
+                logging.error("Command failed", err);
             });
         },
 
