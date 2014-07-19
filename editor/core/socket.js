@@ -15,7 +15,12 @@ define([
                 that.trigger("open");
             };
             this.sock.onmessage = function(e) {
-                that.trigger('message', e.data);
+                var data = JSON.parse(e.data);
+
+                that.trigger('data', data);
+                if (data.method) {
+                    that.trigger('do:'+data.method, data.data || {});
+                }
             };
             this.sock.onclose = function() {
                 that.trigger("close");
@@ -24,8 +29,16 @@ define([
 
         // Send a message
         send: function(message) {
-            this.sock.send(message);
+            this.sock.send(JSON.stringify(message));
             return this;
+        },
+
+        // Call a method
+        do: function(method, data) {
+            return this.send({
+                'method': method,
+                'data': data
+            });
         },
 
         // Close the connection
