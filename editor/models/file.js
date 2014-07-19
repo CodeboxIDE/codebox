@@ -23,7 +23,7 @@ define([
             File.__super__.initialize.apply(this, arguments);
 
             this.listenTo(events, "e:fs", function(e) {
-                if (e != this.get("path")) return;
+                if (this.isBuffer() || e != this.get("path")) return;
             });
         },
 
@@ -94,6 +94,17 @@ define([
             var f = new File();
 
             return f.stat(path);
+        },
+
+        // Create a file buffer
+        buffer: function(name, content) {
+            var f = new File({
+                name: name,
+                buffer: content,
+                directory: false
+            });
+
+            return f;
         }
     });
 
