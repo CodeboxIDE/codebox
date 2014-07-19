@@ -9,7 +9,7 @@ define([
     });
 
     events.on("message", function(e) {
-        events.trigger("e:"+e.event.replace(/\./g, ":"), e.data);
+        events.trigger("e:"+e.event, e.data);
     });
 
     return events;
