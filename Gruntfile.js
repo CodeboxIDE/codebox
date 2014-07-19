@@ -87,10 +87,14 @@ module.exports = function (grunt) {
             var to = path.resolve(__dirname, "packages", filename.slice(prefix.length));
 
             grunt.log.writeln('Link', filename, 'to', to);
-            if (fs.existsSync(to)) {
+
+            var stat = fs.lstatSync(to);
+            if (stat && stat.isSymbolicLink()) {
+                fs.unlinkSync(to);
+            } else if (fs.existsSync(to)) {
                 wrench.rmdirSyncRecursive(to);
             }
-            fs.linkSync(from, to);
+            fs.symlinkSync(from, to, 'dir');
         });
     });
     grunt.registerTask("prepare", 'Prepare client build', [
