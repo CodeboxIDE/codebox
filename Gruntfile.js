@@ -51,7 +51,7 @@ module.exports = function (grunt) {
 
                 // Vendors
                 "paths": {
-                    "sockjs": path.resolve(__dirname, "node_modules/sockjs-client/lib/sockjs-client")
+                    "sockjs": path.resolve(srcPath, "vendors/bower-sockjs-client/sockjs")
                 },
 
                 // Stylesheet entry point
