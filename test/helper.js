@@ -12,6 +12,8 @@ global.assert = require('assert');
 
 // Init before doing tests
 before(function(done) {
+    this.timeout(500000);
+
     qdone(codebox.prepare(config), done);
 });
 

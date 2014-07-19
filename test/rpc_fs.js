@@ -34,4 +34,12 @@ describe('RPC fs', function() {
         , done);
     });
 
+    it("can read a file", function(done) {
+        qdone(
+            fs.read({ path: "test.txt" })
+            .then(function(file) {
+                assert(file.content == "Hello World");
+            })
+        , done);
+    });
 });
