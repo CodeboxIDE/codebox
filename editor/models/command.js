@@ -57,6 +57,10 @@ define([
         // Run a command
         run: function(args) {
             var that = this;
+
+            // Check context
+            if (!this.isValidContext()) return Q();
+
             logging.log("Run", this.get("id"));
 
             return Q()
@@ -68,6 +72,12 @@ define([
         // Shortcut text
         shortcutText: function() {
             return keyboard.toText(this.get("shortcuts"));
+        },
+
+        // Valid context
+        isValidContext: function() {
+            var context = this.get("context");
+            return (!context || !this.collection|| this.collection.context || this.collection.context.type == context);
         }
     });
 

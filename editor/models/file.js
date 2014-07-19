@@ -97,10 +97,11 @@ define([
         },
 
         // Create a file buffer
-        buffer: function(name, content) {
+        buffer: function(name, content, id) {
             var f = new File({}, {
                 'name': name,
                 'buffer': content,
+                'path': "buffer://"+(id || _.unique("tmp")),
                 'directory': false
             });
 
