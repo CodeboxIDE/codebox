@@ -98,10 +98,10 @@ define([
 
         // Create a file buffer
         buffer: function(name, content) {
-            var f = new File({
-                name: name,
-                buffer: content,
-                directory: false
+            var f = new File({}, {
+                'name': name,
+                'buffer': content,
+                'directory': false
             });
 
             return f;
