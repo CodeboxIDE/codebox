@@ -2,7 +2,30 @@
     "name": "codebox",
     "description": "Extensible hybrid IDE",
     "version": "1.0.0",
-    "author": "samypesse@gmail.com",
+    "author": "FriendCode Inc. <contact@friendco.de>",
+    "license": "Apache 2",
+    "preferGlobal": true,
+    "main": "lib/index.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/CodeboxIDE/codebox.git"
+    },
+    "keywords": [
+        "cli", "ide", "server", "desktop", "development", "code", "editor"
+    ],
+    "contributors": [
+        {
+            "name": "Aaron O'Mullan",
+            "email": "aaron.omullan@gmail.com"
+        },
+        {
+            "name": "Samy Pesse",
+            "email": "samypesse@gmail.com"
+        }
+    ],
+    "bin": {
+        "codebox": "./bin/codebox.js"
+    },
     "dependencies": {
         "q": "1.0.1",
         "lodash": "2.4.1",
