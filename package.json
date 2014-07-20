@@ -27,7 +27,8 @@
         "command-palette": "CodeboxIDE/package-command-palette",
         "files-tree": "CodeboxIDE/package-files-tree",
         "tabs": "CodeboxIDE/package-tabs",
-        "editor": "CodeboxIDE/package-editor"
+        "editor": "CodeboxIDE/package-editor",
+        "terminal": "CodeboxIDE/package-terminal"
     },
     "scripts": {
         "test": "export TESTING=true; mocha --reporter list"
