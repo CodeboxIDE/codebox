@@ -3,6 +3,7 @@ var _ = require("lodash");
 var path = require("path");
 
 var fs = require("../lib/services/fs");
+var base64 = require('../lib/utils/base64');
 
 describe('RPC fs', function() {
     it("can list content of the root folder", function(done) {
@@ -39,7 +40,7 @@ describe('RPC fs', function() {
             fs.read({ path: "test.txt" })
             .then(function(file) {
                 assert(_.isString(file.content));
-                assert(file.content == "Hello World");
+                assert(base64.atob(file.content) == "Hello World");
             })
         , done);
     });

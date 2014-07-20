@@ -4,8 +4,9 @@ define([
     "hr/promise",
     "core/rpc",
     "core/commands",
-    "core/events"
-], function(hr, _, Q, rpc, commands, events) {
+    "core/events",
+    "utils/hash"
+], function(hr, _, Q, rpc, commands, events, hash) {
     var File = hr.Model.extend({
         defaults: {
             path: null,
@@ -76,7 +77,8 @@ define([
             return rpc.execute("fs/read", {
                 'path': this.get("path")
             })
-            .get("content");
+            .get("content")
+            .then(hash.atob);
         },
 
         // Write file content
@@ -85,7 +87,7 @@ define([
 
             return rpc.execute("fs/write", {
                 'path': this.get("path"),
-                'content': content
+                'content': hash.btoa(content)
             });
         },
 

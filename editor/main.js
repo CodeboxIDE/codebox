@@ -8,8 +8,7 @@ require([
     "core/application",
     "core/packages",
     "utils/dialogs",
-    "models/file",
-    "utils/hash"
+    "models/file"
 ], function(_, $, Q, hr, args, resources, app, packages, dialogs, File) {
 
     window.codebox = {
