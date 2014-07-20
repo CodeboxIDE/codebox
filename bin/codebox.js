@@ -4,7 +4,6 @@ var path = require("path");
 var codebox = require("../lib");
 
 codebox.start({
-    port: 3000,
     root: path.resolve(__dirname, "../../test")
 })
 .fail(function(err) {
