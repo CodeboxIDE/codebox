@@ -1,4 +1,7 @@
-# Codebox
+# Codebox (:warning: Unstable version)
+
+[![Build Status](https://travis-ci.org/CodeboxIDE/codebox.png?branch=master)](https://travis-ci.org/CodeboxIDE/codebox)
+
 
 This is an unstable version of the new codebox.
 
