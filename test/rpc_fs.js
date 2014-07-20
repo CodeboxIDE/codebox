@@ -61,4 +61,20 @@ describe('RPC fs', function() {
             })
         , done);
     });
+
+    it("can create a folder", function(done) {
+        qdone(
+            fs.mkdir({
+                path: "folder_new/folder_in"
+            })
+        , done);
+    });
+
+    it("can remove a folder", function(done) {
+        qdone(
+            fs.remove({
+                path: "folder_new"
+            })
+        , done);
+    });
 });
