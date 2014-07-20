@@ -31,7 +31,8 @@
         "files-tree": "CodeboxIDE/package-files-tree",
         "tabs": "CodeboxIDE/package-tabs",
         "editor": "CodeboxIDE/package-editor",
-        "terminal": "CodeboxIDE/package-terminal"
+        "terminal": "CodeboxIDE/package-terminal",
+        "settings": "CodeboxIDE/package-settings"
     },
     "scripts": {
         "test": "export TESTING=true; mocha --reporter list"
