@@ -108,7 +108,7 @@ define([
             var f = new File({}, {
                 'name': name,
                 'buffer': content,
-                'path': "buffer://"+(id || _.unique("tmp")),
+                'path': "buffer://"+(id || _.uniqueId("tmp")),
                 'directory': false
             });
 
