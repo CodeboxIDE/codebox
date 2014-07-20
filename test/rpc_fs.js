@@ -44,4 +44,21 @@ describe('RPC fs', function() {
             })
         , done);
     });
+
+    it("can write a file", function(done) {
+        qdone(
+            fs.write({
+                path: "test_new.txt",
+                content: base64.atob("test")
+            })
+        , done);
+    });
+
+    it("can remove a file", function(done) {
+        qdone(
+            fs.remove({
+                path: "test_new.txt"
+            })
+        , done);
+    });
 });
