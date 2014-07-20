@@ -83,11 +83,19 @@ define([
 
         // Write file content
         write: function(content) {
-            if (this.isBuffer()) return Q(this.set("buffer", content));
+            var that = this;
 
-            return rpc.execute("fs/write", {
-                'path': this.get("path"),
-                'content': hash.btoa(content)
+            return Q()
+            .then(function() {
+                if (that.isBuffer()) return Q(that.set("buffer", content));
+
+                return rpc.execute("fs/write", {
+                    'path': this.get("path"),
+                    'content': hash.btoa(content)
+                });
+            })
+            .then(function() {
+                that.trigger("write", content);
             });
         },
 
