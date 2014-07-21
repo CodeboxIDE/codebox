@@ -90,7 +90,7 @@ define([
                 if (that.isBuffer()) return Q(that.set("buffer", content));
 
                 return rpc.execute("fs/write", {
-                    'path': this.get("path"),
+                    'path': that.get("path"),
                     'content': hash.btoa(content)
                 });
             })
