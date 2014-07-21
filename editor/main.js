@@ -10,17 +10,16 @@ require([
     "utils/dialogs",
     "models/file"
 ], function(_, $, Q, hr, args, resources, app, packages, dialogs, File) {
-
+    // Create the global object for packages
     window.codebox = {
         require: require,
         app: app,
         root: new File()
     };
 
-
+    // Start running the applications
     resources()
     .then(app.run.bind(app))
     .then(codebox.root.stat(""))
-    .then(packages.loadAll.bind(packages))
-    //.then(app.router.start.bind(app.router));
+    .then(packages.loadAll.bind(packages));
 });
