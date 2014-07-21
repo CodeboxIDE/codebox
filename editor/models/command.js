@@ -33,7 +33,10 @@ define([
         initialize: function() {
             Command.__super__.initialize.apply(this, arguments);
 
-            this.justRun = _.compose(this.run, _.constant(""));
+            this.justRun = function(e) {
+                if (e) e.preventDefault();
+                this.run();
+            }.bind(this);
 
             this.listenTo(this, "change:shortcuts", this.bindKeyboard);
             this.listenTo(this, "destroy", this.unbindKeyboard);
