@@ -40,13 +40,15 @@ module.exports = function (grunt) {
 
                 // Main entry point for application
                 "main": "main",
+                "index": grunt.file.read(path.resolve(srcPath, "index.html")),
 
                 // Build output directory
                 "build": buildPath,
 
                 // Static files map
                 "static": {
-                    "fonts": path.resolve(srcPath, "resources/fonts")
+                    "fonts": path.resolve(srcPath, "resources/fonts"),
+                    "images": path.resolve(srcPath, "resources/images")
                 },
 
                 // Vendors

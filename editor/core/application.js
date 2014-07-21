@@ -21,6 +21,7 @@ define([
             this.grid = new GridView({
                 columns: 10
             }, this);
+            this.grid.$el.addClass("main-grid");
             this.grid.appendTo(this);
         },
 
