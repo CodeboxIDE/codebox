@@ -8,7 +8,7 @@ define([
         service: "events"
     });
 
-    events.on("message", function(e) {
+    events.on("do:report", function(e) {
         events.trigger("e:"+e.event, e.data);
     });
 
