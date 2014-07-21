@@ -70,16 +70,14 @@ define([
             });
         }
 
-        options = _.defaults(options || {}, {
-            template: "<%- item.get('value') %>",
-            filter: function() { return true; }
-        });
-
-        return openInput({
-            collection: collection,
-            template: options.template,
-            filter: options.filter
-        }, {}, DialogListView);
+        return openInput(
+            _.extend({
+                template: "<%- item.get('value') %>",
+                placeholder: "",
+                filter: function() { return true; }
+            }, options, {
+                collection: collection
+            }), {}, DialogListView);
     };
 
     return {

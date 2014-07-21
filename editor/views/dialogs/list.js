@@ -33,12 +33,13 @@ define([
         defaults: {},
         className: "dialog-list",
 
-        initialize: function(options) {
+        initialize: function() {
             DialogListView.__super__.initialize.apply(this, arguments);
 
             // Filter for items
             this.$filterInput = $("<input>", {
-                'type': "text"
+                'type': "text",
+                'placeholder': this.options.placeholder
             });
             this.keydownInterval = null;
             this.$filterInput.on("keydown", this.onFilterKeydown.bind(this));
