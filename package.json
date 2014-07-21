@@ -56,7 +56,8 @@
         "editor": "CodeboxIDE/package-editor",
         "terminal": "CodeboxIDE/package-terminal",
         "settings": "CodeboxIDE/package-settings",
-        "pkgcontrol": "CodeboxIDE/package-pkgcontrol"
+        "pkgcontrol": "CodeboxIDE/package-pkgcontrol",
+        "statusbar": "CodeboxIDE/package-statusbar"
     },
     "scripts": {
         "test": "export TESTING=true; mocha --reporter list"
