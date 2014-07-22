@@ -50,6 +50,12 @@ define([
             text: text
         });
     };
+    var openErrorAlert = function(err) {
+        return openAlert("Error: "+(err.message || err))
+        .fin(function() {
+            return Q.reject(err);
+        });
+    };
 
     // Confirm
     var openConfirm = function(text, options) {
@@ -83,6 +89,7 @@ define([
     return {
         open: open,
         alert: openAlert,
+        error: openErrorAlert,
         confirm: openConfirm,
         list: openList
     };
