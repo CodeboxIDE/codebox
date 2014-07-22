@@ -8,7 +8,17 @@ var pkg = require("./package.json");
 module.exports = function (grunt) {
     // Path to the client src
     var srcPath = path.resolve(__dirname, "editor");
+
+    // Path to the output folder
     var buildPath = path.resolve(__dirname, "build");
+
+    // Path to the packages storing folder
+    var packagesPath = grunt.option("packages")
+    if (packagesPath) {
+        packagesPath = path.resolve(process.cwd(), packagesPath);
+    } else {
+        packagesPath = path.resolve(__dirname, "packages");
+    }
 
     // Load grunt modules
     grunt.loadNpmTasks('grunt-hr-builder');
@@ -69,7 +79,6 @@ module.exports = function (grunt) {
         }
     });
 
-    // Build
     grunt.registerTask('link', 'Link a folder containing packages at packages folder', function() {
         var origin = grunt.option('origin');
         var prefix = grunt.option('prefix') || "package-";
@@ -103,9 +112,51 @@ module.exports = function (grunt) {
             fs.symlinkSync(from, to, 'dir');
         });
     });
+
+    grunt.registerTask('resetPkg', 'Reset a package state', function() {
+        var topkg = grunt.option('pkg');
+        if (!topkg) {
+            grunt.log.error('Need --pkg');
+            return false;
+        }
+
+        var reset = grunt.option('reset') || "node,bower,build";
+        reset = _.compact(reset.split(","));
+
+        var pkgPath = path.resolve(packagesPath, topkg);
+
+        var doReset = {
+            'node': [ "node_modules/" ],
+            'bower': [ "bower_components/" ],
+            'build': [ "pkg-build.js" ]
+        };
+
+        grunt.log.writeln("Reseting: "+reset.join(", "));
+        _.chain(reset)
+        .map(function(r) {
+            return doReset[r];
+        })
+        .flatten()
+        .each(function(r) {
+            var toRemove = path.resolve(pkgPath, r);
+
+            grunt.log.writeln("Removing ", toRemove);
+            try {
+                if (r[r.length-1] !== '/') {
+                    fs.unlink(toRemove);
+                } else {
+                    wrench.rmdirSyncRecursive(toRemove);
+                }
+            } catch (e) {
+                grunt.log.warn(e.message || e);
+            }
+        });
+    });
+
     grunt.registerTask("prepare", 'Prepare client build', [
         "bower-install-simple"
     ]);
+
     grunt.registerTask('build', 'Build client code', [
         'hr:app',
         'exec:clear_packages_build'
