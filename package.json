@@ -31,6 +31,7 @@
         "lodash": "2.4.1",
         "pkgm": "2.3.0",
         "express": "4.6.1",
+        "express-session": "1.7.0",
         "wrench": "1.5.8",
         "body-parser": "1.0.2",
         "cookie-parser": "1.0.1",
