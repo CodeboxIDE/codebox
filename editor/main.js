@@ -19,7 +19,7 @@ require([
 
     // Start running the applications
     resources()
+    .then(codebox.root.stat.bind(codebox.root))
     .then(app.run.bind(app))
-    .then(codebox.root.stat(""))
     .then(packages.loadAll.bind(packages));
 });

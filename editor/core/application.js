@@ -9,6 +9,8 @@ define([
 ], function(_, $, Q, hr, GridView, commands, packages) {
     // Define base application
     var Application = hr.Application.extend({
+        el: null,
+        className: "main-application",
         name: "Codebox",
         events: {
 
@@ -27,7 +29,14 @@ define([
 
         render: function() {
             return this.ready();
-        }
+        },
+
+        run: function() {
+            $(".main-login").remove();
+            this.$el.appendTo($("body"));
+
+            return Application.__super__.run.apply(this, arguments);
+        },
     });
 
     var app = new Application();

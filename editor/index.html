@@ -8,6 +8,14 @@
         <meta name="robots" content="noindex, nofollow" />
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     </head>
-    <body></body>
+    <body>
+        <div class="main-login">
+            <form method="post" action="/auth">
+                <input type="text" name="email" placeholder="Email / Username" />
+                <input type="password" name="token" placeholder="Password" />
+                <button type="submit">Authenticate</button>
+            </form>
+        </div>
+    </body>
     <script type="text/javascript" src="static/application.js"></script>
 </html>
