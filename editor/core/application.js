@@ -32,7 +32,7 @@ define([
         },
 
         run: function() {
-            $(".main-login").remove();
+            $(".main-authentication").remove();
             this.$el.appendTo($("body"));
 
             return Application.__super__.run.apply(this, arguments);

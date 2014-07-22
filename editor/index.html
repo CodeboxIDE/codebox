@@ -9,11 +9,17 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     </head>
     <body>
-        <div class="main-login">
-            <form method="post" action="/auth">
-                <input type="text" name="email" placeholder="Email / Username" />
-                <input type="password" name="token" placeholder="Password" />
-                <button type="submit">Authenticate</button>
+        <div class="main-authentication">
+            <form method="post" action="/auth" class="form vertical">
+                <div class="form-group">
+                    <input type="text" name="email" placeholder="Email / Username" />
+                </div>
+                <div class="form-group">
+                    <input type="password" name="token" placeholder="Password" />
+                </div>
+                <div class="form-group">
+                    <button type="submit">Authenticate</button>
+                </div>
             </form>
         </div>
     </body>
