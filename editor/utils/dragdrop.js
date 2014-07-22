@@ -114,14 +114,12 @@ define([
 
         // Enter drop area
         enterDropArea: function(area) {
-            //console.log("enter drop", this.drop.length, area.$el.get(0));
             this.drop.push(area);
         },
 
         // Exit drop area
         exitDropArea: function() {
             this.drop.pop();
-            //console.log("exit drop", this.drop.length);
         },
 
         // Enable drag and drop in a object
@@ -206,8 +204,6 @@ define([
                         ch = _drop.$el.height();
                         cx = _drop.$el.offset().left;
                         cy = _drop.$el.offset().top;
-
-                        console.log("constrain", cx, cy, cw, ch)
 
                         if (Math.abs(ey - cy) < 50) ey = cy;
                         if (Math.abs((ey + eh) - (cy+ch)) < 50) ey = cy + ch - eh;
