@@ -46,5 +46,5 @@ $ ./bin/codebox.js
 
 You can easily link packages for testing by creating a folder that will contains all your packages (each should start with the prefix `package-`), then run the command `grunt link --origin=../mypackages`. This command will create symlinks between all the packages in `../mypackages` and the folder where are stored packages used by codebox.
 
-Everytime you update the code of your package, simply remove the file `pkg-build.js` in it and restart codebox.
+Everytime you update the code of your package, simply run `grunt resetPkg --pkg=mypackage` in it and restart codebox.
 
