@@ -33,6 +33,7 @@
         "express": "4.6.1",
         "wrench": "1.5.8",
         "body-parser": "1.0.2",
+        "cookie-parser": "1.0.1",
         "sockjs": "0.3.9",
         "eventemitter2": "0.4.14",
         "crc": "0.2.1",

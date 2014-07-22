@@ -1,6 +1,7 @@
 var Q = require('q');
 var path = require("path");
 var codebox = require("../lib");
+var users = require("../lib/users");
 
 var config = {
     log: false,
@@ -14,7 +15,12 @@ global.assert = require('assert');
 before(function(done) {
     this.timeout(500000);
 
-    qdone(codebox.prepare(config), done);
+    qdone(
+        codebox.prepare(config)
+        .then(function() {
+            return users.auth("test", "test");
+        }),
+    done);
 });
 
 // Nicety for mocha / Q

@@ -14,7 +14,6 @@ describe('Workspace', function() {
         qdone(
             workspace.path(path.join(__dirname, "workspace/../test2"))
             .then(function(p) {
-                console.log(p);
                 return Q.reject(new Error("wrong"));
             }, function() {
                 return Q();
