@@ -22,7 +22,7 @@ define([
             this.$el.addClass(this.options.className);
 
             // Value
-            this.value = null;
+            this.value = this.options.value;
         },
 
         template: function() {
@@ -40,9 +40,8 @@ define([
                 this.value = selector(this);
             } else if (_.isString(selector)) {
                 this.value = this[selector]();
-            } else {
-                this.value = selector;
             }
+
             return this.value;
         },
 
@@ -54,6 +53,7 @@ define([
         onClose: function(e) {
             if (e) e.preventDefault();
 
+            this.value = null;
             this.parent.close();
         }
     });
