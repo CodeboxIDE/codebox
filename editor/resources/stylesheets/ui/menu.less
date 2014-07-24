@@ -1,0 +1,95 @@
+.component-menu {
+    position: fixed;
+
+    .menu {
+        list-style: none;
+        margin: 0px;
+        padding: 0px;
+        background: @menu-background;
+        border: 1px solid @menu-border-color;
+        color: @menu-color;
+        cursor: default;
+
+        .menu-item {
+            min-width: 200px;
+
+            .item-label {
+                padding: 2px 5px;
+                width: 100%;
+                display: block;
+            }
+
+            &:hover {
+                > .item-label {
+                    background: @menu-item-active-background;
+                }
+            }
+
+            &.type-menu {
+                position:relative;
+
+                >.menu{
+                    position: absolute;
+                    display: none;
+                    top:0;
+                    left:100%;
+                    margin-top:-6px;
+
+                    max-height: 500px;
+                    overflow-y: auto;
+                }
+
+                >.item-label:after{
+                    display:block;
+                    content:" ";
+                    float:right;
+                    width:0;
+                    height:0;
+                    border-color:transparent;
+                    border-style:solid;
+                    border-width:5px 0 5px 5px;
+                    border-left-color:#cccccc;
+                    position: absolute;
+                    right: 6px;
+                    top: 6px;
+                }
+
+                &:not(.disabled):hover {
+                    >.menu{
+                        display:block;
+                    }
+                }
+                &>.menu:empty{
+                    display: none !important;
+                }
+
+                &.active>.item-label:after, &:not(.disabled)>.item-label:hover:after{
+                    border-left-color:#ffffff;
+                }
+
+                &.pull-left{
+                    float:none;
+
+                    >.menu{
+                        left:-100%;
+                        margin-left:10px;
+                    }
+                }
+            }
+
+            &.submenus-right {
+                .menu{
+                    right: 100%;
+                    left: auto;
+                    margin-left: 0px;
+                    margin-right: -1px;
+                }
+            }
+            &.submenus-top {
+                .menu{
+                    top: -100%;
+                }
+            }
+        }
+    }
+}
