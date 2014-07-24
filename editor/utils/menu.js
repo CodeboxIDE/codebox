@@ -74,7 +74,6 @@ define([
                 'z-index': 100
             }, pos));
             menu.$el.attr("id", "ui-context-menu");
-            menu.open();
         },
 
         /**
@@ -116,7 +115,14 @@ define([
             }
 
             $el.on("contextmenu", handler);
-            if (navigator.userAgent.match(/iPad/i) != null) taphold.bind($elhandler);
+            if (navigator.userAgent.match(/iPad/i) != null) taphold.bind($el, handler);
+        },
+
+        remove: function(el) {
+            var $el = $(el);
+
+            $el.off("contextmenu");
+            taphold.unbind($el);
         }
     };
 

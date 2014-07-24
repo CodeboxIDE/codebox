@@ -66,10 +66,6 @@ define([
             }
 
             return $item;
-        },
-
-        open: function() {
-
         }
     });
 

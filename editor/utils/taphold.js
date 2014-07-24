@@ -89,7 +89,10 @@ define([
 
     return {
         bind: function(el, fn ) {
-            return fn ? el.bind("taphold", fn ) : el.trigger("taphold");
+            return el.bind("taphold", fn );
+        },
+        unbind: function() {
+            return el.unbind("taphold");
         }
     };
 });
