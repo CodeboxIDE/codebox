@@ -99,6 +99,16 @@ define([
             });
         },
 
+        // Remove this file
+        remove: function() {
+            if (this.isBuffer()) return Q(this.destroy());
+
+            return rpc.execute("fs/remove", {
+                'path': this.get("path")
+            })
+            .then(this.destroy.bind(this));
+        },
+
         // Get by extension
         getExtension: function() {
             return "."+this.get("name").split('.').pop();
