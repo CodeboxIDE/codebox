@@ -57,7 +57,7 @@ define([
             });
 
             // Add label
-            if (item.type != "separator") $label.appendTo($item);
+            if (item.type != "divider") $label.appendTo($item);
 
             // Submenu
             if (item.type == "menu") {
