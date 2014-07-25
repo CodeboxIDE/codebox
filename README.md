@@ -1,6 +1,7 @@
 # Codebox (:warning: Unstable version)
 
 [![Build Status](https://travis-ci.org/CodeboxIDE/codebox.png?branch=master)](https://travis-ci.org/CodeboxIDE/codebox)
+[![NPM version](https://badge.fury.io/js/codebox.svg)](http://badge.fury.io/js/codebox)
 
 
 This is an unstable version of the new codebox.
