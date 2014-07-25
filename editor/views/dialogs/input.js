@@ -52,9 +52,7 @@ define([
         },
         onClose: function(e) {
             if (e) e.preventDefault();
-
-            this.value = null;
-            this.parent.close();
+            this.parent.close(null, true);
         }
     });
 

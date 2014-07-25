@@ -6,8 +6,9 @@ define([
     "views/dialogs/input",
     "views/dialogs/list",
     "text!resources/templates/dialogs/alert.html",
-    "text!resources/templates/dialogs/confirm.html"
-], function(_, Q, hr, Dialog, DialogInputView, DialogListView, alertTemplate, confirmTemplate) {
+    "text!resources/templates/dialogs/confirm.html",
+    "text!resources/templates/dialogs/prompt.html"
+], function(_, Q, hr, Dialog, DialogInputView, DialogListView, alertTemplate, confirmTemplate, promptTemplate) {
 
     // Open a dialog
     var open = function(View, options) {
@@ -65,6 +66,16 @@ define([
         });
     };
 
+    // Prompt
+    var openPrompt = function(text, value, options) {
+        return openInput({
+            template: promptTemplate,
+            text: text,
+            defaultValue: value,
+            value: function(d) { return d.$("input").val(); }
+        });
+    };
+
     // List
     var openList = function(collection, options) {
         if (_.isArray(collection)) {
@@ -91,6 +102,7 @@ define([
         alert: openAlert,
         error: openErrorAlert,
         confirm: openConfirm,
+        prompt: openPrompt,
         list: openList
     };
 });
