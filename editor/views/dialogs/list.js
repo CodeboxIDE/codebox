@@ -36,6 +36,22 @@ define([
         initialize: function() {
             DialogListView.__super__.initialize.apply(this, arguments);
 
+            // Source for items
+            this.results = new hr.Collection();
+            this.source = _.constant([]);
+
+            if (this.options.collection) {
+                // Source is a collection
+                this.results = new this.options.collection.constructor()
+                this.source = function(q) {
+                    return this.options.collection.filter(function(model) {
+                        return this.searchText(model, q);
+                    }, this);
+                }.bind(this);
+            } else {
+                this.source = Q(this.options.source);
+            }
+
             // Filter for items
             this.$filterInput = $("<input>", {
                 'type': "text",
@@ -48,20 +64,60 @@ define([
 
             // Items list
             this.list = new ListView({
-                collection: this.options.collection
+                collection: this.results
             }, this);
             this.list.appendTo(this.$el);
 
             // Focus input
             this.listenTo(this.parent, "open", function() {
                 this.$filterInput.focus();
-                this.filterBy("");
+                this.doSearch("");
                 this.selectItem(0);
             });
         },
 
         render: function() {
             return this.ready();
+        },
+
+        searchText: function(model, q) {
+            var t = JSON.stringify(model.toJSON());
+
+            t = t.toLowerCase();
+            q = q.toLowerCase();
+            return t.search(q) !== -1;
+        },
+
+        doSearch: function(query) {
+            var that = this, toRemove = [];
+            if (this.list.collection.query == query) return;
+
+            if (this.list.collection.query && query
+            && query.indexOf(this.list.collection.query) == 0) {
+                // Continue current search
+                this.list.collection.query = query;
+                this.list.collection.each(function(model) {
+                    if (!that.searchText(model, query)) {
+                        toRemove.push(model);
+                    }
+                });
+                this.list.collection.remove(toRemove);
+                //this.list.collection.sort();
+                this.selectItem(this.getSelectedItem());
+            } else {
+                // Different search
+                this.list.collection.query = query;
+                this.list.collection.reset([]);
+
+                Q()
+                .then(function() {
+                    return that.source(query);
+                })
+                .then(function(result) {
+                    that.list.collection.add(_.filter(result, that.options.filter));
+                    that.selectItem(that.getSelectedItem());
+                }, console.error.bind(console));
+            }
         },
 
         selectItem: function(i) {
@@ -108,17 +164,6 @@ define([
             return this.list.collection.at(this.getSelectedItem());
         },
 
-        filterBy: function(q) {
-            var that = this;
-
-            this.list.filter(function(model, item) {
-                if (!that.options.filter(model)) return false;
-
-                var text = item.$el.text().toLowerCase();
-                return text.search(q) !== -1;
-            });
-        },
-
         onFilterKeydown: function(e) {
             var key = e.which || e.keyCode;
 
@@ -150,7 +195,7 @@ define([
         onFilterKeyup: function(e) {
             var q = this.$filterInput.val().toLowerCase();
 
-            this.filterBy(q);
+            this.doSearch(q);
 
             if (this.keydownInterval) {
                 clearInterval(this.keydownInterval);
