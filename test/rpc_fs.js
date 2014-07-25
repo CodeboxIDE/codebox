@@ -54,6 +54,26 @@ describe('RPC fs', function() {
         , done);
     });
 
+    it("can read/write a file without base64", function(done) {
+        qdone(
+            rpc.get("fs").write({
+                path: "test_new.txt",
+                content: "test witout base64",
+                base64: false
+            })
+            .then(function() {
+                return rpc.get("fs").read({
+                    path: "test_new.txt",
+                    base64: false
+                })
+            })
+            .then(function(file) {
+                assert(_.isString(file.content));
+                assert(file.content == "test witout base64");
+            })
+        , done);
+    });
+
     it("can remove a file", function(done) {
         qdone(
             rpc.get("fs").remove({
