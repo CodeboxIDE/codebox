@@ -1,12 +1,12 @@
 var Q = require("q");
 var _ = require("lodash");
 
-var users = require("../lib/services/users");
+var rpc = require("../lib/rpc");
 
 describe('RPC users', function() {
     it("can list users", function(done) {
         qdone(
-            Q(users.list({}))
+            Q(rpc.get("users").list({}))
             .then(function(users) {
                 var tokens = _.compact(_.pluck(users, "token"));
                 var ids = _.pluck(users, "id");

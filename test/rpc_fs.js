@@ -2,13 +2,13 @@ var Q = require("q");
 var _ = require("lodash");
 var path = require("path");
 
-var fs = require("../lib/services/fs");
+var rpc = require("../lib/rpc");
 var base64 = require('../lib/utils/base64');
 
 describe('RPC fs', function() {
     it("can list content of the root folder", function(done) {
         qdone(
-            fs.list({})
+            rpc.get("fs").list({})
             .then(function(files) {
                 var filenames = _.pluck(files, "name");
                 assert(_.contains(filenames, "test.txt"));
@@ -18,7 +18,7 @@ describe('RPC fs', function() {
 
     it("can get stat on a file", function(done) {
         qdone(
-            fs.stat({ path: "test.txt" })
+            rpc.get("fs").stat({ path: "test.txt" })
             .then(function(file) {
                 assert(file.name == "test.txt");
             })
@@ -27,7 +27,7 @@ describe('RPC fs', function() {
 
     it("can list content of a folder", function(done) {
         qdone(
-            fs.list({ path: "test" })
+            rpc.get("fs").list({ path: "test" })
             .then(function(files) {
                 var filenames = _.pluck(files, "name");
                 assert(_.contains(filenames, "test2.txt"));
@@ -37,7 +37,7 @@ describe('RPC fs', function() {
 
     it("can read a file", function(done) {
         qdone(
-            fs.read({ path: "test.txt" })
+            rpc.get("fs").read({ path: "test.txt" })
             .then(function(file) {
                 assert(_.isString(file.content));
                 assert(base64.atob(file.content) == "Hello World");
@@ -47,7 +47,7 @@ describe('RPC fs', function() {
 
     it("can write a file", function(done) {
         qdone(
-            fs.write({
+            rpc.get("fs").write({
                 path: "test_new.txt",
                 content: base64.atob("test")
             })
@@ -56,7 +56,7 @@ describe('RPC fs', function() {
 
     it("can remove a file", function(done) {
         qdone(
-            fs.remove({
+            rpc.get("fs").remove({
                 path: "test_new.txt"
             })
         , done);
@@ -64,7 +64,7 @@ describe('RPC fs', function() {
 
     it("can create a folder", function(done) {
         qdone(
-            fs.mkdir({
+            rpc.get("fs").mkdir({
                 path: "folder_new/folder_in"
             })
         , done);
@@ -72,7 +72,7 @@ describe('RPC fs', function() {
 
     it("can remove a folder", function(done) {
         qdone(
-            fs.remove({
+            rpc.get("fs").remove({
                 path: "folder_new"
             })
         , done);
