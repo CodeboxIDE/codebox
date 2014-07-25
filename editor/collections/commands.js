@@ -18,10 +18,12 @@ define([
 
         // Register a new command
         register: function(cmd) {
+            if (_.isArray(cmd)) return _.map(cmd, this.register, this);
+
             var c = this.get(cmd.id);
             if (c) this.remove(c);
 
-            this.add(cmd);
+            return this.add(cmd);
         },
 
         // Run a command
