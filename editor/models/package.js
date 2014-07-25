@@ -25,6 +25,8 @@ define([
             var context, main, pkgRequireConfig, pkgRequire, that = this
             var d = Q.defer();
 
+            if (!this.get("name")) return Q();
+
             logging.log("Load", this.get("name"));
             context = "package."+this.get("name");
             main = this.get("main", "index");
