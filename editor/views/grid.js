@@ -26,10 +26,15 @@ define([
         addView: function(view, options) {
             view._grid = this;
             view._gridOptions = _.defaults(options || {}, {
-                width: null
+                width: null,
+                at: null
             });
 
-            this.views.push(view);
+            if (view._gridOptions.at !== null) {
+                this.views.splice(view._gridOptions.at, 0, view);
+            } else {
+                this.views.push(view);
+            }
             this.update();
 
             return view;
