@@ -38,7 +38,7 @@ define([
 
             // Source for items
             this.results = new hr.Collection();
-            this.source = _.constant([]);
+            this.source = this.options.source;
 
             if (this.options.source instanceof hr.Collection) {
                 // Source is a collection
@@ -48,8 +48,6 @@ define([
                         return this.searchText(model, q);
                     }, this);
                 }.bind(this);
-            } else {
-                this.source = Q(this.options.source);
             }
 
             // Filter for items
