@@ -77,10 +77,10 @@ define([
     };
 
     // List
-    var openList = function(collection, options) {
-        if (_.isArray(collection)) {
-            collection = new hr.Collection({
-                models: _.map(collection, function(item) {
+    var openList = function(source, options) {
+        if (_.isArray(source)) {
+            source = new hr.Collection({
+                models: _.map(source, function(item) {
                     if (!_.isObject(item)) return { value: item };
                     return item;
                 })
@@ -93,7 +93,7 @@ define([
                 placeholder: "",
                 filter: function() { return true; }
             }, options, {
-                collection: collection
+                source: source
             }), {}, DialogListView);
     };
 

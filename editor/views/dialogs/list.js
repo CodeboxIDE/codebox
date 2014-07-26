@@ -40,11 +40,11 @@ define([
             this.results = new hr.Collection();
             this.source = _.constant([]);
 
-            if (this.options.collection) {
+            if (this.options.source instanceof hr.Collection) {
                 // Source is a collection
-                this.results = new this.options.collection.constructor()
+                this.results = new this.options.source.constructor()
                 this.source = function(q) {
-                    return this.options.collection.filter(function(model) {
+                    return this.options.source.filter(function(model) {
                         return this.searchText(model, q);
                     }, this);
                 }.bind(this);
