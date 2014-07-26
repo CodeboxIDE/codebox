@@ -60,7 +60,8 @@
         "settings": "CodeboxIDE/package-settings",
         "pkgcontrol": "CodeboxIDE/package-pkgcontrol",
         "statusbar": "CodeboxIDE/package-statusbar",
-        "watcher": "CodeboxIDE/package-watcher"
+        "watcher": "CodeboxIDE/package-watcher",
+        "panels": "CodeboxIDE/package-panels"
     },
     "scripts": {
         "test": "export TESTING=true; mocha --reporter list"
