@@ -23,9 +23,25 @@ define([
         initialize: function() {
             File.__super__.initialize.apply(this, arguments);
 
-            this.listenTo(events, "e:fs", function(e) {
-                if (this.isBuffer() || e != this.get("path")) return;
-            });
+            this.listenTo(events, "e:fs:modified", _.partial(this._dispatchFsEvent, "modified"));
+            this.listenTo(events, "e:fs:deleted", _.partial(this._dispatchFsEvent, "deleted"));
+        },
+
+        // Dispatch fs event
+        _dispatchFsEvent: function(type, paths) {
+            var path, childs;
+
+            if (this.isBuffer()) return;
+            if (_.contains(paths,  path)) {
+                if (type == "deleted") return this.destroy();
+                this.trigger("fs:modified");
+            }
+            if (this.isDirectory()) {
+                childs = _.filter(paths, this.isChild, this);
+                if (childs.length > 0) {
+                    this.trigger("fs:files:"+type);
+                }
+            }
         },
 
         // Open this file
@@ -43,6 +59,13 @@ define([
         // Check if a file is a buffer or exists
         isBuffer: function() {
             return this.get("buffer") != null;
+        },
+
+        // Test if a path is child
+        isChild: function(path) {
+            var parts1 = _.filter(path.split("/"), function(p) { return p.length > 0; });
+            var parts2 = _.filter(this.get("path").split("/"), function(p) { return p.length > 0; });
+            return (parts1.length == (parts2.length+1));
         },
 
         // List files in this directory
