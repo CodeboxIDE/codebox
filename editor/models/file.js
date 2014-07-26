@@ -25,6 +25,7 @@ define([
 
             this.listenTo(events, "e:fs:modified", _.partial(this._dispatchFsEvent, "modified"));
             this.listenTo(events, "e:fs:deleted", _.partial(this._dispatchFsEvent, "deleted"));
+            this.listenTo(events, "e:fs:created", _.partial(this._dispatchFsEvent, "created"));
         },
 
         // Dispatch fs event
@@ -32,6 +33,8 @@ define([
             var path, childs;
 
             if (this.isBuffer()) return;
+
+            path = this.get("path");
             if (_.contains(paths,  path)) {
                 if (type == "deleted") return this.destroy();
                 this.trigger("fs:modified");
