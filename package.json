@@ -61,7 +61,8 @@
         "pkgcontrol": "CodeboxIDE/package-pkgcontrol",
         "statusbar": "CodeboxIDE/package-statusbar",
         "watcher": "CodeboxIDE/package-watcher",
-        "panels": "CodeboxIDE/package-panels"
+        "panels": "CodeboxIDE/package-panels",
+        "find": "CodeboxIDE/package-find"
     },
     "scripts": {
         "test": "export TESTING=true; mocha --reporter list"
