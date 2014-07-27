@@ -4,7 +4,7 @@ define([
     "hr/hr"
 ], function(_, $, hr) {
     var DialogInputView = hr.View.extend({
-        className: "",
+        className: "dialog-input",
         defaults: {
             className: "",
             template: "",

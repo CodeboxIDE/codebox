@@ -7,8 +7,10 @@ define([
     "views/dialogs/list",
     "text!resources/templates/dialogs/alert.html",
     "text!resources/templates/dialogs/confirm.html",
-    "text!resources/templates/dialogs/prompt.html"
-], function(_, Q, hr, Dialog, DialogInputView, DialogListView, alertTemplate, confirmTemplate, promptTemplate) {
+    "text!resources/templates/dialogs/prompt.html",
+    "text!resources/templates/dialogs/schema.html"
+], function(_, Q, hr, Dialog, DialogInputView, DialogListView,
+alertTemplate, confirmTemplate, promptTemplate, schemaTemplate) {
 
     // Open a dialog
     var open = function(View, options) {
@@ -97,12 +99,34 @@ define([
             }), {}, DialogListView);
     };
 
+    // Schema
+    var openSchema = function(schema, values) {
+        values = values || {};
+
+        return openInput({
+            template: schemaTemplate,
+            schema: schema,
+            defaultValues: values,
+            value: function(d) {
+                var nvalues = _.clone(values);
+
+                _.each(schema.properties, function(property, key) {
+                    var v = d.$("*[name='"+key+"']").val();
+                    nvalues[key] = v;
+                });
+
+                return nvalues;
+            }
+        });
+    };
+
     return {
         open: open,
         alert: openAlert,
         error: openErrorAlert,
         confirm: openConfirm,
         prompt: openPrompt,
-        list: openList
+        list: openList,
+        schema: openSchema
     };
 });

@@ -29,7 +29,6 @@ define([
     });
 
     var DialogListView = DialogInputView.extend({
-        className: "",
         defaults: {},
         className: "dialog-list",
 
