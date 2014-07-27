@@ -29,7 +29,9 @@ define([
     });
 
     var DialogListView = DialogInputView.extend({
-        defaults: {},
+        defaults: {
+            textIndex: function(model) { return JSON.stringify(model.toJSON()); }
+        },
         className: "dialog-list",
 
         initialize: function() {
@@ -78,7 +80,7 @@ define([
         },
 
         searchText: function(model, q) {
-            var t = JSON.stringify(model.toJSON());
+            var t = this.options.textIndex(model);
 
             t = t.toLowerCase();
             q = q.toLowerCase();
