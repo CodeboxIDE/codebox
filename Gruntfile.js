@@ -77,6 +77,12 @@ module.exports = function (grunt) {
                 command: 'rm -f packages/**/pkg-build.js',
                 stdout: false,
                 stderr: false
+            },
+            'publish': {
+                command: "npm publish",
+                cwd: '.tmp/',
+                stdout: true,
+                stderr: true
             }
         },
         "copy": {
@@ -197,7 +203,7 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask("prepare", 'Prepare client build', [
-        "bower-install-simple"
+        'bower-install-simple'
     ]);
 
     grunt.registerTask('build', 'Build client code', [
@@ -215,7 +221,9 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask("publish", 'Publish new version', [
-        "bower-install-simple"
+        'tmp',
+        'exec:publish',
+        'clean:tmp'
     ]);
 
     grunt.registerTask('default', [
