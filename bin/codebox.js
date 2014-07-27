@@ -69,7 +69,7 @@ codebox.start(options)
 
     console.log("\nCodebox is running at", url);
 
-    if (program.open) open(url+"/auth?email="+email+"&token="+token);
+    if (program.open) open(url+"/?email="+email+"&token="+token);
 })
 .fail(function(err) {
     console.log(err.stack || err.message || err);
