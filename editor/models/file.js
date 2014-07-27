@@ -135,6 +135,11 @@ define([
             .then(this.destroy.bind(this));
         },
 
+        // Create a file in this folder
+        create: function(name) {
+            return File.create(this.get("path"), name);
+        },
+
         // Get by extension
         getExtension: function() {
             return "."+this.get("name").split('.').pop();
@@ -157,6 +162,17 @@ define([
             });
 
             return f;
+        },
+
+        // Create a new file
+        create: function(path, name) {
+            return rpc.execute("fs/create", {
+                'path': path,
+                'name': name
+            })
+            .then(function(f) {
+                return new File({}, f);
+            });
         }
     });
 
