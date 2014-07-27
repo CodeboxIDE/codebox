@@ -125,6 +125,20 @@ define([
             });
         },
 
+        // Rename
+        rename: function(name) {
+            var that = this;
+            if (this.isBuffer()) return Q();
+
+            return rpc.execute("fs/rename", {
+                'from': this.get("path"),
+                'name': name
+            })
+            .then(function(f) {
+                that.set(f);
+            });
+        },
+
         // Remove this file
         remove: function() {
             if (this.isBuffer()) return Q(this.destroy());
