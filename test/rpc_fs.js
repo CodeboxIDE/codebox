@@ -83,10 +83,19 @@ describe('RPC fs', function() {
         , done);
     });
 
+    it("can rename a file", function(done) {
+        qdone(
+            rpc.get("fs").rename({
+                from: "test_new2.txt",
+                name: "test_new3.txt"
+            })
+        , done);
+    });
+
     it("can remove a file", function(done) {
         qdone(
             rpc.get("fs").remove({
-                path: "test_new2.txt"
+                path: "test_new3.txt"
             })
         , done);
     });
