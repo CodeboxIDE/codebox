@@ -4,10 +4,11 @@ var _ = require("lodash");
 var path = require("path");
 var program = require('commander');
 var open = require("open");
-var Gittle = require('gittle');
 
 var pkg = require("../package.json");
 var codebox = require("../lib");
+
+var gitconfig = require('../lib/utils/gitconfig');
 
 program
 .version(pkg.version)
@@ -48,9 +49,15 @@ codebox.start(options)
 .then(function() {
     if (program.email) return program.email;
 
+    // Path to user's .gitconfig file
+    var configPath = path.join(
+        process.env.HOME,
+        '.gitconfig'
+    );
+
     // Codebox git repo: use to identify the user
-    var repo = new Gittle(path.resolve(__dirname, ".."));
-    return repo.identity()
+    return gitconfig(configPath)
+    .get("user")
     .get("email")
     .fail(function() {
         return "";

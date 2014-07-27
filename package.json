@@ -41,7 +41,7 @@
         "request": "2.37.0",
         "commander": "2.3.0",
         "open": "0.0.5",
-        "gittle": "0.2.2"
+        "ini": "1.2.1"
     },
     "devDependencies": {
         "mocha": "1.18.2",
