@@ -36,8 +36,7 @@ define([
 
             path = this.get("path");
             if (_.contains(paths,  path)) {
-                if (type == "deleted") return this.destroy();
-                this.trigger("fs:modified");
+                this.trigger("fs:"+type);
             }
             if (this.isDirectory()) {
                 childs = _.filter(paths, this.isChild, this);
