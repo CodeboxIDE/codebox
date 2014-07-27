@@ -74,10 +74,19 @@ describe('RPC fs', function() {
         , done);
     });
 
+    it("can rename a file", function(done) {
+        qdone(
+            rpc.get("fs").rename({
+                from: "test_new.txt",
+                to: "test_new2.txt"
+            })
+        , done);
+    });
+
     it("can remove a file", function(done) {
         qdone(
             rpc.get("fs").remove({
-                path: "test_new.txt"
+                path: "test_new2.txt"
             })
         , done);
     });
@@ -90,10 +99,19 @@ describe('RPC fs', function() {
         , done);
     });
 
+    it("can rename a folder", function(done) {
+        qdone(
+            rpc.get("fs").rename({
+                from: "folder_new",
+                to: "folder_new2"
+            })
+        , done);
+    });
+
     it("can remove a folder", function(done) {
         qdone(
             rpc.get("fs").remove({
-                path: "folder_new"
+                path: "folder_new2"
             })
         , done);
     });
