@@ -35,7 +35,7 @@ define([
 
             this.justRun = function(e) {
                 if (e) e.preventDefault();
-                this.run();
+                this.run({}, e);
             }.bind(this);
 
             this.listenTo(this, "change:shortcuts", this.bindKeyboard);
@@ -58,7 +58,7 @@ define([
         },
 
         // Run a command
-        run: function(args) {
+        run: function(args, origin) {
             var that = this;
 
             // Check context
@@ -68,7 +68,7 @@ define([
 
             return Q()
             .then(function() {
-                return that.get("run").apply(that, [ args || {}, that.collection.context.data ]);
+                return that.get("run").apply(that, [ args || {}, that.collection.context.data, origin ]);
             })
             .fail(function(err) {
                 logging.error("Command failed", err);
