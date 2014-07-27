@@ -140,6 +140,11 @@ define([
             return File.create(this.get("path"), name);
         },
 
+        // Create a folder in this folder
+        mkdir: function(name) {
+            return File.mkdir(this.get("path"), name);
+        },
+
         // Get by extension
         getExtension: function() {
             return "."+this.get("name").split('.').pop();
@@ -167,6 +172,17 @@ define([
         // Create a new file
         create: function(path, name) {
             return rpc.execute("fs/create", {
+                'path': path,
+                'name': name
+            })
+            .then(function(f) {
+                return new File({}, f);
+            });
+        },
+
+        // Create a new folder
+        mkdir: function(path, name) {
+            return rpc.execute("fs/mkdir", {
                 'path': path,
                 'name': name
             })
