@@ -7,7 +7,7 @@ _.each(options.schema.properties, function(property, key) {
     <% if (property.type == "string") { %>
     <div class="form-group">
         <label><%- property.description %></label>
-        <input type="text" class="form-control" name="<%- key %>" value="<%- value %>" />
+        <input type="<%- (property.password? "password" : "text") %>" class="form-control" name="<%- key %>" value="<%- value %>" />
     </div>
     <% } else if (property.type == "integer") { %>
     <div class="form-group">
