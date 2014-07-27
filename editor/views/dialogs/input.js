@@ -25,6 +25,11 @@ define([
             this.value = this.options.value;
         },
 
+        finish: function() {
+            this.$("input").focus();
+            return DialogInputView.__super__.finish.apply(this, arguments);
+        },
+
         template: function() {
             return this.options.template;
         },
