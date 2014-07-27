@@ -23,7 +23,9 @@ module.exports = function (grunt) {
     // Load grunt modules
     grunt.loadNpmTasks('grunt-hr-builder');
     grunt.loadNpmTasks("grunt-bower-install-simple");
-    grunt.loadNpmTasks('grunt-exec');;
+    grunt.loadNpmTasks('grunt-exec');
+    grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-contrib-copy');
 
     // Init GRUNT configuraton
     grunt.initConfig({
@@ -76,6 +78,47 @@ module.exports = function (grunt) {
                 stdout: false,
                 stderr: false
             }
+        },
+        "copy": {
+            // Copy most files over
+            tmp: {
+                expand: true,
+                dot: false,
+                cwd: './',
+                dest: '.tmp/',
+                src: [
+                    // Most files except the ones below
+                    "./**",
+
+                    // Ignore gitignore
+                    "!.gitignore",
+
+                    // Ignore dev related things
+                    "!./tmp/**",
+                    "!./.git/**",
+
+                    // Only take "./client/build"
+                    "!./editor/**",
+                    "./editor/build/**",
+
+                    // Ignore some build time only modules
+                    "./node_modules/.bin/**",
+                    "!./node_modules/grunt/**",
+                    "!./node_modules/grunt-*/**",
+                    "!./node_modules/happyrhino/**",
+
+                    // Exclude test directories from node modules
+                    "!./node_modules/**/test/**",
+                ],
+
+                // Preserve permissions
+                options: {
+                    mode: true
+                }
+            }
+        },
+        "clean": {
+            tmp: ['.tmp/']
         }
     });
 
@@ -158,8 +201,21 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('build', 'Build client code', [
-        'hr:app',
+        'hr:app'
+    ]);
+
+    grunt.registerTask('resetPkgs', 'Reset packages build', [
         'exec:clear_packages_build'
+    ]);
+
+    grunt.registerTask('tmp', 'Build tmp directory to publish', [
+        'build',
+        'clean:tmp',
+        'copy:tmp'
+    ]);
+
+    grunt.registerTask("publish", 'Publish new version', [
+        "bower-install-simple"
     ]);
 
     grunt.registerTask('default', [

@@ -46,6 +46,8 @@
         "grunt": "~0.4.2",
         "grunt-cli": "0.1.11",
         "grunt-hr-builder": "1.1.0",
+        "grunt-contrib-clean": "0.5.0",
+        "grunt-contrib-copy": "0.5.0",
         "grunt-bower-install-simple": "0.9.2",
         "grunt-exec": "0.4.6",
         "happyrhino": "1.0.3"

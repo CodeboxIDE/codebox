@@ -32,3 +32,6 @@ packages
 
 # Build output
 build
+
+# Tmp directory
+.tmp
