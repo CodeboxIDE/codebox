@@ -4,6 +4,7 @@ var _ = require("lodash");
 var path = require("path");
 var program = require('commander');
 var open = require("open");
+var Gittle = require('gittle');
 
 var pkg = require("../package.json");
 var codebox = require("../lib");
@@ -14,6 +15,7 @@ program
 .option('-t, --templates [list]', 'Configuration templates, separated by commas', "")
 .option('-p, --port [port]', 'HTTP port', 3000)
 .option('-o, --open', 'Open the IDE in your favorite browser')
+.option('-e, --email [email address]', 'Email address to use as a default authentication')
 .option('-u, --users [list users]', 'List of coma seperated users and password (formatted as "username:password")');
 
 
@@ -44,7 +46,19 @@ var options = {
 
 codebox.start(options)
 .then(function() {
-    var url = "http://localhost:"+program.port;
+    if (program.email) return program.email;
+
+    // Codebox git repo: use to identify the user
+    var repo = new Gittle(path.resolve(__dirname, ".."));
+    return repo.identity()
+    .get("email")
+    .fail(function() {
+        return "";
+    });
+})
+.then(function(email) {
+    var token = users[email] || Math.random().toString(36).substring(7);
+    var url = "http://localhost:"+program.port+"/auth?email="+email+"&token="+token;
 
     console.log("\nCodebox is running at", url);
 
