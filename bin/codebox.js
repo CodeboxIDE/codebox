@@ -58,11 +58,11 @@ codebox.start(options)
 })
 .then(function(email) {
     var token = users[email] || Math.random().toString(36).substring(7);
-    var url = "http://localhost:"+program.port+"/auth?email="+email+"&token="+token;
+    var url = "http://localhost:"+program.port;
 
     console.log("\nCodebox is running at", url);
 
-    if (program.open) open(url);
+    if (program.open) open(url+"/auth?email="+email+"&token="+token);
 })
 .fail(function(err) {
     console.log(err.stack || err.message || err);
