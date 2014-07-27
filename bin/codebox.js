@@ -3,6 +3,7 @@
 var _ = require("lodash");
 var path = require("path");
 var program = require('commander');
+var open = require("open");
 
 var pkg = require("../package.json");
 var codebox = require("../lib");
@@ -12,6 +13,7 @@ program
 .option('-r, --root [path]', 'Root folder for the workspace, default is current directory', "./")
 .option('-t, --templates [list]', 'Configuration templates, separated by commas', "")
 .option('-p, --port [port]', 'HTTP port', 3000)
+.option('-o, --open', 'Open the IDE in your favorite browser')
 .option('-u, --users [list users]', 'List of coma seperated users and password (formatted as "username:password")');
 
 
@@ -41,6 +43,13 @@ var options = {
 
 
 codebox.start(options)
+.then(function() {
+    var url = "http://localhost:"+program.port;
+
+    console.log("\nCodebox is running at", url);
+
+    if (program.open) open(url);
+})
 .fail(function(err) {
     console.log(err.stack || err.message || err);
 });

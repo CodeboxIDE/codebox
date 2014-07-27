@@ -39,7 +39,8 @@
         "eventemitter2": "0.4.14",
         "crc": "0.2.1",
         "request": "2.37.0",
-        "commander": "2.3.0"
+        "commander": "2.3.0",
+        "open": "0.0.5"
     },
     "devDependencies": {
         "mocha": "1.18.2",
