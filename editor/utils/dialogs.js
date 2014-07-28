@@ -91,7 +91,7 @@ alertTemplate, confirmTemplate, promptTemplate, schemaTemplate) {
 
         return openInput(
             _.extend({
-                template: "<%- item.get('value') %>",
+                template: "<div class='item-text'><%- item.get('value') %></div>",
                 placeholder: "",
                 filter: function() { return true; }
             }, options, {
