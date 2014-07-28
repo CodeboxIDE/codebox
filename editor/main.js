@@ -38,6 +38,7 @@ require([
     // Start running the applications
     resources()
     .then(codebox.root.stat.bind(codebox.root))
+    .then(settings.load.bind(settings))
     .then(users.listAll.bind(users))
     .then(packages.loadAll.bind(packages))
     .then(app.run.bind(app));
