@@ -26,7 +26,7 @@ define([
         },
 
         finish: function() {
-            this.$("input").focus();
+            this.$("input").first().focus();
             return DialogInputView.__super__.finish.apply(this, arguments);
         },
 
