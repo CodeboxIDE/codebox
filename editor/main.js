@@ -6,18 +6,34 @@ require([
     "hr/args",
     "resources/init",
     "core/application",
+    "core/commands",
     "core/packages",
     "core/users",
+    "core/settings",
     "utils/dialogs",
     "utils/menu",
     "models/file"
-], function(_, $, Q, hr, args, resources, app, packages, users, dialogs, menu, File) {
+], function(_, $, Q, hr, args, resources, app, commands, packages, users, settings, dialogs, menu, File) {
     // Create the global object for packages
     window.codebox = {
         require: require,
         app: app,
-        root: new File()
+        root: new File(),
+        settings: settings
     };
+
+    commands.register({
+        id: "settings.open",
+        title: "Settings: Open",
+        shortcuts: [
+            "mod+,"
+        ],
+        run: function(args, context) {
+            return commands.run("file.open", {
+                file: settings.getFile()
+            });
+        }
+    });
 
     // Start running the applications
     resources()
