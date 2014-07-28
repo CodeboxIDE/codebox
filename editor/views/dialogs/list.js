@@ -2,8 +2,9 @@ define([
     "hr/utils",
     "hr/dom",
     "hr/hr",
+    "utils/string",
     "views/dialogs/input"
-], function(_, $, hr, DialogInputView) {
+], function(_, $, hr, string, DialogInputView) {
     var ListItem = hr.List.Item.extend({
         className: "list-item",
 
@@ -82,9 +83,14 @@ define([
         searchText: function(model, q) {
             var t = this.options.textIndex(model);
 
+            var words = q.split("")
+
             t = t.toLowerCase();
             q = q.toLowerCase();
-            return t.search(q) !== -1;
+
+            return _.every(q.split(" "), function(_q) {
+                return t.search(_q) !== -1;
+            });
         },
 
         doSearch: function(query) {
