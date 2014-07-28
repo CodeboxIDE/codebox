@@ -61,7 +61,6 @@
         "tabs": "CodeboxIDE/package-tabs",
         "editor": "CodeboxIDE/package-editor",
         "terminal": "CodeboxIDE/package-terminal",
-        "settings": "CodeboxIDE/package-settings",
         "pkgcontrol": "CodeboxIDE/package-pkgcontrol",
         "statusbar": "CodeboxIDE/package-statusbar",
         "watcher": "CodeboxIDE/package-watcher",
