@@ -1,9 +1,10 @@
 define([
     "hr/hr",
+    "hr/utils",
     "hr/promise",
     "models/package",
     "core/rpc"
-], function(hr, Q, Package, rpc) {
+], function(hr, _, Q, Package, rpc) {
     var Packages = hr.Collection.extend({
         model: Package,
 
@@ -14,20 +15,34 @@ define([
 
         loadAll: function() {
             var that = this;
-            var errors = {};
+            var errors = [];
 
             return this.listAll()
             .then(function() {
                 return that.reduce(function(prev, pkg) {
+                    errors = errors.concat(_.map(pkg.get("errors"), function(e) {
+                        return {
+                            'name': pkg.get("name"),
+                            'error': e
+                        };
+                    }));
+
                     return prev.then(pkg.load.bind(pkg))
                     .fail(function(err) {
-                        errors[pkg.get("name")] = err;
+                        errors.push({
+                            'name': pkg.get("name"),
+                            'error': err
+                        });
                         return Q();
                     });
                 }, Q());
             })
             .then(function() {
-                if (_.size(errors) > 0) return Q.reject(errors);
+                if (errors.length > 0) {
+                    var e = new Error("Error loading packages");
+                    e.errors = errors;
+                    return Q.reject(e);
+                }
             });
         }
     });

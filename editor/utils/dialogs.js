@@ -48,9 +48,13 @@ alertTemplate, confirmTemplate, promptTemplate, schemaTemplate) {
 
     // Alert
     var openAlert = function(text, options) {
+        options = _.defaults(options || {}, {
+            isHtml: false
+        });
         return openInput({
             template: alertTemplate,
-            text: text
+            text: text,
+            isHtml: options.isHtml
         });
     };
     var openErrorAlert = function(err) {

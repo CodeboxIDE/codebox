@@ -40,6 +40,19 @@ require([
     .then(codebox.root.stat.bind(codebox.root))
     .then(settings.load.bind(settings))
     .then(users.listAll.bind(users))
-    .then(packages.loadAll.bind(packages))
-    .then(app.run.bind(app));
+    .then(function() {
+        return packages.loadAll()
+        .fail(function(err) {
+            var message = "<p>"+err.message+"</p>";
+            if (err.errors) {
+                message += "<ul>"+ _.map(err.errors, function(e) {
+                    return "<li><b>"+_.escape(e.name)+"</b>: "+_.escape(e.error)+"</li>";
+                }).join("\n")+ "</ul>";
+            }
+
+            return dialogs.alert(message, { html: true })
+        });
+    })
+    .then(app.run.bind(app))
+
 });

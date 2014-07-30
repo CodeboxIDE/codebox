@@ -5,7 +5,8 @@ define([
 
     var Package = hr.Model.extend({
         defaults: {
-            name: null
+            name: null,
+            errors: []
         },
         idAttribute: "name",
 
@@ -55,7 +56,7 @@ define([
                 d.resolve()
             }, function(err) {
                 logging.error(err);
-                d.resolve(err);
+                d.reject(err);
             });
 
             return d.promise.timeout(5000, "This addon took to long to load (> 5seconds)");
