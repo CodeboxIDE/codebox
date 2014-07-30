@@ -60,7 +60,8 @@ module.exports = function (grunt) {
                 // Static files map
                 "static": {
                     "fonts": path.resolve(srcPath, "resources/fonts"),
-                    "images": path.resolve(srcPath, "resources/images")
+                    "images": path.resolve(srcPath, "resources/images"),
+                    "fonts/octicons": path.resolve(srcPath, "vendors/octicons/octicons")
                 },
 
                 // Vendors
