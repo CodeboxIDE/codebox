@@ -1,0 +1,23 @@
+input {
+    background: @input-background;
+    color: @input-color;
+    border: @input-border-size solid @input-border-color;
+    padding: @input-padding;
+
+    &:hover, &:focus {
+        outline: none;
+    }
+}
+
+.form-group {
+    margin: 5px 0px;
+
+    label {
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    input, button {
+        width: 100%;
+    }
+}

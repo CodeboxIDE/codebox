@@ -1,0 +1,23 @@
+<p><%- options.schema.title %></p>
+
+<%
+_.each(options.schema.properties, function(property, key) {
+    var value = options.defaultValues[key] || property.default;
+%>
+    <% if (property.type == "string") { %>
+    <div class="form-group">
+        <label><%- property.description %></label>
+        <input type="<%- (property.password? "password" : "text") %>" class="form-control" name="<%- key %>" value="<%- value %>" />
+    </div>
+    <% } else if (property.type == "integer") { %>
+    <div class="form-group">
+        <label><%- property.description %></label>
+        <input type="number" class="form-control" name="<%- key %>" value="<%- value %>" step="<%- property.multipleOf || 1 %>" min="<%- property.minimum || 0 %>" max="<%- property.maximum || 10000 %>" />
+    </div>
+    <% } %>
+<% }); %>
+
+<div class="actions">
+    <button class="btn do-confirm"><%- options.ok || "Ok" %></button>
+    <button class="btn do-close"><%- options.cancel || "Cancel" %></button>
+</div>

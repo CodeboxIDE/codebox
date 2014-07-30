@@ -1,0 +1,14 @@
+.button {
+    background: @button-background;
+    color: @button-color;
+    border: @button-border-size solid @button-border-color;
+    padding: @button-padding;
+
+    &:hover, &:focus {
+        outline: none;
+    }
+}
+
+button {
+    .button();
+}

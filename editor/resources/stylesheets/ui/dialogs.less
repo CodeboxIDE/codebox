@@ -1,0 +1,32 @@
+.component-dialog {
+    position: absolute;
+    z-index: 1000;
+
+    top: 0px;
+    left: 50%;
+
+    width: @dialog-size-medium;
+    margin-left: -@dialog-size-medium/2;
+
+    background: @color-1;
+
+    &.size-large {
+        width: @dialog-size-large;
+        margin-left: -@dialog-size-large/2;
+    }
+
+    &.size-small {
+        width: @dialog-size-small;
+        margin-left: -@dialog-size-small/2;
+    }
+
+    .dialog-list {
+        input {
+            width: 100%;
+        }
+    }
+
+    .dialog-input {
+        padding: 5px;
+    }
+}

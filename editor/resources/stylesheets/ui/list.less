@@ -1,0 +1,36 @@
+.ui-content-list {
+    list-style: none;
+
+    margin: 0px;
+    padding: 0px;
+
+    background: @color-7;
+    color: @color-1;
+
+    overflow-y: auto;
+    max-height: @dialog-list-maxheight;
+
+    .list-item {
+        padding: 0px;
+
+        .item-text {
+            display: inline-block;
+            padding: 5px;
+        }
+
+        .item-badge {
+            display: inline-block;
+            float: right;
+            font-size: @font-size-small;
+            padding: 5px;
+        }
+
+        &.active {
+            background: @color-11;
+        }
+
+        &.hr-list-fiter-on {
+            .hidden();
+        }
+    }
+}

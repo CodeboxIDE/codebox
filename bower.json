@@ -1,0 +1,7 @@
+{
+    "name": "Codebox",
+    "dependencies": {
+        "mousetrap": "1.4.6",
+        "bower-sockjs-client": "0.3.4"
+    }
+}

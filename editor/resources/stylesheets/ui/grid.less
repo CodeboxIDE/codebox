@@ -1,0 +1,46 @@
+.component-grid {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+
+    .grid-section {
+        position: absolute;
+
+        .grid-section-content {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            left: 0px;
+            bottom: 0px;
+
+            &.with-bar-h {
+                right: 3px;
+            }
+            &.with-bar-v {
+                bottom: 3px;
+            }
+        }
+
+        .grid-resize-bar-v {
+            position: absolute;
+            right: 0px;
+            height: 3px;
+            left: 0px;
+            bottom: 0px;
+            background: transparent;
+            cursor: row-resize;
+        }
+
+        .grid-resize-bar-h {
+            position: absolute;
+            right: 0px;
+            width: 3px;
+            top: 0px;
+            bottom: 0px;
+            background: transparent;
+            cursor: col-resize;
+        }
+    }
+}
