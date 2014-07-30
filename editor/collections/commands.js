@@ -30,7 +30,7 @@ define([
         run: function(cmd, args) {
 
             cmd = this.get(cmd);
-            if (!cmd) return Q.reject(new Error("Command not found: '"+parts[0]+"'"));
+            if (!cmd) return Q.reject(new Error("Command not found: '"+cmd+"'"));
 
             return cmd.run(args);
         },
