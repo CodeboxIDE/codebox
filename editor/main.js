@@ -27,6 +27,7 @@ require([
     commands.register({
         id: "settings.open",
         title: "Settings: Open",
+        icon: "gear",
         shortcuts: [
             "mod+,"
         ],
