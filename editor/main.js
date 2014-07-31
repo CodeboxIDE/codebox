@@ -8,16 +8,18 @@ require([
     "core/application",
     "core/commands",
     "core/packages",
+    "core/user",
     "core/users",
     "core/settings",
     "utils/dialogs",
     "utils/menu",
     "models/file"
-], function(_, $, Q, hr, args, resources, app, commands, packages, users, settings, dialogs, menu, File) {
+], function(_, $, Q, hr, args, resources, app, commands, packages, user, users, settings, dialogs, menu, File) {
     // Create the global object for packages
     window.codebox = {
         require: require,
         app: app,
+        user: user,
         root: new File(),
         settings: settings
     };
@@ -37,7 +39,8 @@ require([
 
     // Start running the applications
     resources()
-    .then(codebox.root.stat.bind(codebox.root))
+    .then(codebox.user.whoami.bind(codebox.user))
+    .then(codebox.root.stat.bind(codebox.root, "./"))
     .then(settings.load.bind(settings))
     .then(users.listAll.bind(users))
     .then(function() {

@@ -1,7 +1,8 @@
 define([
     "hr/hr",
-    "hr/utils"
-], function(hr, _) {
+    "hr/utils",
+    "core/rpc"
+], function(hr, _, rpc) {
     var logging = hr.Logger.addNamespace("users");
 
     var User = hr.Model.extend({
@@ -9,7 +10,18 @@ define([
             id: null,
             name: null,
             email: null
-        }
+        },
+
+        // Identify the logged in user
+        whoami: function() {
+            var that = this;
+
+            return rpc.execute("users/whoami")
+            .then(function(data) {
+                return that.set(data);
+            })
+            .thenResolve(that);
+        },
     });
 
     return User;
