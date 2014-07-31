@@ -1,8 +1,9 @@
 define([
     "hr/utils",
     "hr/dom",
-    "hr/hr"
-], function(_, $, hr) {
+    "hr/hr",
+    "views/form"
+], function(_, $, hr, FormView) {
     var DialogInputView = hr.View.extend({
         className: "dialog-input",
         defaults: {

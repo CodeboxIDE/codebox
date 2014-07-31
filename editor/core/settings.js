@@ -92,6 +92,15 @@ define([
         load: function() {
             return rpc.execute("settings/get")
             .then(_.partialRight(this.importJSON, { save: false }).bind(this));
+        },
+
+        // Return as a schema
+        toSchema: function() {
+            return {
+                title: "Settings",
+                type: "array",
+                items: this.schemas.toJSON()
+            };
         }
     });
 
