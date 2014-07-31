@@ -61,6 +61,7 @@
         "files-tree": "CodeboxIDE/package-files-tree",
         "tabs": "CodeboxIDE/package-tabs",
         "editor": "CodeboxIDE/package-editor",
+        "editorsync": "CodeboxIDE/package-editorsync",
         "terminal": "CodeboxIDE/package-terminal",
         "pkgcontrol": "CodeboxIDE/package-pkgcontrol",
         "statusbar": "CodeboxIDE/package-statusbar",
