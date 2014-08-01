@@ -37,7 +37,7 @@ define([
         },
 
         getDefaults: function(schema) {
-            return _getDefaults(this.get("schema"));
+            return _getDefaults(this.toJSON().schema || {});
         },
 
         getData: function() {
