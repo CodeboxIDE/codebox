@@ -98,8 +98,14 @@ define([
         toSchema: function() {
             return {
                 title: "Settings",
-                type: "array",
-                items: this.schemas.toJSON()
+                type: "object",
+                properties: _.chain(this.schemas.models)
+                .map(function(sch) {
+                    sch = sch.toJSON();
+                    return [sch.id, sch.schema];
+                })
+                .object()
+                .value()
             };
         }
     });
