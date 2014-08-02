@@ -3,6 +3,7 @@
     "dependencies": {
         "mousetrap": "1.4.6",
         "octicons": "2.0.2",
-        "bower-sockjs-client": "0.3.4"
+        "bower-sockjs-client": "0.3.4",
+        "moment": "2.7.0"
     }
 }

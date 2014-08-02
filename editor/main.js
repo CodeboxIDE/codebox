@@ -13,7 +13,8 @@ require([
     "core/settings",
     "utils/dialogs",
     "utils/menu",
-    "models/file"
+    "models/file",
+    "utils/date"
 ], function(_, $, Q, hr, args, resources, app, commands, packages, user, users, settings, dialogs, menu, File) {
     // Create the global object for packages
     window.codebox = {
