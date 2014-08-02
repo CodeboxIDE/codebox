@@ -68,7 +68,8 @@
         "watcher": "CodeboxIDE/package-watcher",
         "panels": "CodeboxIDE/package-panels",
         "find": "CodeboxIDE/package-find",
-        "git": "CodeboxIDE/package-git"
+        "git": "CodeboxIDE/package-git",
+        "settings": "CodeboxIDE/package-settings"
     },
     "scripts": {
         "test": "export TESTING=true; mocha --reporter list"
