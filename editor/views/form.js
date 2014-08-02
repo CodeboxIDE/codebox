@@ -90,7 +90,7 @@ define([
 
             _.each(this.options.schema.properties, function(property, propertyName) {
                 var value = values[propertyName];
-                var prefixs = _.compact([this.options.prefix, propertyName]);
+                var prefixs = _.compact(this.options.prefix.split(".").concat([propertyName]));
 
                 var $property = $("<div>", {
                     'class': "schema-property type-"+property.type
@@ -111,7 +111,7 @@ define([
                     var schema = new SchemaView({
                         'schema': property,
                         'values': value || {},
-                        'prefix': propertyName
+                        'prefix': prefixs.join(".")
                     });
                     schema.$el.appendTo($property);
                     schema.update();
