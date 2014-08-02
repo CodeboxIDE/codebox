@@ -90,15 +90,23 @@ define([
 
             _.each(this.options.schema.properties, function(property, propertyName) {
                 var value = values[propertyName];
+                var prefixs = _.compact([this.options.prefix, propertyName]);
+
                 var $property = $("<div>", {
                     'class': "schema-property type-"+property.type
                 });
+
+                // Create label
                 var $title = $("<label>", {
-                    'class': "property-label",
-                    'text': property.title || property.description
+                    'class': "property-label level-"+prefixs.length,
+                    'text': property.title || property.description,
+                    'css': {
+                        'paddingLeft': prefixs.length*20
+                    }
                 });
                 $title.appendTo($property);
 
+                // Handle subschema
                 if (property.type == "object") {
                     var schema = new SchemaView({
                         'schema': property,
@@ -107,16 +115,21 @@ define([
                     });
                     schema.$el.appendTo($property);
                     schema.update();
-                } else {
+                }
+                else
+                // Handle normal fields
+                {
                     var renderer = RENDERER[property.type];
-                    var $input = renderer(_.compact([this.options.prefix, propertyName]).join("."), property, value);
+                    var $input = renderer(prefixs.join("."), property, value);
                     $input.attr("data-getter", property.type);
 
-                    $input.appendTo($property);
+                    var $inputContainer = $("<div>", {
+                        'class': "property-input"
+                    });
 
+                    $input.appendTo($inputContainer);
+                    $inputContainer.prependTo($property);
                 }
-
-
 
                 $property.appendTo(this.$el);
             }, this);

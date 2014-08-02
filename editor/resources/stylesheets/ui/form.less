@@ -1,4 +1,4 @@
-input {
+input, select {
     background: @input-background;
     color: @input-color;
     border: @input-border-size solid @input-border-color;
@@ -17,17 +17,41 @@ input {
         display: block;
     }
 
-    input, button {
+    input, button, select {
         width: 100%;
     }
 }
 
 .component-form {
+    .form-content {
+        padding: 0px 20px;
+    }
+
     .form-schema {
-        margin: 12px 20px;
+        margin: 12px 0px;
 
         .schema-property {
+            .clearfix();
 
+            .property-label {
+                display: block;
+                width: 50%;
+                padding: 5px;
+
+                &.level-1 {
+                    color: @color-11;
+                }
+            }
+
+            .property-input {
+                width: 50%;
+                max-width: 250px;
+                float: right;
+
+                input, button, select {
+                    width: 100%;
+                }
+            }
         }
     }
 }
