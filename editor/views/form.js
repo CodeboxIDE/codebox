@@ -1,9 +1,8 @@
 define([
     "hr/utils",
     "hr/dom",
-    "hr/hr",
-    "text!resources/templates/form.html"
-], function(_, $, hr, formTemplate) {
+    "hr/hr"
+], function(_, $, hr) {
 
     var GETTER = {
         'boolean': function() {
@@ -142,13 +141,8 @@ define([
         className: "component-form",
         defaults: {
             schema: {},
-            values: {},
-            submit: "Submit"
+            values: {}
         },
-        events: {
-            "click .form-submit button": "onSubmit"
-        },
-        template: formTemplate,
 
         initialize: function() {
             FormView.__super__.initialize.apply(this, arguments);
@@ -158,26 +152,8 @@ define([
                 schema: this.options.schema,
                 values: this.options.values
             });
+            this.schema.appendTo(this);
             this.schema.update();
-        },
-
-        templateContext: function() {
-            return {
-                options: this.options
-            };
-        },
-
-        render: function() {
-            this.schema.detach();
-            this.schema.update();
-
-            return FormView.__super__.render.apply(this, arguments);
-        },
-
-        finish: function() {
-            this.schema.$el.appendTo(this.$(".form-content"));
-
-            return FormView.__super__.finish.apply(this, arguments);
         },
 
         // Extract all new values
@@ -193,11 +169,6 @@ define([
             });
 
             return m.toJSON();
-        },
-
-        // On submit
-        onSubmit: function(e) {
-            this.trigger("submit", this.getValues());
         }
     });
 
