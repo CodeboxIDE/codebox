@@ -61,13 +61,6 @@ define([
             }));
 
             return $select;
-        },
-
-        'array': function() {
-            return $("<button>", {
-                "class": "button",
-                "text": "Add"
-            });
         }
     };
 
@@ -89,8 +82,14 @@ define([
             this.$el.empty();
 
             _.each(this.options.schema.properties, function(property, propertyName) {
+                // Value for this property
                 var value = values[propertyName];
+
+                // prefix for the property name (as array)
                 var prefixs = _.compact(this.options.prefix.split(".").concat([propertyName]));
+
+                // ignore array for the moment
+                if (property.type == "array") return;
 
                 var $property = $("<div>", {
                     'class': "schema-property type-"+property.type
