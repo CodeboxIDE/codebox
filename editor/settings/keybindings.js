@@ -30,8 +30,13 @@ define([
         var bindings = keyBindings.data.get("commands");
         var bind = _.find(bindings, { 'command': cmd.id });
 
-        if (!bind) return;
-        cmd.set("shortcuts", bind.keys);
+        if (!bind) {
+            if (cmd.get("originalShortcuts")) cmd.set("shortcuts", cmd.get("originalShortcuts"));
+        } else {
+            if (!cmd.get("originalShortcuts")) cmd.set("originalShortcuts", cmd.get("shortcuts"));
+            cmd.del("shortcuts", { silent: true });
+            cmd.set("shortcuts", bind.keys);
+        }
     };
 
     // Update all commands

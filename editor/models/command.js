@@ -53,7 +53,7 @@ define([
         // Bind keyboard shortcuts
         bindKeyboard: function() {
             this.unbindKeyboard();
-            this._shortcuts = this.get("shortcuts", []);
+            this._shortcuts = _.clone(this.get("shortcuts", []));
             keyboard.bind(this._shortcuts, this.justRun, this);
         },
 

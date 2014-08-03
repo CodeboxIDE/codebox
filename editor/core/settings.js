@@ -55,6 +55,7 @@ define([
             this.settings = data;
 
             this.schemas.each(function(schema) {
+                schema.data.clear({ silent: true });
                 schema.data.set(_.defaults(this.settings[schema.id] || {}, schema.getDefaults()), {
                     silent: options.silent
                 });
