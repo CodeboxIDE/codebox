@@ -164,7 +164,6 @@ define([
                 var getter = GETTER[$(this).data("getter")];
                 var value = getter.apply($(this));
 
-                console.log("get", name, value);
                 m.set(name, value);
             });
 
