@@ -169,6 +169,12 @@ define([
             });
 
             return m.toJSON();
+        },
+
+        // Update values in form
+        setValues: function(values) {
+            this.schema.options.values = values;
+            return this.schema.update();
         }
     });
 

@@ -28,8 +28,13 @@ define([
                 save: false,
                 silent: false
             });
+            var sch = this.schemas.get(id);
 
-            return this.schema(id);
+            this.listenTo(sch.data, "change", function() {
+                this.trigger("change");
+            });
+
+            return sch;
         },
 
         // Export
