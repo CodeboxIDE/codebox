@@ -57,7 +57,7 @@ define([
          */
         unbind: function(keys, context, callback) {
             if (_.isArray(keys)) {
-                _.each(keys, function(key) { this.unbind(key, callback) }, this);
+                _.each(keys, function(key) { this.unbind(key, context, callback) }, this);
                 return;
             }
 
