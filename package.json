@@ -42,7 +42,8 @@
         "commander": "2.3.0",
         "open": "0.0.5",
         "ini": "1.2.1",
-        "basic-auth-connect": "1.0.0"
+        "basic-auth-connect": "1.0.0",
+        "connect-multiparty": "1.1.0"
     },
     "devDependencies": {
         "mocha": "1.18.2",

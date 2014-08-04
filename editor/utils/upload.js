@@ -21,7 +21,8 @@ define([
 
     var Uploader = hr.Class.extend({
         defaults: {
-            url: ""
+            url: "",
+            data: {}
         },
 
         /*
@@ -122,51 +123,48 @@ define([
 
             logging.log("upload file ", filename, " in ", that.options.url, file.size,"/", file.size);
 
-            var send = function(e){
-                var xhr = new XMLHttpRequest(),
-                    upload = xhr.upload,
-                    start_time = new Date().getTime(),
-                    uploadurl = that.options.url.replace(":file", filename);
+            var xhr = new XMLHttpRequest(),
+                upload = xhr.upload,
+                start_time = new Date().getTime(),
+                uploadurl = that.options.url.replace(":file", filename);
 
-                if (e.target.result == null) {
-                    error(new Error("Error reading file"));
+            logging.log("start uploading ", filename);
+
+            upload.file = file;
+            upload.downloadStartTime = start_time;
+            upload.currentStart = start_time;
+            upload.currentProgress = 0;
+            upload.startData = 0;
+            upload.addEventListener("progress",function(e){
+                if (e.lengthComputable) {
+                    var percentage = Math.round((e.loaded * 100) / file.size);
+                    progress(percentage);
+                }
+            }, false);
+
+            xhr.open("PUT", uploadurl, true);
+            xhr.onreadystatechange = function(e){
+                if (xhr.status != 200)  {
+                    error(new Error(xhr.status+": "+xhr.responseText));
+                    e.preventDefault();
                     return;
-                }
-
-                logging.log("start uploading ", filename);
-
-                upload.file = file;
-                upload.downloadStartTime = start_time;
-                upload.currentStart = start_time;
-                upload.currentProgress = 0;
-                upload.startData = 0;
-                upload.addEventListener("progress",function(e){
-                    if (e.lengthComputable) {
-                        var percentage = Math.round((e.loaded * 100) / file.size);
-                        progress(percentage);
-                    }
-                }, false);
-
-                xhr.open("PUT", uploadurl, true);
-                xhr.onreadystatechange = function(e){
-                    if (xhr.status != 200)  {
-                        error(new Error(xhr.status+": "+xhr.responseText));
-                        e.preventDefault();
-                        return;
-                   }
-                };
-                xhr.sendAsBinary(e.target.result);
-                progress(0);
-                xhr.onload = function() {
-                    if (xhr.status == 200) {
-                        end(xhr.responseText || "");
-                    }
-                }
+               }
             };
 
-            var reader = new FileReader();
-            reader.onloadend = send;
-            reader.readAsBinaryString(file);
+            var formData = new FormData();
+            formData.append(filename, file);
+            _.each(that.options.data, function(v, k) {
+                formData.append(k, v);
+            });
+
+            progress(0);
+            xhr.onload = function() {
+                if (xhr.status == 200) {
+                    end(xhr.responseText || "");
+                }
+            }
+
+            xhr.send(formData);
 
             return d.promise;
         }
@@ -177,14 +175,13 @@ define([
 
             options = _.defaults({}, options || {}, {
                 'url': null,
+                'data': {},
                 'directory': false,
                 'multiple': true
             });
 
             // Uploader
-            var uploader = new Uploader({
-                "url": options.url
-            });
+            var uploader = new Uploader(options);
 
             var $f = $("input.cb-file-uploader");
             if ($f.length == 0) {
