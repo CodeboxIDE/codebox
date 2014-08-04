@@ -15,7 +15,8 @@ require([
     "utils/menu",
     "models/file",
     "utils/date",
-    "settings/keybindings"
+    "settings/keybindings",
+    "utils/upload"
 ], function(_, $, Q, hr, args, resources, app, commands, packages, user, users, settings, dialogs, menu, File) {
     // Create the global object for packages
     window.codebox = {
