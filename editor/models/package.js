@@ -22,7 +22,7 @@ define([
         /**
          * Load the addon
          */
-        load: function(config, imports) {
+        load: function() {
             var context, main, pkgRequireConfig, pkgRequire, that = this
             var d = Q.defer();
 
