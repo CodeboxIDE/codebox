@@ -95,6 +95,7 @@ define([
                 'path': path
             })
             .then(function(file) {
+                that.del("buffer", { silent: true });
                 return that.set(file);
             })
             .thenResolve(that);
