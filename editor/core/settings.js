@@ -79,7 +79,9 @@ define([
             var code = JSON.stringify(this.exportJson(), null, 4);
 
             // Build the file buffer
-            var f = File.buffer("Codebox Settings.json", code, "codebox-settings.json");
+            var f = File.buffer("Codebox Settings.json", code, "codebox-settings.json", {
+                saveAsFile: false
+            });
 
             // Handle write operations
             this.listenTo(f, "write", function(data) {

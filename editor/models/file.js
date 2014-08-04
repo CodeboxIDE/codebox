@@ -5,8 +5,9 @@ define([
     "core/rpc",
     "core/commands",
     "core/events",
-    "utils/hash"
-], function(hr, _, Q, rpc, commands, events, hash) {
+    "utils/hash",
+    "utils/dialogs"
+], function(hr, _, Q, rpc, commands, events, hash, dialogs) {
     var File = hr.Model.extend({
         defaults: {
             path: null,
@@ -22,6 +23,10 @@ define([
         // Initialize
         initialize: function() {
             File.__super__.initialize.apply(this, arguments);
+
+            this.options = _.defaults(this.options, {
+                saveAsFile: true
+            });
 
             this.listenTo(events, "e:fs:modified", _.partial(this._dispatchFsEvent, "modified"));
             this.listenTo(events, "e:fs:deleted", _.partial(this._dispatchFsEvent, "deleted"));
@@ -161,6 +166,27 @@ define([
         // Get by extension
         getExtension: function() {
             return "."+this.get("name").split('.').pop();
+        },
+
+        // Save file
+        save: function(content) {
+            var that = this;
+
+            return Q()
+            .then(function() {
+                if (!that.isBuffer() || !that.options.saveAsFile) return that.write(content);
+
+                return dialogs.prompt("Save as:", that.get("name"))
+                .then(function(_path) {
+                    return rpc.execute("fs/write", {
+                        'path': _path,
+                        'content': hash.btoa(content)
+                    })
+                    .then(function() {
+                        return that.stat(_path);
+                    });
+                });
+            });
         }
     }, {
         // Get a specific file
@@ -171,8 +197,8 @@ define([
         },
 
         // Create a file buffer
-        buffer: function(name, content, id) {
-            var f = new File({}, {
+        buffer: function(name, content, id, options) {
+            var f = new File(options || {}, {
                 'name': name,
                 'buffer': content,
                 'path': "buffer://"+(id || _.uniqueId("tmp")),
