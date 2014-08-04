@@ -180,11 +180,13 @@ define([
                 .then(function(_path) {
                     return rpc.execute("fs/write", {
                         'path': _path,
-                        'content': hash.btoa(content)
+                        'content': hash.btoa(content),
+                        'override': false
                     })
                     .then(function() {
                         return that.stat(_path);
-                    });
+                    })
+                    .fail(dialogs.error);
                 });
             });
         }
