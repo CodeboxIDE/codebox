@@ -9,7 +9,8 @@ define([
         defaults: {
             id: null,
             name: null,
-            email: null
+            email: null,
+            color: null
         },
 
         // Identify the logged in user
