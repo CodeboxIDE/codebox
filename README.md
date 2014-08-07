@@ -34,21 +34,30 @@ $ npm install -g codebox
 
 And start the IDE from the command line:
 ```
-$ codebox --root=./myworkspace --open
+$ codebox run ./myworkspace --open
 ```
 
 Use this command to run and open Codebox IDE. By default, Codebox uses GIT to identify you, you can use the option ```--email=john.doe@gmail.com``` to define the email you want to use during GIT operations.
 
 Others comand line options are available and can be list with: ```codebox --help```. For deeper configuration, take a look at the documentation about [environment variables](http://help.codebox.io/ide/env.html).
 
+#### Commands
+```
+run [path]                      Run a Codebox into a specific folder.
+```
+
 #### Command line options
 
 ```
--h, --help              output usage information
--V, --version           output the version number
--r, --root [path]       Root folder for the workspace, default is current directory
--t, --templates [list]  Configuration templates, separated by commas
--p, --port [port]       HTTP port
+-h, --help                      output usage information
+-V, --version                   output the version number
+-t, --templates [list]          configuration templates, separated by commas
+-n, --hostname [http hostname]  hostname to run the IDE on
+-p, --port [port]               HTTP port to run the IDE on
+-o, --open                      open the IDE in your default browser
+-t, --title [project title]     title for the project
+-s, --sample [project type]     replace directory content with a sample (warning: erases all content)
+-u, --users [list users]        list of comma-separated users and passwords (formatted as "username:password") for authentication
 ```
 
 #### Developing and testing packages
@@ -65,6 +74,13 @@ $ grunt
 Then you can easily link packages for testing by creating a folder that will contains all your packages (each should start with the prefix `package-`), then run the command `grunt link --origin=../mypackages`. This command will create symlinks between all the packages in `../mypackages` and the folder where are stored packages used by codebox.
 
 Everytime you update the code of your package, simply run `grunt resetPkg --pkg=mypackage` in it and restart codebox.
+
+#### Examples
+
+```
+$ codebox run
+$ codebox run ./myProject
+```
 
 #### Need help?
 
