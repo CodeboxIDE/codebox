@@ -58,7 +58,7 @@ Others comand line options are available and can be list with: ```codebox --help
 Download and build the source code:
 
 ```
-$ git clone -b new https://github.com/CodeboxIDE/codebox.git
+$ git clone https://github.com/CodeboxIDE/codebox.git
 $ cd ./codebox
 $ npm install .
 $ grunt
