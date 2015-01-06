@@ -68,7 +68,6 @@ cli.command('run [folder]')
         return x.split(':', 2);
     }));
 
-
     var config = {
         'root': that.directory,
         'title': that.title,

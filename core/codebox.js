@@ -13,7 +13,6 @@ var LOCAL_SETTINGS_DIR = path.join(
 );
 
 var start = function(config) {
-    var codeboxGitRepo = new Gittle(path.resolve(__dirname, ".."));
     var prepare = Q();
 
     // Options
@@ -83,6 +82,8 @@ var start = function(config) {
 
     // Normalize root path
     config.root = path.resolve(process.cwd(), config.root);
+
+    var codeboxGitRepo = new Gittle(config.root);
 
     // Default title
     if (config.title == null) {
