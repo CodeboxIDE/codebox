@@ -83,7 +83,7 @@ define([
                 }
             }, register);
 
-            return d.promise.timeout(5000, "This addon took to long to load (> 5seconds)");
+            return d.promise.timeout(60000, "This addon took to long to load (> 60 seconds)");
         },
 
         /**
