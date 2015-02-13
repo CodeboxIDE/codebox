@@ -70,7 +70,8 @@
         "panels": "CodeboxIDE/package-panels",
         "find": "CodeboxIDE/package-find",
         "git": "CodeboxIDE/package-git",
-        "settings": "CodeboxIDE/package-settings"
+        "settings": "CodeboxIDE/package-settings",
+        "menubar": "CodeboxIDE/package-menubar"
     },
     "scripts": {
         "test": "export TESTING=true; mocha --reporter list"
