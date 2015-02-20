@@ -1,6 +1,6 @@
 {
     "name": "codebox",
-    "version": "0.8.1",
+    "version": "0.8.2",
     "description": "Open source cloud & desktop IDE.",
     "homepage": "https://www.codebox.io",
     "author": "FriendCode Inc. <contact@friendco.de>",
@@ -20,7 +20,7 @@
         "express": "3.3.5",
         "socket.io": "0.9.16",
         "loadfire": "1.3.4",
-        "shux": "git+https://github.com/SamyPesse/shux.git#3abe4c6074013791eac0d055c63ed70b3197e7f4",
+        "shux": "1.0.0",
         "vfs-http-adapter": "git+https://github.com/AaronO/vfs-http-adapter.git#6c9934e4f2da7886310397170b6ebaf745833936",
         "vfs-local": "git+https://github.com/FriendCode/vfs-local.git#af6bafede0ccb9fb362a0c280e708648f7363f33",
         "watchr": "2.4.11",
