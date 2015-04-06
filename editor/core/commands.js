@@ -1,7 +1,3 @@
-define([
-    "collections/commands"
-], function(Commands) {
-    var commands = new Commands();
+var Commands = require("../collections/commands");
 
-    return commands;
-});
+module.exports = new Commands();

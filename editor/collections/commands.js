@@ -1,50 +1,48 @@
-define([
-    "hr/hr",
-    "hr/utils",
-    "hr/promise",
-    "models/command"
-], function(hr, _, Q, Command) {
-    var logging = hr.Logger.addNamespace("commands");
+var Q = require("q");
+var _ = require("hr.utils");
+var Collection = require("hr.collection");
+var logger = require("hr.logger")("commands");
 
-    var Commands = hr.Collection.extend({
-        model: Command,
+var Command = require("../models/command");
 
-        // Initialize
-        initialize: function() {
-            Commands.__super__.initialize.apply(this, arguments);
+var Commands = hr.Collection.extend({
+    model: Command,
 
-            this.context = {};
-        },
+    // Initialize
+    initialize: function() {
+        Commands.__super__.initialize.apply(this, arguments);
 
-        // Register a new command
-        register: function(cmd) {
-            if (_.isArray(cmd)) return _.map(cmd, this.register, this);
+        this.context = {};
+    },
 
-            var c = this.get(cmd.id);
-            if (c) this.remove(c);
+    // Register a new command
+    register: function(cmd) {
+        if (_.isArray(cmd)) return _.map(cmd, this.register, this);
 
-            return this.add(cmd);
-        },
+        var c = this.get(cmd.id);
+        if (c) this.remove(c);
 
-        // Run a command
-        run: function(cmd, args) {
+        return this.add(cmd);
+    },
 
-            cmd = this.get(cmd);
-            if (!cmd) return Q.reject(new Error("Command not found: '"+cmd+"'"));
+    // Run a command
+    run: function(cmd, args) {
 
-            return cmd.run(args);
-        },
+        cmd = this.get(cmd);
+        if (!cmd) return Q.reject(new Error("Command not found: '"+cmd+"'"));
 
-        // Set context
-        setContext: function(id, data) {
-            logging.log("update context", id);
-            this.context = {
-                'type': id,
-                'data': data
-            };
-            this.trigger("context", this.context);
-        }
-    });
+        return cmd.run(args);
+    },
 
-    return Commands;
+    // Set context
+    setContext: function(id, data) {
+        logging.log("update context", id);
+        this.context = {
+            'type': id,
+            'data': data
+        };
+        this.trigger("context", this.context);
+    }
 });
+
+module.exports = Commands;

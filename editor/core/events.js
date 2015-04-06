@@ -1,16 +1,14 @@
-define([
-    "hr/hr",
-    "core/socket"
-], function(hr, Socket) {
-    var logging = hr.Logger.addNamespace("events");
+var logger = require("hr.logger")("events");
 
-    var events = new Socket({
-        service: "events"
-    });
+var Socket = require("./socket");
 
-    events.on("do:report", function(e) {
-        events.trigger("e:"+e.event, e.data);
-    });
-
-    return events;
+// Create a socket connected to the events namespace from backend
+var events = new Socket({
+    service: "events"
 });
+
+events.on("do:report", function(e) {
+    events.trigger("e:"+e.event, e.data);
+});
+
+module.exports = events;

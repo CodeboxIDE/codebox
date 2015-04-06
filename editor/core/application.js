@@ -1,44 +1,36 @@
-define([
-    "hr/utils",
-    "hr/dom",
-    "hr/promise",
-    "hr/hr",
-    "views/grid",
-    "core/commands",
-    "core/packages"
-], function(_, $, Q, hr, GridView, commands, packages) {
-    // Define base application
-    var Application = hr.Application.extend({
-        el: null,
-        className: "main-application",
-        name: "Codebox",
-        events: {
+var _ = require("hr.utils");
+var $ = require("jquery");
+var Q = require("q");
 
-        },
-        routes: {},
+var Application = require("hr.app");
+var GridView = require("hr.gridview");
 
-        initialize: function() {
-            Application.__super__.initialize.apply(this, arguments);
+// Define base application
+var CodeboxApplication = Application.extend({
+    el: null,
+    className: "main-application",
+    name: "Codebox",
+    events: {},
+    routes: {},
 
-            this.grid = new GridView({
-                columns: 10
-            }, this);
-            this.grid.$el.addClass("main-grid");
-            this.grid.appendTo(this);
-        },
+    initialize: function() {
+        Application.__super__.initialize.apply(this, arguments);
 
-        render: function() {
-            return this.ready();
-        },
+        this.grid = new GridView({
+            columns: 10
+        }, this);
+        this.grid.$el.addClass("main-grid");
+        this.grid.appendTo(this);
+    },
 
-        run: function() {
-            $(".main-authentication").remove();
-            this.$el.appendTo($("body"));
+    render: function() {
+        return this.ready();
+    },
 
-            return Application.__super__.run.apply(this, arguments);
-        },
-    });
-
-    var app = new Application();
-    return app;
+    start: function() {
+        this.$el.appendTo($("body"));
+        return this.update();
+    },
 });
+
+module.exports =  new CodeboxApplication();

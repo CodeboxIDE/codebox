@@ -1,7 +1,3 @@
-define([
-    "models/user"
-], function(User) {
-    var user = new User();
+var User = require("../models/user");
 
-    return user;
-});
+module.exports = new User();

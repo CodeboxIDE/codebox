@@ -1,29 +1,28 @@
-define([
-    "hr/hr",
-    "hr/utils",
-    "core/rpc"
-], function(hr, _, rpc) {
-    var logging = hr.Logger.addNamespace("users");
+var Q = require("q");
+var _ = require("hr.utils");
+var Model = require("hr.model");
+var logger = require("hr.logger")("users");
 
-    var User = hr.Model.extend({
-        defaults: {
-            id: null,
-            name: null,
-            email: null,
-            color: null
-        },
+var rpc = require("../core/rpc");
 
-        // Identify the logged in user
-        whoami: function() {
-            var that = this;
+var User = hr.Model.extend({
+    defaults: {
+        id: null,
+        name: null,
+        email: null,
+        color: null
+    },
 
-            return rpc.execute("users/whoami")
-            .then(function(data) {
-                return that.set(data);
-            })
-            .thenResolve(that);
-        },
-    });
+    // Identify the logged in user
+    whoami: function() {
+        var that = this;
 
-    return User;
+        return rpc.execute("users/whoami")
+        .then(function(data) {
+            return that.set(data);
+        })
+        .thenResolve(that);
+    },
 });
+
+module.exports = User;

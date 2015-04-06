@@ -1,13 +1,10 @@
-define([
-    "collections/users",
-    "core/events"
-], function(Users, events) {
-    var users = new Users();
+var Users = require("../collections/users");
 
-    // Listen to update
-    events.on("e:users", function() {
-        users.listAll();
-    });
+var users = new Users();
 
-    return users;
+// Listen to update
+events.on("e:users", function() {
+    users.listAll();
 });
+
+module.exports = users;

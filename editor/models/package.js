@@ -1,74 +1,73 @@
-define([
-    "hr/hr"
-], function(hr) {
-    var logging = hr.Logger.addNamespace("package");
+var Q = require("q");
+var _ = require("hr.utils");
+var Model = require("hr.model");
+var logger = require("hr.logger")("package");
 
-    var Package = hr.Model.extend({
-        defaults: {
-            name: null,
-            errors: []
-        },
-        idAttribute: "name",
+var Package = Model.extend({
+    defaults: {
+        name: null,
+        errors: []
+    },
+    idAttribute: "name",
 
-        /*
-         * Return base url for the addon
-         */
-        url: function() {
-            var basePath = window.location.pathname;
-            basePath = basePath.substring(0, basePath.lastIndexOf('/')+1);
-            return basePath+"packages/"+this.get("name");
-        },
+    /*
+     * Return base url for the addon
+     */
+    url: function() {
+        var basePath = window.location.pathname;
+        basePath = basePath.substring(0, basePath.lastIndexOf('/')+1);
+        return basePath+"packages/"+this.get("name");
+    },
 
-        /**
-         * Load the addon
-         */
-        load: function() {
-            var context, main, pkgRequireConfig, pkgRequire, that = this
-            var d = Q.defer();
+    /**
+     * Load the addon
+     */
+    load: function() {
+        var context, main, pkgRequireConfig, pkgRequire, that = this
+        var d = Q.defer();
 
-            if (!this.get("main")) return Q();
+        if (!this.get("main")) return Q();
 
-            logging.log("Load", this.get("name"));
-            context = "package."+this.get("name");
-            main = this.get("main", "index");
+        logger.log("Load", this.get("name"));
+        context = "package."+this.get("name");
+        main = this.get("main", "index");
 
-            // Require config
-            pkgRequireConfig = {
-                'context': context,
-                'baseUrl': this.url(),
-                'waitSeconds': 200,
-                'paths': {},
-                'map': {
-                    '*': {
-                        'css': 'require-tools/css/css',
-                        'less': 'require-tools/less/less',
-                        'text': 'require-tools/text/text'
-                    }
+        // Require config
+        pkgRequireConfig = {
+            'context': context,
+            'baseUrl': this.url(),
+            'waitSeconds': 200,
+            'paths': {},
+            'map': {
+                '*': {
+                    'css': 'require-tools/css/css',
+                    'less': 'require-tools/less/less',
+                    'text': 'require-tools/text/text'
                 }
-            };
-            pkgRequireConfig.paths[main] = "pkg-build";
+            }
+        };
+        pkgRequireConfig.paths[main] = "pkg-build";
 
-            // Require context
-            pkgRequire = require.config(pkgRequireConfig);
+        // Require context
+        pkgRequire = require.config(pkgRequireConfig);
 
-            // Load main module
-            pkgRequire([main], function(globals) {
-                d.resolve()
-            }, function(err) {
-                logging.error(err);
-                d.reject(err);
-            });
+        // Load main module
+        pkgRequire([main], function(globals) {
+            d.resolve()
+        }, function(err) {
+            logger.error(err);
+            d.reject(err);
+        });
 
-            return d.promise.timeout(5000, "This addon took to long to load (> 5seconds)");
-        },
+        return d.promise.timeout(5000, "This addon took to long to load (> 5seconds)");
+    },
 
-        /**
-         * Return version as a number
-         */
-        version: function() {
-            return parseInt(this.get("version").replace(/\./g,""));
-        }
-    });
-
-    return Package;
+    /**
+     * Return version as a number
+     */
+    version: function() {
+        return parseInt(this.get("version").replace(/\./g,""));
+    }
 });
+
+module.exports = Package;

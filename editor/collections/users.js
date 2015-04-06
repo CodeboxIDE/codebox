@@ -1,20 +1,18 @@
-define([
-    "hr/hr",
-    "hr/utils",
-    "hr/promise",
-    "models/user",
-    "core/rpc"
-], function(hr, _, Q, User, rpc) {
-    var logging = hr.Logger.addNamespace("users");
+var Q = require("q");
+var _ = require("hr.utils");
+var Collection = require("hr.collection");
+var logger = require("hr.logger")("users");
 
-    var Users = hr.Collection.extend({
-        model: User,
+var User = require("../models/user");
+var rpc = require("../core/rpc");
 
-        listAll: function() {
-            return rpc.execute("users/list")
-            .then(this.reset.bind(this));
-        },
-    });
+var Users = hr.Collection.extend({
+    model: User,
 
-    return Users;
+    listAll: function() {
+        return rpc.execute("users/list")
+        .then(this.reset.bind(this));
+    },
 });
+
+module.exports = Users;

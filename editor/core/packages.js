@@ -1,20 +1,20 @@
-define([
-    "collections/packages",
-    "core/events",
-    "utils/dialogs"
-], function(Packages, events, dialogs) {
-    var packages = new Packages();
+var Packages = require("../collections/packages");
+var dialogs = require("../utils/dialogs");
+var events = require("./events");
 
-    events.on("e:packages:add", function(pkg) {
-        pkg = packages.add(pkg);
-        pkg.load()
-        .fail(dialogs.error);
-    });
+var packages = new Packages();
 
-    events.on("e:packages:remove", function(pkg) {
-        pkg = packages.get(pkg.name);
-        if (pkg) pkg.destroy();
-    });
-
-    return packages;
+// Load new installed packages
+events.on("e:packages:add", function(pkg) {
+    pkg = packages.add(pkg);
+    pkg.load()
+    .fail(dialogs.error);
 });
+
+// Unload removed packages
+events.on("e:packages:remove", function(pkg) {
+    pkg = packages.get(pkg.name);
+    if (pkg) pkg.destroy();
+});
+
+module.exports = packages;
