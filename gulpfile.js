@@ -1,7 +1,9 @@
+var path = require('path');
 var gulp = require('gulp');
 var del = require('del');
 var less = require('gulp-less');
 var browserify = require('gulp-browserify');
+var minifyCSS = require('gulp-minify-css');
 var runSequence = require('gulp-run-sequence');
 var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
@@ -29,7 +31,10 @@ gulp.task('html', function() {
 // Less to css
 gulp.task('styles', function() {
     return gulp.src('./editor/resources/stylesheets/main.less')
-    .pipe(less())
+    .pipe(less({
+        paths: [ path.join(__dirname) ]
+    }))
+    .pipe(minifyCSS())
     .pipe(rename('application.css'))
     .pipe(gulp.dest('./build/static/css'));
 });
