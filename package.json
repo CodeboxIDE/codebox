@@ -69,7 +69,7 @@
         "hr.dnd": "*",
         "hr.gridview": "*",
         "hr.logger": "0.1.1",
-        "hr.backend": "*",
+        "hr.backend": "0.1.1",
         "octicons": "2.2.0",
         "mousetrap": "1.5.2",
         "moment": "2.9.0",

@@ -2,6 +2,9 @@ var _ = require("hr.utils");
 var $ = require("jquery");
 var Q = require("q");
 
+var logger = require("hr.logger")("app");
+
+
 var app = require("./core/application");
 var commands = require("./core/commands");
 var packages = require("./core/packages");
@@ -40,6 +43,7 @@ commands.register({
 });
 
 // Start running the applications
+logger.log("start application");
 Q()
 .then(codebox.user.whoami.bind(codebox.user))
 .then(codebox.root.stat.bind(codebox.root, "./"))
@@ -58,5 +62,8 @@ Q()
         return dialogs.alert(message, { html: true })
     });
 })
-.then(app.start.bind(app));
+.then(app.start.bind(app))
+.fail(function(err) {
+    logger.error("Error:", err.message || "", err.stack || err);
+});
 
