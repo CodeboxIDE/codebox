@@ -14,7 +14,7 @@ gulp.task('scripts', function() {
     return gulp.src('editor/main.js')
     .pipe(browserify({
         debug: false,
-        transform: ['stringify']
+        transform: ['stringify', 'require-globify']
     }))
     //.pipe(uglify())
     .pipe(rename('application.js'))

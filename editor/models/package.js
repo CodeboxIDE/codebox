@@ -1,4 +1,5 @@
 var Q = require("q");
+var $ = require("jquery");
 var _ = require("hr.utils");
 var Model = require("hr.model");
 var logger = require("hr.logger")("package");
@@ -29,34 +30,13 @@ var Package = Model.extend({
         if (!this.get("main")) return Q();
 
         logger.log("Load", this.get("name"));
-        context = "package."+this.get("name");
-        main = this.get("main", "index");
-
-        // Require config
-        pkgRequireConfig = {
-            'context': context,
-            'baseUrl': this.url(),
-            'waitSeconds': 200,
-            'paths': {},
-            'map': {
-                '*': {
-                    'css': 'require-tools/css/css',
-                    'less': 'require-tools/less/less',
-                    'text': 'require-tools/text/text'
-                }
-            }
-        };
-        pkgRequireConfig.paths[main] = "pkg-build";
-
-        // Require context
-        pkgRequire = require.config(pkgRequireConfig);
-
-        // Load main module
-        pkgRequire([main], function(globals) {
-            d.resolve()
-        }, function(err) {
-            logger.error(err);
-            d.reject(err);
+        $.getScript(this.url()+"/pkg-build.js")
+        .done(function(script, textStatus) {
+            d.resolve();
+        })
+        .fail(function(jqxhr, settings, exception) {
+            logger.error("Error loading plugin:", exception);
+            d.reject(exception);
         });
 
         return d.promise.timeout(5000, "This addon took to long to load (> 5seconds)");

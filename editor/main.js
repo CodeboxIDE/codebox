@@ -4,6 +4,7 @@ var Q = require("q");
 
 var logger = require("hr.logger")("app");
 
+require('./**/*.js', {glob: true});
 
 var app = require("./core/application");
 var commands = require("./core/commands");
@@ -21,7 +22,7 @@ var upload = require("./utils/upload");
 
 // Create the global object for packages
 window.codebox = {
-    require: require,
+    require: function(m) { return require("./"+m+".js"); },
     app: app,
     user: user,
     root: new File(),
