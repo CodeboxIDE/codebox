@@ -7,7 +7,7 @@ var Package = require("../models/package");
 var rpc = require("../core/rpc");
 
 
-var Packages = hr.Collection.extend({
+var Packages = Collection.extend({
     model: Package,
 
     // Get packages list from backend

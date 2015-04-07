@@ -5,7 +5,7 @@ var logger = require("hr.logger")("users");
 
 var rpc = require("../core/rpc");
 
-var User = hr.Model.extend({
+var User = Model.extend({
     defaults: {
         id: null,
         name: null,

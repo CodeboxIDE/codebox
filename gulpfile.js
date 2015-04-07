@@ -25,7 +25,7 @@ gulp.task('scripts', function() {
 gulp.task('html', function() {
     return gulp.src('editor/index.html')
     .pipe(rename('index.html'))
-    .pipe(gulp.dest('./build/static/'));
+    .pipe(gulp.dest('./build/'));
 });
 
 // Less to css

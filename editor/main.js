@@ -12,7 +12,6 @@ var dialogs = require("./utils/dialogs");
 var menu = require("./utils/menu");
 var File = require("./models/file");
 
-var date = require("./utils/date");
 var keybindings = require("./settings/keybindings");
 var upload = require("./utils/upload");
 

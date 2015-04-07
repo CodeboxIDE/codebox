@@ -1,141 +1,133 @@
-define([
-    'hr/dom',
-    'hr/utils',
-    'views/menu',
-    'utils/taphold'
-], function ($, _, MenuView, taphold) {
+var $ = require("jquery");
+var _ = require("hr.utils");
 
+var MenuView = require("../views/menu");
+var taphold = require("./taphold");
+
+var menu = {
+    lastTimeOpened: 0,
+    origin: null,
 
     /**
-     * Context menu manager
-     *
-     * @class
+     * Clear current context menu
      */
-    var Menu = {
-        lastTimeOpened: 0,
-        origin: null,
+    clear: function() {
+        $(".ui-context-menu").removeClass("ui-context-menu");
+        $("#ui-context-menu").remove();
+    },
 
-        /**
-         * Clear current context menu
-         */
-        clear: function() {
-            $(".ui-context-menu").removeClass("ui-context-menu");
-            $("#ui-context-menu").remove();
-        },
+    /**
+     * Generate menu from menuItems or a generator function
+     *
+     * @param {array} menuItems
+     */
+    generateView: function(menuItems) {
+        if (_.isFunction(menuItems)) menuItems = menuItems();
 
-        /**
-         * Generate menu from menuItems or a generator function
-         *
-         * @param {array} menuItems
-         */
-        generateMenu: function(menuItems) {
-            if (_.isFunction(menuItems)) menuItems = menuItems();
+        var menuView = new MenuView({
+            items: menuItems
+        });
+        menuView.$el.appendTo($("body"));
+        menuView.on("action", function() {
+            menu.clear();
+        })
+        menuView.render();
+        return menuView;
+    },
 
-            var menu = new MenuView({
-                items: menuItems
-            });
-            menu.$el.appendTo($("body"));
-            menu.on("action", function() {
-                Menu.clear();
-            })
-            menu.render();
-            return menu;
-        },
+    /**
+     *  Create a new context menu
+     *
+     * @param {array} menuItems
+     * @param {object} pos position for the menu
+     */
+    open: function(menuItems, pos) {
+        menu.clear();
+        menu.lastTimeOpened = Date.now();
 
-        /**
-         *  Create a new context menu
-         *
-         * @param {array} menuItems
-         * @param {object} pos position for the menu
-         */
-        open: function(menuItems, pos) {
-            Menu.clear();
-            Menu.lastTimeOpened = Date.now();
+        var menuView = menu.generateView(menuItems);
 
-            var menu = Menu.generateMenu(menuItems);
+        var w = menuView.$el.width();
+        var h = menuView.$el.height();
 
-            var w = menu.$el.width();
-            var h = menu.$el.height();
+        var windowW = $(window).width();
+        var windowH = $(window).height();
 
-            var windowW = $(window).width();
-            var windowH = $(window).height();
-
-            if ((pos.left+w) > windowW) {
-                pos.left = pos.left - w;
-                menu.$el.addClass("submenus-right");
-            }
-            if ((pos.top+h) > windowH) {
-                pos.top = pos.top - h;
-                menu.$el.addClass("submenus-top");
-            }
-
-            menu.$el.css(_.extend({
-                'position': "fixed",
-                'z-index': 100
-            }, pos));
-            menu.$el.attr("id", "ui-context-menu");
-        },
-
-        /**
-         * Add a context menu to an element
-         * the menu can be open by left click and tap hold on ipad
-         *
-         * @param {jqueryElement} el
-         * @param {array} menu menu items
-         * @param {object} options
-         */
-        add: function(el, menu, options) {
-            var $el = $(el);
-
-            options = _.defaults({}, options, {
-                // Menu accessible in textinput
-                'textinput': false
-            });
-
-            var handler = function(e) {
-                Menu.origin = e.type;
-                var target = e.target || e.srcElement;
-
-                // Ignore Menu on textinput
-                if (!options.textinput &&
-                (target.tagName == 'INPUT' || target.tagName == 'SELECT' || target.tagName == 'TEXTAREA' || target.isContentEditable)) {
-                    return;
-                }
-
-                var x = e.pageX || e.originalEvent.touches[0].pageX;
-                var y = e.pageY || e.originalEvent.touches[0].pageY;
-
-                Menu.open(menu, {
-                    'left': x,
-                    'top': y
-                });
-
-                $el.addClass("ui-context-menu");
-                return false;
-            }
-
-            $el.on("contextmenu", handler);
-            if (navigator.userAgent.match(/iPad/i) != null) taphold.bind($el, handler);
-        },
-
-        remove: function(el) {
-            var $el = $(el);
-
-            $el.off("contextmenu");
-            taphold.unbind($el);
+        if ((pos.left+w) > windowW) {
+            pos.left = pos.left - w;
+            menuView.$el.addClass("submenus-right");
         }
-    };
+        if ((pos.top+h) > windowH) {
+            pos.top = pos.top - h;
+            menuView.$el.addClass("submenus-top");
+        }
 
-    // Click on the page: clse context menu
-    $(document).on("click", function (e) {
-        if (Menu.lastTimeOpened > (Date.now() - 600) && Menu.origin != "contextmenu") return;
-        Menu.clear();
-    });
+        menuView.$el.css(_.extend({
+            'position': "fixed",
+            'z-index': 100
+        }, pos));
+        menuView.$el.attr("id", "ui-context-menu");
+    },
 
-    // Open new Menu: close other context menu
-    $(document).on("contextmenu", function() {
-        Menu.clear();
-    });
+    /**
+     * Add a context menu to an element
+     * the menu can be open by left click and tap hold on ipad
+     *
+     * @param {jqueryElement} el
+     * @param {array} menu menu items
+     * @param {object} options
+     */
+    add: function(el, menuView, options) {
+        var $el = $(el);
 
-    return Menu;
+        options = _.defaults({}, options, {
+            // Menu accessible in textinput
+            'textinput': false
+        });
+
+        var handler = function(e) {
+            menu.origin = e.type;
+            var target = e.target || e.srcElement;
+
+            // Ignore Menu on textinput
+            if (!options.textinput &&
+            (target.tagName == 'INPUT' || target.tagName == 'SELECT' || target.tagName == 'TEXTAREA' || target.isContentEditable)) {
+                return;
+            }
+
+            var x = e.pageX || e.originalEvent.touches[0].pageX;
+            var y = e.pageY || e.originalEvent.touches[0].pageY;
+
+            menu.open(menuView, {
+                'left': x,
+                'top': y
+            });
+
+            $el.addClass("ui-context-menu");
+            return false;
+        }
+
+        $el.on("contextmenu", handler);
+        if (navigator.userAgent.match(/iPad/i) != null) taphold.bind($el, handler);
+    },
+
+    remove: function(el) {
+        var $el = $(el);
+
+        $el.off("contextmenu");
+        taphold.unbind($el);
+    }
+};
+
+// Click on the page: clse context menu
+$(document).on("click", function (e) {
+    if (menu.lastTimeOpened > (Date.now() - 600) && menu.origin != "contextmenu") return;
+    menu.clear();
 });
+
+// Open new Menu: close other context menu
+$(document).on("contextmenu", function() {
+    menu.clear();
+});
+
+module.exports = menu;

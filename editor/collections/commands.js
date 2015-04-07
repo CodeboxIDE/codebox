@@ -5,7 +5,7 @@ var logger = require("hr.logger")("commands");
 
 var Command = require("../models/command");
 
-var Commands = hr.Collection.extend({
+var Commands = Collection.extend({
     model: Command,
 
     // Initialize

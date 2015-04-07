@@ -8,6 +8,9 @@ var rpc = new Backend({
 
 rpc.defaultMethod({
     execute: function(args, options, method) {
+        console.log("request", method, args, options);
+
+
         return Q(axios.post("rpc/"+method, args))
         .then(function(data) {
             return data.result;

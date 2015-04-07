@@ -6,7 +6,7 @@ var logger = require("hr.logger")("users");
 var User = require("../models/user");
 var rpc = require("../core/rpc");
 
-var Users = hr.Collection.extend({
+var Users = Collection.extend({
     model: User,
 
     listAll: function() {

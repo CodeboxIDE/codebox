@@ -1,5 +1,5 @@
 var Class = require("hr.class");
-var sockjs = require("sockjs-client");
+var SockJS = require("sockjs-client");
 var logger = require("hr.logger")("socket");
 
 var Socket = Class.extend({

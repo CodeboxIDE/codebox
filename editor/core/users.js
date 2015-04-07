@@ -1,4 +1,5 @@
 var Users = require("../collections/users");
+var events = require("./events");
 
 var users = new Users();
 
