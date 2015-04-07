@@ -1,3 +1,7 @@
+var argv = require('minimist')(process.argv.slice(2));
+var _ = require('lodash');
+var fs = require('fs');
+var wrench = require('wrench');
 var path = require('path');
 var gulp = require('gulp');
 var del = require('del');
@@ -42,6 +46,42 @@ gulp.task('styles', function() {
 // Clean output
 gulp.task('clean', function(cb) {
     del(['dist/**'], cb);
+});
+
+// Link a folder for packages
+gulp.task('link', function(callback) {
+    var origin = argv.origin;
+    var prefix = argv.prefix || "package-";
+
+    if (!origin) {
+        throw 'Need --origin';
+    }
+
+    origin = path.resolve(process.cwd(), origin);
+    var filenames = fs.readdirSync(origin);
+
+    _.each(filenames, function(filename) {
+        if (filename.slice(0, prefix.length) != prefix) return;
+
+        var from = path.resolve(origin, filename);
+        var to = path.resolve(__dirname, "packages", filename.slice(prefix.length));
+
+        console.log('Link', filename, 'to', to);
+
+        var stat = null;
+
+        try { stat = fs.lstatSync(to); } catch (e) {};
+
+        if (stat && stat.isSymbolicLink()) {
+            fs.unlinkSync(to);
+        } else if (fs.existsSync(to)) {
+            wrench.rmdirSyncRecursive(to);
+        }
+
+        fs.symlinkSync(from, to, 'dir');
+    });
+
+    callback();
 });
 
 gulp.task('default', function(cb) {
