@@ -3,13 +3,15 @@ var _ = require("hr.utils");
 
 var Mousetrap = require("mousetrap");
 
-var originalStopCallback = Mousetrap.stopCallback;
-Mousetrap.stopCallback = function(e, element) {
+var originalStopCallback = Mousetrap.prototype.stopCallback;
+Mousetrap.prototype.stopCallback = function(e, element) {
     if (e.mousetrap) {
         return false;
     }
-    return originalStopCallback(e, element);
+    return originalStopCallback.call(this, e, element);
 };
+
+var mousetrap = Mousetrap(document);
 
 var Keyboard = Class.extend({
     initialize: function() {
@@ -44,7 +46,7 @@ var Keyboard = Class.extend({
         // Bind
         if (this.bindings[keys] == null) {
             this.bindings[keys] = new Class();
-            Mousetrap.bind(keys, _.bind(function(e) {
+            mousetrap.bind(keys, _.bind(function(e) {
                 this.bindings[keys].trigger("action", e);
             }, this));
         }
