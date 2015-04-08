@@ -6,6 +6,7 @@ require("hr.class");
 require("hr.model");
 require("hr.collection");
 require("hr.logger");
+require("hr.dnd");
 
 require('../**/*.js', {glob: true});
 
