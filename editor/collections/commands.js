@@ -35,7 +35,7 @@ var Commands = Collection.extend({
 
     // Set context
     setContext: function(id, data) {
-        logging.log("update context", id);
+        logger.log("update context", id);
         this.context = {
             'type': id,
             'data': data

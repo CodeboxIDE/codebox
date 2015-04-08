@@ -68,7 +68,7 @@
         "hr.collection": "*",
         "hr.class": "*",
         "hr.dnd": "*",
-        "hr.gridview": "*",
+        "hr.gridview": "0.2.0",
         "hr.logger": "0.1.1",
         "hr.backend": "0.1.1",
         "octicons": "2.2.0",

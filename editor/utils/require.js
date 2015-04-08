@@ -1,4 +1,5 @@
 var _ = require("hr.utils");
+require("q");
 require("jquery");
 require("hr.storage");
 require("hr.view");
@@ -7,6 +8,8 @@ require("hr.model");
 require("hr.collection");
 require("hr.logger");
 require("hr.dnd");
+require("hr.list");
+require("hr.gridview");
 
 require('../**/*.js', {glob: true});
 

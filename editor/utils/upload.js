@@ -89,14 +89,14 @@ var Uploader = Class.extend({
         var filename = file.webkitRelativePath || file.name;
 
         var error = function(err) {
-            logging.error("error uploading", filename, ":", err);
+            logger.error("error uploading", filename, ":", err);
             that.trigger("error", err);
             that.lock = false;
             d.reject(err);
         }
 
         var progress = function(percent) {
-            logging.log("notify ", filename, percent);
+            logger.log("notify ", filename, percent);
             that.trigger("state", percent);
             d.notify({
                 'filename': filename,
@@ -105,7 +105,7 @@ var Uploader = Class.extend({
         };
 
         var end = function(text) {
-            logging.log("end", text);
+            logger.log("end", text);
             that.trigger("end", text);
             that.lock = false;
             d.resolve(text);
@@ -121,14 +121,14 @@ var Uploader = Class.extend({
 
         that.lock = true;
 
-        logging.log("upload file ", filename, " in ", that.options.url, file.size,"/", file.size);
+        logger.log("upload file ", filename, " in ", that.options.url, file.size,"/", file.size);
 
         var xhr = new XMLHttpRequest(),
             upload = xhr.upload,
             start_time = new Date().getTime(),
             uploadurl = that.options.url.replace(":file", filename);
 
-        logging.log("start uploading ", filename);
+        logger.log("start uploading ", filename);
 
         upload.file = file;
         upload.downloadStartTime = start_time;
