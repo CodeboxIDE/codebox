@@ -26,10 +26,9 @@ var Commands = Collection.extend({
     },
 
     // Run a command
-    run: function(cmd, args) {
-
-        cmd = this.get(cmd);
-        if (!cmd) return Q.reject(new Error("Command not found: '"+cmd+"'"));
+    run: function(_cmd, args) {
+        var cmd = this.get(_cmd);
+        if (!cmd) return Q.reject(new Error("Command not found: '"+_cmd+"'"));
 
         return cmd.run(args);
     },
