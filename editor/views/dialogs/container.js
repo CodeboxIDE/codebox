@@ -31,7 +31,7 @@ var DialogView = View.extend({
     },
 
     render: function() {
-        this.view.render();
+        this.view.update();
         this.view.appendTo(this);
 
         return this.ready();

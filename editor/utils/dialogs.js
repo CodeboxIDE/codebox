@@ -27,7 +27,7 @@ var open = function(View, options) {
     });
 
     // Open it (add it to dom)
-    diag.render();
+    diag.update();
 
     return d.promise;
 };

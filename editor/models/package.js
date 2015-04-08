@@ -27,7 +27,7 @@ var Package = Model.extend({
         var context, main, pkgRequireConfig, pkgRequire, that = this
         var d = Q.defer();
 
-        if (!this.get("main")) return Q();
+        if (!this.get("browser")) return Q();
 
         logger.log("Load", this.get("name"));
         $.getScript(this.url()+"/pkg-build.js")
