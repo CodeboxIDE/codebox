@@ -1,5 +1,6 @@
 var _ = require("hr.utils");
 require("q");
+require("axios");
 require("jquery");
 require("hr.storage");
 require("hr.view");

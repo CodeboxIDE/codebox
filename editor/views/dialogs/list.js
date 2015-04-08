@@ -1,13 +1,15 @@
+var Q = require("q");
 var _ = require("hr.utils");
 var $ = require("jquery");
 var View = require("hr.view");
 var ListView = require("hr.list");
+var Collection = require("hr.collection");
 
 var string = require("../../utils/string");
 var DialogInputView = require("./input");
 
 
-var ListItem = ListView.Item.extend({
+var ListItem = ListView.Item.inherit(View.Template).extend({
     className: "list-item",
 
     initialize: function(options) {
