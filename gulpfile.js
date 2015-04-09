@@ -12,6 +12,7 @@ var runSequence = require('gulp-run-sequence');
 var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
 var stringify = require('stringify');
+var merge = require('merge-stream');
 
 // Compile Javascript
 gulp.task('scripts', function() {
@@ -32,6 +33,24 @@ gulp.task('html', function() {
     .pipe(gulp.dest('./build/'));
 });
 
+// Copy assets
+gulp.task('assets', function() {
+    var resources = gulp.src([
+        'editor/resources/fonts/**/*.*',
+        'editor/resources/images/**/*.*'
+    ], {
+        base: 'editor/resources'
+    })
+    .pipe(gulp.dest('build/static'));
+
+    var octicons = gulp.src([
+        'node_modules/octicons/octicons/*.{ttf,eot,svg,ttf,woff}'
+    ])
+    .pipe(gulp.dest('build/static/fonts/octicons'));
+
+    return merge(resources, octicons);
+});
+
 // Less to css
 gulp.task('styles', function() {
     return gulp.src('./editor/resources/stylesheets/main.less')
@@ -45,7 +64,7 @@ gulp.task('styles', function() {
 
 // Clean output
 gulp.task('clean', function(cb) {
-    del(['dist/**'], cb);
+    del(['build/**'], cb);
 });
 
 // Link a folder for packages
@@ -85,5 +104,5 @@ gulp.task('link', function(callback) {
 });
 
 gulp.task('default', function(cb) {
-    runSequence('clean', ['scripts', 'styles', 'html'], cb);
+    runSequence('clean', ['scripts', 'styles', 'html', 'assets'], cb);
 });
