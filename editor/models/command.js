@@ -1,94 +1,94 @@
-define([
-    "hr/hr",
-    "hr/utils",
-    "utils/keyboard"
-], function(hr, _, keyboard) {
-    var logging = hr.Logger.addNamespace("command");
-    var ARGS = {
-        'number': parseInt
-    };
+var Q = require("q");
+var _ = require("hr.utils");
+var Model = require("hr.model");
+var logger = require("hr.logger")("command");
 
-    var Command = hr.Model.extend({
-        defaults: {
-            // Unique id for the command
-            id: null,
+var keyboard = require("../utils/keyboard");
 
-            // Title for the command
-            title: null,
+var ARGS = {
+    'number': parseInt
+};
 
-            // Run command
-            run: function(context) {},
+var Command = Model.extend({
+    defaults: {
+        // Unique id for the command
+        id: null,
 
-            // Context needed for the command
-            context: [],
+        // Title for the command
+        title: null,
 
-            // Arguments
-            arguments: [],
+        // Run command
+        run: function(context) {},
 
-            // Keyboard shortcuts
-            shortcuts: []
-        },
+        // Context needed for the command
+        context: [],
 
-        // Constructor
-        initialize: function() {
-            Command.__super__.initialize.apply(this, arguments);
+        // Arguments
+        arguments: [],
 
-            this.justRun = function(e) {
-                if (e) e.preventDefault();
-                this.run({}, e);
-            }.bind(this);
+        // Keyboard shortcuts
+        shortcuts: []
+    },
 
-            this.listenTo(this, "change:shortcuts", this.bindKeyboard);
-            this.listenTo(this, "destroy", this.unbindKeyboard);
-            this.bindKeyboard();
-        },
+    // Constructor
+    initialize: function() {
+        Command.__super__.initialize.apply(this, arguments);
 
-        // Unbind keyboard shortcuts
-        unbindKeyboard: function() {
-            if (!this._shortcuts) return;
+        this.justRun = function(e) {
+            if (e) e.preventDefault();
+            this.run({}, e);
+        }.bind(this);
 
-            keyboard.unbind(this._shortcuts, this, this.justRun);
-        },
+        this.listenTo(this, "change:shortcuts", this.bindKeyboard);
+        this.listenTo(this, "destroy", this.unbindKeyboard);
+        this.bindKeyboard();
+    },
 
-        // Bind keyboard shortcuts
-        bindKeyboard: function() {
-            this.unbindKeyboard();
-            this._shortcuts = _.clone(this.get("shortcuts", []));
-            keyboard.bind(this._shortcuts, this.justRun, this);
-        },
+    // Unbind keyboard shortcuts
+    unbindKeyboard: function() {
+        if (!this._shortcuts) return;
 
-        // Run a command
-        run: function(args, origin) {
-            var that = this;
+        keyboard.unbind(this._shortcuts, this, this.justRun);
+    },
 
-            // Check context
-            if (!this.isValidContext()) return Q();
+    // Bind keyboard shortcuts
+    bindKeyboard: function() {
+        this.unbindKeyboard();
+        this._shortcuts = _.clone(this.get("shortcuts", []));
+        keyboard.bind(this._shortcuts, this.justRun, this);
+    },
 
-            logging.log("Run", this.get("id"));
+    // Run a command
+    run: function(args, origin) {
+        var that = this;
 
-            return Q()
-            .then(function() {
-                return that.get("run").apply(that, [ args || {}, that.collection.context.data, origin ]);
-            })
-            .fail(function(err) {
-                logging.error("Command failed", err);
-            });
-        },
+        // Check context
+        if (!this.isValidContext()) return Q();
 
-        // Shortcut text
-        shortcutText: function() {
-            return keyboard.toText(this.get("shortcuts"));
-        },
+        logger.log("Run", this.get("id"));
 
-        // Valid context
-        isValidContext: function() {
-            var context = this.get("context") || [];
-            return (context.length == 0
-            || !this.collection
-            || !this.collection.context
-            || _.contains(context, this.collection.context.type));
-        }
-    });
+        return Q()
+        .then(function() {
+            return that.get("run").apply(that, [ args || {}, that.collection.context.data, origin ]);
+        })
+        .fail(function(err) {
+            logger.error("Command failed", err);
+        });
+    },
 
-    return Command;
+    // Shortcut text
+    shortcutText: function() {
+        return keyboard.toText(this.get("shortcuts"));
+    },
+
+    // Valid context
+    isValidContext: function() {
+        var context = this.get("context") || [];
+        return (context.length == 0
+        || !this.collection
+        || !this.collection.context
+        || _.contains(context, this.collection.context.type));
+    }
 });
+
+module.exports = Command;

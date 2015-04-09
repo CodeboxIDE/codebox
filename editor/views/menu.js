@@ -1,73 +1,70 @@
-define([
-    "hr/utils",
-    "hr/dom",
-    "hr/hr"
-], function(_, $, hr) {
-    var MenuView = hr.View.extend({
-        className: "component-menu",
-        defaults: {
-        },
-        events: {},
+var _ = require("hr.utils");
+var $ = require("jquery");
+var View = require("hr.view");
 
-        initialize: function() {
-            MenuView.__super__.initialize.apply(this, arguments);
-        },
+var MenuView = View.extend({
+    className: "component-menu",
+    defaults: {},
+    events: {},
 
-        render: function() {
-            this.$el.empty();
+    initialize: function() {
+        MenuView.__super__.initialize.apply(this, arguments);
+    },
 
-            var $menu = this.renderMenu(this.options.items || []);
-            $menu.appendTo(this.$el);
+    render: function() {
+        this.$el.empty();
 
-            return this.ready();
-        },
+        var $menu = this.renderMenu(this.options.items || []);
+        $menu.appendTo(this.$el);
 
-        renderMenu: function(items) {
-            var $menu = $("<ul>", {
-                'class': "menu"
-            });
+        return this.ready();
+    },
 
-            var $items = _.map(items, this.renderItem, this);
-            $menu.append($items);
+    renderMenu: function(items) {
+        var $menu = $("<ul>", {
+            'class': "menu"
+        });
 
-            return $menu;
-        },
+        var $items = _.map(items, this.renderItem, this);
+        $menu.append($items);
 
-        renderItem: function(item) {
-            var that = this;
+        return $menu;
+    },
 
-            item = _.defaults(item, {
-                'type': "normal",
-                'label': "",
-                'click': function() { }
-            });
+    renderItem: function(item) {
+        var that = this;
+
+        item = _.defaults(item, {
+            'type': "normal",
+            'label': "",
+            'click': function() { }
+        });
 
 
-            var $item = $("<li>", {
-                'class': "menu-item type-"+item.type
-            });
-            var $label = $("<span>", {
-                'class': 'item-label',
-                'text': item.label,
-                'click': function(e) {
-                    e.preventDefault();
-                    that.trigger("action");
-                    item.click();
-                }
-            });
-
-            // Add label
-            if (item.type != "divider") $label.appendTo($item);
-
-            // Submenu
-            if (item.type == "menu") {
-                var $menu = this.renderMenu(item.items || []);
-                $menu.appendTo($item);
+        var $item = $("<li>", {
+            'class': "menu-item type-"+item.type
+        });
+        var $label = $("<span>", {
+            'class': 'item-label',
+            'text': item.label,
+            'click': function(e) {
+                e.preventDefault();
+                that.trigger("action");
+                item.click();
             }
+        });
 
-            return $item;
+        // Add label
+        if (item.type != "divider") $label.appendTo($item);
+
+        // Submenu
+        if (item.type == "menu") {
+            var $menu = this.renderMenu(item.items || []);
+            $menu.appendTo($item);
         }
-    });
 
-    return MenuView;
+        return $item;
+    }
 });
+
+module.exports = MenuView;

@@ -1,89 +1,87 @@
-define([
-    "hr/utils",
-    "hr/dom",
-    "hr/hr"
-], function(_, $, hr) {
-    var DialogView = hr.View.extend({
-        className: "component-dialog",
-        defaults: {
-            keyboard: true,
-            keyboardEnter: true,
+var _ = require("hr.utils");
+var $ = require("jquery");
+var View = require("hr.view");
 
-            View: hr.View,
-            view: {},
-            size: "medium"
-        },
-        events: {
-            "keydown": "keydown"
-        },
+var DialogView = View.extend({
+    className: "component-dialog",
+    defaults: {
+        keyboard: true,
+        keyboardEnter: true,
 
-        initialize: function(options) {
-            DialogView.__super__.initialize.apply(this, arguments);
+        View: View,
+        view: {},
+        size: "medium"
+    },
+    events: {
+        "keydown": "keydown"
+    },
 
-            // Bind keyboard
-            this.keydownHandler = _.bind(this.keydown, this)
-            if (this.options.keyboard) $(document).bind("keydown", this.keydownHandler);
+    initialize: function(options) {
+        DialogView.__super__.initialize.apply(this, arguments);
 
-            // Adapt style
-            this.$el.addClass("size-"+this.options.size);
+        // Bind keyboard
+        this.keydownHandler = _.bind(this.keydown, this)
+        if (this.options.keyboard) $(document).bind("keydown", this.keydownHandler);
 
-            // Build view
-            this.view = new options.View(this.options.view, this);
-        },
+        // Adapt style
+        this.$el.addClass("size-"+this.options.size);
 
-        render: function() {
-            this.view.render();
-            this.view.appendTo(this);
+        // Build view
+        this.view = new options.View(this.options.view, this);
+    },
 
-            return this.ready();
-        },
+    render: function() {
+        this.view.update();
+        this.view.appendTo(this);
 
-        finish: function() {
-            this.open();
-            return DialogView.__super__.finish.apply(this, arguments);
-        },
+        return this.ready();
+    },
 
-        open: function() {
-            if (DialogView.current != null) DialogView.current.close();
+    finish: function() {
+        this.open();
+        return DialogView.__super__.finish.apply(this, arguments);
+    },
 
-            this.$el.appendTo($("body"));
-            DialogView.current = this;
+    open: function() {
+        if (DialogView.current != null) DialogView.current.close();
 
-            this.trigger("open");
+        this.$el.appendTo($("body"));
+        DialogView.current = this;
 
-            return this;
-        },
+        this.trigger("open");
 
-        close: function(e, force) {
-            if (e) e.preventDefault();
+        return this;
+    },
 
-            // Unbind document keydown
-            $(document).unbind("keydown", this.keydownHandler);
+    close: function(e, force) {
+        if (e) e.preventDefault();
 
-            // Hide modal
-            this.trigger("close", force);
-            this.remove();
+        // Unbind document keydown
+        $(document).unbind("keydown", this.keydownHandler);
 
-            DialogView.current = null;
-        },
+        // Hide modal
+        this.trigger("close", force);
+        this.remove();
 
-        keydown: function(e) {
-            if (!this.options.keyboard) return;
+        DialogView.current = null;
+    },
 
-            var key = e.keyCode || e.which;
+    keydown: function(e) {
+        if (!this.options.keyboard) return;
 
-            // Enter: valid
-            if (key == 13 && this.options.keyboardEnter) {
-                this.close(e);
-            } else
-            // Esc: close
-            if (key == 27) {
-                this.close(e, true);
-            }
+        var key = e.keyCode || e.which;
+
+        // Enter: valid
+        if (key == 13 && this.options.keyboardEnter) {
+            this.close(e);
+        } else
+        // Esc: close
+        if (key == 27) {
+            this.close(e, true);
         }
-    }, {
-        current: null,
-    });
-
-    return DialogView;
+    }
+}, {
+    current: null,
 });
+
+module.exports = DialogView;
