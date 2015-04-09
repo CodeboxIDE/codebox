@@ -28,7 +28,8 @@ node_modules
 editor/vendors
 
 # All installed packages
-packages
+packages/*
+!packages/.gitkeep
 
 # Build output
 build
