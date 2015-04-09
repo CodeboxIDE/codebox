@@ -1,4 +1,5 @@
-var Q = require('q');
+var Q = require("q");
+var chai = require("chai");
 var path = require("path");
 var codebox = require("../lib");
 var users = require("../lib/users");
@@ -9,25 +10,14 @@ var config = {
 };
 
 // Expose assert globally
-global.assert = require('assert');
+global.expect = chai.expect;
 
 // Init before doing tests
-before(function(done) {
+before(function() {
     this.timeout(500000);
 
-    qdone(
-        codebox.prepare(config)
-        .then(function() {
-            return users.auth("test", "test");
-        }),
-    done);
+    return codebox.prepare(config)
+    .then(function() {
+        return users.auth("test", "test");
+    });
 });
-
-// Nicety for mocha / Q
-global.qdone = function qdone(promise, done) {
-    return promise.then(function() {
-        return done();
-    }, function(err) {
-        return done(err);
-    }).done();
-};
