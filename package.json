@@ -76,7 +76,6 @@
         "moment": "2.9.0",
         "sockjs-client": "1.0.0-beta.12",
         "axios": "0.5.2",
-        "minimist": "1.1.1",
         "merge-stream": "0.1.7"
     },
     "packageDependencies": {
