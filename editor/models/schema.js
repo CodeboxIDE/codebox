@@ -1,3 +1,4 @@
+var _ = require("hr.utils");
 var Model = require("hr.model");
 
 var _getDefaults = function(schema) {

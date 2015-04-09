@@ -11,6 +11,7 @@ require("hr.logger");
 require("hr.dnd");
 require("hr.list");
 require("hr.gridview");
+require("hr.queue");
 
 require('../**/*.js', {glob: true});
 

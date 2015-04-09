@@ -29,7 +29,7 @@
     "dependencies": {
         "q": "1.0.1",
         "lodash": "2.4.1",
-        "pkgm": "3.0.2",
+        "pkgm": "3.1.0",
         "express": "4.6.1",
         "express-session": "1.7.0",
         "wrench": "1.5.8",
@@ -63,7 +63,7 @@
         "hr.app": "*",
         "hr.list": "*",
         "hr.storage": "*",
-        "hr.model": "*",
+        "hr.model": "0.1.1",
         "hr.view": "*",
         "hr.collection": "*",
         "hr.class": "*",

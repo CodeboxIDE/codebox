@@ -5,7 +5,7 @@ var View = require("hr.view");
 var FormView = require("../form");
 
 
-var DialogInputView = View.extend({
+var DialogInputView = View.Template.extend({
     className: "dialog-input",
     defaults: {
         className: "",
