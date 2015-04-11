@@ -65,7 +65,7 @@
         "hr.storage": "*",
         "hr.model": "0.1.1",
         "hr.view": "*",
-        "hr.collection": "0.1.1",
+        "hr.collection": "0.1.2",
         "hr.class": "*",
         "hr.dnd": "*",
         "hr.gridview": "0.2.0",

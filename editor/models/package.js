@@ -35,7 +35,7 @@ var Package = Model.extend({
             d.resolve();
         })
         .fail(function(jqxhr, settings, exception) {
-            logger.error("Error loading plugin:", exception);
+            logger.error("Error loading plugin:", exception.stack || exception.message || exception);
             d.reject(exception);
         });
 
