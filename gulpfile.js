@@ -61,7 +61,10 @@ gulp.task('styles', function() {
 
 // Clean output
 gulp.task('clean', function(cb) {
-    del(['build/**'], cb);
+    del([
+        'build/**',
+        'packages/*/pkg-build.js'
+    ], cb);
 });
 
 gulp.task('default', function(cb) {
