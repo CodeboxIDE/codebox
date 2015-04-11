@@ -43,7 +43,7 @@ commands.register({
 
 // Start running the applications
 logger.log("start application");
-Q()
+Q.delay(500)
 .then(codebox.user.whoami.bind(codebox.user))
 .then(codebox.root.stat.bind(codebox.root, "./"))
 .then(settings.load.bind(settings))
