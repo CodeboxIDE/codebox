@@ -28,7 +28,10 @@ var DialogInputView = View.Template.extend({
     },
 
     finish: function() {
-        this.$("input").first().select();
+        var that = this;
+        _.defer(function() {
+            that.$("input").first().focus();
+        });
         return DialogInputView.__super__.finish.apply(this, arguments);
     },
 
