@@ -1,5 +1,5 @@
 <div class="dialog-body">
-<% if (options.isHtml) { %>
+<% if (!options.isHtml) { %>
     <p><%- options.text %></p>
 <% } else { %>
     <%= options.text %>
