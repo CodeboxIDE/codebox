@@ -58,7 +58,7 @@ Q.delay(500)
             }).join("\n")+ "</ul>";
         }
 
-        return dialogs.alert(message, { html: true })
+        return dialogs.alert(message, { isHtml: true })
     });
 })
 .then(app.start.bind(app))
