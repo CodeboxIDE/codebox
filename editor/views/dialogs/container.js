@@ -13,11 +13,17 @@ var DialogView = View.extend({
         size: "medium"
     },
     events: {
+        "click": "onClick",
+        "click .dialog-wrapper": "onWrapperClick",
         "keydown": "keydown"
     },
 
     initialize: function(options) {
         DialogView.__super__.initialize.apply(this, arguments);
+
+        this.$wrapper = $("<div>", {
+            'class': "dialog-wrapper"
+        });
 
         // Bind keyboard
         this.keydownHandler = _.bind(this.keydown, this)
@@ -28,11 +34,12 @@ var DialogView = View.extend({
 
         // Build view
         this.view = new options.View(this.options.view, this);
+        this.view.appendTo(this.$wrapper);
+        this.$wrapper.appendTo(this.$el);
     },
 
     render: function() {
         this.view.update();
-        this.view.appendTo(this);
 
         return this.ready();
     },
@@ -79,6 +86,16 @@ var DialogView = View.extend({
         if (key == 27) {
             this.close(e, true);
         }
+    },
+
+    onWrapperClick: function(e) {
+        e.stopPropagation();
+    },
+    onClick: function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        this.close(null, true);
     }
 }, {
     current: null,
