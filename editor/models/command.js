@@ -88,6 +88,26 @@ var Command = Model.extend({
         || !this.collection
         || !this.collection.context
         || _.contains(context, this.collection.context.type));
+    },
+
+    // Valid a command name against this command
+    resolve: function(cmd) {
+        var score = 0;
+        var parts = cmd.split(".");
+        var thisParts = this.get("id").split(".");
+
+        _.each(parts, function(part, i) {
+            if (!thisParts[i]) return false;
+
+            var r = new RegExp(thisParts[i]);
+            if (part.match(r) == null) {
+                return false;
+            }
+
+            score = score + 1;
+        });
+
+        return score/thisParts.length;
     }
 });
 

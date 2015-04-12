@@ -54,7 +54,7 @@ var File = Model.extend({
 
     // Open this file
     open: function() {
-        return commands.run("file.open", {
+        return commands.run("file.open."+this.getExtension().slice(1), {
             path: this.get("path")
         });
     },
