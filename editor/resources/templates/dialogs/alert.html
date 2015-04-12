@@ -1,9 +1,14 @@
+<div class="dialog-body">
 <% if (options.isHtml) { %>
     <p><%- options.text %></p>
 <% } else { %>
     <%= options.text %>
 <% } %>
-
-<div class="actions">
-    <button class="btn do-confirm">OK</button>
+</div>
+<div class="dialog-actions">
+    <div class="row">
+        <div class="col-100">
+            <button class="button-block do-confirm">OK</button>
+        </div>
+    </div>
 </div>

@@ -1,5 +1,7 @@
-<p><%- options.schema.title %></p>
-
+<div class="dialog-header">
+    <%- options.schema.title %>
+</div>
+<div class="dialog-body">
 <%
 _.each(options.schema.properties, function(property, key) {
     var value = options.defaultValues[key] || property.default;
@@ -16,8 +18,14 @@ _.each(options.schema.properties, function(property, key) {
     </div>
     <% } %>
 <% }); %>
-
-<div class="actions">
-    <button class="btn do-confirm"><%- options.ok || "Ok" %></button>
-    <button class="btn do-close"><%- options.cancel || "Cancel" %></button>
+</div>
+<div class="dialog-actions">
+    <div class="row">
+        <div class="col-50">
+            <button class="button-block do-confirm"><%- options.ok || "Ok" %></button>
+        </div>
+        <div class="col-50">
+            <button class="button-block do-close"><%- options.cancel || "Cancel" %></button>
+        </div>
+    </div>
 </div>

@@ -5,12 +5,13 @@
     bottom: 0px;
     left: 0px;
     right: 0px;
+    background: rgba(0, 0, 0, 0.4);
 
     .dialog-wrapper {
         position: absolute;
         z-index: 1001;
 
-        top: 0px;
+        top: 10%;
         left: 50%;
 
         width: @dialog-size-medium;
@@ -39,7 +40,19 @@
         }
 
         .dialog-input {
-            padding: 5px;
+            .dialog-header {
+                background: @color-0-2;
+                padding: 8px 5px;
+            }
+
+            .dialog-body {
+                padding: 5px;
+            }
+
+            .dialog-actions {
+                margin-top: 15px;
+                padding: 5px;
+            }
         }
     }
 }
