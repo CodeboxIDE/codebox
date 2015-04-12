@@ -64,5 +64,6 @@ Q.delay(500)
 .then(app.start.bind(app))
 .fail(function(err) {
     logger.error("Error:", err.message || "", err.stack || err);
+    return dialogs.error(err);
 });
 
