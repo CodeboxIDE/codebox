@@ -43,7 +43,8 @@
         "open": "0.0.5",
         "ini": "1.2.1",
         "basic-auth-connect": "1.0.0",
-        "connect-multiparty": "1.1.0"
+        "connect-multiparty": "1.1.0",
+        "mime": "1.3.4"
     },
     "devDependencies": {
         "gulp": "^3.8.11",
