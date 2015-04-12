@@ -80,6 +80,7 @@
         "merge-stream": "0.1.7"
     },
     "packageDependencies": {
+        "image": "CodeboxIDE/package-image#1.0.0",
         "about": "CodeboxIDE/package-about",
         "command-palette": "CodeboxIDE/package-command-palette",
         "files-tree": "CodeboxIDE/package-files-tree",
