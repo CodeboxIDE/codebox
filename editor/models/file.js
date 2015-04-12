@@ -17,7 +17,8 @@ var File = Model.extend({
         size: 0,
         mtime: 0,
         atime: 0,
-        buffer: null
+        buffer: null,
+        mime: "text/plain"
     },
     idAttribute: "name",
 
@@ -103,14 +104,25 @@ var File = Model.extend({
     },
 
     // Read file content
-    read: function() {
-        if (this.isBuffer()) return Q(this.get("buffer"));
+    read: function(opts) {
+        opts = _.defaults(opts || {}, {
+            base64: false
+        });
 
-        return rpc.execute("fs/read", {
-            'path': this.get("path")
-        })
-        .get("content")
-        .then(hash.atob);
+        var p;
+
+
+        if (this.isBuffer()) p = Q(hash.btoa(this.get("buffer")));
+        else {
+            p = rpc.execute("fs/read", {
+                'path': this.get("path")
+            })
+            .get("content");
+        }
+
+        if (!opts.base64) p = p.then(hash.atob);
+
+        return p;
     },
 
     // Write file content
