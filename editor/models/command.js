@@ -107,7 +107,7 @@ var Command = Model.extend({
             score = score + 1;
         });
 
-        return score/thisParts.length;
+        return score/parts.length;
     }
 });
 
