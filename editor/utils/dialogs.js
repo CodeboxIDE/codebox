@@ -130,5 +130,6 @@ module.exports = {
     confirm: openConfirm,
     prompt: openPrompt,
     list: openList,
-    schema: openSchema
+    schema: openSchema,
+    input: openInput
 };
