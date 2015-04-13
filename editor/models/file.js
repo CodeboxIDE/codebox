@@ -125,6 +125,11 @@ var File = Model.extend({
         return p;
     },
 
+    // Access url
+    accessUrl: function() {
+        return "/fs/"+this.get("path");
+    },
+
     // Write file content
     write: function(content) {
         var that = this;
