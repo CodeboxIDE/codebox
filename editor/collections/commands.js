@@ -52,12 +52,9 @@ var Commands = Collection.extend({
     },
 
     // Set context
-    setContext: function(id, data) {
-        logger.log("update context", id);
-        this.context = {
-            'type': id,
-            'data': data
-        };
+    setContext: function(ctx) {
+        logger.log("update context", _.keys(ctx));
+        this.context = ctx || {};
         this.trigger("context", this.context);
     }
 });

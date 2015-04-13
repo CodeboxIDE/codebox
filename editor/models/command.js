@@ -69,7 +69,7 @@ var Command = Model.extend({
 
         return Q()
         .then(function() {
-            return that.get("run").apply(that, [ args || {}, that.collection.context.data, origin ]);
+            return that.get("run").apply(that, [ args || {}, that.collection.context, origin ]);
         })
         .fail(function(err) {
             logger.error("Command failed", err);
@@ -84,13 +84,12 @@ var Command = Model.extend({
     // Valid context
     isValidContext: function() {
         var context = this.get("context") || [];
-        return (context.length == 0
-        || !this.collection
-        || !this.collection.context
-        || _.contains(context, this.collection.context.type));
+        var currentContext = _.keys(this.collection.context);
+
+        return _.difference(context, currentContext).length == 0;
     },
 
-    // Valid a command name against this command
+    // Valid a command name against this command and return a match score
     resolve: function(cmd) {
         var score = 0;
         var parts = cmd.split(".");
@@ -107,7 +106,7 @@ var Command = Model.extend({
             score = score + 1;
         });
 
-        return score/parts.length;
+        return (score/parts.length) + (score/thisParts.length);
     }
 });
 
