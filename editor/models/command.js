@@ -27,7 +27,13 @@ var Command = Model.extend({
         arguments: [],
 
         // Keyboard shortcuts
-        shortcuts: []
+        shortcuts: [],
+
+        // Hidden from command palette
+        hidden: false,
+
+        // Disabled (not runnable)
+        enabled: true
     },
 
     // Constructor
@@ -63,7 +69,7 @@ var Command = Model.extend({
         var that = this;
 
         // Check context
-        if (!this.hasValidContext()) return Q();
+        if (!this.isRunnable()) return Q();
 
         logger.log("Run", this.get("id"));
 
@@ -107,6 +113,11 @@ var Command = Model.extend({
         });
 
         return (score/parts.length) + (score/thisParts.length);
+    },
+
+    // Check if command is runnable
+    isRunnable: function() {
+        return this.hasValidContext() && this.get("enabled");
     }
 });
 
