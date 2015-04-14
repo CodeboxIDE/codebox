@@ -63,7 +63,7 @@ var Command = Model.extend({
         var that = this;
 
         // Check context
-        if (!this.isValidContext()) return Q();
+        if (!this.hasValidContext()) return Q();
 
         logger.log("Run", this.get("id"));
 
@@ -82,7 +82,7 @@ var Command = Model.extend({
     },
 
     // Valid context
-    isValidContext: function() {
+    hasValidContext: function() {
         var context = this.get("context") || [];
         var currentContext = _.keys(this.collection.context);
 
