@@ -112,6 +112,7 @@ var Command = Model.extend({
             score = score + 1;
         });
 
+        if (score < thisParts.length) return 0;
         return (score/parts.length) + (score/thisParts.length);
     },
 
