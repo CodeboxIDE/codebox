@@ -57,6 +57,7 @@ var openAlert = function(text, options) {
     });
 };
 var openErrorAlert = function(err) {
+    console.log("error", err);
     return openAlert("Error: "+(err.message || err))
     .fin(function() {
         return Q.reject(err);
@@ -122,6 +123,7 @@ var openSchema = function(schema, values) {
         }
     });
 };
+
 
 module.exports = {
     open: open,

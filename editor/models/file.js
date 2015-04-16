@@ -67,7 +67,7 @@ var File = Model.extend({
 
     // Check if a file is a buffer or exists
     isBuffer: function() {
-        return this.get("buffer") != null;
+        return _.isString(this.get("buffer"));
     },
 
     // Test if a path is child
@@ -111,7 +111,6 @@ var File = Model.extend({
 
         var p;
 
-
         if (this.isBuffer()) p = Q(hash.btoa(this.get("buffer")));
         else {
             p = rpc.execute("fs/read", {
@@ -131,16 +130,19 @@ var File = Model.extend({
     },
 
     // Write file content
-    write: function(content) {
+    write: function(content, opts) {
         var that = this;
+        opts = _.defaults(opts || {}, {
+            base64: false
+        });
 
-        return Q()
-        .then(function() {
-            if (that.isBuffer()) return Q(that.set("buffer", content));
+        return opts.base64? Q(content) : File.btoa(content)
+        .then(function(_content) {
+            if (that.isBuffer()) return Q(that.set("buffer", hash.atob(content)));
 
             return rpc.execute("fs/write", {
                 'path': that.get("path"),
-                'content': hash.btoa(content)
+                'content': content
             });
         })
         .then(function() {
@@ -188,18 +190,18 @@ var File = Model.extend({
     },
 
     // Save file
-    save: function(content) {
+    save: function(content, opts) {
         var that = this;
 
-        return Q()
-        .then(function() {
-            if (!that.isBuffer() || !that.options.saveAsFile) return that.write(content);
+        return File.btoa(content)
+        .then(function(_content) {
+            if (!that.isBuffer() || !that.options.saveAsFile) return that.write(_content, { base64: true });
 
             return dialogs.prompt("Save as:", that.get("name"))
             .then(function(_path) {
                 return rpc.execute("fs/write", {
                     'path': _path,
-                    'content': hash.btoa(content),
+                    'content': _content,
                     'override': false
                 })
                 .then(function() {
@@ -221,7 +223,7 @@ var File = Model.extend({
     buffer: function(name, content, id, options) {
         var f = new File(options || {}, {
             'name': name,
-            'buffer': content,
+            'buffer': content || "",
             'path': "buffer://"+(id || _.uniqueId("tmp")),
             'directory': false
         });
@@ -249,6 +251,36 @@ var File = Model.extend({
         .then(function(f) {
             return new File({}, f);
         });
+    },
+
+    // Save as
+    saveAs: function(filename, content, opts) {
+        var f = File.buffer(filename);
+        return f.save(content, opts);
+    },
+
+    // Convert string or blob to base64
+    btoa: function(b) {
+        var d = Q.defer();
+
+        if (b instanceof Blob) {
+            var reader = new window.FileReader();
+            reader.readAsDataURL(b);
+            reader.onerror = function(err) {
+                d.reject(err);
+            }
+            reader.onloadend = function() {
+                d.resolve(reader.result);
+            };
+        } else {
+            try {
+                d.resolve(hash.btoa(b));
+            } catch (e) {
+                d.reject(e);
+            }
+        }
+
+        return d.promise;
     }
 });
 
