@@ -1,3 +1,5 @@
+var path = require("path");
+var axios = require("axios");
 var Q = require("q");
 var _ = require("hr.utils");
 var Model = require("hr.model");
@@ -136,13 +138,12 @@ var File = Model.extend({
             base64: false
         });
 
-        return opts.base64? Q(content) : File.btoa(content)
+        return (opts.base64? Q(content) : File.btoa(content))
         .then(function(_content) {
             if (that.isBuffer()) return Q(that.set("buffer", hash.atob(content)));
 
-            return rpc.execute("fs/write", {
-                'path': that.get("path"),
-                'content': content
+            return File.writeContent(that.get("path"), _content, {
+
             });
         })
         .then(function() {
@@ -199,9 +200,7 @@ var File = Model.extend({
 
             return dialogs.prompt("Save as:", that.get("name"))
             .then(function(_path) {
-                return rpc.execute("fs/write", {
-                    'path': _path,
-                    'content': _content,
+                return File.writeContent(_path, _content, {
                     'override': false
                 })
                 .then(function() {
@@ -281,6 +280,32 @@ var File = Model.extend({
         }
 
         return d.promise;
+    },
+
+    // Write content (large or small)
+    writeContent: function(filename, content, opts) {
+        opts = _.extend({
+            base64: true
+        }, opts || {}, {
+            path: filename
+        });
+
+        if (content.length > 1000) {
+            opts.path = path.dirname(filename);
+
+            var data = new FormData();
+            var blob = new Blob([content], { type: 'text/plain' });
+
+            _.each(opts, function(value, key) {
+                data.append(key, JSON.stringify(value));
+            });
+            data.append("content", blob, path.basename(filename));
+
+            return Q(axios.put('/rpc/fs/upload', data));
+        } else {
+            opts.content = content;
+            return rpc.execute("fs/write", opts);
+        }
     }
 });
 

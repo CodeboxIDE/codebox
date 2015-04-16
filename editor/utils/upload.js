@@ -154,7 +154,7 @@ var Uploader = Class.extend({
         var formData = new FormData();
         formData.append(filename, file);
         _.each(that.options.data, function(v, k) {
-            formData.append(k, v);
+            formData.append(k, JSON.stringify(v));
         });
 
         progress(0);
