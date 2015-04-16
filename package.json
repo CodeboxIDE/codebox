@@ -69,7 +69,7 @@
         "hr.model": "0.2.0",
         "hr.view": "0.2.0",
         "hr.collection": "0.2.0",
-        "hr.class": "0.4.0",
+        "hr.class": "0.4.1",
         "hr.dnd": "0.2.0",
         "hr.gridview": "0.3.0",
         "hr.logger": "0.3.0",
