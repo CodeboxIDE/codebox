@@ -78,7 +78,7 @@ var Command = Model.extend({
             return that.get("run").apply(that, [ args || {}, that.collection.context, origin ]);
         })
         .fail(function(err) {
-            logger.error("Command failed", err);
+            logger.exception("Command failed", err);
         });
     },
 

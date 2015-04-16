@@ -72,7 +72,7 @@
         "hr.class": "0.4.0",
         "hr.dnd": "0.2.0",
         "hr.gridview": "0.3.0",
-        "hr.logger": "0.2.0",
+        "hr.logger": "0.3.0",
         "hr.backend": "0.2.0",
         "hr.queue": "0.2.0",
         "octicons": "2.2.0",
