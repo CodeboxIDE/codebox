@@ -27,7 +27,7 @@ gulp.task('scripts', function() {
 // Dedupe modules
 gulp.task('dedupe', function (cb) {
     exec('npm dedupe', cb);
-})
+});
 
 // Copy html
 gulp.task('html', function() {
