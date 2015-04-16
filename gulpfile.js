@@ -10,6 +10,7 @@ var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
 var stringify = require('stringify');
 var merge = require('merge-stream');
+var exec = require('child_process').exec;
 
 // Compile Javascript
 gulp.task('scripts', function() {
@@ -22,6 +23,11 @@ gulp.task('scripts', function() {
     .pipe(rename('application.js'))
     .pipe(gulp.dest('./build/static/js'));
 });
+
+// Dedupe modules
+gulp.task('dedupe', function (cb) {
+    exec('npm dedupe', cb);
+})
 
 // Copy html
 gulp.task('html', function() {
@@ -68,5 +74,5 @@ gulp.task('clean', function(cb) {
 });
 
 gulp.task('default', function(cb) {
-    runSequence('clean', ['scripts', 'styles', 'html', 'assets'], cb);
+    runSequence('clean', 'dedupe', ['scripts', 'styles', 'html', 'assets'], cb);
 });
