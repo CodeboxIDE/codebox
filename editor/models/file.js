@@ -138,13 +138,16 @@ var File = Model.extend({
             base64: false
         });
 
-        return (opts.base64? Q(content) : File.btoa(content))
-        .then(function(_content) {
-            if (that.isBuffer()) return Q(that.set("buffer", hash.atob(content)));
+        return Q()
+        .then(function() {
+            if (that.isBuffer()) {
+                return File.blobToString(content)
+                .then(function(s) {
+                    that.set("buffer", s);
+                });
+            }
 
-            return File.writeContent(that.get("path"), _content, {
-
-            });
+            return File.writeContent(that.get("path"), content);
         })
         .then(function() {
             that.trigger("write", content);
@@ -194,17 +197,17 @@ var File = Model.extend({
     save: function(content, opts) {
         var that = this;
 
-        return File.btoa(content)
-        .then(function(_content) {
-            if (!that.isBuffer() || !that.options.saveAsFile) return that.write(_content, { base64: true });
+        return Q()
+        .then(function() {
+            if (!that.isBuffer() || !that.options.saveAsFile) return that.write(content, opts);
 
             return dialogs.prompt("Save as:", that.get("name"))
-            .then(function(_path) {
-                return File.writeContent(_path, _content, {
+            .then(function(filename) {
+                return File.writeContent(filename, content, {
                     'override': false
                 })
                 .then(function() {
-                    return that.stat(_path);
+                    return that.stat(filename);
                 })
                 .fail(dialogs.error);
             });
@@ -258,54 +261,65 @@ var File = Model.extend({
         return f.save(content, opts);
     },
 
-    // Convert string or blob to base64
-    btoa: function(b) {
+    // Convert blob to string
+    blobToString: function(b) {
         var d = Q.defer();
 
         if (b instanceof Blob) {
             var reader = new window.FileReader();
-            reader.readAsDataURL(b);
             reader.onerror = function(err) {
                 d.reject(err);
             }
-            reader.onloadend = function() {
+            reader.onload = function() {
                 d.resolve(reader.result);
             };
+            reader.readAsText(b);
         } else {
-            try {
-                d.resolve(hash.btoa(b));
-            } catch (e) {
-                d.reject(e);
-            }
+            d.resolve(b);
         }
 
         return d.promise;
     },
 
-    // Write content (large or small)
+    // Write content to a file (blob, arraybuffer, string)
     writeContent: function(filename, content, opts) {
-        opts = _.extend({
-            base64: true
-        }, opts || {}, {
-            path: filename
+        opts = _.defaults(opts || {}, {
+            base64: false
         });
+        var useUpload = false;
 
-        if (content.length > 1000) {
-            opts.path = path.dirname(filename);
+        return Q()
+        .then(function() {
+            if (_.isString(content)) {
+                if (opts.base64) return content;
 
-            var data = new FormData();
-            var blob = new Blob([content], { type: 'text/plain' });
+                useUpload = (content.length > 1000);
+                opts.base64 = true;
+                return hash.btoa(content);
+            } else {
+                useUpload = true;
+                return content;
+            }
+        })
+        .then(function(_content) {
+            if (useUpload) {
+                opts.path = path.dirname(filename);
 
-            _.each(opts, function(value, key) {
-                data.append(key, JSON.stringify(value));
-            });
-            data.append("content", blob, path.basename(filename));
+                var data = new FormData();
+                var blob = new Blob([_content]);
 
-            return Q(axios.put('/rpc/fs/upload', data));
-        } else {
-            opts.content = content;
-            return rpc.execute("fs/write", opts);
-        }
+                _.each(opts, function(value, key) {
+                    data.append(key, JSON.stringify(value));
+                });
+                data.append("content", blob, path.basename(filename));
+
+                return Q(axios.put('/rpc/fs/upload', data));
+            } else {
+                opts.path = filename;
+                opts.content = _content;
+                return rpc.execute("fs/write", opts);
+            }
+        });
     }
 });
 
