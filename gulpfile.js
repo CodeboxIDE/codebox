@@ -12,22 +12,25 @@ var stringify = require('stringify');
 var merge = require('merge-stream');
 var child_process = require('child_process');
 
+var debug = !!process.env.DEBUG;
+
 function exec(cmd, cb) {
     var c = child_process.exec.apply(child_process, arguments);
     c.stdout.pipe(process.stdout);
     c.stderr.pipe(process.stderr);
 }
 
-
 // Compile Javascript
 gulp.task('scripts', function() {
-    return gulp.src('editor/main.js')
+    var out = gulp.src('editor/main.js')
     .pipe(browserify({
         debug: false,
         transform: ['stringify', 'require-globify']
-    }))
-    //.pipe(uglify())
-    .pipe(rename('application.js'))
+    }));
+
+    if (!debug) out = out.pipe(uglify())
+
+    return out.pipe(rename('application.js'))
     .pipe(gulp.dest('./build/static/js'));
 });
 
