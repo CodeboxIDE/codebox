@@ -4,6 +4,10 @@ var Q = require("q");
 
 var logger = require("hr.logger")("app");
 
+Q.onerror = function (error) {
+    logger.exception("Uncaught Error:", error);
+};
+
 var app = require("./core/application");
 var commands = require("./core/commands");
 var packages = require("./core/packages");
