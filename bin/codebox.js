@@ -12,6 +12,7 @@ var gitconfig = require('../lib/utils/gitconfig');
 
 function printError(err) {
     console.log(err.stack || err.message || err);
+    process.exit(1);
 }
 
 program
