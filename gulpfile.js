@@ -104,8 +104,6 @@ gulp.task('copy-tmp', function() {
         "!./tmp/**",
         "!./.git/**",
         "!./packages/**",
-        "!./editor/**",
-        '!./editor',
         "!./node_modules/**",
         '!./node_modules'
     ])
