@@ -68,11 +68,43 @@ gulp.task('styles', function() {
 // Clean output
 gulp.task('clean', function(cb) {
     del([
+        '.tmp/**',
         'build/**',
         'packages/*/pkg-build.js'
     ], cb);
 });
 
-gulp.task('default', function(cb) {
+// Build client code
+gulp.task('build', function(cb) {
     runSequence('clean', 'dedupe', ['scripts', 'styles', 'html', 'assets'], cb);
+});
+
+// Copy everything to .tmp
+gulp.task('copy-tmp', function() {
+    return gulp.src([
+        // Most files except the ones below
+        "./**",
+
+        // Ignore gitignore
+        "!.gitignore",
+
+        // Ignore dev related things
+        "!./tmp/**",
+        "!./.git/**",
+        "!./packages/**",
+        "!./editor/**",
+        '!./editor',
+        "!./node_modules/**",
+        '!./node_modules'
+    ])
+    .pipe(gulp.dest('.tmp'));
+});
+
+// Publish to NPM
+gulp.task('publish', function(cb) {
+    runSequence('clean', 'build', 'copy-tmp', cb);
+});
+
+gulp.task('default', function(cb) {
+    runSequence('build', cb);
 });
