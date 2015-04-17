@@ -17,7 +17,7 @@ program
 			var parts = pkgref.split(":");
 			var name = _.first(parts);
 			var url = parts.slice(1).join(":");
-			if (!name || !url) throw "Packages need to be formatted as name:url";
+			if (!name || !url) throw "Packages need to be formatted as 'name:url'";
 
 			return [name,url];
 		})
@@ -28,8 +28,9 @@ program
 
 codebox.prepare({
 	packages: {
-		root: program.root,
-		install: program.packages
+		root: program.root? path.resolve(process.cwd(), program.root) : undefined,
+		install: program.packages,
+		defaults: null
 	}
 })
 .then(function() {
