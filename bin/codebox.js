@@ -19,7 +19,7 @@ program
 .on('--help', function(){
     console.log('  Examples:');
     console.log('');
-    console.log('    $ codebox ./myfolder');
+    console.log('    $ codebox run ./myfolder');
     console.log('');
 });
 
@@ -113,3 +113,6 @@ program
 
 program.parse(process.argv);
 
+if (!process.argv.slice(2).length) {
+    program.outputHelp();
+}
