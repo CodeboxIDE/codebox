@@ -39,7 +39,7 @@
         "eventemitter2": "0.4.14",
         "crc": "0.2.1",
         "request": "2.37.0",
-        "commander": "2.3.0",
+        "commander": "2.8.0",
         "open": "0.0.5",
         "ini": "1.2.1",
         "basic-auth-connect": "1.0.0",
@@ -99,8 +99,7 @@
         "settings": "CodeboxIDE/package-settings",
         "menubar": "CodeboxIDE/package-menubar",
         "image": "CodeboxIDE/package-image#1.0.0",
-        "ctags": "CodeboxIDE/package-ctags",
-        "audio": "CodeboxIDE/package-audio"
+        "ctags": "CodeboxIDE/package-ctags"
     },
     "scripts": {
         "test": "export TESTING=true; mocha --reporter list"
