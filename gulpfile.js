@@ -114,11 +114,11 @@ gulp.task('copy-tmp', function() {
 });
 
 // Publish to NPM
-gulp.task('publish', function(cb) {
-    runSequence('clean', 'build', 'copy-tmp', 'preinstall-addons', function(err) {
-        if (err) return cb(err);
-        exec('cd ./.tmp && npm publish', cb);
-    });
+gulp.task('pre-publish', function(cb) {
+    runSequence('clean', 'build', 'copy-tmp', 'preinstall-addons', cb);
+});
+gulp.task('publish', ['pre-publish'], function(cb) {
+    exec('cd ./.tmp && npm publish', cb);
 });
 
 gulp.task('default', function(cb) {
