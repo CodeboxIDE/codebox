@@ -44,7 +44,6 @@ var options = {
     }
 };
 
-
 codebox.start(options)
 .then(function() {
     if (program.email) return program.email;
