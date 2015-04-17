@@ -1,12 +1,16 @@
 var Q = require("q");
 var chai = require("chai");
 var path = require("path");
+var os = require("os");
 var codebox = require("../lib");
 var users = require("../lib/users");
 
 var config = {
     log: false,
-    root: path.resolve(__dirname, "workspace")
+    root: path.resolve(__dirname, "workspace"),
+    packages: {
+    	root: path.resolve(os.tmpdir())
+    }
 };
 
 // Expose assert globally
