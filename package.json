@@ -98,7 +98,7 @@
         "git": "CodeboxIDE/package-git",
         "settings": "CodeboxIDE/package-settings",
         "menubar": "CodeboxIDE/package-menubar",
-        "image": "CodeboxIDE/package-image#1.0.0",
+        "image": "CodeboxIDE/package-image",
         "ctags": "CodeboxIDE/package-ctags"
     },
     "scripts": {
