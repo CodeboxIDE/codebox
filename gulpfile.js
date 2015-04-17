@@ -10,7 +10,14 @@ var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
 var stringify = require('stringify');
 var merge = require('merge-stream');
-var exec = require('child_process').exec;
+var child_process = require('child_process');
+
+function exec(cmd, cb) {
+    var c = child_process.exec.apply(child_process, arguments);
+    c.stdout.pipe(process.stdout);
+    c.stderr.pipe(process.stderr);
+}
+
 
 // Compile Javascript
 gulp.task('scripts', function() {
@@ -79,6 +86,11 @@ gulp.task('build', function(cb) {
     runSequence('clean', 'dedupe', ['scripts', 'styles', 'html', 'assets'], cb);
 });
 
+// Dedupe modules
+gulp.task('preinstall-addons', function (cb) {
+    exec('./bin/codebox.js install --root=./.tmp/packages', cb);
+});
+
 // Copy everything to .tmp
 gulp.task('copy-tmp', function() {
     return gulp.src([
@@ -102,7 +114,7 @@ gulp.task('copy-tmp', function() {
 
 // Publish to NPM
 gulp.task('publish', function(cb) {
-    runSequence('clean', 'build', 'copy-tmp', cb);
+    runSequence('clean', 'build', 'copy-tmp', 'preinstall-addons', cb);
 });
 
 gulp.task('default', function(cb) {

@@ -24,8 +24,7 @@
         }
     ],
     "bin": {
-        "codebox": "./bin/codebox.js",
-        "codebox-pkg": "./bin/codebox-pkg.js"
+        "codebox": "./bin/codebox.js"
     },
     "dependencies": {
         "q": "~1.2.0",
