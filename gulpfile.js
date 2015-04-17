@@ -105,7 +105,10 @@ gulp.task('copy-tmp', function() {
         "!./.git/**",
         "!./packages/**",
         "!./node_modules/**",
-        '!./node_modules'
+        '!./node_modules',
+        "!./test/**",
+        '!./test',
+
     ])
     .pipe(gulp.dest('.tmp'));
 });
