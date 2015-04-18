@@ -14,7 +14,7 @@ var CodeboxApplication = Application.extend({
     routes: {},
 
     initialize: function() {
-        Application.__super__.initialize.apply(this, arguments);
+        CodeboxApplication.__super__.initialize.apply(this, arguments);
 
         this.grid = new GridView({
             columns: 10
@@ -33,4 +33,4 @@ var CodeboxApplication = Application.extend({
     },
 });
 
-module.exports =  new CodeboxApplication();
+module.exports = new CodeboxApplication();
