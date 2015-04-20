@@ -91,7 +91,11 @@ gulp.task('build', function(cb) {
 
 // Dedupe modules
 gulp.task('preinstall-addons', function (cb) {
-    exec('./bin/codebox.js install --root=./.tmp/packages', cb);
+    exec('./bin/codebox.js install --root=./.tmp/packages', {
+        env: _.extend({}, process.env, {
+            CODEBOX_DEBUG: debug
+        })
+    }, cb);
 });
 
 // Copy everything to .tmp
@@ -118,6 +122,7 @@ gulp.task('copy-tmp', function() {
 
 // Publish to NPM
 gulp.task('pre-publish', function(cb) {
+    debug = false;
     runSequence('clean', 'build', 'copy-tmp', 'preinstall-addons', cb);
 });
 gulp.task('publish', ['pre-publish'], function(cb) {
