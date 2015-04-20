@@ -69,7 +69,7 @@ program
     })
     .then(function(email) {
         var token = opts.users[email] || Math.random().toString(36).substring(7);
-        var url = "http://localhost:"+opts.port;
+        var url = "http://localhost:"+options.port;
 
         console.log("\nCodebox is running at", url);
 
