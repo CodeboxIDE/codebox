@@ -12,6 +12,7 @@ var app = require("./core/application");
 var commands = require("./core/commands");
 var packages = require("./core/packages");
 var user = require("./core/user");
+var workspace = require("./core/workspace");
 var users = require("./core/users");
 var settings = require("./core/settings");
 var dialogs = require("./utils/dialogs");
@@ -27,6 +28,7 @@ window.codebox = {
     require: codeboxRequire,
     app: app,
     user: user,
+    workspace: workspace,
     root: new File(),
     settings: settings
 };
@@ -48,10 +50,15 @@ commands.register({
 // Start running the applications
 logger.log("start application");
 Q.delay(500)
-.then(codebox.user.whoami.bind(codebox.user))
-.then(codebox.root.stat.bind(codebox.root, "./"))
-.then(settings.load.bind(settings))
-.then(users.listAll.bind(users))
+.then(function() {
+    return Q.all([
+        codebox.user.whoami(),
+        codebox.root.stat('./'),
+        codebox.workspace.about(),
+        settings.load(),
+        users.listAll()
+    ]);
+})
 .then(function() {
     return packages.loadAll()
     .fail(function(err) {

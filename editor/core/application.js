@@ -5,6 +5,8 @@ var Q = require("q");
 var Application = require("hr.app");
 var GridView = require("hr.gridview");
 
+var workspace = require("./workspace");
+
 // Define base application
 var CodeboxApplication = Application.extend({
     el: null,
@@ -24,6 +26,7 @@ var CodeboxApplication = Application.extend({
     },
 
     render: function() {
+        this.head.title(workspace.get('title'));
         return this.ready();
     },
 
