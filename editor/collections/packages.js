@@ -1,5 +1,6 @@
 var Q = require("q");
 var _ = require("hr.utils");
+var $ = require("jquery");
 var Collection = require("hr.collection");
 var logger = require("hr.logger")("packages");
 
@@ -16,38 +17,42 @@ var Packages = Collection.extend({
         .then(this.reset.bind(this));
     },
 
-    // Load all plugins from backend
-    loadAll: function() {
+    // Load all plugins from backend (using bundle)
+    loadAll: function(bundle) {
         var that = this;
         var errors = [];
 
-        return this.listAll()
-        .then(function() {
-            return that.reduce(function(prev, pkg) {
-                errors = errors.concat(_.map(pkg.get("errors"), function(e) {
-                    return {
-                        'name': pkg.get("name"),
-                        'error': e
-                    };
-                }));
+        if (bundle) {
+            return Q($.getScript("/packages.js"));
+        } else {
+            return this.listAll()
+            .then(function() {
+                return that.reduce(function(prev, pkg) {
+                    errors = errors.concat(_.map(pkg.get("errors"), function(e) {
+                        return {
+                            'name': pkg.get("name"),
+                            'error': e
+                        };
+                    }));
 
-                return prev.then(pkg.load.bind(pkg))
-                .fail(function(err) {
-                    errors.push({
-                        'name': pkg.get("name"),
-                        'error': err
+                    return prev.then(pkg.load.bind(pkg))
+                    .fail(function(err) {
+                        errors.push({
+                            'name': pkg.get("name"),
+                            'error': err
+                        });
+                        return Q();
                     });
-                    return Q();
-                });
-            }, Q());
-        })
-        .then(function() {
-            if (errors.length > 0) {
-                var e = new Error("Error loading packages");
-                e.errors = errors;
-                return Q.reject(e);
-            }
-        });
+                }, Q());
+            })
+            .then(function() {
+                if (errors.length > 0) {
+                    var e = new Error("Error loading packages");
+                    e.errors = errors;
+                    return Q.reject(e);
+                }
+            });
+        }
     }
 });
 

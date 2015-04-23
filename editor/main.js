@@ -60,7 +60,7 @@ Q.delay(500)
     ]);
 })
 .then(function() {
-    return packages.loadAll()
+    return packages.loadAll(!codebox.workspace.get('debug'))
     .fail(function(err) {
         var message = "<p>"+err.message+"</p>";
         if (err.errors) {
