@@ -42,7 +42,7 @@
         "commander": "2.8.0",
         "open": "0.0.5",
         "ini": "1.2.1",
-        "basic-auth-connect": "1.0.0",
+        "basic-auth": "1.0.0",
         "mime": "1.3.4",
         "busboy": "0.2.9",
         "uuid": "2.0.1",
