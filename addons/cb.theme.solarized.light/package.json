@@ -1,0 +1,19 @@
+{
+    "name": "cb.theme.solarized.light",
+    "version": "0.0.1",
+    "title": "Solarized Light Theme",
+    "description": "Solarized Light theme. Ported from Ace.",
+    "homepage": "https://github.com/linc01n/codebox-theme",
+    "license": "BSD",
+    "author": {
+        "name": "Lincoln Lee",
+        "email": "git@lincoln.hk",
+        "url": "https://github.com/linc01n"
+    },
+    "client": {
+        "main": "main"
+    },
+    "engines": {
+        "codebox": ">=0.7.0"
+    }
+}

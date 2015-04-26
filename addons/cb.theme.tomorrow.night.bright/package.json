@@ -1,0 +1,19 @@
+{
+    "name": "cb.theme.tomorrow.night.bright",
+    "version": "0.0.1",
+    "title": "Tomorrow Night Bright Theme",
+    "description": "Tomorrow Night Bright theme. Ported from Ace.",
+    "homepage": "https://github.com/linc01n/codebox-theme",
+    "license": "BSD",
+    "author": {
+        "name": "Lincoln Lee",
+        "email": "git@lincoln.hk",
+        "url": "https://github.com/linc01n"
+    },
+    "client": {
+        "main": "main"
+    },
+    "engines": {
+        "codebox": ">=0.7.0"
+    }
+}

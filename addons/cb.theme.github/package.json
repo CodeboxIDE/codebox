@@ -1,0 +1,19 @@
+{
+    "name": "cb.theme.github",
+    "version": "0.0.1",
+    "title": "Github Theme",
+    "description": "Github theme. Ported from Ace.",
+    "homepage": "https://github.com/linc01n/codebox-theme",
+    "license": "BSD",
+    "author": {
+        "name": "Lincoln Lee",
+        "email": "git@lincoln.hk",
+        "url": "https://github.com/linc01n"
+    },
+    "client": {
+        "main": "main"
+    },
+    "engines": {
+        "codebox": ">=0.7.0"
+    }
+}
