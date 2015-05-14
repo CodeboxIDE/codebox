@@ -1,0 +1,94 @@
+.loading-welcome {
+    width: 70px;
+    height: 70px;
+
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 0;
+
+    margin-left: -35px;
+    margin-top: -35px;
+
+
+    .block {
+        position:relative;
+        height:20px;
+        width:20px;
+        display:inline-block;
+        background: @color-10;
+        transition:all 0.8s;
+        -webkit-animation: rot 3.4s linear infinite;
+        animation: rot 3.4s linear infinite;
+    }
+    .block:nth-child(1) {
+        -webkit-animation-delay:3s;
+        animation-delay:3s;
+    }
+    .block:nth-child(2) {
+        -webkit-animation-delay:1.5s;
+        animation-delay:1.5s;
+        -webkit-animation: rot 12s linear infinite;
+        animation: rot 15s linear infinite;
+    }
+    .block:nth-child(3) {
+        -webkit-animation-delay:2s;
+        animation-delay:2s;
+    }
+    .block:nth-child(4) {
+        -webkit-animation-delay:0.2s;
+        animation-delay:0.2s;
+    }
+    .block:nth-child(5) {
+        -webkit-animation-delay:4s;
+        animation-delay:4s;
+    }
+    .block:nth-child(6) {
+        -webkit-animation-delay:2s;
+        animation-delay:2s;
+        -webkit-animation: rot 7s linear infinite;
+        animation: rot 7s linear infinite;
+    }
+    .block:nth-child(7) {
+        -webkit-animation-delay:0.4s;
+        animation-delay:0.4s;
+    }
+    .block:nth-child(8) {
+        -webkit-animation-delay:1.5s;
+        animation-delay:1.5s;
+        -webkit-animation: rot 6s linear infinite;
+        animation: rot 6s linear infinite;
+    }
+    .block:nth-child(9) {
+        -webkit-animation-delay:25s;
+        animation-delay:25s;
+        -webkit-animation: rot 8s linear infinite;
+        animation: rot 8s linear infinite;
+    }
+
+    .rot () {
+        0% {
+            transform:none;
+        }
+        20% {
+            transform:rotateZ(-90deg) rotateY(180deg);
+        }
+        40% {
+            background: @color-8;
+            transform:none;
+        }
+        60% {
+            background:white
+        }
+        80% {
+            background: @color-13;
+        }
+        90% {
+            transform:none;
+            background: @color-0-0;
+        }
+    }
+
+    @-webkit-keyframes rot { .rot; }
+    @keyframes rot { .rot; }
+}

@@ -36,3 +36,6 @@ build
 
 # Tmp directory
 .tmp
+
+# Packages for testing
+test/packages

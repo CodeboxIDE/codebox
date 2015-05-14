@@ -12,14 +12,10 @@ rpc.defaultMethod({
         .then(function(res) {
             return res.data.result || {};
         }, function(err) {
-            try {
-                var errContent = JSON.parse(err.httpRes);
-                var e = new Error(errContent.error || err.message);
-                e.code = errContent.code || err.status || 500;
-                return Q.reject(e);
-            } catch(e) {
-                return Q.reject(err);
-            }
+            var e = new Error(err.data.error || err);
+            e.code = err.status;
+
+            return Q.reject(e);
         });
     }
 });

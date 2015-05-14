@@ -1,36 +1,59 @@
 .component-dialog {
     position: absolute;
     z-index: 1000;
-
     top: 0px;
-    left: 50%;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background: rgba(0, 0, 0, 0.4);
+    overflow-y: auto;
 
-    width: @dialog-size-medium;
-    margin-left: -@dialog-size-medium/2;
-
-    background: @color-1;
-
-    &.size-large {
+    &.size-large .dialog-wrapper {
         width: @dialog-size-large;
         margin-left: -@dialog-size-large/2;
     }
 
-    &.size-small {
+    &.size-small .dialog-wrapper {
         width: @dialog-size-small;
         margin-left: -@dialog-size-small/2;
     }
 
-    .dialog-list {
-        input {
-            width: 100%;
+    .dialog-wrapper {
+        position: absolute;
+        z-index: 1001;
+
+        margin: 2% 0px;
+        left: 50%;
+
+        width: @dialog-size-medium;
+        margin-left: -@dialog-size-medium/2;
+
+        background: @color-0-1;
+
+        .dialog-list {
+            input {
+                width: 100%;
+            }
+
+            .ui-content-list {
+                background: @dialog-list-background;
+            }
         }
 
-        .ui-content-list {
-            background: @dialog-list-background;
-        }
-    }
+        .dialog-input {
+            .dialog-header {
+                background: @color-0-2;
+                padding: 8px 5px;
+            }
 
-    .dialog-input {
-        padding: 5px;
+            .dialog-body {
+                padding: 5px;
+            }
+
+            .dialog-actions {
+                margin-top: 15px;
+                padding: 5px;
+            }
+        }
     }
 }

@@ -1,3 +1,5 @@
+var path = require("path");
+var axios = require("axios");
 var Q = require("q");
 var _ = require("hr.utils");
 var Model = require("hr.model");
@@ -17,7 +19,8 @@ var File = Model.extend({
         size: 0,
         mtime: 0,
         atime: 0,
-        buffer: null
+        buffer: null,
+        mime: "text/plain"
     },
     idAttribute: "name",
 
@@ -54,7 +57,7 @@ var File = Model.extend({
 
     // Open this file
     open: function() {
-        return commands.run("file.open", {
+        return commands.run("file.open."+this.getExtension().slice(1), {
             path: this.get("path")
         });
     },
@@ -66,7 +69,7 @@ var File = Model.extend({
 
     // Check if a file is a buffer or exists
     isBuffer: function() {
-        return this.get("buffer") != null;
+        return _.isString(this.get("buffer"));
     },
 
     // Test if a path is child
@@ -103,28 +106,48 @@ var File = Model.extend({
     },
 
     // Read file content
-    read: function() {
-        if (this.isBuffer()) return Q(this.get("buffer"));
+    read: function(opts) {
+        opts = _.defaults(opts || {}, {
+            base64: false
+        });
 
-        return rpc.execute("fs/read", {
-            'path': this.get("path")
-        })
-        .get("content")
-        .then(hash.atob);
+        var p;
+
+        if (this.isBuffer()) p = Q(hash.btoa(this.get("buffer")));
+        else {
+            p = rpc.execute("fs/read", {
+                'path': this.get("path")
+            })
+            .get("content");
+        }
+
+        if (!opts.base64) p = p.then(hash.atob);
+
+        return p;
+    },
+
+    // Access url
+    accessUrl: function() {
+        return "/fs/"+this.get("path");
     },
 
     // Write file content
-    write: function(content) {
+    write: function(content, opts) {
         var that = this;
+        opts = _.defaults(opts || {}, {
+            base64: false
+        });
 
         return Q()
         .then(function() {
-            if (that.isBuffer()) return Q(that.set("buffer", content));
+            if (that.isBuffer()) {
+                return File.blobToString(content)
+                .then(function(s) {
+                    that.set("buffer", s);
+                });
+            }
 
-            return rpc.execute("fs/write", {
-                'path': that.get("path"),
-                'content': hash.btoa(content)
-            });
+            return File.writeContent(that.get("path"), content);
         })
         .then(function() {
             that.trigger("write", content);
@@ -171,22 +194,20 @@ var File = Model.extend({
     },
 
     // Save file
-    save: function(content) {
+    save: function(content, opts) {
         var that = this;
 
         return Q()
         .then(function() {
-            if (!that.isBuffer() || !that.options.saveAsFile) return that.write(content);
+            if (!that.isBuffer() || !that.options.saveAsFile) return that.write(content, opts);
 
             return dialogs.prompt("Save as:", that.get("name"))
-            .then(function(_path) {
-                return rpc.execute("fs/write", {
-                    'path': _path,
-                    'content': hash.btoa(content),
+            .then(function(filename) {
+                return File.writeContent(filename, content, {
                     'override': false
                 })
                 .then(function() {
-                    return that.stat(_path);
+                    return that.stat(filename);
                 })
                 .fail(dialogs.error);
             });
@@ -204,7 +225,7 @@ var File = Model.extend({
     buffer: function(name, content, id, options) {
         var f = new File(options || {}, {
             'name': name,
-            'buffer': content,
+            'buffer': content || "",
             'path': "buffer://"+(id || _.uniqueId("tmp")),
             'directory': false
         });
@@ -231,6 +252,73 @@ var File = Model.extend({
         })
         .then(function(f) {
             return new File({}, f);
+        });
+    },
+
+    // Save as
+    saveAs: function(filename, content, opts) {
+        var f = File.buffer(filename);
+        return f.save(content, opts);
+    },
+
+    // Convert blob to string
+    blobToString: function(b) {
+        var d = Q.defer();
+
+        if (b instanceof Blob) {
+            var reader = new window.FileReader();
+            reader.onerror = function(err) {
+                d.reject(err);
+            }
+            reader.onload = function() {
+                d.resolve(reader.result);
+            };
+            reader.readAsText(b);
+        } else {
+            d.resolve(b);
+        }
+
+        return d.promise;
+    },
+
+    // Write content to a file (blob, arraybuffer, string)
+    writeContent: function(filename, content, opts) {
+        opts = _.defaults(opts || {}, {
+            base64: false
+        });
+        var useUpload = false;
+
+        return Q()
+        .then(function() {
+            if (_.isString(content)) {
+                if (opts.base64) return content;
+
+                useUpload = (content.length > 1000);
+                opts.base64 = true;
+                return hash.btoa(content);
+            } else {
+                useUpload = true;
+                return content;
+            }
+        })
+        .then(function(_content) {
+            if (useUpload) {
+                opts.path = path.dirname(filename);
+
+                var data = new FormData();
+                var blob = new Blob([_content]);
+
+                _.each(opts, function(value, key) {
+                    data.append(key, JSON.stringify(value));
+                });
+                data.append("content", blob, path.basename(filename));
+
+                return Q(axios.put('/rpc/fs/upload', data));
+            } else {
+                opts.path = filename;
+                opts.content = _content;
+                return rpc.execute("fs/write", opts);
+            }
         });
     }
 });

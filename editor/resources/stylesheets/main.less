@@ -4,6 +4,7 @@
 @import "variables.less";
 
 @import "fonts.less";
+@import "grid.less";
 
 @import "ui/dialogs.less";
 @import "ui/form.less";
@@ -11,6 +12,7 @@
 @import "ui/buttons.less";
 @import "ui/grid.less";
 @import "ui/menu.less";
+@import "ui/loading.less";
 
 * {
     .box-sizing(border-box);
@@ -25,11 +27,21 @@ body, html {
     font-size: @font-size-normal;
     width: 100%;
     height: 100%;
-    background: @color-0;
+    background: @color-0-0;
     color: @color-7;
     .user-select(none);
 
     .octicon {
         font-size: inherit;
+    }
+
+    .main-application {
+        position: fixed;
+        top: 0px;
+        bottom: 0px;
+        right: 0px;
+        left: 0px;
+        z-index: 1;
+        background: @color-0-0;
     }
 }

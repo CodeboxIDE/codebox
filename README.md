@@ -4,8 +4,6 @@
 [![Build Status](https://travis-ci.org/CodeboxIDE/codebox.png?branch=master)](https://travis-ci.org/CodeboxIDE/codebox)
 [![NPM version](https://badge.fury.io/js/codebox.svg)](http://badge.fury.io/js/codebox)
 
-#### :warning: Instructions are for the not yet published version 1.0.0
-
 Codebox is a complete and modular Cloud IDE. It can run on any unix-like machine (Linux, Mac OS X). It is an open source component of [codebox.io](https://www.codebox.io) (Cloud IDE as a Service).
 
 The IDE can run on your desktop (Linux or Mac), on your server or the cloud. You can use the [codebox.io](https://www.codebox.io) service to host and manage IDE instances.
@@ -36,7 +34,7 @@ $ npm install -g codebox
 
 And start the IDE from the command line:
 ```
-$ codebox --root=./myworkspace --open
+$ codebox run ./myworkspace --open
 ```
 
 Use this command to run and open Codebox IDE. By default, Codebox uses GIT to identify you, you can use the option ```--email=john.doe@gmail.com``` to define the email you want to use during GIT operations.
@@ -52,21 +50,6 @@ Others comand line options are available and can be list with: ```codebox --help
 -t, --templates [list]  Configuration templates, separated by commas
 -p, --port [port]       HTTP port
 ```
-
-#### Developing and testing packages
-
-Download and build the source code:
-
-```
-$ git clone https://github.com/CodeboxIDE/codebox.git
-$ cd ./codebox
-$ npm install .
-$ grunt
-```
-
-Then you can easily link packages for testing by creating a folder that will contains all your packages (each should start with the prefix `package-`), then run the command `grunt link --origin=../mypackages`. This command will create symlinks between all the packages in `../mypackages` and the folder where are stored packages used by codebox.
-
-Everytime you update the code of your package, simply run `grunt resetPkg --pkg=mypackage` in it and restart codebox.
 
 #### Need help?
 

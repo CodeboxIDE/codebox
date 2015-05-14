@@ -4,10 +4,15 @@ var Q = require("q");
 
 var logger = require("hr.logger")("app");
 
+Q.onerror = function (error) {
+    logger.exception("Uncaught Error:", error);
+};
+
 var app = require("./core/application");
 var commands = require("./core/commands");
 var packages = require("./core/packages");
 var user = require("./core/user");
+var workspace = require("./core/workspace");
 var users = require("./core/users");
 var settings = require("./core/settings");
 var dialogs = require("./utils/dialogs");
@@ -23,6 +28,7 @@ window.codebox = {
     require: codeboxRequire,
     app: app,
     user: user,
+    workspace: workspace,
     root: new File(),
     settings: settings
 };
@@ -43,13 +49,18 @@ commands.register({
 
 // Start running the applications
 logger.log("start application");
-Q()
-.then(codebox.user.whoami.bind(codebox.user))
-.then(codebox.root.stat.bind(codebox.root, "./"))
-.then(settings.load.bind(settings))
-.then(users.listAll.bind(users))
+Q.delay(500)
 .then(function() {
-    return packages.loadAll()
+    return Q.all([
+        codebox.user.whoami(),
+        codebox.root.stat('./'),
+        codebox.workspace.about(),
+        settings.load(),
+        users.listAll()
+    ]);
+})
+.then(function() {
+    return packages.loadAll(!codebox.workspace.get('debug'))
     .fail(function(err) {
         var message = "<p>"+err.message+"</p>";
         if (err.errors) {
@@ -58,11 +69,12 @@ Q()
             }).join("\n")+ "</ul>";
         }
 
-        return dialogs.alert(message, { html: true })
+        return dialogs.alert(message, { isHtml: true })
     });
 })
 .then(app.start.bind(app))
 .fail(function(err) {
     logger.error("Error:", err.message || "", err.stack || err);
+    return dialogs.error(err);
 });
 

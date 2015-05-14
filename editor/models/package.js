@@ -4,6 +4,39 @@ var _ = require("hr.utils");
 var Model = require("hr.model");
 var logger = require("hr.logger")("package");
 
+function getScript(url, callback) {
+  var head = document.getElementsByTagName("head")[0];
+  var script = document.createElement("script");
+  script.src = url;
+
+  // Handle Script loading
+  {
+     var done = false;
+
+     // Attach handlers for all browsers
+     script.onload = script.onreadystatechange = function(){
+        if ( !done && (!this.readyState ||
+              this.readyState == "loaded" || this.readyState == "complete") ) {
+           done = true;
+           if (callback)
+              callback();
+
+           // Handle memory leak in IE
+           script.onload = script.onreadystatechange = null;
+        }
+     };
+
+    script.onerror = function(err) {
+        callback(err);
+    };
+  }
+
+  head.appendChild(script);
+
+  // We handle everything using the script element injection
+  return undefined;
+}
+
 var Package = Model.extend({
     defaults: {
         name: null,
@@ -30,16 +63,14 @@ var Package = Model.extend({
         if (!this.get("browser")) return Q();
 
         logger.log("Load", this.get("name"));
-        $.getScript(this.url()+"/pkg-build.js")
-        .done(function(script, textStatus) {
-            d.resolve();
-        })
-        .fail(function(jqxhr, settings, exception) {
-            logger.error("Error loading plugin:", exception);
-            d.reject(exception);
+        getScript(this.url()+"/pkg-build.js", function(err) {
+            if (!err) return d.resolve();
+
+            logger.exception("Error loading plugin:", err);
+            d.reject(err);
         });
 
-        return d.promise.timeout(5000, "This addon took to long to load (> 5seconds)");
+        return d.promise.timeout(10000, "This addon took to long to load (> 10seconds)");
     },
 
     /**

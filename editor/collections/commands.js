@@ -27,19 +27,34 @@ var Commands = Collection.extend({
 
     // Run a command
     run: function(_cmd, args) {
-        var cmd = this.get(_cmd);
+        var cmd = this.resolve(_cmd);
         if (!cmd) return Q.reject(new Error("Command not found: '"+_cmd+"'"));
 
         return cmd.run(args);
     },
 
+    // Resolve a command
+    resolve: function(_cmd) {
+        return _.chain(this.models)
+            .map(function(m) {
+                return {
+                    cmd: m,
+                    score: m.resolve(_cmd)
+                };
+            })
+            .filter(function(r) {
+                return r.score > 0;
+            })
+            .sortBy("score")
+            .pluck("cmd")
+            .last()
+            .value();
+    },
+
     // Set context
-    setContext: function(id, data) {
-        logger.log("update context", id);
-        this.context = {
-            'type': id,
-            'data': data
-        };
+    setContext: function(ctx) {
+        logger.log("update context", _.keys(ctx));
+        this.context = ctx || {};
         this.trigger("context", this.context);
     }
 });
