@@ -10,12 +10,4 @@ if [ -z "$PASSWORD" ]; then
     read -s -p "Enter Password: " PASSWORD
 fi
 
-cd $LOCALDIR
-ftp -n $REMOTESERVER <<INPUT_END
-quote user $LOGIN
-quote pass $PASSWORD
-cd $REMOTEPATH
-prompt off
-mput *.*
-exit
-INPUT_END
+find $LOCALDIR -mindepth 1 -maxdepth 1 ! -name ".git" -exec ncftpput -R -v -u "$LOGIN" -p "$PASSWORD" $REMOTESERVER $REMOTEPATH {} \;
