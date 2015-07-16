@@ -46,7 +46,6 @@ Others comand line options are available and can be list with: ```codebox --help
 ```
 -h, --help              output usage information
 -V, --version           output the version number
--r, --root [path]       Root folder for the workspace, default is current directory
 -t, --templates [list]  Configuration templates, separated by commas
 -p, --port [port]       HTTP port
 ```
