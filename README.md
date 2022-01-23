@@ -34,7 +34,7 @@ $ npm install -g codebox
 
 And start the IDE from the command line:
 ```
-$ codebox run ./myworkspace --open
+$ codesandbox run ./myworkspace --open
 ```
 
 Use this command to run and open Codebox IDE. By default, Codebox uses GIT to identify you, you can use the option ```--email=john.doe@gmail.com``` to define the email you want to use during GIT operations.
