@@ -1,5 +1,5 @@
 # Codebox
-> "Open source cloud & desktop IDE."
+> "Open-source cloud & desktop IDE."
 
 [![Build Status](https://travis-ci.org/CodeboxIDE/codebox.png?branch=master)](https://travis-ci.org/CodeboxIDE/codebox)
 [![NPM version](https://badge.fury.io/js/codebox.svg)](http://badge.fury.io/js/codebox)
@@ -25,7 +25,7 @@ Instructions on how to install it can be found for each release.
 
 #### Install from NPM
 
-Codebox can be installed as a Node package and use programatically or from the command line.
+Codebox can be installed as a Node package and used programmatically or from the command line.
 
 Install Codebox globally using NPM:
 ```
@@ -39,7 +39,7 @@ $ codebox run ./myworkspace --open
 
 Use this command to run and open Codebox IDE. By default, Codebox uses GIT to identify you, you can use the option ```--email=john.doe@gmail.com``` to define the email you want to use during GIT operations.
 
-Others comand line options are available and can be list with: ```codebox --help```. For deeper configuration, take a look at the documentation about [environment variables](http://help.codebox.io/ide/env.html).
+Others command line options are available and can be listed with: ```codebox --help```. For deeper configuration, take a look at the documentation about [environment variables](http://help.codebox.io/ide/env.html).
 
 #### Command line options
 
@@ -51,13 +51,13 @@ Others comand line options are available and can be list with: ```codebox --help
 -p, --port [port]       HTTP port
 ```
 
-#### Need help?
+#### Need Help?
 
-The IDE's documentation can be found at [help.codebox.io](http://help.codebox.io). Feel free to ask any questions or signal problems by adding issues.
+The IDE's documentation can be found at [help.codebox.io](http://help.codebox.io). Feel free to ask any questions or report problems by adding issues.
 
 ## Helping Codebox
 
-**I want to help with the code:** Codebox accepts pull-requests, please see the [Contributing to Codebox](https://github.com/FriendCode/codebox/blob/master/CONTRIBUTING.md) guide for information on contributing to this project. And don't forget to add your contact informations on the AUTHORS list.
+**I want to help with the code:** Codebox accepts pull-requests, please see the [Contributing to Codebox](https://github.com/FriendCode/codebox/blob/master/CONTRIBUTING.md) guide for information on contributing to this project, and don't forget to add your contact informations on the AUTHORS list.
 
 **I found a bug:** File it as an [issue](https://github.com/FriendCode/codebox/issues) and please describe as much as possible the bug and the context.
 
